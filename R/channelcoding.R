@@ -1,3 +1,9 @@
+#' general encdoe funtion
+#'
+#' @author Witsch Daniel
+#' @param msg message to encode
+#' @return encoded message
+#' @export
 encode = function(msg, type, params, visualize)
 {
   switch(type,
