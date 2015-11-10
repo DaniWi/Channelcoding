@@ -27,6 +27,18 @@ decode = function(msg, type, params, visualize)
 
 applyNoise = function(msg, params, visualize)
 {
-  return(msg)
+   SNR_db = 10;
+   msg_len = length(msg);
+   
+   SNR_linear = 10^(SNR_db/10);
+   
+   power = sum(msg)/(msg_len); #power of vector msg
+   
+   noise = sqrt(power / SNR_linear) * rnorm(msg_len,0,1)
+   
+   msg_out = msg + noise;
+   
+   
+   return(msg_out);
 }
 
