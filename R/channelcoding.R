@@ -40,7 +40,8 @@ applyNoise = function(msg, params, visualize)
    msg_out = msg + noise;
    
    # map every vector element <= 0.5 to 0 and > 0.5 to 1
-   msg_out = pmax(pmin(round(msg_out,0),1),0)
+   msg_out = ifelse(msg_out <= 0.5, 0, 1)
+   #msg_out = pmax(pmin(round(msg_out,0),1),0)
    
    return(msg_out);
 }
