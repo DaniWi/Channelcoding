@@ -37,7 +37,17 @@ encode = function(msg, type, params, visualize)
 #' @export
 decode = function(msg, type, params, visualize)
 {
-  return(msg)
+  switch(type,
+         HAMMING={
+           return(.HammingDecode(msg,params,visualize))
+         },
+         MATRIX={
+           return(.MatrixDecode(msg,params,visualize))
+         },
+         {
+           print("No or Wrong Type selected")
+           return()
+         })
 }
 
 
@@ -52,22 +62,24 @@ decode = function(msg, type, params, visualize)
 #' @export
 applyNoise = function(msg, params, visualize)
 {
-   
-   SNR_db = 10; # Signal-Noise-Ratio in dB
+
+   SNR_db = 5; # Signal-Noise-Ratio in dB
    msg_len = length(msg);
    SNR_linear = 10^(SNR_db/10);
    power = sum(msg)/(msg_len); #power of vector msg
-   
+
    # noise is a vector of lenth msg_len and contains
    # normal distributed values with mean 0 and standard-deviation 1
    noise = sqrt(power / SNR_linear) * rnorm(msg_len,0,1)
-   
+
    msg_out = msg + noise;
-   
+
    # map every vector element <= 0.5 to 0 and > 0.5 to 1
    msg_out = ifelse(msg_out <= 0.5, 0, 1)
    #msg_out = pmax(pmin(round(msg_out,0),1),0)
-   
+
    return(msg_out);
 }
+
+
 
