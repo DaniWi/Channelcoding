@@ -78,7 +78,7 @@ applyNoise = function(msg, params, visualize)
    msg_out = ifelse(msg_out <= 0.5, 0, 1)
    
    if (visualize) {
-      v_flipped <- xor(msg,msg_out)
+      v_flipped <- (msg + msg_out) %% 2;
       # rle: run-length-encoding of the noise(v_flipped) vector
       # results in a table with values and lengths
       rlenc <- rle(v_flipped);
@@ -87,7 +87,7 @@ applyNoise = function(msg, params, visualize)
       # plot as table of n-bit error occurences
       # from 1 to highest occuring error (most neighbouring error bits)
       error_sum <- sum(v_flipped);
-      max_errorbits <- max(rlenc$lengths);
+      max_errorbits <- max(3,rlenc$lengths[rlenc$values == 1]);
       barplot(table(factor(mysample,levels=1:max_errorbits)),main=paste("Total error bits:",error_sum));
    }
 
