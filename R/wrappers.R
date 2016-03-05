@@ -1,5 +1,5 @@
 #use of .C
-dyn.load("C/helloC.dll")
+dyn.load("src/helloC.dll")
 helloC <- function(greeting) {
   if (!is.character(greeting)) {
     stop("Argument 'greeting' must be of type 'character'.")
@@ -11,14 +11,14 @@ helloC <- function(greeting) {
 }
 
 #use of .Call
-dyn.load("C/helloD.dll")
+dyn.load("src/helloD.dll")
 helloD <- function(greeting) {
   result <- .Call("helloD", greeting)
   return(result)
 }
 
 #use of .Call with cpp file
-Rcpp::sourceCpp('C/helloE.cpp')
+Rcpp::sourceCpp('src/helloE.cpp')
 helloE <- function(greeting) {
   result <- helloEcpp(greeting)
 }
