@@ -26,8 +26,8 @@ helloE <- function(greeting) {
 dyn.load("src/turbo_map_sova.dll")
 test<- function(input) {
   result <- .C("test",
-               input=input,
+               as.integer(input),
                out=integer(length=8),
-               length=as.integer(8))
+               as.integer(8))
   return(result$out)
 }

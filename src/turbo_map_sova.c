@@ -41,8 +41,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEBUG     2   //set level of debug visibility [0=>off,1=>min,2=>max]
-#define NOISEOFF  1   //set to suppress noise in channel [0=>off, 1=>read from file, 2=>awgn]
+#define DEBUG     0   //set level of debug visibility [0=>off,1=>min,2=>max]
+#define NOISEOFF  2   //set to suppress noise in channel [0=>off, 1=>read from file, 2=>awgn]
 #define noise_file "awgn.txt" //filename where noise date is stored (each value in separate line)
 #define N_ITERATION 5 //no. of turbo decoder iterations
 #define MAP_SOVA 1		//set which algorithm to use [0=>MAP,1=>SOVA]
@@ -572,10 +572,8 @@ void turbo_decode(
 gcc turbo_example.c -lm -o t; t
 */
 
-void test(int *out)
+void test(int *input, int *out, int *length)
 {
-     
-   
 	int    P1[N];     //encoder #1 parity bits
 	int    P2[N];     //encoder #2 parity bits
 	double x[N];      //databit mapped to symbol
@@ -592,6 +590,11 @@ void test(int *out)
 	FILE * pFile;	
 	char c[51];
 	#endif
+	for(int i = 0;i < 8; i++){
+		X[i] = input[i];
+		printf("input[%i]= %i\n",i,input[i]);
+	}
+		
 
     /********************************
      *         INITIALISE           *
@@ -683,7 +686,8 @@ void test(int *out)
 	printf("X_h = ");
     for(k = 0; k < N; k++)
     	printf("%i", X_h[k]);
-    out[0] = X_h[0];
+    for(k = 0; k < N; k++)
+    	*(out+k) = X_h[k];
 	printf("\n");
 }
 // end of file: turbo_example.c
