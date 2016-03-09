@@ -75,8 +75,8 @@ applyNoise = function(msg, params, visualize)
    msg_out = msg + noise;
 
    # map every vector element <= 0.5 to 0 and > 0.5 to 1
-   msg_out = ifelse(msg_out <= 0.5, 0, 1)
-   
+   #msg_out = ifelse(msg_out <= 0.5, 0, 1)
+
    if (visualize) {
       v_flipped <- (msg + msg_out) %% 2;
       # rle: run-length-encoding of the noise(v_flipped) vector

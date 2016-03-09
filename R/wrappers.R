@@ -22,12 +22,3 @@ Rcpp::sourceCpp('src/helloE.cpp')
 helloE <- function(greeting) {
   result <- helloEcpp(greeting)
 }
-
-dyn.load("src/turbo_map_sova.dll")
-test<- function(input) {
-  result <- .C("test",
-               as.integer(input),
-               out=integer(length=8),
-               as.integer(8))
-  return(result$out)
-}
