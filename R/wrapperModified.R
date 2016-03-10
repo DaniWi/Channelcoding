@@ -1,4 +1,4 @@
-dyn.load("src/turbo_map_sova_modified.dll")
+dyn.load(paste0("src/turbo_map_sova_modified", .Platform$dynlib.ext))
 
 encode <- function(input, permutation) {
   input_term <- c(input, -1, -1)
