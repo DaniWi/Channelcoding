@@ -227,9 +227,11 @@ void sova
 	for (k=3;k<N+1;k++)
 	{
 		deltamin = delta[k][survivor_states[k]];
+		// s ... state aus dem man in den survivor state kommen hätte können (2. Möglichkeit)
 		s = previous[ survivor_states[k] ][ survivor_bit[k][survivor_states[k] ] * (-1) + 1]; //competing putanja
 		for (i=k-1;i>0;i--)
 		{
+			//sucht das kleinste delta auf dem survivor state
 			if (delta[i][survivor_states[i]] < deltamin)
 								deltamin=delta[i][survivor_states[i]];
 			if (survivor_bit[i][survivor_states[i]]!=survivor_bit[i][s])

@@ -46,6 +46,7 @@ void main() {
 	
 	const int NUM_STATES = pow(2,M);			// number of states: 2^M
 	const int MAX_GENERATOR = pow(2,M+1) - 1;	// maximum number for a generator polynom
+	printf("maximum generator polynom: %i\n", MAX_GENERATOR);
 	
 	int generator[N];	// generator polynom for each output symbol
 	for (int i = 0; i < N; i++) {
@@ -86,10 +87,48 @@ void main() {
 		}
 	}
 	
-	/*
+	
 	printf("\nNext State\n");
 	printMatrix(nextState,NUM_STATES);
 	printf("\nOutput\n");
 	printMatrix(output,NUM_STATES);
-	*/
+	
+	
+	int msg_len = 3;
+	int code_len = N*(msg_len+M);
+	int input[3] = {1, 0, 1};
+	int code[code_len];
+	
+	// convolution encoder
+	int state = 0;
+	int index = 0;
+	for (int i = 0; i < msg_len; i++) {
+		
+		int out = output[state][input[i]];
+		printf("state %i, input %i, output %i%i, new state %i\n",state,input[i],(out>>1)&1,out&1,nextState[state][input[i]]);
+		state = nextState[state][input[i]];
+		// output consists of N bits per coded symbol
+		for (int j = N-1; j >= 0; j--) {
+			code[index] = (out >> j) & 0x01;
+			index++;
+		}
+	}
+	
+	// termination: input of M times 0
+	for (int i = 0; i < M; i++) {
+		int out = output[state][0];
+		state = nextState[state][0];
+		for (int j = N-1; j >= 0; j--) {
+			code[index] = (out >> j) & 0x01;
+			index++;
+		}
+	}
+	
+	
+	// print coded message
+	for (int i = 0; i < code_len; i++) {
+		printf("%i",code[i]);
+	}
+	printf("\n");
+	
 }
