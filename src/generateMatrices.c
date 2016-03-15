@@ -124,11 +124,108 @@ void main() {
 		}
 	}
 	
-	
 	// print coded message
 	for (int i = 0; i < code_len; i++) {
 		printf("%i",code[i]);
 	}
 	printf("\n");
+	
+	
+	// convolution decoder: viterbi algorithm
+	double metric[msg_len+M+1][NUM_STATES];
+	double delta[msg_len+M+1][NUM_STATES];
+	double deltamin;
+	int survivor_bit[msg_len+M+1][NUM_STATES];
+	int survivor_states[msg_len+M+1];
+	
+	// NOTE: arrays have dimension msg_len+M+1 because i.e. delta[1][state] is delta from symbol at t=0 to t=1
+	//		 so delta from symbol at t=msg_len+M-1 to t=msg_len+M (+M because of termination) is stored in
+	//		 delta[msg_len+M][state] -> therefore delta[msg_len+M+1][NUM_STATES]
+	//		 index 0 is not used!
+	
+	// initialization
+	metric[0][0] = 0;
+	for (int i = 1; i < NUM_STATES; i++) {
+		metric[0][i] = -1000;
+	}
+	
+	index = 0;
+	// int trellis_len = msg_len + M + 1;
+	
+	// loop: time t
+	for (int t = 0; t < msg_len+M+1; t++) {
+		// loop: state s
+		for (int s = 0; s < NUM_STATES; s++) {
+			
+			double Max[K];
+			// loop: input i {0,1}
+			for (int i = 0; i < K; i++) {
+				
+				Max[i] = metric[t-1][previousState[s][t]];
+				// loop: 1 input symbol is coded to N output symbols
+				// scalar product: N factors! sum the together!
+				for (int n = 0; n < N; n++) {
+					int sr = N-n-1;	// shift right
+					Max[i] += (((output[previousState[s][t]][t] >> sr) & 0x01) * 2 - 1) * Lc * code[index+n-1];
+					// La missing in previous calculation of Max[i]!!!
+				}
+				
+				if (Max[0] > Max[1]) {
+					survivor_bit[t][s] = 0;
+					metric[t][s] = Max[0];
+					delta[t][s] = (Max[0] - Max[1]) / 2;
+				}
+				else {
+					survivor_bit[t][s] = 1;
+					Metric[t][s] = Max[1];
+					delta[t][s] = (Max[1] - Max[0]) / 2;
+				}
+			}
+		}
+	}
+	
+	int IsTerminated = 1;
+	
+	if (IsTerminated > 0) {
+		survivor_states[msg_len+M] = 0;	
+	}
+	else {
+		double max_metric = metric[msg_len+M][0];
+		survivor_states[msg_len+M]=0;
+		for(s = 1; s < NUM_STATES; s++) {
+			if (max_metric < Metric[msg_len+M][s]) {
+				max_metric = Metric[msg_len+M][s];
+				survivor_states[msg_len+M] = s;
+			}
+		}
+	}
+	
+	for (int t = msg_len+M-1; t >= 0; t--) {
+		survivor_states[t] = previous[survivor_states[t+1]][survivor_bit[t+1][survivor_states[t+1]]];
+	}
+	for (int t = 3; t < msg_len+M+1; t++) {
+		deltamin = delta[t][survivor_states[t]];
+		// s ... state aus dem man in den survivor state kommen hätte können (2. Möglichkeit)
+		int s = previous[ survivor_states[t] ][ survivor_bit[t][survivor_states[t] ] * (-1) + 1];
+		for (int i = t-1; i > 0; i--) {
+			//sucht das kleinste delta auf dem survivor state
+			if (delta[i][survivor_states[i]] < deltamin) {
+				deltamin = delta[i][survivor_states[i]];
+			}
+			if (survivor_bit[i][survivor_states[i]] != survivor_bit[i][t]) {
+					delta[i][survivor_states[i]] = deltamin;
+			}
+			s = previous[t][survivor_bit[i][t]];
+		}
+
+	}
+
+	/* in Le-Formel, womit muss x_d ersetzt werden???
+	 *
+	double Le[msg_len+M];
+	for(int t = 1; t < msg_len+M+1; t++) {
+		Le[t-1] = delta[t][survivor_states[t]] * (survivor_bit[t][survivor_states[t]]*2-1) - La[t-1] - Lc * x_d[t-1];
+	}
+	*/
 	
 }
