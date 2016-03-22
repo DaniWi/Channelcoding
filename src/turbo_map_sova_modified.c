@@ -42,15 +42,12 @@ void gen_tab(void)
 			
 			//next[m][i] = next state from state m with databit i
 			next[m][i]   = b0 *2 + (i ^ b0 ^ b1);
-		//	printf("next[%d][%d]=%d\n",m,i,next[m][i]);
+			//printf("next[%d][%d]=%d\n",m,i,next[m][i]);
 		}
-	//	printf("parity[%d]= %d %d\n",m,parity[m][0],parity[m][1]);
+		//printf("parity[%d]= %d %d\n",m,parity[m][0],parity[m][1]);
 	}
 
     //from[m][i] = previous state to state m with databit i
-    for(m = 0; m < M; m++)
-    	for(i = 0; i < 2; i++)
-			previous[next[m][i]][i] = m;
 
 	//  Generate table of data bit pairs which terminate
 	//  the trellis for a given state m
@@ -370,11 +367,11 @@ void wrapper_encode(int *input, int *output, int *permutation, int *input_length
 
 	for(int i = 0; i < *output_length; i++){
 		if(i < *input_length)
-			output[i] = input[i];
+			output[i] = input[i] ? +1 : -1;
 		if(i >= *input_length && i < 2*(*input_length))
-			output[i] = P1[i- (*input_length)];
+			output[i] = P1[i- (*input_length)] ? +1 : -1;
 		if(i >= 2*(*input_length))
-			output[i] = P2[i- 2*(*input_length)];
+			output[i] = P2[i- 2*(*input_length)] ? +1 : -1;
 	}
 }
 
@@ -412,4 +409,8 @@ void wrapper_decode(double *input, double *output_soft, int *output_hard,  int *
 	printf("X_h = ");
     for(int k = 0; k < *output_length; k++)
     	printf("%i", output_hard[k]);
+}
+
+void main(){
+	gen_tab();
 }

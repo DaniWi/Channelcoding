@@ -92,6 +92,8 @@ void main() {
 	printMatrix(nextState,NUM_STATES);
 	printf("\nOutput\n");
 	printMatrix(output,NUM_STATES);
+	printf("\nPrevious\n");
+	printMatrix(previousState,NUM_STATES);
 	
 	
 	int msg_len = 3;
