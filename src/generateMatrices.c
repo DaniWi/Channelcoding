@@ -154,6 +154,10 @@ void main() {
 	index = 0;
 	// int trellis_len = msg_len + M + 1;
 	
+	// ACHTUNG
+	int Lc = 1;	// ACHTUNG!!!!!!
+	// ACHTUNG
+	
 	// loop: time t
 	for (int t = 0; t < msg_len+M+1; t++) {
 		// loop: state s
@@ -179,7 +183,7 @@ void main() {
 				}
 				else {
 					survivor_bit[t][s] = 1;
-					Metric[t][s] = Max[1];
+					metric[t][s] = Max[1];
 					delta[t][s] = (Max[1] - Max[0]) / 2;
 				}
 			}
@@ -194,21 +198,21 @@ void main() {
 	else {
 		double max_metric = metric[msg_len+M][0];
 		survivor_states[msg_len+M]=0;
-		for(s = 1; s < NUM_STATES; s++) {
-			if (max_metric < Metric[msg_len+M][s]) {
-				max_metric = Metric[msg_len+M][s];
+		for(int s = 1; s < NUM_STATES; s++) {
+			if (max_metric < metric[msg_len+M][s]) {
+				max_metric = metric[msg_len+M][s];
 				survivor_states[msg_len+M] = s;
 			}
 		}
 	}
 	
 	for (int t = msg_len+M-1; t >= 0; t--) {
-		survivor_states[t] = previous[survivor_states[t+1]][survivor_bit[t+1][survivor_states[t+1]]];
+		survivor_states[t] = previousState[survivor_states[t+1]][survivor_bit[t+1][survivor_states[t+1]]];
 	}
 	for (int t = 3; t < msg_len+M+1; t++) {
 		deltamin = delta[t][survivor_states[t]];
 		// s ... state aus dem man in den survivor state kommen hätte können (2. Möglichkeit)
-		int s = previous[ survivor_states[t] ][ survivor_bit[t][survivor_states[t] ] * (-1) + 1];
+		int s = previousState[ survivor_states[t] ][ survivor_bit[t][survivor_states[t] ] * (-1) + 1];
 		for (int i = t-1; i > 0; i--) {
 			//sucht das kleinste delta auf dem survivor state
 			if (delta[i][survivor_states[i]] < deltamin) {
@@ -217,7 +221,7 @@ void main() {
 			if (survivor_bit[i][survivor_states[i]] != survivor_bit[i][t]) {
 					delta[i][survivor_states[i]] = deltamin;
 			}
-			s = previous[t][survivor_bit[i][t]];
+			s = previousState[t][survivor_bit[i][t]];
 		}
 
 	}
