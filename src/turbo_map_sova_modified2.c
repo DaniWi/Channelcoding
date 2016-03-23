@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #define MAP_SOVA 1		//set which algorithm to use [0=>MAP,1=>SOVA]
-#define DEBUG 2
+#define DEBUG 0
 //noise standard deviation
 double sigma = 1.0;	//Lc=2/(sigma * sigma)=2
 
@@ -170,7 +170,7 @@ void sova
 	for (int k = N-1; k >= 0; k--)
 	{
 		survivor_states[k] = previous[survivor_states[k+1]][survivor_bit[k+1][survivor_states[k+1]]];
-		printf("\nk=%d s=%d, delta=%f, b=%d", k , survivor_states[k],delta[k][survivor_states[k]],survivor_bit[k][survivor_states[k]] );
+		//printf("\nk=%d s=%d, delta=%f, b=%d", k , survivor_states[k],delta[k][survivor_states[k]],survivor_bit[k][survivor_states[k]] );
 	}
 
 	int s;
