@@ -197,7 +197,7 @@ void main() {
 	}
 	else {
 		double max_metric = metric[msg_len+M][0];
-		survivor_states[msg_len+M]=0;
+		survivor_states[msg_len+M] = 0;
 		for(int s = 1; s < NUM_STATES; s++) {
 			if (max_metric < metric[msg_len+M][s]) {
 				max_metric = metric[msg_len+M][s];
@@ -206,13 +206,14 @@ void main() {
 		}
 	}
 	
+	// survivor state at index msg_len+M is known, start loop at 2nd but last index (= msg_len+M-1)
 	for (int t = msg_len+M-1; t >= 0; t--) {
 		survivor_states[t] = previousState[survivor_states[t+1]][survivor_bit[t+1][survivor_states[t+1]]];
 	}
-	for (int t = 3; t < msg_len+M+1; t++) {
+	for (int t = M+1; t < msg_len+M+1; t++) {
 		deltamin = delta[t][survivor_states[t]];
 		// s ... state aus dem man in den survivor state kommen hätte können (2. Möglichkeit)
-		int s = previousState[ survivor_states[t] ][ survivor_bit[t][survivor_states[t] ] * (-1) + 1];
+		int s = previousState[ survivor_states[t] ][survivor_bit[t][survivor_states[t]] * (-1) + 1];
 		for (int i = t-1; i > 0; i--) {
 			//sucht das kleinste delta auf dem survivor state
 			if (delta[i][survivor_states[i]] < deltamin) {
@@ -226,12 +227,9 @@ void main() {
 
 	}
 
-	/* in Le-Formel, womit muss x_d ersetzt werden???
-	 *
 	double Le[msg_len+M];
 	for(int t = 1; t < msg_len+M+1; t++) {
-		Le[t-1] = delta[t][survivor_states[t]] * (survivor_bit[t][survivor_states[t]]*2-1) - La[t-1] - Lc * x_d[t-1];
+		Le[t-1] = delta[t][survivor_states[t]] * (survivor_bit[t][survivor_states[t]]*2-1);
 	}
-	*/
 	
 }
