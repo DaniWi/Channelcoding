@@ -37,7 +37,7 @@ decode <- function(input, permutation, iterations, decoder_info){
                as.integer(decoder_info$term_tab),
                as.integer(decoder_info$use_parity_index))
 
-  mask <- c(1:(output_length-2))
+  mask <- c(1:(output_length-decoder_info$amount_register))
   return(list(soft = result$out_soft[mask],hard = result$out_hard[mask]))
 }
 
