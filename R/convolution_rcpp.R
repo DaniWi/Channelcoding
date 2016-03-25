@@ -1,5 +1,5 @@
 library(Rcpp);
-sourceCpp('D:/Studium/BSc_Thesis/Rcpp/convolution.cpp');
+sourceCpp('src/convolution.cpp');
 
 generateMatrices <- function(N, M, generators) {
 
