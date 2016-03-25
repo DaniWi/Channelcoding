@@ -3,3 +3,7 @@
 export(applyNoise)
 export(decode)
 export(encode)
+export(turbo_decode)
+export(turbo_encode)
+export(turbo_get_permutation)
+useDynLib(channelcoding)

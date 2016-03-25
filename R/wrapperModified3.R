@@ -1,6 +1,8 @@
-dyn.load(paste0("src/turbo_map_sova_modified3", .Platform$dynlib.ext))
+#dyn.load(paste0("src/turbo_map_sova_modified3", .Platform$dynlib.ext))
 
-encode <- function(input, permutation, encoder_info) {
+#' @export
+#' @useDynLib channelcoding
+turbo_encode <- function(input, permutation, encoder_info) {
   input_term <- c(input, rep(-1, encoder_info$amount_register))
   input_length <- length(input_term)
   output_length <- 3*input_length
@@ -19,7 +21,9 @@ encode <- function(input, permutation, encoder_info) {
   return(result$out)
 }
 
-decode <- function(input, permutation, iterations, decoder_info){
+#' @export
+#' @useDynLib channelcoding
+turbo_decode <- function(input, permutation, iterations, decoder_info){
   input_length <- length(input)
   output_length <- input_length/3
   result <- .C("wrapper_decode",
@@ -41,7 +45,9 @@ decode <- function(input, permutation, iterations, decoder_info){
   return(list(soft = result$out_soft[mask],hard = result$out_hard[mask]))
 }
 
-get_permutation <- function(length, encoder_info, type, args){
+#' @export
+#' @useDynLib channelcoding
+turbo_get_permutation <- function(length, encoder_info, type, args){
 
   switch(type,
          RANDOM={
