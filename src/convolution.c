@@ -403,7 +403,7 @@ void convolution_decode
 	#endif
 }
 
-void main() {
+void main_temp() {
 	int M = 2;
 	int N = 2;
 	int generator[2] = {7,5};
