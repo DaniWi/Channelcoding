@@ -183,8 +183,13 @@ void convolution_encode
 		}
 	}
 	
-	#if DEBUG == 1
+	// bits are mapped: {0,1} --> {-1,+1}
 	const int codeLen = N*(inputLen+M);
+	for (int i = 0; i < codeLen; i++) {
+		code[i] = 2 * code[i] - 1;
+	}
+	
+	#if DEBUG == 1
 	// print coded message
 	for (int i = 0; i < codeLen; i++) {
 		printf("%i",code[i]);
@@ -421,7 +426,12 @@ void main() {
 	int codeLen = (msgLen + M) * N;
 	int code[codeLen];
 	
-	convolution_encode(message, msgLen, N, M, next, out, code);	
+	convolution_encode(message, msgLen, N, M, next, out, code);
+	
+	code[4] = -code[4];
+	code[14] = -code[14];
+	code[15] = -code[15];
+	code[20] = -code[20];
 	
 	double msgSoft[msgLen];
 	int msgHard[msgLen];
