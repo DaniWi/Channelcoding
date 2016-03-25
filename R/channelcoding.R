@@ -66,7 +66,7 @@ applyNoise = function(msg, params, visualize)
    SNR_db = 5; # Signal-Noise-Ratio in dB
    msg_len = length(msg);
    SNR_linear = 10^(SNR_db/10);
-   power = sum(msg[msg>0])/(msg_len); #power of vector msg
+   power = sum(msg[msg>0])^2/(msg_len); #power of vector msg
 
    # noise is a vector of lenth msg_len and contains
    # normal distributed values with mean 0 and standard-deviation 1
