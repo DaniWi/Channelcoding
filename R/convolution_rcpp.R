@@ -1,7 +1,7 @@
 library(Rcpp);
 sourceCpp('src/convolution.cpp');
 
-generateMatrices <- function(N, M, generators) {
+generateConvEncoder <- function(N, M, generators) {
 
   matrixList <- c_generateMatrices(N,M,generators);
 
@@ -35,5 +35,17 @@ conv_decode <- function(code, convEncoder) {
                                  convEncoder$output);
    
    # output = list(softOutput, hardOutput)
+   return(output);
+}
+
+sourceCpp('src/viterbi_hard.cpp');
+conv_decode_hard <- function(code, convEncoder) {
+
+   output <- c_convolutionDecode_hard(code,
+                                      convEncoder$N,
+                                      convEncoder$M,
+                                      convEncoder$prevState,
+                                      convEncoder$output);
+
    return(output);
 }
