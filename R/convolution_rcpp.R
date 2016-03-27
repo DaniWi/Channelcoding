@@ -38,7 +38,6 @@ conv_decode <- function(code, convEncoder) {
    return(output);
 }
 
-sourceCpp('src/viterbi_hard.cpp');
 conv_decode_hard <- function(code, convEncoder) {
 
    output <- c_convolutionDecode_hard(code,
