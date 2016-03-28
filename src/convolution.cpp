@@ -3,24 +3,54 @@ using namespace Rcpp;
 
 #define DEBUG 0
 
+/* sumDigits
+ *
+ * sums all digits of an integer and returns the result to the given base
+ *
+ * params
+ * n: number whose digits are summed up
+ * base: base of the resulting sum
+ */
 int sumDigits(unsigned int n, int base) {
-  int sum = 0;
-  for (; n; n /= base){
-    sum += n % base;
-  }
-  return sum;
+	int sum = 0;
+	for (; n; n /= base) {
+		sum += n % base;
+	}
+	return sum;
 }
 
+/* turnBitsRound
+ *
+ * calculates a number where the position of the bits are simply turned around
+ * meaning the first bit changes position with the last bit, the second bit
+ * changes position with the second but last bit and so on.
+ * Example: 1010110 --> 0110101
+ *
+ * params
+ * num: number whose bits are switched
+ * nbits: number of bits num consists of
+ *
+ */
 int turnBitsRound(int num, int nbits) {
-  int result = 0;
-  for (int i=0; i < nbits; i++) {
-    result |= ((num >> i) & 0x01) << (nbits - i - 1);
-  }
-  return result;
+	int result = 0;
+	for (int i=0; i < nbits; i++) {
+		result |= ((num >> i) & 0x01) << (nbits - i - 1);
+	}
+	return result;
 }
 
+/* c_generateMatrices_nsc
+ *
+ * creates the nextState-, previousState- and output-matrix for a
+ * nonsystematic convolutinal coder (nsc)
+ *
+ * params
+ * N: number of output symbols per input symbol
+ * M: constraint length, number of memory elements
+ * generator: vector of generator polynoms, one for each output symbol
+ */
 // [[Rcpp::export]]
-List c_generateMatrices(int N, int M, IntegerVector generator) {
+List c_generateMatrices_nsc(int N, int M, IntegerVector generator) {
 
 	const int NUM_STATES = pow(2,M);			// number of states: 2^M
 	
@@ -81,11 +111,108 @@ List c_generateMatrices(int N, int M, IntegerVector generator) {
 	return matrices;
 }
 
+/* c_generateMatrices_rsc
+ *
+ * creates the nextState-, previousState-, output- and termination-matrix for a
+ * recursive systematic convolutional coder (rsc)
+ *
+ * params
+ * N: number of output symbols per input symbol
+ * M: constraint length, number of memory elements
+ * generator: vector of generator polynoms, one for each output symbol and one for the recursion
+ */
 // [[Rcpp::export]]
-IntegerVector c_convolutionEncode(IntegerVector input, int N, int M, IntegerMatrix nextState, IntegerMatrix output) {
+List c_generateMatrices_rsc(int N, int M, IntegerVector generator) {
+	
+	const int NUM_STATES = pow(2,M);
+	
+	IntegerMatrix nextState(NUM_STATES,2);
+	IntegerMatrix output(NUM_STATES,2);
+	IntegerMatrix previousState(NUM_STATES,3);
+	IntegerVector termination(NUM_STATES);
+	
+	for (int i = 0; i < NUM_STATES; i++) {
+		for (int j = 0; j < 3; j++) {
+			previousState(i,j) = -1;
+		}
+	}
+	
+	// Step 1: nextState and output matrix
+	for (int state = 0; state < NUM_STATES; state++) {
+		for (int input = 0; input < 2; input++) {
+			
+			int recursion = (sumDigits(state, 2) + input) % 2;
+			
+			int current_state = (input << (M+1)) | (recursion << M) | state;
+			
+			int turned_state = turnBitsRound(current_state, M+2);
+			
+			int out = 0;
+			for (int i = 0; i < N; i++) {
+				int temp = sumDigits(turned_state & generator[i], 2) % 2;
+				out = (out << 1) | temp;
+			}
+			
+			output(state,input) = out;
+			
+			nextState(state,input) = (current_state >> 1) & (NUM_STATES-1);
+			
+			if (recursion == 0) {
+				termination(state) = input;
+			}
+		}
+	}
+	
+	// previous matrix
+	for (int state = 0; state < NUM_STATES; state++) {
+		for (int input = 0; input < 2; input++) {
+			if (previousState(nextState(state,input),input) == -1) {
+				previousState(nextState(state,input),input) = state;
+			}
+			else {
+				// there are two states that have the same input bit for transition to state
+				previousState(nextState(state,input),2) = state;
+			}
+		}
+	}
+	
+	List matrices = List::create(Rcpp::Named("nextState") = nextState,
+								 Rcpp::Named("prevState") = previousState,
+								 Rcpp::Named("output") = output,
+								 Rcpp::Named("termination") = termination);
+	
+	return matrices;
+}
+
+/* c_convolutionEncode
+ *
+ * encodes a message and returns the encoded message
+ *
+ * params
+ * input: the message to be encoded (bit vector)
+ * N: number of output symbols per input symbol
+ * M: constraint length, number of memory elements
+ * nextState: the nextState-matrix of the convolutional encoder
+ * output: the output-matrix of the convolutional encoder
+ * nsc: flag denoting whether this is a nsc or rsc (0 ... rsc, 1 ... nsc)
+ * termination: the termination-matrix of the convolutional encoder (only for rsc)
+ * terminate: flag denoting whether the message will be terminated or not
+ */
+// [[Rcpp::export]]
+IntegerVector c_convolutionEncode
+(	IntegerVector input,
+	int N, 
+	int M, 
+	IntegerMatrix nextState, 
+	IntegerMatrix output,
+	int nsc,
+	IntegerVector termination,
+	int terminate
+) {
 	
 	const int inputLen = input.size();
-	const int codeLen = (inputLen + M) * N;
+	
+	const int codeLen = (terminate > 0) ? (inputLen + M) * N : inputLen * N;
 	
 	IntegerVector code(codeLen);
 	
@@ -107,13 +234,19 @@ IntegerVector c_convolutionEncode(IntegerVector input, int N, int M, IntegerMatr
 		}
 	}
 	
-	// termination: input of M times 0
-	for (int i = 0; i < M; i++) {
-		int out = output(state,0);
-		state = nextState(state,0);
-		for (int j = N-1; j >= 0; j--) {
-			code[index] = (out >> j) & 0x01;
-			index++;
+	if (terminate > 0) {
+		// termination: input of M termination bits
+		for (int i = 0; i < M; i++) {
+			// termination bit is for ...
+			// nsc: 0
+			// rsc: look up in termination vector!
+			int term_bit = (nsc > 0) ? 0 : termination(state);
+			int out = output(state,term_bit);
+			state = nextState(state,term_bit);
+			for (int j = N-1; j >= 0; j--) {
+				code[index] = (out >> j) & 0x01;
+				index++;
+			}
 		}
 	}
 	
@@ -133,6 +266,19 @@ IntegerVector c_convolutionEncode(IntegerVector input, int N, int M, IntegerMatr
 	return code;
 }
 
+/* c_convolutionDecode
+ *
+ * decodes a code and returns the decoded message (List of soft and hard values)
+ * soft decision decoding
+ * metric: scalar product (soft value)
+ *
+ * params
+ * code: the code to be decoded (soft values)
+ * N: number of output symbols per input symbol
+ * M: constraint length, number of memory elements
+ * previousState: the previousState-matrix of the convolutional encoder
+ * output: the output-matrix of the convolutional encoder
+ */
 // [[Rcpp::export]]
 List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output) {
 	
@@ -326,6 +472,19 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 	return result;
 }
 
+/* c_convolutionDecode_hard
+ *
+ * decodes a code and returns the decoded message (hard values)
+ * hard decision decoding
+ * metric: bit errors (hard value)
+ *
+ * params
+ * code: the code to be decoded (bit vector - hard values)
+ * N: number of output symbols per input symbol
+ * M: constraint length, number of memory elements
+ * previousState: the previousState-matrix of the convolutional encoder
+ * output: the output-matrix of the convolutional encoder
+ */
 // [[Rcpp::export]]
 IntegerVector c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output) {
 	
