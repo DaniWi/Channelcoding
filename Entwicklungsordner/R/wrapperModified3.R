@@ -1,4 +1,4 @@
-#dyn.load(paste0("src/turbo_map_sova_modified3", .Platform$dynlib.ext))
+dyn.load(paste0("src/turbo_map_sova_modified3", .Platform$dynlib.ext))
 
 #' @export
 #' @useDynLib channelcoding

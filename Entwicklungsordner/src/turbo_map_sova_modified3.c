@@ -35,7 +35,7 @@ void turbo_encode
 )
 {
 	int	state;	//encoder state
-	int	X_p[N];	//X_permuted = permuted bits 
+	int	X_p[N];	//X_permuted = permuted bits
 
 	//encoder #1
 	state = 0;		//encoder always starts in state 0
@@ -94,7 +94,7 @@ void sova
 	double	x_d[N],			//noisy data
 	double	p_d[N],			//noisy parity
 	double	Le[N],			//extrinsic log likelihood
-	int		IsTerminated,	//usualy first component decoder is terminated (this variable is 1) 
+	int		IsTerminated,	//usualy first component decoder is terminated (this variable is 1)
 	int		M,					//amount of states
 	int		term_bits,			//amount of termination bits
 	int		previous[2][M][2],
@@ -114,13 +114,13 @@ void sova
 	Metric[0][0]=0;
 	for(int s = 1; s < M; s++)
 	{
-		Metric[0][s] = -1000;		
+		Metric[0][s] = -1000;
 	}
 	for(int i = 0; i < N+1; i++)
 	{
 		for(int j = 0; j < M; j++)
 		{
-			previous_matrix_decision[i][j] = -1;	
+			previous_matrix_decision[i][j] = -1;
 		}
 	}
 
@@ -132,8 +132,8 @@ void sova
 			{
 				//when previous doesn't exists
 				if(previous[0][s][i] != -1)
-				{ 
-					Max[i] = Metric[k-1][previous[0][s][i]]  +  (i * 2-1) * (Lc * x_d[k-1] + La[k-1]) + ((((parity[previous[0][s][i]][i] >> use_parity_index) & 1) > 0) * 2 -1) * Lc * p_d[k-1];	
+				{
+					Max[i] = Metric[k-1][previous[0][s][i]]  +  (i * 2-1) * (Lc * x_d[k-1] + La[k-1]) + ((((parity[previous[0][s][i]][i] >> use_parity_index) & 1) > 0) * 2 -1) * Lc * p_d[k-1];
 					if(previous[1][s][i] != -1)
 					{
 						previous_matrix_decision[k][s] = 0;
@@ -143,7 +143,7 @@ void sova
 						if(Metric_temp > Max[i])
 						{
 							Max[i] = Metric_temp;
-							previous_matrix_decision[k][s] = 1;	
+							previous_matrix_decision[k][s] = 1;
 						}
 						Metric[k][s] = Max[i];
 					}
@@ -152,8 +152,8 @@ void sova
 					Max[i] = -1000;
 				}
 			}
-						
-			//wird nur ausgeführt, wenn keine Entscheidung getroffen werden musste
+
+			//wird nur ausgef?hrt, wenn keine Entscheidung getroffen werden musste
 			if(previous_matrix_decision[k][s] == -1)
 			{
 				if (Max[0] > Max[1])
@@ -165,16 +165,16 @@ void sova
 					survivor_bit[k][s] = 1;
 					Metric[k][s] = Max[1];
 				}
-				
+
 				delta[k][s] = abs(Max[0]- Max[1]) / 2;
 			}
-			
-			
+
+
 			/* Belegung previous_matrix_decision
 			*  -1, wenn keine Entscheidung getroffen wurde (Entscheidung zwischen beiden Matrizen)
 			*  0,1 die jeweilige Entscheidung, ob Matrix 0 oder 1 verwendet wird (1.Index der previous-Matrix)
 			*/
-			
+
 			#if DEBUG == 2
 			printf("\ndelta[%d][%d]=%f\t M0=%.2f \tM1=%.2f \tmax=%f",k,s,delta[k][s], Max[0],Max[1], Metric[k][s]);
 			#endif
@@ -183,16 +183,16 @@ void sova
 	}
 
 	//s = previous[0][survivor[N][0]]; //predhodni iz stanja 0 po bitu (preziveli u N tom koraku ka stanju 0)
-	if (IsTerminated > 0) 
+	if (IsTerminated > 0)
 	{
-		survivor_states[N] = 0;	
+		survivor_states[N] = 0;
 	}
 	else
 	{
 		double max_metric = Metric[N][0];
 		survivor_states[N] = 0;
 		for(int s = 1; s < M; s++)
-		{	
+		{
 			if (max_metric < Metric[N][s])
 			{
 				max_metric = Metric[N][s];
@@ -206,11 +206,11 @@ void sova
 		if(previous_matrix_decision[k+1][survivor_states[k+1]] == -1)
 		{
 			survivor_states[k] = previous[0][survivor_states[k+1]][survivor_bit[k+1][survivor_states[k+1]]];
-		} else 
+		} else
 		{
 			survivor_states[k] = previous[previous_matrix_decision[k+1][survivor_states[k+1]]][survivor_states[k+1]][survivor_bit[k+1][survivor_states[k+1]]];
 		}
-		
+
 		if(survivor_states[k] == -1){
 			printf("survivor_state -1!!!\n");
 			exit(0);
@@ -223,7 +223,7 @@ void sova
 	for (int k = term_bits+1; k < N+1; k++)
 	{
 		deltamin = delta[k][survivor_states[k]];
-		// s ... state aus dem man in den survivor state kommen hätte können (2. Möglichkeit)
+		// s ... state aus dem man in den survivor state kommen h?tte k?nnen (2. M?glichkeit)
 		if(previous_matrix_decision[k][survivor_states[k]] == -1)
 		{
 			//wenn keine Entscheidung getroffen wurde muss Bit flippen
@@ -239,9 +239,9 @@ void sova
 			//sucht das kleinste delta auf dem survivor state
 			if (delta[i][survivor_states[i]] < deltamin)
 			{
-				deltamin=delta[i][survivor_states[i]];				
+				deltamin=delta[i][survivor_states[i]];
 			}
-			
+
 			//wenn kein voriger Zustand in previous existiert
 			if(s == -1)
 			{
@@ -259,7 +259,7 @@ void sova
 					#endif
 			//	}
 			}
-			
+
 			if(previous_matrix_decision[i][s] == -1)
 			{
 				//wenn keine Entscheidung getroffen wurde muss Bit flippen
@@ -284,7 +284,7 @@ void sova
 void turbo_decode(
 	int		N,					//length of information block
 	double	sigma,   			//channel noise standard deviation
-	double	x_d[N],  			//x_dash  = noisy data symbol   
+	double	x_d[N],  			//x_dash  = noisy data symbol
 	double	p1_d[N], 			//p1_dash = noisy parity#1 symbol
 	double	p2_d[N], 			//p2_dash = noisy parity#2 symbol
 	double	L_h[N],  			//L_hat = likelihood of databit given entire observation
@@ -315,7 +315,7 @@ void turbo_decode(
 
     for(int i = 0; i < N_ITERATION; i++)
     {
-		#if MAP_SOVA == 0 
+		#if MAP_SOVA == 0
     	modified_bcjr(Lc, Le2_ip, x_d, p1_d, Le1, 1);
 		#elif MAP_SOVA == 1
 		sova(N, Lc, Le2_ip, x_d, p1_d, Le1, 1, M, term_bits, previous, parity, use_parity_index);
@@ -323,14 +323,14 @@ void turbo_decode(
 
        //permute decoder#1 likelihoods to match decoder#2 order
     	for(int k = 0; k < N; k++)
-    	{	
+    	{
 			Le1_p[k] = Le1[permutation[k]];
 			x_d_p[k] = x_d[permutation[k]];
     //	printf("%f ",x_d_p[k]=x_d[permutation[k]]);
     //	printf("%f ",p2_d[k]);
     	//printf("\n");
     	}
-		#if MAP_SOVA == 0 
+		#if MAP_SOVA == 0
 		modified_bcjr(Lc, Le1_p,  x_d_p, p2_d, Le2, 0);
 		#elif MAP_SOVA == 1
 		sova(N, Lc, Le1_p,  x_d_p, p2_d, Le2, 0, M, term_bits, previous, parity, use_parity_index);
@@ -339,7 +339,7 @@ void turbo_decode(
         //inverse permute decoder#2 likelihoods to match decoder#1 order
     	for(int k = 0; k < N; k++)
 		{
-    		Le2_ip[permutation[k]] = Le2[k];	
+    		Le2_ip[permutation[k]] = Le2[k];
 		}
 
         #if DEBUG > 0
@@ -380,29 +380,29 @@ void wrapper_encode
 {
 	int    parity_out1[*input_length];     //encoder #1 parity bits
 	int    parity_out2[*input_length];     //encoder #2 parity bits
-		
+
 	int amount_states = pow(2, *amount_register);
 	int previous[2][amount_states][2];   //previous[m][i] = previous state (this comes to state m with databit = i)
 	int next[amount_states][2];     //next[m][i] = next state (this comes from state m with databit = i)
 	int parity[amount_states][2]; //parity bit associated with transition from state m
 	int term[amount_states][*amount_register];   //term[m] = pair of data bits required to terminate trellis
-	
+
 	for(int i = 0; i < amount_states; i++)
 	{
 		for(int j = 0; j < 2; j++)
-		{ 
-			next[i][j] = next_in[i*2+j]; 
-			parity[i][j] = parity_in[i*2+j];  
+		{
+			next[i][j] = next_in[i*2+j];
+			parity[i][j] = parity_in[i*2+j];
 		}
 	}
 	for(int i = 0; i < amount_states; i++)
 	{
 		for(int j = 0; j < *amount_register; j++)
 		{
-			term[i][j] = term_in[i*(*amount_register)+j];  
+			term[i][j] = term_in[i*(*amount_register)+j];
 		}
 	}
-	
+
 	//i = Matrixauswahl, j = State, i = Bit
 	for(int i = 0; i < 2; i++)
 	{
@@ -412,10 +412,10 @@ void wrapper_encode
 			{
 				previous[i][j][k] = previous_in[amount_states*2*i+j*2+k];
 			}
-		}	
+		}
 	}
 
-		
+
 	 /********************************
      *           ENCODER            *
      ********************************/
@@ -427,17 +427,17 @@ void wrapper_encode
 	{
 		if(i < *input_length)
 		{
-			output[i] = input[i] ? +1 : -1;			
+			output[i] = input[i] ? +1 : -1;
 		}
 
 		if(i >= *input_length && i < 2*(*input_length))
 		{
-			output[i] = parity_out1[i- (*input_length)] ? +1 : -1;			
+			output[i] = parity_out1[i- (*input_length)] ? +1 : -1;
 		}
 
 		if(i >= 2*(*input_length))
 		{
-			output[i] = parity_out2[i- 2*(*input_length)] ? +1 : -1;	
+			output[i] = parity_out2[i- 2*(*input_length)] ? +1 : -1;
 		}
 	}
 }
@@ -462,30 +462,30 @@ void wrapper_decode
 	double x_noisy[*output_length];    		//x_dash  = noisy data symbol
 	double parity_noisy1[*output_length];   //p1_dash = noisy parity#1 symbol
 	double parity_noisy2[*output_length];   //p2_dash = noisy parity#2 symbol
-	
+
 	int amount_states = pow(2, *amount_register);
 	int previous[2][amount_states][2];   //previous[m][i] = previous state (this comes to state m with databit = i)
 	int next[amount_states][2];     //next[m][i] = next state (this comes from state m with databit = i)
 	int parity[amount_states][2]; //parity bit associated with transition from state m
 	int term[amount_states][*amount_register];   //term[m] = pair of data bits required to terminate trellis
-	
+
 	for(int i = 0; i < amount_states; i++)
 	{
 		for(int j = 0; j < 2; j++)
 		{
-			next[i][j] = next_in[i*2+j]; 
-			parity[i][j] = parity_in[i*2+j]; 
+			next[i][j] = next_in[i*2+j];
+			parity[i][j] = parity_in[i*2+j];
 		}
 	}
-	
+
 	for(int i = 0; i < amount_states; i++)
 	{
 		for(int j = 0; j < *amount_register; j++)
 		{
-			term[i][j] = term_in[i*(*amount_register)+j];  
+			term[i][j] = term_in[i*(*amount_register)+j];
 		}
 	}
-	
+
 	//i = Matrixauswahl, j = State, i = Bit
 	for(int i = 0; i < 2; i++)
 	{
@@ -495,10 +495,10 @@ void wrapper_decode
 			{
 				previous[i][j][k] = previous_in[amount_states*2*i+j*2+k];
 			}
-		}	
+		}
 	}
-	
-	
+
+
 	for(int i = 0; i < *input_length; i++)
 	{
 		if(i < *output_length)
@@ -507,19 +507,19 @@ void wrapper_decode
 		}
 		if(i >= *output_length && i < 2*(*output_length))
 		{
-			parity_noisy1[i- (*output_length)] = input[i];	
+			parity_noisy1[i- (*output_length)] = input[i];
 		}
 		if(i >= 2*(*output_length))
 		{
-			parity_noisy2[i- 2*(*output_length)] = input[i];	
+			parity_noisy2[i- 2*(*output_length)] = input[i];
 		}
 	}
-		
+
 	 /********************************
      *           DECODER            *
      ********************************/
 
-    turbo_decode(	*output_length, 
+    turbo_decode(	*output_length,
 					1,
 					x_noisy,
 					parity_noisy1,
@@ -535,7 +535,7 @@ void wrapper_decode
 					term,
 					*use_parity_index,
 					*iterations	);
-    
+
     //print soft decisions
 	for(int k = 0; k < *output_length ; k++)
 		printf("L_h[%i] = %f\n", k, output_soft[k]);
@@ -548,19 +548,19 @@ void wrapper_decode
 }
 
 void main(){
-	
+
 	double x_d[] = {1,-1,1,1,1,-1,-1,-1};
 	double p1_d[] = {1,1,-1,-1,1,-1,1,-1};
 	double Le1[8];
 	double Le2_ip[8];
 	for(int k = 0; k < 8; k++)
 		Le2_ip[k] = 0;
-		
+
 	int previous[2][4][2];
 	int parity[4][2];
-	
+
 	previous[0][0][0] = 0;
-	previous[0][0][1] = -1; 
+	previous[0][0][1] = -1;
 	previous[0][1][0] = 2;
 	previous[0][1][1] = -1;
 	previous[0][2][0] = -1;
@@ -575,7 +575,7 @@ void main(){
 	previous[1][2][1] = 1;
 	previous[1][3][0] = -1;
 	previous[1][3][1] = 3;
-	
+
 	parity[0][0] = 0;
 	parity[0][1] = 3;
 	parity[1][0] = 3;
@@ -584,9 +584,9 @@ void main(){
 	parity[2][1] = 3;
 	parity[3][0] = 1;
 	parity[3][1] = 3;
-		
+
 	sova(8, 2, Le2_ip, x_d, p1_d, Le1, 1, 4, 2, previous, parity, 0);
-    
+
     //print soft decisions
 	for(int k = 0; k < 8 ; k++)
 		printf("\nL_h[%i] = %f", k, Le1[k]);
