@@ -42,7 +42,7 @@ generateConvEncoder_nsc <- function(N, M, generators) {
                        prevState = matrixList$prevState,
                        output = matrixList$output,
                        nsc = TRUE,
-                       termination = NULL);
+                       termination = vector());
 
    return(convEncoder);
 }
@@ -56,7 +56,7 @@ generateConvEncoder_nsc <- function(N, M, generators) {
 #' @param generators vector of generator polynoms (one for each output symbol and one for the recursion)
 #' @return a convolutional encoder represented as a list containing: 
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
-#' @example generateConvEncoder_nsc(2,2,c(1,10,13))
+#' @example generateConvEncoder_rsc(2,2,c(1,10,13))
 generateConvEncoder_rsc <- function(N, M, generators) {
    
    # rsc requires N+1 generator polynoms
@@ -130,8 +130,8 @@ conv_decode <- function(code, convEncoder, terminate = TRUE) {
    
    # if terminated, termination bits are thrown away
    if (terminate == TRUE) {
-      soft <- head(output$softOutput, length(output$softOutput) - N*M);
-      hard <- head(output$hardOutput, length(output$hardOutput) - N*M);
+      soft <- head(output$softOutput, length(output$softOutput) - convEncoder$M);
+      hard <- head(output$hardOutput, length(output$hardOutput) - convEncoder$M);
       
       newlist <- list(softOutput = soft, hardOutput = hard);
       return(newlist);
@@ -163,7 +163,7 @@ conv_decode_hard <- function(code, convEncoder, terminate = TRUE) {
 
    # if terminated, termination bits are thrown away
    if (terminate == TRUE) {
-      return(head(output, length(output) - N*M));
+      return(head(output, length(output) - convEncoder$M));
    }
    
    return(output);
