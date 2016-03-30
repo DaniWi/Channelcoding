@@ -130,15 +130,9 @@ conv_decode <- function(code, convEncoder, terminate = TRUE) {
 
    # if terminated, termination bits are thrown away
    if (terminate == TRUE) {
-<<<<<<< HEAD
-      soft <- head(output$softOutput, length(output$softOutput) - N*M);
-      hard <- head(output$hardOutput, length(output$hardOutput) - N*M);
-
-=======
       soft <- head(output$softOutput, length(output$softOutput) - convEncoder$M);
       hard <- head(output$hardOutput, length(output$hardOutput) - convEncoder$M);
-      
->>>>>>> origin/master
+
       newlist <- list(softOutput = soft, hardOutput = hard);
       return(newlist);
    }
