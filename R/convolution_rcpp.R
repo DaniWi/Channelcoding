@@ -56,7 +56,8 @@ generateConvEncoder_nsc <- function(N, M, generators) {
 #' @param generators vector of generator polynoms (one for each output symbol and one for the recursion)
 #' @return a convolutional encoder represented as a list containing:
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
-#' @example generateConvEncoder_rsc(2,2,c(1,10,13))
+#' @example
+#' generateConvEncoder_rsc(2,2,c(1,10,13))
 generateConvEncoder_rsc <- function(N, M, generators) {
 
    # rsc requires N+1 generator polynoms
@@ -120,6 +121,8 @@ conv_encode <- function(message, convEncoder, terminate = TRUE) {
 #' encoder <- generateConvEncoder_nsc(2,2,c(7,5))
 #' code <- conv_encode(c(1,0,1), encoder)
 #' msg <- conv_decode(code, encoder)
+#' @useDynLib channelcoding
+#' @export
 conv_decode <- function(code, convEncoder, terminate = TRUE) {
 
    output <- c_convolutionDecode(code,

@@ -9,6 +9,7 @@
 #  - decode (hard decision)
 
 library(Rcpp)
+sourceCpp('src/turbo_code.cpp');
 
 #' @export
 #' @useDynLib channelcoding
@@ -24,27 +25,26 @@ turbo_encode <- function(message, permutation, encoder_info, parity_index = enco
   }
 
   parity_1 <- conv_encode(message, encoder_info, TRUE)
-  message_perm <- message(permutation+1)
+  message_perm <- message[permutation + 1]
   parity_2 <- conv_encode(message_perm, encoder_info, FALSE)
 
   if(parity_index > encoder_info$N) {
     parity_index = encoder_info$N
   }
 
-  temp_index <- c(rep(FALSE,0),TRUE,rep(FALSE,encoder_info$N))
+  temp_index <- c(rep(FALSE,0),TRUE,rep(FALSE,encoder_info$N-1))
   message_encoded <- parity_1[temp_index]
 
   temp_index <- c(rep(FALSE,parity_index-1),TRUE,rep(FALSE,encoder_info$N-parity_index))
   parity_1 <- parity_1[temp_index]
   parity_2 <- parity_2[temp_index]
 
-  return(c(message,parity_1,parity_2))
+  return(c(message_encoded,parity_1))
 }
 
 
 
 #' @export
-#' @useDynLib channelcoding
 turbo_get_permutation <- function(length, encoder_info, type, args){
 
   switch(type,
