@@ -12,3 +12,21 @@ C Code einbinden:
 	  return(result$greeting)
 	}
 5)C Code über Wrapper Funktion ausführen
+
+#' @examples
+#' encoder <- generateConvEncoder_nsc(2,2,c(7,5))
+#' code <- conv_encode(c(1,0,1), encoder)
+#' msg <- conv_decode(code, encoder)
+
+#' @examples
+#' encoder <- generateConvEncoder_nsc(2,2,c(7,5))
+#' code <- conv_encode(c(1,0,1), encoder)
+#' msg <- conv_decode_hard(code, encoder)
+
+#' @examples
+#' encoder <- generateConvEncoder_nsc(2,2,c(7,5))
+#' code <- conv_encode(c(1,0,1), encoder)
+
+#' @example generateConvEncoder_nsc(2,2,c(7,5))
+
+#' @example generateConvEncoder_rsc(2,2,c(1,10,13))
