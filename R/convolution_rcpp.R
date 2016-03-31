@@ -8,8 +8,8 @@
 #  - decode (soft in & out)
 #  - decode (hard decision)
 
-#library(Rcpp);
-#sourceCpp('src/convolution.cpp');
+#library(Rcpp)
+#sourceCpp('src/convolution.cpp')
 
 #' generate nsc encoder
 #'
@@ -22,30 +22,29 @@
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
 #' @export
 #' @useDynLib channelcoding
-generateConvEncoder_nsc <- function(N, M, generators) {
+GenerateNscEncoder <- function(N, M, generators) {
 
-   # nsc requires N generator polynoms
-   if (length(generators) < N) {
-      # stop execution if too few generators
-      stop("Too few generator polynoms!");
-   }
-   else if (length(generators) > N) {
-      # just use first N polynoms if too many are provided
-      generators <- head(generators, N);
-   }
+  # nsc requires N generator polynoms
+  if (length(generators) < N) {
+    # stop execution if too few generators
+    stop("Too few generator polynoms!")
+  } else if (length(generators) > N) {
+    # just use first N polynoms if too many are provided
+    generators <- head(generators, N)
+  }
 
-   matrixList <- c_generateMatrices_nsc(N,M,generators);
+  matrix.list <- c_generateMatrices_nsc(N,M,generators)
 
-   convEncoder <- list(N = N,
+  conv.encoder <- list(N = N,
                        M = M,
                        generators = generators,
-                       nextState = matrixList$nextState,
-                       prevState = matrixList$prevState,
-                       output = matrixList$output,
+                       next.state = matrix.list$next.state,
+                       prev.state = matrix.list$prev.state,
+                       output = matrix.list$output,
                        nsc = TRUE,
-                       termination = vector());
+                       termination = vector())
 
-   return(convEncoder);
+  return(conv.encoder)
 }
 
 #' generate rsc encoder
@@ -59,62 +58,61 @@ generateConvEncoder_nsc <- function(N, M, generators) {
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
 #' @export
 #' @useDynLib channelcoding
-generateConvEncoder_rsc <- function(N, M, generators) {
+GenerateRscEncoder <- function(N, M, generators) {
 
-   # rsc requires N+1 generator polynoms
-   if (length(generators) < N+1) {
-      # stop execution if too few generators
-      stop("Too few generator polynoms!");
-   }
-   else if (length(generators) > N+1) {
-      # just use first N polynoms if too many are provided
-      generators <- head(generators, N+1);
-   }
+  # rsc requires N+1 generator polynoms
+  if (length(generators) < N+1) {
+    # stop execution if too few generators
+    stop("Too few generator polynoms!")
+  } else if (length(generators) > N+1) {
+    # just use first N polynoms if too many are provided
+    generators <- head(generators, N+1)
+  }
 
-   matrixList <- c_generateMatrices_rsc(N,M,generators);
+  matrix.list <- c_generateMatrices_rsc(N,M,generators)
 
-   convEncoder_rsc <- list(N = N,
-                           M = M,
-                           generators = generators,
-                           nextState = matrixList$nextState,
-                           prevState = matrixList$prevState,
-                           output = matrixList$output,
-                           nsc = FALSE,
-                           termination = matrixList$termination);
+  conv.encoder <- list(N = N,
+                       M = M,
+                       generators = generators,
+                       nextState = matrix.list$next.state,
+                       prevState = matrix.list$prev.state,
+                       output = matrix.list$output,
+                       nsc = FALSE,
+                       termination = matrix.list$termination)
 
-   return(convEncoder_rsc);
+  return(conv.encoder)
 }
 
 #' convolutional encoding of a message
 #'
-#' \code{conv_encode} produces a convolutional code of a message based on the encoder passed as an argument
+#' \code{ConvEncode} produces a convolutional code of a message based on the encoder passed as an argument
 #' @author Martin Nocker
 #' @param message the message to be encoded
-#' @param convEncoder convolutional encoder used for encoding [list]
+#' @param conv.encoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code should be terminated, default: TRUE
 #' @return the encoded message
 #' @export
 #' @useDynLib channelcoding
-conv_encode <- function(message, convEncoder, terminate = TRUE) {
+ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
 
-   code <- c_convolutionEncode(message,
-                               convEncoder$N,
-                               convEncoder$M,
-                               convEncoder$nextState,
-                               convEncoder$output,
-                               as.integer(convEncoder$nsc),
-                               convEncoder$termination,
-                               as.integer(terminate));
-   return(code);
+  code <- c_convolutionEncode(message,
+                              conv.encoder$N,
+                              conv.encoder$M,
+                              conv.encoder$next.state,
+                              conv.encoder$output,
+                              as.integer(conv.encoder$nsc),
+                              conv.encoder$termination,
+                              as.integer(terminate))
+  return(code)
 }
 
 #' convolutional decoding of a code (soft decision)
 #'
-#' \code{conv_decode} decodes a codeword that was encoded with the given encoder.
+#' \code{ConvDecode} decodes a codeword that was encoded with the given encoder.
 #' This decoder is a soft-input soft-output decoder
 #' @author Martin Nocker
 #' @param code the code to be decoded
-#' @param convEncoder convolutional encoder used for encoding [list]
+#' @param conv.encoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code was terminated, default: TRUE
 #' @return the decoded message, list(softOutput, hardOutput)
 #'
@@ -122,49 +120,49 @@ conv_encode <- function(message, convEncoder, terminate = TRUE) {
 #' @export
 #' @export
 #' @useDynLib channelcoding
-conv_decode <- function(code, convEncoder, terminate = TRUE) {
+ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
 
-   output <- c_convolutionDecode(code,
-                                 convEncoder$N,
-                                 convEncoder$M,
-                                 convEncoder$prevState,
-                                 convEncoder$output);
+  output <- c_convolutionDecode(code,
+                                conv.encoder$N,
+                                conv.encoder$M,
+                                conv.encoder$prev.state,
+                                conv.encoder$output)
 
-   # if terminated, termination bits are thrown away
-   if (terminate == TRUE) {
-      soft <- head(output$softOutput, length(output$softOutput) - convEncoder$M);
-      hard <- head(output$hardOutput, length(output$hardOutput) - convEncoder$M);
+  # if terminated, termination bits are thrown away
+  if (terminate == TRUE) {
+    soft <- head(output$soft.output, length(output$soft.output) - conv.encoder$M)
+    hard <- head(output$hard.output, length(output$hard.output) - conv.encoder$M)
 
-      newlist <- list(softOutput = soft, hardOutput = hard);
-      return(newlist);
-   }
+    newlist <- list(soft.output = soft, hard.output = hard)
+    return(newlist)
+  }
 
-   return(output);
+  return(output)
 }
 
 #' convolutional decoding of a code (hard decision)
 #'
-#' \code{conv_decode} decodes a codeword that was encoded with the given encoder.
+#' \code{ConvDecodeHard} decodes a codeword that was encoded with the given encoder.
 #' This decoder is a hard-decision decoder
 #' @author Martin Nocker
 #' @param code the code to be decoded
-#' @param convEncoder convolutional encoder used for encoding [list]
+#' @param conv.encoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code was terminated, default: TRUE
 #' @return the hard-decoded message vector
 #' @export
 #' @useDynLib channelcoding
-conv_decode_hard <- function(code, convEncoder, terminate = TRUE) {
+ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE) {
 
-   output <- c_convolutionDecode_hard(code,
-                                      convEncoder$N,
-                                      convEncoder$M,
-                                      convEncoder$prevState,
-                                      convEncoder$output);
+  output <- c_convolutionDecode_hard(code,
+                                     conv.encoder$N,
+                                     conv.encoder$M,
+                                     conv.encoder$prevState,
+                                     conv.encoder$output)
 
-   # if terminated, termination bits are thrown away
-   if (terminate == TRUE) {
-      return(head(output, length(output) - convEncoder$M));
-   }
+  # if terminated, termination bits are thrown away
+  if (terminate == TRUE) {
+    return(head(output, length(output) - conv.encoder$M))
+  }
 
-   return(output);
+  return(output)
 }

@@ -104,8 +104,8 @@ List c_generateMatrices_nsc(int N, int M, IntegerVector generator) {
 		}
 	}
 	
-	List matrices = List::create(Rcpp::Named("nextState") = nextState,
-								 Rcpp::Named("prevState") = previousState,
+	List matrices = List::create(Rcpp::Named("next.state") = nextState,
+								 Rcpp::Named("prev.state") = previousState,
 								 Rcpp::Named("output") = output);
 
 	return matrices;
@@ -176,8 +176,8 @@ List c_generateMatrices_rsc(int N, int M, IntegerVector generator) {
 		}
 	}
 	
-	List matrices = List::create(Rcpp::Named("nextState") = nextState,
-								 Rcpp::Named("prevState") = previousState,
+	List matrices = List::create(Rcpp::Named("next.state") = nextState,
+								 Rcpp::Named("prev.state") = previousState,
 								 Rcpp::Named("output") = output,
 								 Rcpp::Named("termination") = termination);
 	
@@ -466,8 +466,8 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 	}
 	#endif
 	
-	List result = List::create(Rcpp::Named("softOutput") = softOutput,
-							   Rcpp::Named("hardOutput") = hardOutput);
+	List result = List::create(Rcpp::Named("soft.output") = softOutput,
+							   Rcpp::Named("hard.output") = hardOutput);
 	
 	return result;
 }
