@@ -20,7 +20,7 @@ sourceCpp('src/convolution.cpp');
 #' @param generators vector of generator polynoms (one for each output symbol)
 #' @return a convolutional encoder represented as a list containing:
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
-#' @example generateConvEncoder_nsc(2,2,c(7,5))
+#' @examples generateConvEncoder_nsc(2,2,c(7,5))
 generateConvEncoder_nsc <- function(N, M, generators) {
 
    # nsc requires N generator polynoms
@@ -56,7 +56,7 @@ generateConvEncoder_nsc <- function(N, M, generators) {
 #' @param generators vector of generator polynoms (one for each output symbol and one for the recursion)
 #' @return a convolutional encoder represented as a list containing:
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
-#' @example
+#' @examples
 #' generateConvEncoder_rsc(2,2,c(1,10,13))
 generateConvEncoder_rsc <- function(N, M, generators) {
 
@@ -92,7 +92,7 @@ generateConvEncoder_rsc <- function(N, M, generators) {
 #' @param convEncoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code should be terminated, default: TRUE
 #' @return the encoded message
-#' @example
+#' @examples
 #' encoder <- generateConvEncoder_nsc(2,2,c(7,5))
 #' code <- conv_encode(c(1,0,1), encoder)
 conv_encode <- function(message, convEncoder, terminate = TRUE) {
@@ -117,7 +117,7 @@ conv_encode <- function(message, convEncoder, terminate = TRUE) {
 #' @param convEncoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code was terminated, default: TRUE
 #' @return the decoded message, list(softOutput, hardOutput)
-#' @example
+#' @examples
 #' encoder <- generateConvEncoder_nsc(2,2,c(7,5))
 #' code <- conv_encode(c(1,0,1), encoder)
 #' msg <- conv_decode(code, encoder)
@@ -152,7 +152,7 @@ conv_decode <- function(code, convEncoder, terminate = TRUE) {
 #' @param convEncoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code was terminated, default: TRUE
 #' @return the hard-decoded message vector
-#' @example
+#' @examples
 #' encoder <- generateConvEncoder_nsc(2,2,c(7,5))
 #' code <- conv_encode(c(1,0,1), encoder)
 #' msg <- conv_decode_hard(code, encoder)
