@@ -1,12 +1,10 @@
 # turbo_code_rcpp.R
 #
-# interface for convolutional codes
+# interface for turbo codes
 # provided functions:
-#  - generate nsc coder
-#  - generate rsc coder
-#  - encode
-#  - decode (soft in & out)
-#  - decode (hard decision)
+#  - TurboEncode
+#  - TurboDecode
+#  - TurboGetPermutation
 
 #library(Rcpp)
 #sourceCpp('src/turbo_code.cpp');
@@ -34,6 +32,7 @@
 #'
 #' @export
 #' @useDynLib channelcoding
+#' @importFrom Rcpp sourceCpp
 TurboEncode <-
   function(message, permutation, encoder.info, parity.index = encoder.info$N) {
     if (encoder.info$N < 2) {
@@ -69,8 +68,29 @@ TurboEncode <-
   }
 
 
+#' Turbo Decode
+#'
+#' Dekodiert eine Nachricht mittels dem Turbo-Code-Verfahren. Dabei wird die Nachricht in 2 systematische Dekodierer
+#' gesteckt, wobei bei einem Kodierer die Nachricht permutiert verarbeitet wird. Der mitgegebene Kodierer muss
+#' mindestens 2 Ausgänge haben und sollte Systematisch sein. Dadurch wird der erste Ausgang automatisch
+#' bei beiden Deodierern durchgeschalten. Nachdem die Nachricht durche beide Dekodierer durch ist, kann dieser Schritt
+#' mehrmals wiederholt werden. Mit dem Parameter iterations, kann die Anzahl der Durchläufe verändert werden.
+#' Je mehr Durchläufe, desto besser das Ergebnis. Das Prinzip der Turbo-Codes ist, dass die Dekodierung mit Soft-Werten
+#' vollzogen wird. Das heißt, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
+#' Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit am Ausgang ist
+#'
+#' @author Witsch Daniel
+#'
+#' @param message Nachricht die dekodiert werden sollte
+#' @param permutation Permutationsvektor der mittels \code{\link{TurboGetPermutation}} erzeugt werden sollte
+#' @param encoder.info Dekodierer
+#' @param parity.index Index des zu verwendenten Ausgangs des Kodieres
+#'
+#' @return Deodierte Nachricht
+#'
 #' @export
 #' @useDynLib channelcoding
+#' @importFrom Rcpp sourceCpp
 TurboDecode <-
   function(message, permutation, iterations, encoder.info, parity.index) {
     if ((length(message) %% 3) != 0) {
@@ -120,47 +140,129 @@ TurboDecode <-
 
 #' @export
 #' @useDynLib channelcoding
+#' @importFrom Rcpp sourceCpp
 TurboGetPermutation <- function(length, encoder_info, type, args) {
-  switch(type,
-         RANDOM = {
-           if (is.null(encoder_info$M)) {
-             stop("Error: Encoder nicht richtig gesetzt!")
-           }
-           return(sample(c(0:(
-             length + encoder_info$M - 1
-           ))))
-         },
-         PRIMITIVE = {
-           if (is.null(args$root)) {
-             stop("Error: root not set")
-           }
-           N <- length + encoder_info$M - 1
-           init <- c(0:N)
-           interleaver <- (init - args$root) %% (N + 1)
-           return(interleaver)
-         },
-         CYCLIC = {
-           if (is.null(args$rows) |
-               is.null(args$cols) | is.null(args$distance)) {
-             stop("Error: args not set")
-           }
-           rows <- args$rows
-           cols <- args$cols
-           if (rows * cols != (length + encoder_info$M)) {
-             stop("Error: length of input not correct with rows and cols")
-           }
-           N <- rows * cols
-           init <- matrix(c(0:(N - 1)), nrow = rows, byrow = FALSE)
-           print("Original")
-           print(init)
-           i <- 0
-           print("Interleaver Matrix")
-           interleaver <-
-             t(apply(init,1,function(x) {
-               temp <-
-                 shift(x,(-1) * args$distance * (i)); i <<- i + 1; return(temp)
-             }))
-           print(interleaver)
-           return(as.vector(interleaver))
-         })
+  if (is.null(encoder_info$M)) {
+    stop("Error: Encoder nicht richtig gesetzt!")
+  }
+
+  switch(
+    type,
+    RANDOM = {
+      return(sample(c(0:(
+        length + encoder_info$M - 1
+      ))))
+    },
+    PRIMITIVE = {
+      if (is.null(args$root)) {
+        stop("Error: root(args) wurde nicht gesetzt")
+      }
+      N <- length + encoder_info$M - 1
+      init <- c(0:N)
+      interleaver <- (init - args$root) %% (N + 1)
+
+      print("Interleaver Vektor")
+      print(interleaver)
+
+      return(interleaver)
+    },
+    CYCLIC = {
+      if (is.null(args$rows) |
+          is.null(args$cols) | is.null(args$distance)) {
+        stop("Error: Argumente wurden nicht richtig gesetzt")
+      }
+      rows <- args$rows
+      cols <- args$cols
+      if (rows * cols != (length + encoder_info$M)) {
+        stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+      }
+      N <- rows * cols
+      init <- matrix(c(0:(N - 1)), nrow = rows, byrow = FALSE)
+
+      i <- 0
+      interleaver <-
+        t(apply(init,1,function(x) {
+          temp <-
+            binhf::shift(x,args$distance * (i)); i <<-
+              i + 1; return(temp)
+        }))
+
+      print("Original")
+      print(init)
+      print("Interleaver Matrix")
+      print(interleaver)
+
+      return(as.vector(interleaver))
+    },
+    BLOCK = {
+      if (is.null(args$rows) | is.null(args$cols)) {
+        stop("Error: Argumente wurden nicht richtig gesetzt")
+      }
+      rows <- args$rows
+      cols <- args$cols
+      if (rows * cols != (length + encoder_info$M)) {
+        stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+      }
+      N <- rows * cols
+      init <- matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE)
+
+      print("Original")
+      print(init)
+      print("Interleaver Vektor")
+      print(as.vector((init)))
+
+      return(as.vector((init)))
+    },
+    HELICAL = {
+      if (is.null(args$rows) | is.null(args$cols)) {
+        stop("Error: Argumente wurden nicht richtig gesetzt")
+      }
+      rows <- args$rows
+      cols <- args$cols
+      if (rows * cols != (length + encoder_info$M)) {
+        stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+      }
+      N <- rows * cols
+      init <- vector(mode = "numeric", length = N)
+
+      i <- 0
+      interleaver <-
+        sapply(init, function(x) {
+          x <- (((i %% cols) + (i * cols)) %% 15); i <<- i + 1; return(x)
+        })
+
+      print("Original")
+      print(matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE))
+      print("Interleaver Vektor")
+      print(interleaver)
+
+      return(interleaver)
+    },
+    DIAGONAL = {
+      if (is.null(args$rows) | is.null(args$cols)) {
+        stop("Error: Argumente wurden nicht richtig gesetzt")
+      }
+      rows <- args$rows
+      cols <- args$cols
+      if (rows * cols != (length + encoder_info$M)) {
+        stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+      }
+      N <- rows * cols
+      init <- vector(mode = "numeric", length = N)
+
+      i <- 0
+      interleaver <-
+        sapply(init, function(x) {
+          x <- (i * cols) %% N + (i %/% rows + i %% rows) %% cols; i <<- i + 1; return(x)
+        })
+
+      print("Original")
+      print(matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE))
+      print("Interleaver Vektor")
+      print(interleaver)
+
+      return(interleaver)
+    }
+  )
+  stop("Error: Type von Interleaver wurde nicht richtig gewählt!")
 }

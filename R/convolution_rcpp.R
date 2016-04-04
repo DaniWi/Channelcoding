@@ -20,8 +20,10 @@
 #' @param generators vector of generator polynoms (one for each output symbol)
 #' @return a convolutional encoder represented as a list containing:
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
+#' @examples generateConvEncoder_nsc(2,2,c(7,5))
 #' @export
 #' @useDynLib channelcoding
+#' @importFrom Rcpp sourceCpp
 generateConvEncoder_nsc <- function(N, M, generators) {
 
    # nsc requires N generator polynoms
@@ -59,6 +61,7 @@ generateConvEncoder_nsc <- function(N, M, generators) {
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
 #' @export
 #' @useDynLib channelcoding
+#' @importFrom Rcpp sourceCpp
 generateConvEncoder_rsc <- function(N, M, generators) {
 
    # rsc requires N+1 generator polynoms
@@ -95,6 +98,7 @@ generateConvEncoder_rsc <- function(N, M, generators) {
 #' @return the encoded message
 #' @export
 #' @useDynLib channelcoding
+#' @importFrom Rcpp sourceCpp
 conv_encode <- function(message, convEncoder, terminate = TRUE) {
 
    code <- c_convolutionEncode(message,
@@ -122,6 +126,7 @@ conv_encode <- function(message, convEncoder, terminate = TRUE) {
 #' @export
 #' @export
 #' @useDynLib channelcoding
+#' @importFrom Rcpp sourceCpp
 conv_decode <- function(code, convEncoder, terminate = TRUE) {
 
    output <- c_convolutionDecode(code,
@@ -153,6 +158,7 @@ conv_decode <- function(code, convEncoder, terminate = TRUE) {
 #' @return the hard-decoded message vector
 #' @export
 #' @useDynLib channelcoding
+#' @importFrom Rcpp sourceCpp
 conv_decode_hard <- function(code, convEncoder, terminate = TRUE) {
 
    output <- c_convolutionDecode_hard(code,

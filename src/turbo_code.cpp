@@ -335,7 +335,7 @@ List c_turbo_decode
     for(int k = 0; k < msgLen; k++)
     {
 		softOutput[k] = Lc * x_noisy[k] + Le1[k] + Le2_ip[k]; 		//soft decision
-		hardOutput[k] = (softOutput[k] > 0.0) ? 1 : 0;         //hard decision
+		hardOutput[k] = (softOutput[k] >= 0.0) ? 1 : 0;         //hard decision
 	}
 
 	#if DEBUG > 0

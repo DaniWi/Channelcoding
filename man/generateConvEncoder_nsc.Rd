@@ -20,6 +20,9 @@ N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
 \description{
 generates a convolutional encoder for nonsystematic convolutional codes (nsc)
 }
+\examples{
+generateConvEncoder_nsc(2,2,c(7,5))
+}
 \author{
 Martin Nocker
 }
