@@ -47,9 +47,9 @@ TurboEncode <-
       stop("Error: Permutation hat die falsche Länge!")
     }
 
-    parity.1 <- conv_encode(message, encoder.info, TRUE)
+    parity.1 <- ConvEncode(message, encoder.info, TRUE)
     message.perm <- message[permutation + 1]
-    parity.2 <- conv_encode(message.perm, encoder.info, FALSE)
+    parity.2 <- ConvEncode(message.perm, encoder.info, FALSE)
 
     if (parity.index > encoder.info$N) {
       parity.index = encoder.info$N
@@ -117,14 +117,14 @@ TurboDecode <-
     message.decoded.term <-
       c_turbo_decode(
         message.orig, parity.1, parity.2, permutation,
-        iterations, encoder.info$N, encoder.info$M, encoder.info$prevState,
+        iterations, encoder.info$N, encoder.info$M, encoder.info$prev.state,
         encoder.info$output, parity.index
       )
 
     output.soft <-
-      message.decoded.term$softOutput[1:(message.length - encoder.info$M)]
+      message.decoded.term$soft.output[1:(message.length - encoder.info$M)]
     output.hard <-
-      message.decoded.term$hardOutput[1:(message.length - encoder.info$M)]
+      message.decoded.term$hard.output[1:(message.length - encoder.info$M)]
     message.decoded <-
       list(output.soft = output.soft, output.hard = output.hard)
 
@@ -141,8 +141,8 @@ TurboDecode <-
 #' @export
 #' @useDynLib channelcoding
 #' @importFrom Rcpp sourceCpp
-TurboGetPermutation <- function(length, encoder_info, type, args) {
-  if (is.null(encoder_info$M)) {
+TurboGetPermutation <- function(length, encoder.info, type, args) {
+  if (is.null(encoder.info$M)) {
     stop("Error: Encoder nicht richtig gesetzt!")
   }
 
@@ -150,14 +150,14 @@ TurboGetPermutation <- function(length, encoder_info, type, args) {
     type,
     RANDOM = {
       return(sample(c(0:(
-        length + encoder_info$M - 1
+        length + encoder.info$M - 1
       ))))
     },
     PRIMITIVE = {
       if (is.null(args$root)) {
         stop("Error: root(args) wurde nicht gesetzt")
       }
-      N <- length + encoder_info$M - 1
+      N <- length + encoder.info$M - 1
       init <- c(0:N)
       interleaver <- (init - args$root) %% (N + 1)
 
@@ -173,7 +173,7 @@ TurboGetPermutation <- function(length, encoder_info, type, args) {
       }
       rows <- args$rows
       cols <- args$cols
-      if (rows * cols != (length + encoder_info$M)) {
+      if (rows * cols != (length + encoder.info$M)) {
         stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols
@@ -200,7 +200,7 @@ TurboGetPermutation <- function(length, encoder_info, type, args) {
       }
       rows <- args$rows
       cols <- args$cols
-      if (rows * cols != (length + encoder_info$M)) {
+      if (rows * cols != (length + encoder.info$M)) {
         stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols
@@ -219,7 +219,7 @@ TurboGetPermutation <- function(length, encoder_info, type, args) {
       }
       rows <- args$rows
       cols <- args$cols
-      if (rows * cols != (length + encoder_info$M)) {
+      if (rows * cols != (length + encoder.info$M)) {
         stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols
@@ -244,7 +244,7 @@ TurboGetPermutation <- function(length, encoder_info, type, args) {
       }
       rows <- args$rows
       cols <- args$cols
-      if (rows * cols != (length + encoder_info$M)) {
+      if (rows * cols != (length + encoder.info$M)) {
         stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols

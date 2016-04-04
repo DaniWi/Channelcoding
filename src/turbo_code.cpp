@@ -328,32 +328,32 @@ List c_turbo_decode
 		#endif
 	}
 
-	NumericVector softOutput(msgLen);
-	IntegerVector hardOutput(msgLen);
+	NumericVector soft_output(msgLen);
+	IntegerVector hard_output(msgLen);
 
     //calculate overall likelihoods and then slice'em
     for(int k = 0; k < msgLen; k++)
     {
-		softOutput[k] = Lc * x_noisy[k] + Le1[k] + Le2_ip[k]; 		//soft decision
-		hardOutput[k] = (softOutput[k] >= 0.0) ? 1 : 0;         //hard decision
+      soft_output[k] = Lc * x_noisy[k] + Le1[k] + Le2_ip[k]; 		//soft decision
+    hard_output[k] = (soft_output[k] >= 0.0) ? 1 : 0;         //hard decision
 	}
 
 	#if DEBUG > 0
     //print soft decisions
     printf("\n");
 	for(int k = 0; k < msgLen ; k++)
-		printf("L_h[%i] = %f\n", k, softOutput[k]);
+		printf("L_h[%i] = %f\n", k, soft_output[k]);
 	printf("\n");
 
     //print hard decisions
 	printf("X_h = ");
     for(int k = 0; k < msgLen; k++)
-    	printf("%i", hardOutput[k]);
+    	printf("%i", hard_output[k]);
     printf("\n");
     #endif
 
-    List result = List::create(Rcpp::Named("softOutput") = softOutput,
-							   Rcpp::Named("hardOutput") = hardOutput);
+    List result = List::create(Rcpp::Named("soft.output") = soft_output,
+							   Rcpp::Named("hard.output") = hard_output);
 
 	return result;
 }
