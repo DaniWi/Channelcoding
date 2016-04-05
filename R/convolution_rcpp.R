@@ -162,7 +162,7 @@ ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE) {
   output <- c_convolutionDecode_hard(code,
                                      conv.encoder$N,
                                      conv.encoder$M,
-                                     conv.encoder$prevState,
+                                     conv.encoder$prev.state,
                                      conv.encoder$output)
 
   # if terminated, termination bits are thrown away

@@ -568,7 +568,7 @@ IntegerVector c_convolutionDecode_hard(IntegerVector code, int N, int M, Integer
 		index += N;
 	}
 	
-	#if DEBUG == 1
+	#if DEBUG >= 0
 	for (int j = 0; j < NUM_STATES; j++) {
 		for (int i = 0; i < msgLen + 1; i++) {
 			printf("%3d",metric[i][j]);
