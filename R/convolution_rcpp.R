@@ -16,11 +16,11 @@
 #' generates a convolutional encoder for nonsystematic convolutional codes (nsc)
 #' @author Martin Nocker
 #' @param N numer ob output symbols per input symbol
-#' @param M constraint length (memory length of the encoder)
+#' @param M memory length of the encoder
 #' @param generators vector of generator polynoms (one for each output symbol)
 #' @return a convolutional encoder represented as a list containing:
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
-#' @examples generateConvEncoder_nsc(2,2,c(7,5))
+#' @examples GenerateNscEncoder(2,2,c(7,5))
 #' @export
 #' @useDynLib channelcoding
 #' @importFrom Rcpp sourceCpp
@@ -54,10 +54,11 @@ GenerateNscEncoder <- function(N, M, generators) {
 #' generates a convolutional encoder for recursive systematic codes (rsc)
 #' @author Martin Nocker
 #' @param N numer ob output symbols per input symbol
-#' @param M constraint length (memory length of the encoder)
+#' @param M memory length of the encoder
 #' @param generators vector of generator polynoms (one for each output symbol and one for the recursion)
 #' @return a convolutional encoder represented as a list containing:
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
+#' @examples GenerateRscEncoder(2,2,c(1,10,13))
 #' @export
 #' @useDynLib channelcoding
 #' @importFrom Rcpp sourceCpp
@@ -94,6 +95,9 @@ GenerateRscEncoder <- function(N, M, generators) {
 #' @param conv.encoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code should be terminated, default: TRUE
 #' @return the encoded message
+#' @examples
+#' nsc <- GenerateNscEncoder(2,2,c(7,5))
+#' ConvEncode(c(1,0,0,1,1), nsc)
 #' @export
 #' @useDynLib channelcoding
 #' @importFrom Rcpp sourceCpp
@@ -119,9 +123,10 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
 #' @param conv.encoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code was terminated, default: TRUE
 #' @return the decoded message, list(softOutput, hardOutput)
-#'
-#' @useDynLib channelcoding
-#' @export
+#' @examples
+#' nsc <- GenerateNscEncoder(2,2,c(7,5))
+#' coded <- ConvEncode(c(1,0,0,1,1), nsc)
+#' ConvDecode(coded, nsc)
 #' @export
 #' @useDynLib channelcoding
 #' @importFrom Rcpp sourceCpp
@@ -154,6 +159,10 @@ ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
 #' @param conv.encoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code was terminated, default: TRUE
 #' @return the hard-decoded message vector
+#' @examples
+#' nsc <- GenerateNscEncoder(2,2,c(7,5))
+#' coded <- ConvEncode(c(1,0,0,1,1), nsc)
+#' ConvDecodeHard(coded, nsc)
 #' @export
 #' @useDynLib channelcoding
 #' @importFrom Rcpp sourceCpp
