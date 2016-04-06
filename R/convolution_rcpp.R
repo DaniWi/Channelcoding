@@ -11,20 +11,22 @@
 #library(Rcpp)
 #sourceCpp('src/convolution.cpp')
 
-#' generate nsc encoder
+#' generate convolutional encoder
 #'
-#' generates a convolutional encoder for nonsystematic convolutional codes (nsc)
-#' @author Martin Nocker
+#' generates a convolutional encoder for nonrecursive convolutional codes
 #' @param N numer ob output symbols per input symbol
 #' @param M memory length of the encoder
 #' @param generators vector of generator polynoms (one for each output symbol)
 #' @return a convolutional encoder represented as a list containing:
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
-#' @examples GenerateNscEncoder(2,2,c(7,5))
+#' @examples GenerateConvEncoder(2,2,c(7,5))
+#' @author Martin Nocker
 #' @export
 #' @useDynLib channelcoding
 #' @importFrom Rcpp sourceCpp
-GenerateNscEncoder <- function(N, M, generators) {
+GenerateConvEncoder <- function(N, M, generators) {
+
+  stopifnot(N > 1, M > 0)
 
   # nsc requires N generator polynoms
   if (length(generators) < N) {
@@ -51,18 +53,21 @@ GenerateNscEncoder <- function(N, M, generators) {
 
 #' generate rsc encoder
 #'
-#' generates a convolutional encoder for recursive systematic codes (rsc)
-#' @author Martin Nocker
+#' generates a recursive systematic convolutional (rsc) encoder
 #' @param N numer ob output symbols per input symbol
 #' @param M memory length of the encoder
-#' @param generators vector of generator polynoms (one for each output symbol and one for the recursion)
+#' @param generators vector of generator polynoms
+#'     (one for each output symbol and one for the recursion)
 #' @return a convolutional encoder represented as a list containing:
 #' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
 #' @examples GenerateRscEncoder(2,2,c(1,10,13))
+#' @author Martin Nocker
 #' @export
 #' @useDynLib channelcoding
 #' @importFrom Rcpp sourceCpp
 GenerateRscEncoder <- function(N, M, generators) {
+
+  stopifnot(N > 1, M > 0)
 
   # rsc requires N+1 generator polynoms
   if (length(generators) < N+1) {
@@ -89,8 +94,7 @@ GenerateRscEncoder <- function(N, M, generators) {
 
 #' convolutional encoding of a message
 #'
-#' \code{ConvEncode} produces a convolutional code of a message based on the encoder passed as an argument
-#' @author Martin Nocker
+#' \code{ConvEncode} produces a convolutional code of a message
 #' @param message the message to be encoded
 #' @param conv.encoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code should be terminated, default: TRUE
@@ -98,6 +102,7 @@ GenerateRscEncoder <- function(N, M, generators) {
 #' @examples
 #' nsc <- GenerateNscEncoder(2,2,c(7,5))
 #' ConvEncode(c(1,0,0,1,1), nsc)
+#' @author Martin Nocker
 #' @export
 #' @useDynLib channelcoding
 #' @importFrom Rcpp sourceCpp
@@ -116,9 +121,8 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
 
 #' convolutional decoding of a code (soft decision)
 #'
-#' \code{ConvDecode} decodes a codeword that was encoded with the given encoder.
+#' \code{ConvDecode} decodes a convolutional codeword
 #' This decoder is a soft-input soft-output decoder
-#' @author Martin Nocker
 #' @param code the code to be decoded
 #' @param conv.encoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code was terminated, default: TRUE
@@ -127,6 +131,7 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
 #' nsc <- GenerateNscEncoder(2,2,c(7,5))
 #' coded <- ConvEncode(c(1,0,0,1,1), nsc)
 #' ConvDecode(coded, nsc)
+#' @author Martin Nocker
 #' @export
 #' @useDynLib channelcoding
 #' @importFrom Rcpp sourceCpp
@@ -140,8 +145,9 @@ ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
 
   # if terminated, termination bits are thrown away
   if (terminate == TRUE) {
-    soft <- head(output$soft.output, length(output$soft.output) - conv.encoder$M)
-    hard <- head(output$hard.output, length(output$hard.output) - conv.encoder$M)
+    M <- conv.encoder$M
+    soft <- head(output$soft.output, length(output$soft.output) - M)
+    hard <- head(output$hard.output, length(output$hard.output) - M)
 
     newlist <- list(soft.output = soft, hard.output = hard)
     return(newlist)
@@ -152,17 +158,15 @@ ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
 
 #' convolutional decoding of a code (hard decision)
 #'
-#' \code{ConvDecodeHard} decodes a codeword that was encoded with the given encoder.
-#' This decoder is a hard-decision decoder
-#' @author Martin Nocker
-#' @param code the code to be decoded
-#' @param conv.encoder convolutional encoder used for encoding [list]
-#' @param terminate flag if the code was terminated, default: TRUE
+#' \code{ConvDecodeHard} decodes a codeword that was encoded with the given
+#' encoder. This decoder is a hard-decision decoder
+#' @inheritParams ConvDecode
 #' @return the hard-decoded message vector
 #' @examples
 #' nsc <- GenerateNscEncoder(2,2,c(7,5))
 #' coded <- ConvEncode(c(1,0,0,1,1), nsc)
 #' ConvDecodeHard(coded, nsc)
+#' @author Martin Nocker
 #' @export
 #' @useDynLib channelcoding
 #' @importFrom Rcpp sourceCpp

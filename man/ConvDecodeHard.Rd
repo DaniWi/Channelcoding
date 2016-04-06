@@ -17,8 +17,13 @@ ConvDecodeHard(code, conv.encoder, terminate = TRUE)
 the hard-decoded message vector
 }
 \description{
-\code{ConvDecodeHard} decodes a codeword that was encoded with the given encoder.
-This decoder is a hard-decision decoder
+\code{ConvDecodeHard} decodes a codeword that was encoded with the given
+encoder. This decoder is a hard-decision decoder
+}
+\examples{
+nsc <- GenerateNscEncoder(2,2,c(7,5))
+coded <- ConvEncode(c(1,0,0,1,1), nsc)
+ConvDecodeHard(coded, nsc)
 }
 \author{
 Martin Nocker

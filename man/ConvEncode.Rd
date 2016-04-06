@@ -17,7 +17,11 @@ ConvEncode(message, conv.encoder, terminate = TRUE)
 the encoded message
 }
 \description{
-\code{ConvEncode} produces a convolutional code of a message based on the encoder passed as an argument
+\code{ConvEncode} produces a convolutional code of a message
+}
+\examples{
+nsc <- GenerateNscEncoder(2,2,c(7,5))
+ConvEncode(c(1,0,0,1,1), nsc)
 }
 \author{
 Martin Nocker

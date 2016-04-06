@@ -3,7 +3,7 @@
 export(ConvDecode)
 export(ConvDecodeHard)
 export(ConvEncode)
-export(GenerateNscEncoder)
+export(GenerateConvEncoder)
 export(GenerateRscEncoder)
 export(TurboDecode)
 export(TurboEncode)

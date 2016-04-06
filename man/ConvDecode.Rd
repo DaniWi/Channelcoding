@@ -17,8 +17,13 @@ ConvDecode(code, conv.encoder, terminate = TRUE)
 the decoded message, list(softOutput, hardOutput)
 }
 \description{
-\code{ConvDecode} decodes a codeword that was encoded with the given encoder.
+\code{ConvDecode} decodes a convolutional codeword
 This decoder is a soft-input soft-output decoder
+}
+\examples{
+nsc <- GenerateNscEncoder(2,2,c(7,5))
+coded <- ConvEncode(c(1,0,0,1,1), nsc)
+ConvDecode(coded, nsc)
 }
 \author{
 Martin Nocker
