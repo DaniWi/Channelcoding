@@ -2,7 +2,7 @@
 #
 # interface for convolutional codes
 # provided functions:
-#  - generate nsc coder
+#  - generate non-recursive coder
 #  - generate rsc coder
 #  - encode
 #  - decode (soft in & out)
@@ -13,12 +13,27 @@
 
 #' generate convolutional encoder
 #'
-#' generates a convolutional encoder for nonrecursive convolutional codes
+#' Generates a convolutional encoder for nonrecursive convolutional codes.
+#' @details N is an integer and gives the number of output bits per input bit.
+#'     N has to be at least two. M is an integer and gives the memory length
+#'     of the encoder (number of shift register elements in the circuit). M
+#'     has to be at least one. M also defines the constraint length which is
+#'     M+1.
+#'     The generator polynoms define how the output bits are computed for each
+#'     of the N output signals. The polynoms are octal numbers. For example
+#'     given a M = 2 encoder with a generator polynom of 5 for a certain output.
+#'     Octal 5 means binary 101. The MSB handles the input signal, the LSB
+#'     handles the output of the last memory element (last shift register
+#'     element). Therefore octal 5 means the output symbol is computed as
+#'     the xor combination of the input symbol and the last memory element's
+#'     output.
 #' @param N numer ob output symbols per input symbol
 #' @param M memory length of the encoder
-#' @param generators vector of generator polynoms (one for each output symbol)
+#' @param generators vector of N octal generator polynoms
+#'     (one for each output symbol)
 #' @return a convolutional encoder represented as a list containing:
-#' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
+#'     N, M, vector of generator polynoms,
+#'     4 matrices: nextState, previousState, output and termination, nsc (flag)
 #' @examples GenerateConvEncoder(2,2,c(7,5))
 #' @author Martin Nocker
 #' @export
@@ -53,14 +68,30 @@ GenerateConvEncoder <- function(N, M, generators) {
 
 #' generate rsc encoder
 #'
-#' generates a recursive systematic convolutional (rsc) encoder
+#' Generates a recursive systematic convolutional (rsc) encoder.
+#' @details N is an integer and gives the number of output bits per input bit.
+#'     N has to be at least two. M is an integer and gives the memory length
+#'     of the encoder (number of shift register elements in the circuit). M
+#'     has to be at least one.
+#'     The generator polynoms define how the output bits are computed for each
+#'     of the N output signals. The polynoms are octal numbers. See details of
+#'     \code{\link{GenerateConvEncoder}} for an exampole.
+#'     An rsc encoder has exactly one fixed systematic output signal.
+#'     The generator polynom for the systematic output doesn't have to be
+#'     passed as an argument. So the generators argument contains all polynoms
+#'     for non-systematic outputs and at the last position the recursion
+#'     polynom. The LSB of the recursion polynom handles the input signal,
+#'     the other bits handle the memory outputs. The LSB of the output polynoms
+#'     handle the recursion output(!), not the original input signal. The other
+#'     bits also handle the memory outputs.
 #' @param N numer ob output symbols per input symbol
 #' @param M memory length of the encoder
 #' @param generators vector of generator polynoms
-#'     (one for each output symbol and one for the recursion)
+#'     (one for each non-systematic output symbol and one for the recursion)
 #' @return a convolutional encoder represented as a list containing:
-#' N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
-#' @examples GenerateRscEncoder(2,2,c(1,10,13))
+#'     N, M, vector of generator polynoms,
+#'     4 matrices: nextState, previousState, output and termination, nsc (flag)
+#' @examples GenerateRscEncoder(2,2,c(5,7))
 #' @author Martin Nocker
 #' @export
 #' @useDynLib channelcoding
@@ -69,13 +100,13 @@ GenerateRscEncoder <- function(N, M, generators) {
 
   stopifnot(N > 1, M > 0)
 
-  # rsc requires N+1 generator polynoms
-  if (length(generators) < N+1) {
+  # rsc requires N generator polynoms
+  if (length(generators) < N) {
     # stop execution if too few generators
     stop("Too few generator polynoms!")
-  } else if (length(generators) > N+1) {
+  } else if (length(generators) > N) {
     # just use first N polynoms if too many are provided
-    generators <- head(generators, N+1)
+    generators <- head(generators, N)
   }
 
   matrix.list <- c_generateMatrices_rsc(N,M,generators)

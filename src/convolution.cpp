@@ -3,6 +3,26 @@ using namespace Rcpp;
 
 #define DEBUG 0
 
+/* octalToDecimal
+ *
+ * converts an octal number to a decimal number
+ *
+ * params
+ * octal: the octal number to be converted to decimal
+ */
+int octalToDecimal(int octal) {
+	int decimal = 0;
+	int i = 0;
+	while (octal != 0) {
+		
+		decimal += octal % 10 * pow(8,i);
+		octal /= 10;
+		i++;
+	}
+	
+	return decimal;
+}
+
 /* sumDigits
  *
  * sums all digits of an integer and returns the result to the given base
@@ -58,6 +78,11 @@ List c_generateMatrices_nsc(int N, int M, IntegerVector generator) {
 	IntegerMatrix output(NUM_STATES,2);
 	IntegerMatrix previousState(NUM_STATES,3);
 	
+	// to get correct bit representation of generator polynoms convertion to decimal
+	for (int i = 0; i < generator.size(); i++) {
+		generator[i] = octalToDecimal(generator[i]);
+	}
+	
 	// initialization of previousState matrix
 	for (int i = 0; i < NUM_STATES; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -68,18 +93,21 @@ List c_generateMatrices_nsc(int N, int M, IntegerVector generator) {
 	for (int state = 0; state < NUM_STATES; state++) {
 		for (int input = 0; input < 2; input++) {
 			// current_state represents the encoder state plus the input symbol as MSB! (encoder diagram view)
-			int current_state = state | (input << M);
+			int current_state = (input << M) | state;
 	
+			/* NEW GENERATOR POLYNOM IMPLEMENTATION --> NO TURNING OF STATE OR POLYNOM!
+			 *
 			// LSB of generator polynoms handles input symbol, therefore current_state is turned round!
 			// maximum number of bits for current_state and the generator polynoms are M+1 (M state bits + 1 input bit)
 			int turned_state = turnBitsRound(current_state, M+1);
-	
+			*/
+			
 			// calculate output for given state and input
 			int out = 0;
 			for (int i = 0; i < N; i++) {
 	    		// temp is the output of symbol number i (defined by generator[i]) given current state turned_state
 	    		// cast to int of generator, because generator[i] is a Numeric
-	    		int temp = sumDigits(turned_state & generator[i], 2) % 2;
+	    		int temp = sumDigits(current_state & generator[i], 2) % 2;
 	    		out = (out << 1) | temp;
 	  		}
 			output(state, input) = out;
@@ -119,7 +147,8 @@ List c_generateMatrices_nsc(int N, int M, IntegerVector generator) {
  * params
  * N: number of output symbols per input symbol
  * M: constraint length, number of memory elements
- * generator: vector of generator polynoms, one for each output symbol and one for the recursion
+ * generator: vector of N generator polynoms, one for each non-systematic
+ *     output symbol (indices 0 to N-2) and one for the recursion (index N-1)
  */
 // [[Rcpp::export]]
 List c_generateMatrices_rsc(int N, int M, IntegerVector generator) {
@@ -137,19 +166,28 @@ List c_generateMatrices_rsc(int N, int M, IntegerVector generator) {
 		}
 	}
 	
-	// Step 1: nextState and output matrix
+	// to get correct bit representation of generator polynoms convertion to decimal
+	for (int i = 0; i < generator.size(); i++) {
+		generator[i] = octalToDecimal(generator[i]);
+	}
+	
+	// nextState, termination and output matrix
 	for (int state = 0; state < NUM_STATES; state++) {
 		for (int input = 0; input < 2; input++) {
 			
-			int recursion = (sumDigits(state, 2) + input) % 2;
+			int recursion = sumDigits(((input << M) | state) & generator[N-1], 2) % 2;
 			
 			int current_state = (input << (M+1)) | (recursion << M) | state;
 			
+			/* NEW GENERATOR POLYNOM IMPLEMENTATION --> NO TURNING OF STATE OR POLYNOM!
+			 *
 			int turned_state = turnBitsRound(current_state, M+2);
+			*/
 			
-			int out = 0;
-			for (int i = 0; i < N; i++) {
-				int temp = sumDigits(turned_state & generator[i], 2) % 2;
+			// out is initialized with input because the first output signal is a systematic output
+			int out = input;
+			for (int i = 0; i < N-1; i++) {
+				int temp = sumDigits(current_state & generator[i], 2) % 2;
 				out = (out << 1) | temp;
 			}
 			
