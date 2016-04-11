@@ -1,4 +1,4 @@
-# convolution_rcpp.R
+# convolution.R
 #
 # interface for convolutional codes
 # provided functions:
