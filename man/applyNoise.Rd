@@ -4,7 +4,7 @@
 \alias{applyNoise}
 \title{Failure function}
 \usage{
-applyNoise(msg, params, visualize)
+applyNoise(msg, params, visualize = FALSE)
 }
 \arguments{
 \item{msg}{message to alter}
