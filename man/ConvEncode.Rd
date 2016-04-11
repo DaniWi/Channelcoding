@@ -20,7 +20,7 @@ the encoded message
 \code{ConvEncode} produces a convolutional code of a message
 }
 \examples{
-nsc <- GenerateNscEncoder(2,2,c(7,5))
+nsc <- GenerateConvEncoder(2,2,c(7,5))
 ConvEncode(c(1,0,0,1,1), nsc)
 }
 \author{

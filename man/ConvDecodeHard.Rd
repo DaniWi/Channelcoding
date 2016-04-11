@@ -21,7 +21,7 @@ the hard-decoded message vector
 encoder. This decoder is a hard-decision decoder
 }
 \examples{
-nsc <- GenerateNscEncoder(2,2,c(7,5))
+nsc <- GenerateConvEncoder(2,2,c(7,5))
 coded <- ConvEncode(c(1,0,0,1,1), nsc)
 ConvDecodeHard(coded, nsc)
 }

@@ -11,14 +11,31 @@ GenerateConvEncoder(N, M, generators)
 
 \item{M}{memory length of the encoder}
 
-\item{generators}{vector of generator polynoms (one for each output symbol)}
+\item{generators}{vector of N octal generator polynoms
+(one for each output symbol)}
 }
 \value{
 a convolutional encoder represented as a list containing:
-N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
+    N, M, vector of generator polynoms,
+    4 matrices: nextState, previousState, output and termination, nsc (flag)
 }
 \description{
-generates a convolutional encoder for nonrecursive convolutional codes
+Generates a convolutional encoder for nonrecursive convolutional codes.
+}
+\details{
+N is an integer and gives the number of output bits per input bit.
+    N has to be at least two. M is an integer and gives the memory length
+    of the encoder (number of shift register elements in the circuit). M
+    has to be at least one. M also defines the constraint length which is
+    M+1.
+    The generator polynoms define how the output bits are computed for each
+    of the N output signals. The polynoms are octal numbers. For example
+    given a M = 2 encoder with a generator polynom of 5 for a certain output.
+    Octal 5 means binary 101. The MSB handles the input signal, the LSB
+    handles the output of the last memory element (last shift register
+    element). Therefore octal 5 means the output symbol is computed as
+    the xor combination of the input symbol and the last memory element's
+    output.
 }
 \examples{
 GenerateConvEncoder(2,2,c(7,5))

@@ -37,8 +37,6 @@
 #' @examples GenerateConvEncoder(2,2,c(7,5))
 #' @author Martin Nocker
 #' @export
-#' @useDynLib channelcoding
-#' @importFrom Rcpp sourceCpp
 GenerateConvEncoder <- function(N, M, generators) {
 
   stopifnot(N > 1, M > 0)
@@ -94,8 +92,6 @@ GenerateConvEncoder <- function(N, M, generators) {
 #' @examples GenerateRscEncoder(2,2,c(5,7))
 #' @author Martin Nocker
 #' @export
-#' @useDynLib channelcoding
-#' @importFrom Rcpp sourceCpp
 GenerateRscEncoder <- function(N, M, generators) {
 
   stopifnot(N > 1, M > 0)
@@ -131,12 +127,10 @@ GenerateRscEncoder <- function(N, M, generators) {
 #' @param terminate flag if the code should be terminated, default: TRUE
 #' @return the encoded message
 #' @examples
-#' nsc <- GenerateNscEncoder(2,2,c(7,5))
+#' nsc <- GenerateConvEncoder(2,2,c(7,5))
 #' ConvEncode(c(1,0,0,1,1), nsc)
 #' @author Martin Nocker
 #' @export
-#' @useDynLib channelcoding
-#' @importFrom Rcpp sourceCpp
 ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
 
   code <- c_convolutionEncode(message,
@@ -159,13 +153,11 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
 #' @param terminate flag if the code was terminated, default: TRUE
 #' @return the decoded message, list(softOutput, hardOutput)
 #' @examples
-#' nsc <- GenerateNscEncoder(2,2,c(7,5))
+#' nsc <- GenerateConvEncoder(2,2,c(7,5))
 #' coded <- ConvEncode(c(1,0,0,1,1), nsc)
 #' ConvDecode(coded, nsc)
 #' @author Martin Nocker
 #' @export
-#' @useDynLib channelcoding
-#' @importFrom Rcpp sourceCpp
 ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
 
   output <- c_convolutionDecode(code,
@@ -194,13 +186,11 @@ ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
 #' @inheritParams ConvDecode
 #' @return the hard-decoded message vector
 #' @examples
-#' nsc <- GenerateNscEncoder(2,2,c(7,5))
+#' nsc <- GenerateConvEncoder(2,2,c(7,5))
 #' coded <- ConvEncode(c(1,0,0,1,1), nsc)
 #' ConvDecodeHard(coded, nsc)
 #' @author Martin Nocker
 #' @export
-#' @useDynLib channelcoding
-#' @importFrom Rcpp sourceCpp
 ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE) {
 
   output <- c_convolutionDecode_hard(code,

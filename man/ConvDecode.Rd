@@ -21,7 +21,7 @@ the decoded message, list(softOutput, hardOutput)
 This decoder is a soft-input soft-output decoder
 }
 \examples{
-nsc <- GenerateNscEncoder(2,2,c(7,5))
+nsc <- GenerateConvEncoder(2,2,c(7,5))
 coded <- ConvEncode(c(1,0,0,1,1), nsc)
 ConvDecode(coded, nsc)
 }

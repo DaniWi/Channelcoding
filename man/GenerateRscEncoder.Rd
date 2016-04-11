@@ -12,17 +12,35 @@ GenerateRscEncoder(N, M, generators)
 \item{M}{memory length of the encoder}
 
 \item{generators}{vector of generator polynoms
-(one for each output symbol and one for the recursion)}
+(one for each non-systematic output symbol and one for the recursion)}
 }
 \value{
 a convolutional encoder represented as a list containing:
-N, M, 4 matrices: nextState, previousState, output, termination, nsc (flag)
+    N, M, vector of generator polynoms,
+    4 matrices: nextState, previousState, output and termination, nsc (flag)
 }
 \description{
-generates a recursive systematic convolutional (rsc) encoder
+Generates a recursive systematic convolutional (rsc) encoder.
+}
+\details{
+N is an integer and gives the number of output bits per input bit.
+    N has to be at least two. M is an integer and gives the memory length
+    of the encoder (number of shift register elements in the circuit). M
+    has to be at least one.
+    The generator polynoms define how the output bits are computed for each
+    of the N output signals. The polynoms are octal numbers. See details of
+    \code{\link{GenerateConvEncoder}} for an exampole.
+    An rsc encoder has exactly one fixed systematic output signal.
+    The generator polynom for the systematic output doesn't have to be
+    passed as an argument. So the generators argument contains all polynoms
+    for non-systematic outputs and at the last position the recursion
+    polynom. The LSB of the recursion polynom handles the input signal,
+    the other bits handle the memory outputs. The LSB of the output polynoms
+    handle the recursion output(!), not the original input signal. The other
+    bits also handle the memory outputs.
 }
 \examples{
-GenerateRscEncoder(2,2,c(1,10,13))
+GenerateRscEncoder(2,2,c(5,7))
 }
 \author{
 Martin Nocker
