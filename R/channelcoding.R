@@ -60,7 +60,7 @@ decode = function(msg, type, params, visualize)
 #' @param visualize A flag for enabling visualization
 #' @return message with errors
 #' @export
-applyNoise = function(msg, params, visualize)
+applyNoise = function(msg, params, visualize = FALSE)
 {
 
    SNR_db = 5; # Signal-Noise-Ratio in dB

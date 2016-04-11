@@ -31,8 +31,6 @@
 #' @return Kodierte Nachricht, die aus Ausgangsnachricht und den beiden kodierten Nachrichten besteht
 #'
 #' @export
-#' @useDynLib channelcoding
-#' @importFrom Rcpp sourceCpp
 TurboEncode <-
   function(message, permutation, encoder.info, parity.index = encoder.info$N) {
     if (encoder.info$N < 2) {
@@ -89,8 +87,6 @@ TurboEncode <-
 #' @return Deodierte Nachricht
 #'
 #' @export
-#' @useDynLib channelcoding
-#' @importFrom Rcpp sourceCpp
 TurboDecode <-
   function(message, permutation, iterations, encoder.info, parity.index) {
     if ((length(message) %% 3) != 0) {
@@ -139,8 +135,6 @@ TurboDecode <-
 
 
 #' @export
-#' @useDynLib channelcoding
-#' @importFrom Rcpp sourceCpp
 TurboGetPermutation <- function(length, encoder.info, type, args) {
   if (is.null(encoder.info$M)) {
     stop("Error: Encoder nicht richtig gesetzt!")
