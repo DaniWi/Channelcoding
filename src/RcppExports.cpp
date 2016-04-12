@@ -5,16 +5,16 @@
 
 using namespace Rcpp;
 
-// c_generateMatrices_nsc
-List c_generateMatrices_nsc(int N, int M, IntegerVector generator);
-RcppExport SEXP channelcoding_c_generateMatrices_nsc(SEXP NSEXP, SEXP MSEXP, SEXP generatorSEXP) {
+// c_generateMatrices
+List c_generateMatrices(int N, int M, IntegerVector generator);
+RcppExport SEXP channelcoding_c_generateMatrices(SEXP NSEXP, SEXP MSEXP, SEXP generatorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type M(MSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type generator(generatorSEXP);
-    __result = Rcpp::wrap(c_generateMatrices_nsc(N, M, generator));
+    __result = Rcpp::wrap(c_generateMatrices(N, M, generator));
     return __result;
 END_RCPP
 }
@@ -32,8 +32,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_convolutionEncode
-IntegerVector c_convolutionEncode(IntegerVector input, int N, int M, IntegerMatrix nextState, IntegerMatrix output, int nsc, IntegerVector termination, int terminate);
-RcppExport SEXP channelcoding_c_convolutionEncode(SEXP inputSEXP, SEXP NSEXP, SEXP MSEXP, SEXP nextStateSEXP, SEXP outputSEXP, SEXP nscSEXP, SEXP terminationSEXP, SEXP terminateSEXP) {
+IntegerVector c_convolutionEncode(IntegerVector input, int N, int M, IntegerMatrix nextState, IntegerMatrix output, int rsc, IntegerVector termination, int terminate);
+RcppExport SEXP channelcoding_c_convolutionEncode(SEXP inputSEXP, SEXP NSEXP, SEXP MSEXP, SEXP nextStateSEXP, SEXP outputSEXP, SEXP rscSEXP, SEXP terminationSEXP, SEXP terminateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -42,10 +42,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type M(MSEXP);
     Rcpp::traits::input_parameter< IntegerMatrix >::type nextState(nextStateSEXP);
     Rcpp::traits::input_parameter< IntegerMatrix >::type output(outputSEXP);
-    Rcpp::traits::input_parameter< int >::type nsc(nscSEXP);
+    Rcpp::traits::input_parameter< int >::type rsc(rscSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type termination(terminationSEXP);
     Rcpp::traits::input_parameter< int >::type terminate(terminateSEXP);
-    __result = Rcpp::wrap(c_convolutionEncode(input, N, M, nextState, output, nsc, termination, terminate));
+    __result = Rcpp::wrap(c_convolutionEncode(input, N, M, nextState, output, rsc, termination, terminate));
     return __result;
 END_RCPP
 }

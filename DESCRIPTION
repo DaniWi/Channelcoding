@@ -14,4 +14,6 @@ RoxygenNote: 5.0.1
 LinkingTo: Rcpp
 Imports:
     binhf (>= 1.0-1),
-    Rcpp (>= 0.12.4)
+    pander (>= 0.6.0),
+    Rcpp (>= 0.12.4),
+    tikzDevice (>= 0.10-1)

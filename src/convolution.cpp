@@ -70,7 +70,7 @@ int turnBitsRound(int num, int nbits) {
  * generator: vector of generator polynoms, one for each output symbol
  */
 // [[Rcpp::export]]
-List c_generateMatrices_nsc(int N, int M, IntegerVector generator) {
+List c_generateMatrices(int N, int M, IntegerVector generator) {
 
 	const int NUM_STATES = pow(2,M);			// number of states: 2^M
 	
@@ -243,7 +243,7 @@ IntegerVector c_convolutionEncode
 	int M, 
 	IntegerMatrix nextState, 
 	IntegerMatrix output,
-	int nsc,
+	int rsc,
 	IntegerVector termination,
 	int terminate
 ) {
@@ -278,7 +278,7 @@ IntegerVector c_convolutionEncode
 			// termination bit is for ...
 			// nsc: 0
 			// rsc: look up in termination vector!
-			int term_bit = (nsc > 0) ? 0 : termination(state);
+			int term_bit = (rsc > 0) ? termination(state) : 0;
 			int out = output(state,term_bit);
 			state = nextState(state,term_bit);
 			for (int j = N-1; j >= 0; j--) {

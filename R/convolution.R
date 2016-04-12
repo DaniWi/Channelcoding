@@ -33,7 +33,7 @@
 #'     (one for each output symbol)
 #' @return a convolutional encoder represented as a list containing:
 #'     N, M, vector of generator polynoms,
-#'     4 matrices: nextState, previousState, output and termination, nsc (flag)
+#'     4 matrices: nextState, previousState, output and termination, rsc (flag)
 #' @examples GenerateConvEncoder(2,2,c(7,5))
 #' @author Martin Nocker
 #' @export
@@ -41,7 +41,7 @@ GenerateConvEncoder <- function(N, M, generators) {
 
   stopifnot(N > 1, M > 0)
 
-  # nsc requires N generator polynoms
+  # encoder requires N generator polynoms
   if (length(generators) < N) {
     # stop execution if too few generators
     stop("Too few generator polynoms!")
@@ -50,7 +50,7 @@ GenerateConvEncoder <- function(N, M, generators) {
     generators <- head(generators, N)
   }
 
-  matrix.list <- c_generateMatrices_nsc(N,M,generators)
+  matrix.list <- c_generateMatrices(N,M,generators)
 
   conv.encoder <- list(N = N,
                        M = M,
@@ -58,7 +58,7 @@ GenerateConvEncoder <- function(N, M, generators) {
                        next.state = matrix.list$next.state,
                        prev.state = matrix.list$prev.state,
                        output = matrix.list$output,
-                       nsc = TRUE,
+                       rsc = FALSE,
                        termination = vector())
 
   return(conv.encoder)
@@ -73,7 +73,7 @@ GenerateConvEncoder <- function(N, M, generators) {
 #'     has to be at least one.
 #'     The generator polynoms define how the output bits are computed for each
 #'     of the N output signals. The polynoms are octal numbers. See details of
-#'     \code{\link{GenerateConvEncoder}} for an exampole.
+#'     \code{\link{GenerateConvEncoder}} for an example.
 #'     An rsc encoder has exactly one fixed systematic output signal.
 #'     The generator polynom for the systematic output doesn't have to be
 #'     passed as an argument. So the generators argument contains all polynoms
@@ -88,7 +88,7 @@ GenerateConvEncoder <- function(N, M, generators) {
 #'     (one for each non-systematic output symbol and one for the recursion)
 #' @return a convolutional encoder represented as a list containing:
 #'     N, M, vector of generator polynoms,
-#'     4 matrices: nextState, previousState, output and termination, nsc (flag)
+#'     4 matrices: nextState, previousState, output and termination, rsc (flag)
 #' @examples GenerateRscEncoder(2,2,c(5,7))
 #' @author Martin Nocker
 #' @export
@@ -113,7 +113,7 @@ GenerateRscEncoder <- function(N, M, generators) {
                        next.state = matrix.list$next.state,
                        prev.state = matrix.list$prev.state,
                        output = matrix.list$output,
-                       nsc = FALSE,
+                       rsc = TRUE,
                        termination = matrix.list$termination)
 
   return(conv.encoder)
@@ -127,8 +127,8 @@ GenerateRscEncoder <- function(N, M, generators) {
 #' @param terminate flag if the code should be terminated, default: TRUE
 #' @return the encoded message
 #' @examples
-#' nsc <- GenerateConvEncoder(2,2,c(7,5))
-#' ConvEncode(c(1,0,0,1,1), nsc)
+#' coder <- GenerateConvEncoder(2,2,c(7,5))
+#' ConvEncode(c(1,0,0,1,1), coder)
 #' @author Martin Nocker
 #' @export
 ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
@@ -138,7 +138,7 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
                               conv.encoder$M,
                               conv.encoder$next.state,
                               conv.encoder$output,
-                              as.integer(conv.encoder$nsc),
+                              as.integer(conv.encoder$rsc),
                               conv.encoder$termination,
                               as.integer(terminate))
   return(code)
@@ -153,9 +153,9 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
 #' @param terminate flag if the code was terminated, default: TRUE
 #' @return the decoded message, list(softOutput, hardOutput)
 #' @examples
-#' nsc <- GenerateConvEncoder(2,2,c(7,5))
-#' coded <- ConvEncode(c(1,0,0,1,1), nsc)
-#' ConvDecode(coded, nsc)
+#' coder <- GenerateConvEncoder(2,2,c(7,5))
+#' coded <- ConvEncode(c(1,0,0,1,1), coder)
+#' ConvDecode(coded, coder)
 #' @author Martin Nocker
 #' @export
 ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
@@ -186,9 +186,9 @@ ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
 #' @inheritParams ConvDecode
 #' @return the hard-decoded message vector
 #' @examples
-#' nsc <- GenerateConvEncoder(2,2,c(7,5))
-#' coded <- ConvEncode(c(1,0,0,1,1), nsc)
-#' ConvDecodeHard(coded, nsc)
+#' coder <- GenerateConvEncoder(2,2,c(7,5))
+#' coded <- ConvEncode(c(1,0,0,1,1), coder)
+#' ConvDecodeHard(coded, coder)
 #' @author Martin Nocker
 #' @export
 ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE) {
