@@ -10,10 +10,9 @@ isOctal <- function(generators) {
   return(TRUE)
 }
 
-maskGenerators <- function(generators, M) {
-  max.generator = 2^M - 1
+maskGenerators <- function(generators, max.generator.octal) {
 
-  new.generators = bitwAnd(max.generator, generators)
+  new.generators = bitwAnd(max.generator.octal, generators)
 
   return(new.generators)
 }
@@ -21,7 +20,7 @@ maskGenerators <- function(generators, M) {
 
 isCatastrophicEncoder <- function(generators) {
 
-  # convert octal numbers to decimal
+  # convert octal generators to decimal
   generators <- sapply(generators,octalToDecimal)
 
   # get GCD of all generators
@@ -42,4 +41,16 @@ octalToDecimal <- function(x) {
   }
 
   return(dec)
+}
+
+decimalToOctal <- function(x) {
+  oct <- 0
+  i <- 0
+  while (x > 0) {
+    oct <- oct + (x %% 8)*(10^i)
+    i <- i + 1
+    x = x%/% 8
+  }
+
+  return(oct)
 }

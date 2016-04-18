@@ -8,9 +8,6 @@
 #  - decode (soft in & out)
 #  - decode (hard decision)
 
-#library(Rcpp)
-#sourceCpp('src/convolution.cpp')
-
 #' generate convolutional encoder
 #'
 #' Generates a convolutional encoder for nonrecursive convolutional codes.
@@ -55,8 +52,11 @@ GenerateConvEncoder <- function(N, M, generators) {
     stop("At least one generator is not in octal form!")
   }
 
-  if (!all(generators > 2^M)) {
-    generators = maskGenerators(gnerators, M)
+  max.generator.octal = decimalToOctal(2^(M+1) - 1)
+
+  if (any(generators > max.generator.octal)) {
+    stop("At least one generator is greater than the maximum generator!")
+    # generators = maskGenerators(generators, max.generator.octal)
   }
 
   if (isCatastrophicEncoder(generators)) {
@@ -109,7 +109,7 @@ GenerateRscEncoder <- function(N, M, generators) {
 
   stopifnot(N > 1, M > 0)
 
-  # rsc requires N generator polynoms
+  # encoder requires N generator polynoms
   if (length(generators) < N) {
     # stop execution if too few generators
     stop("Too few generator polynoms!")
@@ -123,8 +123,15 @@ GenerateRscEncoder <- function(N, M, generators) {
     stop("At least one generator is not in octal form!")
   }
 
-  if (!all(generators > 2^M)) {
-    generators = maskGenerators(gnerators, M)
+  max.generator.octal = decimalToOctal(2^(M+1) - 1)
+
+  if (any(generators > max.generator.octal)) {
+    stop("At least one generator is greater than the maximum generator!")
+    # generators = maskGenerators(generators, max.generator.octal)
+  }
+
+  if (isCatastrophicEncoder(generators)) {
+    warning("The result will be a catastrophic encoder!")
   }
 
   matrix.list <- c_generateMatrices_rsc(N,M,generators)
