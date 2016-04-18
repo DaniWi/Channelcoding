@@ -93,13 +93,13 @@ NumericVector c_sova
 				Max[0] = metric[t-1][previousState(s,survivorBit[t][s])];
 				Max[1] = metric[t-1][previousState(s,2)];
 
-				//Berechnung von erster M?glichkeit
-				Max[0] += (((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> (N-1)) & 0x01) * 2 - 1) * (Lc * x_d[t-1] + La[t-1]);
-				Max[0] += (((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> (N-output_index)) & 0x01) * 2 - 1) * Lc * p_d[t-1];
+				//Berechnung von erster Möglichkeit
+				Max[0] += (1 - 2 * ((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> (N-1)) & 0x01)) * (Lc * x_d[t-1] + La[t-1]);
+				Max[0] += (1 - 2 * ((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> (N-output_index)) & 0x01)) * Lc * p_d[t-1];
 
-				//Berechnung von zweiter M?glichkeit
-				Max[1] += (((output(previousState(s,2),survivorBit[t][s]) >> (N-1)) & 0x01) * 2 - 1) * (Lc * x_d[t-1] + La[t-1]);
-				Max[1] += (((output(previousState(s,2),survivorBit[t][s]) >> (N-output_index)) & 0x01) * 2 - 1) * Lc * p_d[t-1];
+				//Berechnung von zweiter Möglichkeit
+				Max[1] += (1 - 2 * ((output(previousState(s,2),survivorBit[t][s]) >> (N-1)) & 0x01)) * (Lc * x_d[t-1] + La[t-1]);
+				Max[1] += (1 - 2 * ((output(previousState(s,2),survivorBit[t][s]) >> (N-output_index)) & 0x01)) * Lc * p_d[t-1];
 
 				previousMatrixColumn[t][s] = (Max[0] > Max[1]) ? survivorBit[t][s] : 2;
 			}
@@ -112,8 +112,8 @@ NumericVector c_sova
 				{
 					Max[i] = metric[t-1][previousState(s,i)];
 
-					Max[i] += (((output(previousState(s,i),i) >> (N-1)) & 0x01) * 2 - 1) * (Lc * x_d[t-1] + La[t-1]);
-					Max[i] += (((output(previousState(s,i),i) >> (N-output_index)) & 0x01) * 2 - 1) * Lc * p_d[t-1];
+					Max[i] += (1 - 2 * ((output(previousState(s,i),i) >> (N-1)) & 0x01)) * (Lc * x_d[t-1] + La[t-1]);
+					Max[i] += (1 - 2 * ((output(previousState(s,i),i) >> (N-output_index)) & 0x01)) * Lc * p_d[t-1];
 				}
 
 				survivorBit[t][s] = (Max[0] > Max[1]) ? 0 : 1;
@@ -166,7 +166,6 @@ NumericVector c_sova
 		}
 		else
 		{
-			//survivorStates[t] = previousState[previousMatrixColumn[t+1][survivorStates[t+1]]][survivorStates[t+1]][survivorBit[t+1][survivorStates[t+1]]];
 			survivorStates[t] = previousState(survivorStates[t+1], previousMatrixColumn[t+1][survivorStates[t+1]]);
 		}
 
@@ -192,7 +191,7 @@ NumericVector c_sova
 		else
 		{
 			// falls Entscheidung getroffen wird muss Spalte wechseln
-			// 2 F?lle:	a) 0 <--> 2
+			// 2 Fälle:	a) 0 <--> 2
 			//			b) 1 <--> 2
 			// ob 0 oder 1 steht im survivorBit
 			int column;
@@ -204,7 +203,6 @@ NumericVector c_sova
 			{
 				column = 2;
 			}
-			//s = previousState[previousMatrixColumn[t][survivorStates[t]]*(-1)+1][survivorStates[t]][survivorBit[t][survivorStates[t]]];
 			s = previousState(survivorStates[t], column);
 		}
 
@@ -242,7 +240,7 @@ NumericVector c_sova
 
 	for(int t = 1; t < msgLen+1; t++)
 	{
-		softOutput[t-1] = delta[t][survivorStates[t]] * (survivorBit[t][survivorStates[t]]*2-1) - La[t-1] - Lc * x_d[t-1];
+		softOutput[t-1] = delta[t][survivorStates[t]] * (1 - 2 * survivorBit[t][survivorStates[t]]) - La[t-1] - Lc * x_d[t-1];
 
 		#if DEBUG > 0
 		printf("\n");
@@ -334,8 +332,8 @@ List c_turbo_decode
     //calculate overall likelihoods and then slice'em
     for(int k = 0; k < msgLen; k++)
     {
-      soft_output[k] = Lc * x_noisy[k] + Le1[k] + Le2_ip[k]; 		//soft decision
-    hard_output[k] = (soft_output[k] >= 0.0) ? 1 : 0;         //hard decision
+    	soft_output[k] = Lc * x_noisy[k] + Le1[k] + Le2_ip[k]; 		//soft decision
+    	hard_output[k] = (soft_output[k] >= 0.0) ? 0 : 1;         //hard decision
 	}
 
 	#if DEBUG > 0

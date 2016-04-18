@@ -6,9 +6,6 @@
 #  - TurboDecode
 #  - TurboGetPermutation
 
-#library(Rcpp)
-#sourceCpp('src/turbo_code.cpp');
-
 
 #' Kodieren einer Nachricht mittels dem Turbo-Code-Verfahren
 #'
@@ -76,13 +73,13 @@ TurboEncode <-
     parity.1 <- parity.1[temp.index]
     parity.2 <- parity.2[temp.index]
 
-    #rmarkdown::render(system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"), params = list(
-    #  orig = message,
-    #  interl = message.perm,
-    #  parity1 = parity.1,
-    #  parity2 = parity.2,
-    #  result = c(message.encoded, parity.1, parity.2)))
-    #rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
+    rmarkdown::render(system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"), params = list(
+      orig = message,
+      interl = message.perm,
+      parity1 = parity.1,
+      parity2 = parity.2,
+      result = c(message.encoded, parity.1, parity.2)))
+    rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
 
     return(c(message.encoded, parity.1, parity.2))
   }
