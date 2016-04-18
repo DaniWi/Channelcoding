@@ -10,7 +10,7 @@
 #sourceCpp('src/turbo_code.cpp');
 
 
-#' Turbo Encode
+#' Kodieren einer Nachricht mittels dem Turbo-Code-Verfahren
 #'
 #' Kodiert eine Nachricht mittels dem Turbo-Code-Verfahren. Dabei wird die Nachricht in 2 systematische Kodierer
 #' gesteckt, wobei bei einem Kodierer die Nachricht permutiert verarbeitet wird. Der mitgegebene Kodierer muss
@@ -30,51 +30,65 @@
 #'
 #' @return Kodierte Nachricht, die aus Ausgangsnachricht und den beiden kodierten Nachrichten besteht
 #'
+#' @examples
+#' input <- c(1,0,1,1,0)
+#' coder <- GenerateRscEncoder(2,2,c(5,7))
+#' perm <- TurboGetPermutation(length(input), coder, "RANDOM")
+#' message.encoded <- TurboEncode(input, perm, coder)
+#'
 #' @export
 TurboEncode <-
   function(message, permutation, encoder.info, parity.index = encoder.info$N) {
+    #Checks all parameters
     if (encoder.info$N < 2) {
       stop("Error: Encoder muss 2 Ausgängen besitzen!")
     }
-    if (encoder.info$generators[1] != 1) {
+    if (encoder.info$rsc != TRUE && encoder.info$generators[1] != (2^encoder.info$M)) {
       stop(
-        "Error: Encoder muss ein systematischer Encoder sein! (Ausgang 1 muss Polynom 1 besitzen)"
+        "Error: Encoder muss ein systematischer Encoder sein! (Ausgang 1 muss Polynom 2^M besitzen)"
       )
     }
     if (length(permutation) != (length(message) + encoder.info$M)) {
       stop("Error: Permutation hat die falsche Länge!")
     }
 
-    parity.1 <- ConvEncode(message, encoder.info, TRUE)
-    message.perm <- message[permutation + 1]
-    parity.2 <- ConvEncode(message.perm, encoder.info, FALSE)
-
     if (parity.index > encoder.info$N) {
       parity.index = encoder.info$N
     }
 
+    #first encoder with termination
+    parity.1 <- ConvEncode(message, encoder.info, TRUE)
+    #extract original message with termination bits from parity
     temp.index <-
       c(rep(FALSE,0), TRUE, rep(FALSE, encoder.info$N - 1))
     message.encoded <- parity.1[temp.index]
 
+    #permutate original message with termination
+    message.perm <- as.numeric(message.encoded[perm + 1] > 0)
+
+    #second encoder without termination
+    parity.2 <- ConvEncode(message.perm, encoder.info, FALSE)
+
+
+    #extract parity bits from the output messages
     temp.index <-
       c(rep(FALSE,parity.index - 1), TRUE, rep(FALSE, encoder.info$N - parity.index))
     parity.1 <- parity.1[temp.index]
     parity.2 <- parity.2[temp.index]
 
-    rmarkdown::render(system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"), params = list(
-      orig = message,
-      interl = message.perm,
-      parity1 = parity.1,
-      parity2 = parity.2,
-      result = c(message.encoded, parity.1, parity.2)))
-    rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
+    #rmarkdown::render(system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"), params = list(
+    #  orig = message,
+    #  interl = message.perm,
+    #  parity1 = parity.1,
+    #  parity2 = parity.2,
+    #  result = c(message.encoded, parity.1, parity.2)))
+    #rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
 
     return(c(message.encoded, parity.1, parity.2))
   }
 
 
-#' Turbo Decode
+#' Dekodieren einer Nachricht mittels dem Turbo-Code-Verfahren
 #'
 #' Dekodiert eine Nachricht mittels dem Turbo-Code-Verfahren. Dabei wird die Nachricht in 2 systematische Dekodierer
 #' gesteckt, wobei bei einem Kodierer die Nachricht permutiert verarbeitet wird. Der mitgegebene Kodierer muss
@@ -94,30 +108,47 @@ TurboEncode <-
 #'
 #' @return Deodierte Nachricht
 #'
+#' @examples
+#' input <- c(1,0,1,1,0)
+#' coder <- GenerateRscEncoder(2,2,c(5,7))
+#' perm <- TurboGetPermutation(length(input), coder, "RANDOM")
+#' message.encoded <- TurboEncode(input, perm, coder)
+#' result <- TurboDecode(input, perm, 5, coder)
+#'
 #' @export
 TurboDecode <-
-  function(message, permutation, iterations, encoder.info, parity.index) {
+  function(message, permutation, iterations, encoder.info, parity.index = encoder.info$N) {
+    #Checks all parameters
+    if (encoder.info$N < 2) {
+      stop("Error: Encoder muss 2 Ausgängen besitzen!")
+    }
+    if (encoder.info$rsc != TRUE && encoder.info$generators[1] != (2^encoder.info$M)) {
+      stop(
+        "Error: Encoder muss ein systematischer Encoder sein! (Ausgang 1 muss Polynom 2^M besitzen)"
+      )
+    }
     if ((length(message) %% 3) != 0) {
       stop("Error: Nachricht hat die falsche Länge")
     }
     if (length(permutation) != (length(message) / 3)) {
       stop("Error: Permutation hat die falsche Länge!")
     }
-    if (encoder.info$generators[1] != 1) {
-      stop(
-        "Error: Encoder muss ein systematischer Encoder sein! (Ausgang 1 muss Polynom 1 besitzen)"
-      )
-    }
-    if (encoder.info$N < 2) {
-      stop("Error: Encoder muss 2 Ausgängen besitzen!")
+
+    if (parity.index > encoder.info$N) {
+      parity.index = encoder.info$N
     }
 
+    #parse original message from input message
     message.length <- length(message) / 3
     message.orig <- message[1:message.length]
+
+    #parse parity1 from input message
     parity.1 <- message[(message.length + 1):(2 * message.length)]
+    #parse parity2 from input message
     parity.2 <-
       message[(2 * message.length + 1):(3 * message.length)]
 
+    #decode message
     message.decoded.term <-
       c_turbo_decode(
         message.orig, parity.1, parity.2, permutation,
@@ -125,6 +156,7 @@ TurboDecode <-
         encoder.info$output, parity.index
       )
 
+    #delete termination bits from result
     output.soft <-
       message.decoded.term$soft.output[1:(message.length - encoder.info$M)]
     output.hard <-
@@ -134,13 +166,6 @@ TurboDecode <-
 
     return(message.decoded)
   }
-
-
-
-
-
-
-
 
 #' @export
 TurboGetPermutation <- function(length, encoder.info, type, args) {
