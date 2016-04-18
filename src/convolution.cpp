@@ -288,9 +288,9 @@ IntegerVector c_convolutionEncode
 		}
 	}
 	
-	// bits are mapped: {0,1} --> {-1,+1}
+	// bits are mapped: {0,1} --> {+1,-1}
 	for (int i = 0; i < codeLen; i++) {
-		code[i] = 2 * code[i] - 1;
+		code[i] = 1 - 2 * code[i];
 	}
 	
 	#if DEBUG == 1
@@ -370,8 +370,8 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 				Max[1] = metric[t-1][previousState(s,2)];
 				for (int n = 0; n < N; n++) {
 					int sr = N-n-1;	// shift right
-					Max[0] += (((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> sr) & 0x01) * 2 - 1) * Lc * code[index+n];
-					Max[1] += (((output(previousState(s,2),survivorBit[t][s]) >> sr) & 0x01) * 2 - 1) * Lc * code[index+n];
+					Max[0] += (1 - 2 * ((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> sr) & 0x01)) * Lc * code[index+n];
+					Max[1] += (1 - 2 * ((output(previousState(s,2),survivorBit[t][s]) >> sr) & 0x01)) * Lc * code[index+n];
 				}
 				
 				previousMatrixColumn[t][s] = (Max[0] > Max[1]) ? survivorBit[t][s] : 2;
@@ -384,7 +384,7 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 					Max[i] = metric[t-1][previousState(s,i)];
 					for (int n = 0; n < N; n++) {
 						int sr = N-n-1;	// shift right
-						Max[i] += (((output(previousState(s,i),i) >> sr) & 0x01) * 2 - 1) * Lc * code[index+n];
+						Max[i] += (1 - 2 * ((output(previousState(s,i),i) >> sr) & 0x01)) * Lc * code[index+n];
 					}
 				}
 				
@@ -432,7 +432,6 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 			survivorStates[t] = previousState(survivorStates[t+1], survivorBit[t+1][survivorStates[t+1]]);
 		}
 		else {
-			//survivorStates[t] = previousState[previousMatrixColumn[t+1][survivorStates[t+1]]][survivorStates[t+1]][survivorBit[t+1][survivorStates[t+1]]];
 			survivorStates[t] = previousState(survivorStates[t+1], previousMatrixColumn[t+1][survivorStates[t+1]]);
 		}
 	}
@@ -458,7 +457,6 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 			else {
 				column = 2;
 			}
-			//s = previousState[previousMatrixColumn[t][survivorStates[t]]*(-1)+1][survivorStates[t]][survivorBit[t][survivorStates[t]]];
 			s = previousState(survivorStates[t], column);
 		}
 		
@@ -490,8 +488,8 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 	IntegerVector hardOutput(msgLen);
 	
 	for(int t = 1; t < msgLen+1; t++) {
-		softOutput[t-1] = delta[t][survivorStates[t]] * (survivorBit[t][survivorStates[t]]*2-1);
-		hardOutput[t-1] = (softOutput[t-1] > 0) ? 1 : 0;
+		softOutput[t-1] = delta[t][survivorStates[t]] * (1 - 2 * survivorBit[t][survivorStates[t]]);
+		hardOutput[t-1] = (softOutput[t-1] > 0) ? 0 : 1;
 	}
 	
 	#if DEBUG == 1
@@ -550,9 +548,9 @@ IntegerVector c_convolutionDecode_hard(IntegerVector code, int N, int M, Integer
 		}
 	}
 	
-	// reverse mapping for hard decision decoding {-1,+1} --> {0,1}
+	// reverse mapping for hard decision decoding {-1,+1} --> {1,0}
 	for (int i = 0; i < codeLen; i++) {
-		code[i] = (code[i] + 1) / 2;
+		code[i] = (1 - code[i]) / 2;
 	}
 	
 	int index = 0;	// index to select correct code bit
