@@ -14,5 +14,6 @@ RoxygenNote: 5.0.1
 LinkingTo: Rcpp
 Imports:
     binhf (>= 1.0-1),
+    numbers (>= 0.6-1),
     pander (>= 0.6.0),
-    Rcpp (>= 0.12.4),
+    Rcpp (>= 0.12.4)

@@ -50,6 +50,19 @@ GenerateConvEncoder <- function(N, M, generators) {
     generators <- head(generators, N)
   }
 
+  if (!isOctal(generators)) {
+    # only octal generators are accepted
+    stop("At least one generator is not in octal form!")
+  }
+
+  if (!all(generators > 2^M)) {
+    generators = maskGenerators(gnerators, M)
+  }
+
+  if (isCatastrophicEncoder(generators)) {
+    warning("The result will be a catastrophic encoder!")
+  }
+
   matrix.list <- c_generateMatrices(N,M,generators)
 
   conv.encoder <- list(N = N,
@@ -103,6 +116,15 @@ GenerateRscEncoder <- function(N, M, generators) {
   } else if (length(generators) > N) {
     # just use first N polynoms if too many are provided
     generators <- head(generators, N)
+  }
+
+  if (!isOctal(generators)) {
+    # only octal generators are accepted
+    stop("At least one generator is not in octal form!")
+  }
+
+  if (!all(generators > 2^M)) {
+    generators = maskGenerators(gnerators, M)
   }
 
   matrix.list <- c_generateMatrices_rsc(N,M,generators)
