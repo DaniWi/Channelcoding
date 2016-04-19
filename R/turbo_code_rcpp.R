@@ -107,7 +107,7 @@ TurboEncode <-
 #' bei beiden Deodierern durchgeschalten. Nachdem die Nachricht durche beide Dekodierer durch ist, kann dieser Schritt
 #' mehrmals wiederholt werden. Mit dem Parameter iterations, kann die Anzahl der Durchläufe verändert werden.
 #' Je mehr Durchläufe, desto besser das Ergebnis. Das Prinzip der Turbo-Codes ist, dass die Dekodierung mit Soft-Werten
-#' vollzogen wird. Das heißt, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
+#' vollzogen wird. Das hei�t, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
 #' Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit am Ausgang ist
 #'
 #' @author Witsch Daniel
@@ -304,18 +304,3 @@ TurboGetPermutation <- function(length, encoder.info, type, args) {
   )
   stop("Error: Type von Interleaver wurde nicht richtig gewählt!")
 }
-
-#' @export
-TurboGetDottingMatrix <- function(dotting.vector, encoder.info) {
-    if (is.null(encoder.info$N)) {
-      stop("Error: Encoder muss gesetzt sein!")
-    }
-    return(matrix(dotting.vector, nrow = encoder.info$N))
-}
-
-#' @export
-TurboAddDottingBits <- function(dotted.message, dotting.matrix) {
-  result <- c_insert_dotted_bits(dotted.message, as.numeric(dotting.matrix), (dim(dotting.matrix))[1], (dim(dotting.matrix))[2])
-  return(result)
-}
-

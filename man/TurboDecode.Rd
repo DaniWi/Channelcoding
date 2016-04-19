@@ -26,7 +26,7 @@ mindestens 2 Ausgänge haben und sollte Systematisch sein. Dadurch wird der erst
 bei beiden Deodierern durchgeschalten. Nachdem die Nachricht durche beide Dekodierer durch ist, kann dieser Schritt
 mehrmals wiederholt werden. Mit dem Parameter iterations, kann die Anzahl der Durchläufe verändert werden.
 Je mehr Durchläufe, desto besser das Ergebnis. Das Prinzip der Turbo-Codes ist, dass die Dekodierung mit Soft-Werten
-vollzogen wird. Das heißt, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
+vollzogen wird. Das hei�t, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
 Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit am Ausgang ist
 }
 \examples{

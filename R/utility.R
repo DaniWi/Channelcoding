@@ -1,3 +1,31 @@
+#' @export
+GetPuncturingMatrix <- function(puncturing.vector, conv.encoder) {
+  
+  if (length(puncturing.vector[puncturing.vector != 0 && puncturing.vector != 1]) > 0) {
+    # puncturing.vector has elements with value diffrent from 0 or 1 which is not allowed
+    stop("Invalid puncturing vector! Only values 0/1 are allowed!")
+  }
+  
+  if (all(names(conv.encoder) != "N") || is.null(conv.encoder$N)) {
+    stop("Encoder has to specify list element N!")
+  }
+  
+  return(matrix(puncturing.vector, nrow = conv.encoder$N))
+}
+
+#' @export
+PunctureCode <- function(original.code, puncturing.matrix) {
+  mask <- as.logical(puncturing.matrix)
+  
+  return(original.code[mask])
+}
+
+#' @export
+InsertPuncturingBits <- function(punctured.code, puncturing.matrix) {
+  result <- c_insert_puncturing_bits(punctured.code, as.numeric(puncturing.matrix), (dim(puncturing.matrix))[1], (dim(puncturing.matrix))[2])
+  return(result)
+}
+
 isOctal <- function(generators) {
   # regex check for octal number format
   x <- regexpr("^[1-7][0-7]*$",generators)
@@ -16,7 +44,6 @@ maskGenerators <- function(generators, max.generator.octal) {
 
   return(new.generators)
 }
-
 
 isCatastrophicEncoder <- function(generators) {
 
