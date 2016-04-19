@@ -252,6 +252,49 @@ NumericVector c_sova
 	return softOutput;
 }
 
+
+// [[Rcpp::export]]
+NumericVector c_insert_dotted_bits(NumericVector dotted_message, NumericVector dotting_vector, int rows, int cols)
+{
+	int amount_ones = sum(dotting_vector);
+	int amount_zeros = dotting_vector.size() - amount_ones;
+	int dotted_message_length =  dotted_message.size();
+	
+	int temp = dotted_message_length % amount_ones;
+	
+	int i = 0;
+	int ones = 0;
+	int zeros = 0;
+	while(((i % rows) != 0) || ones < temp)
+	{
+		if(dotting_vector[i] == 1)
+		{
+			ones++;	
+		} else 
+		{
+			zeros++;
+		}
+		i++;
+	}
+	
+	int additional_bits = (dotted_message_length / 4) * 2 + zeros;
+
+	NumericVector orig_message(dotted_message_length + additional_bits);
+	int j = 0;
+	for(int i = 0; i < orig_message.size(); i++)
+	{
+			if(dotting_vector[i % (rows*cols)] == 1) 
+			{
+				orig_message[i] = dotted_message[j++]; 
+			} else 
+			{
+				orig_message[i] = 0;
+			}
+	}
+	
+	return orig_message;
+} 
+
 // [[Rcpp::export]]
 List c_turbo_decode
 (
@@ -266,7 +309,7 @@ List c_turbo_decode
 	IntegerMatrix output,
 	int output_index
 )
-{
+{	
 	const int msgLen = x_noisy.size();
 
 	NumericVector x_d_p(msgLen);  //noisy data permutated
@@ -278,7 +321,9 @@ List c_turbo_decode
 
     //zero apriori information into very first iteration of BCJR
     for(int k = 0; k < msgLen; k++)
+	{
 		Le2_ip[k] = 0;
+	}
 
     for(int i = 0; i < N_ITERATION; i++)
     {
@@ -304,7 +349,7 @@ List c_turbo_decode
 		#if MAP_SOVA == 0
 		//modified_bcjr(Lc, Le1_p,  x_d_p, p2_d, Le2, 0);
 		#elif MAP_SOVA == 1
-		Le2 = c_sova(x_noisy, parity_noisy2, Le1_p, 0, N, M, previousState, output, output_index);
+		Le2 = c_sova(x_d_p, parity_noisy2, Le1_p, 0, N, M, previousState, output, output_index);
 		#endif
 
         //inverse permute decoder#2 likelihoods to match decoder#1 order

@@ -21,6 +21,10 @@ c_convolutionDecode_hard <- function(code, N, M, previousState, output) {
     .Call('channelcoding_c_convolutionDecode_hard', PACKAGE = 'channelcoding', code, N, M, previousState, output)
 }
 
+c_insert_dotted_bits <- function(dotted_message, dotting_vector, rows, cols) {
+    .Call('channelcoding_c_insert_dotted_bits', PACKAGE = 'channelcoding', dotted_message, dotting_vector, rows, cols)
+}
+
 c_turbo_decode <- function(x_noisy, parity_noisy1, parity_noisy2, permutation, N_ITERATION, N, M, previousState, output, output_index) {
     .Call('channelcoding_c_turbo_decode', PACKAGE = 'channelcoding', x_noisy, parity_noisy1, parity_noisy2, permutation, N_ITERATION, N, M, previousState, output, output_index)
 }

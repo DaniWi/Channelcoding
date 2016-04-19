@@ -79,6 +79,20 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// c_insert_dotted_bits
+NumericVector c_insert_dotted_bits(NumericVector dotted_message, NumericVector dotting_vector, int rows, int cols);
+RcppExport SEXP channelcoding_c_insert_dotted_bits(SEXP dotted_messageSEXP, SEXP dotting_vectorSEXP, SEXP rowsSEXP, SEXP colsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type dotted_message(dotted_messageSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type dotting_vector(dotting_vectorSEXP);
+    Rcpp::traits::input_parameter< int >::type rows(rowsSEXP);
+    Rcpp::traits::input_parameter< int >::type cols(colsSEXP);
+    __result = Rcpp::wrap(c_insert_dotted_bits(dotted_message, dotting_vector, rows, cols));
+    return __result;
+END_RCPP
+}
 // c_turbo_decode
 List c_turbo_decode(NumericVector x_noisy, NumericVector parity_noisy1, NumericVector parity_noisy2, IntegerVector permutation, int N_ITERATION, int N, int M, IntegerMatrix previousState, IntegerMatrix output, int output_index);
 RcppExport SEXP channelcoding_c_turbo_decode(SEXP x_noisySEXP, SEXP parity_noisy1SEXP, SEXP parity_noisy2SEXP, SEXP permutationSEXP, SEXP N_ITERATIONSEXP, SEXP NSEXP, SEXP MSEXP, SEXP previousStateSEXP, SEXP outputSEXP, SEXP output_indexSEXP) {

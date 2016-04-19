@@ -2,9 +2,10 @@
 % Please edit documentation in R/turbo_code_rcpp.R
 \name{TurboEncode}
 \alias{TurboEncode}
-\title{Turbo Encode}
+\title{Kodieren einer Nachricht mittels dem Turbo-Code-Verfahren}
 \usage{
-TurboEncode(message, permutation, encoder.info, parity.index = encoder.info$N)
+TurboEncode(message, permutation, encoder.info, parity.index = encoder.info$N,
+  dotting.matrix = NULL)
 }
 \arguments{
 \item{message}{Nachricht die kodiert werden sollte}
@@ -27,6 +28,13 @@ dadurch wird die Koderate verbessert. Um den Minimalabstand der Kodierer zu erh√
 permutiert in den 2ten Kodierer geschickt. Am Ende wird die Ausgangsnachricht mit den beiden kodierten Nachrichten
 aus den Kodierern verkn√ºpft und retour gegeben. Da nur ein Ausgang von einem Kodierer verwendet wir, muss der Index
 des Ausgangs angegeben werden.
+}
+\examples{
+input <- c(1,0,1,1,0)
+coder <- GenerateRscEncoder(2,2,c(5,7))
+perm <- TurboGetPermutation(length(input), coder, "RANDOM")
+message.encoded <- TurboEncode(input, perm, coder)
+
 }
 \author{
 Witsch Daniel

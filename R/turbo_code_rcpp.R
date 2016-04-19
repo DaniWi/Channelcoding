@@ -35,7 +35,7 @@
 #'
 #' @export
 TurboEncode <-
-  function(message, permutation, encoder.info, parity.index = encoder.info$N) {
+  function(message, permutation, encoder.info, parity.index = encoder.info$N, dotting.matrix = NULL) {
     #Checks all parameters
     if (encoder.info$N < 2) {
       stop("Error: Encoder muss 2 Ausgängen besitzen!")
@@ -47,6 +47,9 @@ TurboEncode <-
     }
     if (length(permutation) != (length(message) + encoder.info$M)) {
       stop("Error: Permutation hat die falsche Länge!")
+    }
+    if(!is.null(dotting.matrix) && ((dim(dotting.matrix))[1] != encoder.info$N)) {
+      stop("Error: Punktierungsmatrix hat falsche Anzahl an Zeilen!")
     }
 
     if (parity.index > encoder.info$N) {
@@ -60,8 +63,8 @@ TurboEncode <-
       c(rep(FALSE,0), TRUE, rep(FALSE, encoder.info$N - 1))
     message.encoded <- parity.1[temp.index]
 
-    #permutate original message with termination
-    message.perm <- as.numeric(message.encoded[perm + 1] > 0)
+    #permutate original message with termination (mapping important!!)
+    message.perm <- as.numeric(message.encoded[perm + 1] < 0)
 
     #second encoder without termination
     parity.2 <- ConvEncode(message.perm, encoder.info, FALSE)
@@ -73,15 +76,26 @@ TurboEncode <-
     parity.1 <- parity.1[temp.index]
     parity.2 <- parity.2[temp.index]
 
-    rmarkdown::render(system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"), params = list(
-      orig = message,
-      interl = message.perm,
-      parity1 = parity.1,
-      parity2 = parity.2,
-      result = c(message.encoded, parity.1, parity.2)))
-    rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
+    result.orig <- c(message.encoded, parity.1, parity.2)
+    if(!is.null(dotting.matrix)) {
+      #dotting the output
+      result.dot <- result.orig[as.logical(dotting.matrix)]
+    }
 
-    return(c(message.encoded, parity.1, parity.2))
+    #rmarkdown::render(system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"), params = list(
+    #  orig = message,
+    #  interl = message.perm,
+    #  parity1 = parity.1,
+    #  parity2 = parity.2,
+    #  result = c(message.encoded, parity.1, parity.2)))
+    #rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
+
+    if(!is.null(dotting.matrix)) {
+      return(list(original=result.orig, dotted=result.dot))
+    } else {
+      return(result.orig)
+    }
+
   }
 
 
@@ -290,3 +304,18 @@ TurboGetPermutation <- function(length, encoder.info, type, args) {
   )
   stop("Error: Type von Interleaver wurde nicht richtig gewählt!")
 }
+
+#' @export
+TurboGetDottingMatrix <- function(dotting.vector, encoder.info) {
+    if (is.null(encoder.info$N)) {
+      stop("Error: Encoder muss gesetzt sein!")
+    }
+    return(matrix(dotting.vector, nrow = encoder.info$N))
+}
+
+#' @export
+TurboAddDottingBits <- function(dotted.message, dotting.matrix) {
+  result <- c_insert_dotted_bits(dotted.message, as.numeric(dotting.matrix), (dim(dotting.matrix))[1], (dim(dotting.matrix))[2])
+  return(result)
+}
+

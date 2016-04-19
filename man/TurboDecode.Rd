@@ -2,9 +2,10 @@
 % Please edit documentation in R/turbo_code_rcpp.R
 \name{TurboDecode}
 \alias{TurboDecode}
-\title{Turbo Decode}
+\title{Dekodieren einer Nachricht mittels dem Turbo-Code-Verfahren}
 \usage{
-TurboDecode(message, permutation, iterations, encoder.info, parity.index)
+TurboDecode(message, permutation, iterations, encoder.info,
+  parity.index = encoder.info$N)
 }
 \arguments{
 \item{message}{Nachricht die dekodiert werden sollte}
@@ -27,6 +28,14 @@ mehrmals wiederholt werden. Mit dem Parameter iterations, kann die Anzahl der Du
 Je mehr Durchläufe, desto besser das Ergebnis. Das Prinzip der Turbo-Codes ist, dass die Dekodierung mit Soft-Werten
 vollzogen wird. Das heißt, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
 Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit am Ausgang ist
+}
+\examples{
+input <- c(1,0,1,1,0)
+coder <- GenerateRscEncoder(2,2,c(5,7))
+perm <- TurboGetPermutation(length(input), coder, "RANDOM")
+message.encoded <- TurboEncode(input, perm, coder)
+result <- TurboDecode(input, perm, 5, coder)
+
 }
 \author{
 Witsch Daniel
