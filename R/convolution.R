@@ -222,7 +222,9 @@ ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
 #' @export
 ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE) {
 
-  output <- c_convolutionDecode_hard(code,
+  code.copy <- c(code)
+
+  output <- c_convolutionDecode_hard(code.copy,
                                      conv.encoder$N,
                                      conv.encoder$M,
                                      conv.encoder$prev.state,
