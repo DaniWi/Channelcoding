@@ -5,7 +5,7 @@
 \title{Dekodieren einer Nachricht mittels dem Turbo-Code-Verfahren}
 \usage{
 TurboDecode(message, permutation, iterations, coder.info,
-  parity.index = coder.info$N)
+  parity.index = coder.info$N, dotting.matrix = NULL)
 }
 \arguments{
 \item{message}{Nachricht die dekodiert werden sollte}

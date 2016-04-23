@@ -29,7 +29,7 @@
 #'
 #' @examples
 #' input <- c(1,0,1,1,0)
-#' coder <- GenerateRsccoder(2,2,c(5,7))
+#' coder <- GenerateRscEncoder(2,2,c(5,7))
 #' perm <- TurboGetPermutation(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
 #'
@@ -37,6 +37,9 @@
 TurboEncode <-
   function(message, permutation, coder.info, parity.index = coder.info$N, dotting.matrix = NULL) {
     #Checks all parameters
+    if (any((message != 1)[message != 0])) {
+      stop("Error: Nachricht darf nur 0er und 1er besitzen!")
+    }
     if (coder.info$N < 2) {
       stop("Error: coder muss 2 Ausgängen besitzen!")
     }
@@ -48,10 +51,11 @@ TurboEncode <-
     if (length(permutation) != (length(message) + coder.info$M)) {
       stop("Error: Permutation hat die falsche Länge!")
     }
-    if(!is.null(dotting.matrix) && ((dim(dotting.matrix))[1] != coder.info$N)) {
-      stop("Error: Punktierungsmatrix hat falsche Anzahl an Zeilen!")
+    if(!is.null(dotting.matrix) && ((dim(dotting.matrix))[1] != 3)) {
+      stop("Error: Punktierungsmatrix hat falsche Anzahl an Zeilen, bei Turbo-Codes müssen es 3 sein!")
     }
 
+    #when parity.index is too high
     if (parity.index > coder.info$N) {
       parity.index = coder.info$N
     }
@@ -76,10 +80,10 @@ TurboEncode <-
     parity.1 <- parity.1[temp.index]
     parity.2 <- parity.2[temp.index]
 
-    result.orig <- c(message.encoded, parity.1, parity.2)
+    result.orig <- Interleave(message.encoded, parity.1, parity.2)
     if(!is.null(dotting.matrix)) {
       #dotting the output
-      result.dot <- result.orig[as.logical(dotting.matrix)]
+      result.dot <- PunctureCode(result.orig, dotting.matrix)
     }
 
     #rmarkdown::render(system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"), params = list(
@@ -91,7 +95,7 @@ TurboEncode <-
     #rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
 
     if(!is.null(dotting.matrix)) {
-      return(list(original=result.orig, dotted=result.dot))
+      return(list(original=result.orig, punctured=result.dot))
     } else {
       return(result.orig)
     }
@@ -128,7 +132,7 @@ TurboEncode <-
 #'
 #' @export
 TurboDecode <-
-  function(message, permutation, iterations, coder.info, parity.index = coder.info$N) {
+  function(message, permutation, iterations, coder.info, parity.index = coder.info$N, dotting.matrix = NULL) {
     #Checks all parameters
     if (coder.info$N < 2) {
       stop("Error: coder muss 2 Ausgängen besitzen!")
@@ -138,26 +142,38 @@ TurboDecode <-
         "Error: coder muss ein systematischer coder sein! (Ausgang 1 muss Polynom 2^M besitzen)"
       )
     }
-    if ((length(message) %% 3) != 0) {
-      stop("Error: Nachricht hat die falsche Länge")
-    }
-    if (length(permutation) != (length(message) / 3)) {
-      stop("Error: Permutation hat die falsche Länge!")
+    if(!is.null(dotting.matrix) && ((dim(dotting.matrix))[1] != 3)) {
+      stop("Error: Punktierungsmatrix hat falsche Anzahl an Zeilen, bei Turbo-Codes müssen es 3 sein!")
     }
 
     if (parity.index > coder.info$N) {
       parity.index = coder.info$N
     }
 
-    #parse original message from input message
-    message.length <- length(message) / 3
-    message.orig <- message[1:message.length]
 
-    #parse parity1 from input message
-    parity.1 <- message[(message.length + 1):(2 * message.length)]
-    #parse parity2 from input message
-    parity.2 <-
-      message[(2 * message.length + 1):(3 * message.length)]
+    if(!is.null(dotting.matrix)) {
+      #insert missing bits from puncturing
+      message.afterPunct <- InsertPuncturingBits(message, dotting.matrix)
+    } else {
+      message.afterPunct <- message
+    }
+
+    #Check length of input(with inserted bits) and permutation
+    if ((length(message.afterPunct) %% 3) != 0) {
+      if(!is.null(dotting.matrix)) {
+        stop("Error: Punktierung hat fehlgeschlagen, andere Punktierungsmatrix wählen")
+      }
+      stop("Error: Nachricht hat die falsche Länge")
+    }
+    if (length(permutation) != (length(message.afterPunct) / 3)) {
+      stop("Error: Permutation hat die falsche Länge!")
+    }
+
+    #parse original message from input message
+    message.length <- length(message.afterPunct) / 3
+    message.orig <- Deinterleave(message.afterPunct, 1)
+    parity.1 <- Deinterleave(message.afterPunct, 2)
+    parity.2 <- Deinterleave(message.afterPunct, 3)
 
     #decode message
     message.decoded.term <-
@@ -181,7 +197,7 @@ TurboDecode <-
 #' @export
 TurboGetPermutation <- function(length, coder.info, type, args) {
   if (is.null(coder.info$M)) {
-    stop("Error: coder nicht richtig gesetzt!")
+    stop("Error: Kodierer nicht richtig gesetzt!")
   }
 
   switch(
@@ -303,4 +319,15 @@ TurboGetPermutation <- function(length, coder.info, type, args) {
     }
   )
   stop("Error: Type von Interleaver wurde nicht richtig gewählt!")
+}
+
+#' @export
+TurboGetPuncturingMatrix <- function(puncturing.vector) {
+
+  if (any((puncturing.vector != 1)[puncturing.vector != 0])) {
+    # puncturing.vector has elements with value different from 0 or 1 which is not allowed
+    stop("Invalid puncturing vector! Only values 0/1 are allowed!")
+  }
+
+  return(matrix(puncturing.vector, nrow = 3))
 }

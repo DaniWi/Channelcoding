@@ -31,7 +31,7 @@ des Ausgangs angegeben werden.
 }
 \examples{
 input <- c(1,0,1,1,0)
-coder <- GenerateRsccoder(2,2,c(5,7))
+coder <- GenerateRscEncoder(2,2,c(5,7))
 perm <- TurboGetPermutation(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
 

@@ -81,3 +81,15 @@ decimalToOctal <- function(x) {
 
   return(oct)
 }
+
+Interleave <- function(v1, v2, v3) {
+  ord1 <- 3*(1:length(v1)) - 2
+  ord2 <- 3*(1:length(v2)) - 1
+  ord3 <- 3*(1:length(v3))
+  return(c(v1,v2,v3)[order(c(ord1,ord2,ord3))])
+}
+
+Deinterleave <- function(vec, index) {
+  index <- c(rep(FALSE,index - 1), TRUE, rep(FALSE, 3 - index))
+  return(vec[index])
+}
