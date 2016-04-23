@@ -22,57 +22,57 @@
 #'
 #' @param message Nachricht die kodiert werden sollte
 #' @param permutation Permutationsvektor der mittels \code{\link{TurboGetPermutation}} erzeugt werden sollte
-#' @param encoder.info Kodierer
+#' @param coder.info Kodierer
 #' @param parity.index Index des zu verwendenten Ausgangs des Kodieres
 #'
 #' @return Kodierte Nachricht, die aus Ausgangsnachricht und den beiden kodierten Nachrichten besteht
 #'
 #' @examples
 #' input <- c(1,0,1,1,0)
-#' coder <- GenerateRscEncoder(2,2,c(5,7))
+#' coder <- GenerateRsccoder(2,2,c(5,7))
 #' perm <- TurboGetPermutation(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
 #'
 #' @export
 TurboEncode <-
-  function(message, permutation, encoder.info, parity.index = encoder.info$N, dotting.matrix = NULL) {
+  function(message, permutation, coder.info, parity.index = coder.info$N, dotting.matrix = NULL) {
     #Checks all parameters
-    if (encoder.info$N < 2) {
-      stop("Error: Encoder muss 2 Ausgängen besitzen!")
+    if (coder.info$N < 2) {
+      stop("Error: coder muss 2 Ausgängen besitzen!")
     }
-    if (encoder.info$rsc != TRUE && encoder.info$generators[1] != (2^encoder.info$M)) {
+    if (coder.info$rsc != TRUE && coder.info$generators[1] != (2^coder.info$M)) {
       stop(
-        "Error: Encoder muss ein systematischer Encoder sein! (Ausgang 1 muss Polynom 2^M besitzen)"
+        "Error: coder muss ein systematischer coder sein! (Ausgang 1 muss Polynom 2^M besitzen)"
       )
     }
-    if (length(permutation) != (length(message) + encoder.info$M)) {
+    if (length(permutation) != (length(message) + coder.info$M)) {
       stop("Error: Permutation hat die falsche Länge!")
     }
-    if(!is.null(dotting.matrix) && ((dim(dotting.matrix))[1] != encoder.info$N)) {
+    if(!is.null(dotting.matrix) && ((dim(dotting.matrix))[1] != coder.info$N)) {
       stop("Error: Punktierungsmatrix hat falsche Anzahl an Zeilen!")
     }
 
-    if (parity.index > encoder.info$N) {
-      parity.index = encoder.info$N
+    if (parity.index > coder.info$N) {
+      parity.index = coder.info$N
     }
 
-    #first encoder with termination
-    parity.1 <- ConvEncode(message, encoder.info, TRUE)
+    #first coder with termination
+    parity.1 <- ConvEncode(message, coder.info, TRUE)
     #extract original message with termination bits from parity
     temp.index <-
-      c(rep(FALSE,0), TRUE, rep(FALSE, encoder.info$N - 1))
+      c(rep(FALSE,0), TRUE, rep(FALSE, coder.info$N - 1))
     message.encoded <- parity.1[temp.index]
 
     #permutate original message with termination (mapping important!!)
     message.perm <- as.numeric(message.encoded[perm + 1] < 0)
 
-    #second encoder without termination
-    parity.2 <- ConvEncode(message.perm, encoder.info, FALSE)
+    #second coder without termination
+    parity.2 <- ConvEncode(message.perm, coder.info, FALSE)
 
 
     #extract parity bits from the output messages
     temp.index <-
-      c(rep(FALSE,parity.index - 1), TRUE, rep(FALSE, encoder.info$N - parity.index))
+      c(rep(FALSE,parity.index - 1), TRUE, rep(FALSE, coder.info$N - parity.index))
     parity.1 <- parity.1[temp.index]
     parity.2 <- parity.2[temp.index]
 
@@ -107,35 +107,35 @@ TurboEncode <-
 #' bei beiden Deodierern durchgeschalten. Nachdem die Nachricht durche beide Dekodierer durch ist, kann dieser Schritt
 #' mehrmals wiederholt werden. Mit dem Parameter iterations, kann die Anzahl der Durchläufe verändert werden.
 #' Je mehr Durchläufe, desto besser das Ergebnis. Das Prinzip der Turbo-Codes ist, dass die Dekodierung mit Soft-Werten
-#' vollzogen wird. Das hei�t, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
+#' vollzogen wird. Das hei?t, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
 #' Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit am Ausgang ist
 #'
 #' @author Witsch Daniel
 #'
 #' @param message Nachricht die dekodiert werden sollte
 #' @param permutation Permutationsvektor der mittels \code{\link{TurboGetPermutation}} erzeugt werden sollte
-#' @param encoder.info Dekodierer
+#' @param coder.info Dekodierer
 #' @param parity.index Index des zu verwendenten Ausgangs des Kodieres
 #'
 #' @return Deodierte Nachricht
 #'
 #' @examples
 #' input <- c(1,0,1,1,0)
-#' coder <- GenerateRscEncoder(2,2,c(5,7))
+#' coder <- GenerateRsccoder(2,2,c(5,7))
 #' perm <- TurboGetPermutation(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
 #' result <- TurboDecode(input, perm, 5, coder)
 #'
 #' @export
 TurboDecode <-
-  function(message, permutation, iterations, encoder.info, parity.index = encoder.info$N) {
+  function(message, permutation, iterations, coder.info, parity.index = coder.info$N) {
     #Checks all parameters
-    if (encoder.info$N < 2) {
-      stop("Error: Encoder muss 2 Ausgängen besitzen!")
+    if (coder.info$N < 2) {
+      stop("Error: coder muss 2 Ausgängen besitzen!")
     }
-    if (encoder.info$rsc != TRUE && encoder.info$generators[1] != (2^encoder.info$M)) {
+    if (coder.info$rsc != TRUE && coder.info$generators[1] != (2^coder.info$M)) {
       stop(
-        "Error: Encoder muss ein systematischer Encoder sein! (Ausgang 1 muss Polynom 2^M besitzen)"
+        "Error: coder muss ein systematischer coder sein! (Ausgang 1 muss Polynom 2^M besitzen)"
       )
     }
     if ((length(message) %% 3) != 0) {
@@ -145,8 +145,8 @@ TurboDecode <-
       stop("Error: Permutation hat die falsche Länge!")
     }
 
-    if (parity.index > encoder.info$N) {
-      parity.index = encoder.info$N
+    if (parity.index > coder.info$N) {
+      parity.index = coder.info$N
     }
 
     #parse original message from input message
@@ -163,15 +163,15 @@ TurboDecode <-
     message.decoded.term <-
       c_turbo_decode(
         message.orig, parity.1, parity.2, permutation,
-        iterations, encoder.info$N, encoder.info$M, encoder.info$prev.state,
-        encoder.info$output, parity.index
+        iterations, coder.info$N, coder.info$M, coder.info$prev.state,
+        coder.info$output, parity.index
       )
 
     #delete termination bits from result
     output.soft <-
-      message.decoded.term$soft.output[1:(message.length - encoder.info$M)]
+      message.decoded.term$soft.output[1:(message.length - coder.info$M)]
     output.hard <-
-      message.decoded.term$hard.output[1:(message.length - encoder.info$M)]
+      message.decoded.term$hard.output[1:(message.length - coder.info$M)]
     message.decoded <-
       list(output.soft = output.soft, output.hard = output.hard)
 
@@ -179,23 +179,23 @@ TurboDecode <-
   }
 
 #' @export
-TurboGetPermutation <- function(length, encoder.info, type, args) {
-  if (is.null(encoder.info$M)) {
-    stop("Error: Encoder nicht richtig gesetzt!")
+TurboGetPermutation <- function(length, coder.info, type, args) {
+  if (is.null(coder.info$M)) {
+    stop("Error: coder nicht richtig gesetzt!")
   }
 
   switch(
     type,
     RANDOM = {
       return(sample(c(0:(
-        length + encoder.info$M - 1
+        length + coder.info$M - 1
       ))))
     },
     PRIMITIVE = {
       if (is.null(args$root)) {
         stop("Error: root(args) wurde nicht gesetzt")
       }
-      N <- length + encoder.info$M - 1
+      N <- length + coder.info$M - 1
       init <- c(0:N)
       interleaver <- (init - args$root) %% (N + 1)
 
@@ -211,7 +211,7 @@ TurboGetPermutation <- function(length, encoder.info, type, args) {
       }
       rows <- args$rows
       cols <- args$cols
-      if (rows * cols != (length + encoder.info$M)) {
+      if (rows * cols != (length + coder.info$M)) {
         stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols
@@ -238,7 +238,7 @@ TurboGetPermutation <- function(length, encoder.info, type, args) {
       }
       rows <- args$rows
       cols <- args$cols
-      if (rows * cols != (length + encoder.info$M)) {
+      if (rows * cols != (length + coder.info$M)) {
         stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols
@@ -257,7 +257,7 @@ TurboGetPermutation <- function(length, encoder.info, type, args) {
       }
       rows <- args$rows
       cols <- args$cols
-      if (rows * cols != (length + encoder.info$M)) {
+      if (rows * cols != (length + coder.info$M)) {
         stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols
@@ -282,7 +282,7 @@ TurboGetPermutation <- function(length, encoder.info, type, args) {
       }
       rows <- args$rows
       cols <- args$cols
-      if (rows * cols != (length + encoder.info$M)) {
+      if (rows * cols != (length + coder.info$M)) {
         stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols

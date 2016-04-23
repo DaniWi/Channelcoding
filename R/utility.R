@@ -1,22 +1,22 @@
 #' @export
-GetPuncturingMatrix <- function(puncturing.vector, conv.encoder) {
-  
-  if (length(puncturing.vector[puncturing.vector != 0 && puncturing.vector != 1]) > 0) {
-    # puncturing.vector has elements with value diffrent from 0 or 1 which is not allowed
+GetPuncturingMatrix <- function(puncturing.vector, coder.info) {
+
+  if (any((puncturing.vector != 1)[puncturing.vector != 0])) {
+    # puncturing.vector has elements with value different from 0 or 1 which is not allowed
     stop("Invalid puncturing vector! Only values 0/1 are allowed!")
   }
-  
-  if (all(names(conv.encoder) != "N") || is.null(conv.encoder$N)) {
+
+  if (is.null(coder.info$N)) {
     stop("Encoder has to specify list element N!")
   }
-  
-  return(matrix(puncturing.vector, nrow = conv.encoder$N))
+
+  return(matrix(puncturing.vector, nrow = coder.info$N))
 }
 
 #' @export
 PunctureCode <- function(original.code, puncturing.matrix) {
   mask <- as.logical(puncturing.matrix)
-  
+
   return(original.code[mask])
 }
 

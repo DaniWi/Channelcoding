@@ -4,7 +4,7 @@
 \alias{TurboEncode}
 \title{Kodieren einer Nachricht mittels dem Turbo-Code-Verfahren}
 \usage{
-TurboEncode(message, permutation, encoder.info, parity.index = encoder.info$N,
+TurboEncode(message, permutation, coder.info, parity.index = coder.info$N,
   dotting.matrix = NULL)
 }
 \arguments{
@@ -12,7 +12,7 @@ TurboEncode(message, permutation, encoder.info, parity.index = encoder.info$N,
 
 \item{permutation}{Permutationsvektor der mittels \code{\link{TurboGetPermutation}} erzeugt werden sollte}
 
-\item{encoder.info}{Kodierer}
+\item{coder.info}{Kodierer}
 
 \item{parity.index}{Index des zu verwendenten Ausgangs des Kodieres}
 }
@@ -31,7 +31,7 @@ des Ausgangs angegeben werden.
 }
 \examples{
 input <- c(1,0,1,1,0)
-coder <- GenerateRscEncoder(2,2,c(5,7))
+coder <- GenerateRsccoder(2,2,c(5,7))
 perm <- TurboGetPermutation(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
 

@@ -4,15 +4,15 @@
 \alias{TurboDecode}
 \title{Dekodieren einer Nachricht mittels dem Turbo-Code-Verfahren}
 \usage{
-TurboDecode(message, permutation, iterations, encoder.info,
-  parity.index = encoder.info$N)
+TurboDecode(message, permutation, iterations, coder.info,
+  parity.index = coder.info$N)
 }
 \arguments{
 \item{message}{Nachricht die dekodiert werden sollte}
 
 \item{permutation}{Permutationsvektor der mittels \code{\link{TurboGetPermutation}} erzeugt werden sollte}
 
-\item{encoder.info}{Dekodierer}
+\item{coder.info}{Dekodierer}
 
 \item{parity.index}{Index des zu verwendenten Ausgangs des Kodieres}
 }
@@ -26,12 +26,12 @@ mindestens 2 Ausgänge haben und sollte Systematisch sein. Dadurch wird der erst
 bei beiden Deodierern durchgeschalten. Nachdem die Nachricht durche beide Dekodierer durch ist, kann dieser Schritt
 mehrmals wiederholt werden. Mit dem Parameter iterations, kann die Anzahl der Durchläufe verändert werden.
 Je mehr Durchläufe, desto besser das Ergebnis. Das Prinzip der Turbo-Codes ist, dass die Dekodierung mit Soft-Werten
-vollzogen wird. Das hei�t, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
+vollzogen wird. Das hei?t, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
 Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit am Ausgang ist
 }
 \examples{
 input <- c(1,0,1,1,0)
-coder <- GenerateRscEncoder(2,2,c(5,7))
+coder <- GenerateRsccoder(2,2,c(5,7))
 perm <- TurboGetPermutation(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
 result <- TurboDecode(input, perm, 5, coder)
