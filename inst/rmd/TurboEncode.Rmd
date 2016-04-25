@@ -11,6 +11,7 @@ params:
   parity1: !r c(1,1,1,1,1)
   parity2: !r c(1,1,1,1,1)
   result: !r c(1,1,1,1,1,1,0,0,0,0,0,0,0,1,1)
+  encoder: !r list(N=2, M=2, generators=c(5,7), rsc=TRUE, termination=c(0,1,1,0), next.state=matrix(c(0,2,3,1,2,0,1,3), ncol =2), prev.state=matrix(c(0,3,1,2,1,2,0,3,-1,-1,-1,-1), ncol =3))
 header-includes:
 - \usepackage{tikz}
 - \usepackage{pgfplots}
@@ -20,6 +21,48 @@ header-includes:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, echo=FALSE}
+if (params$encoder$rsc == TRUE) {
+  art.coder <- "Rekursiver"
+} else {
+  art.coder <- "Nicht-Rekursiver"
+}
+```
+
+## Kodierer Information
+
+- `r art.coder` Kodierer
+- Anzahl von Ausgängen : `r params$encoder$N`
+- Anzahl von Registern : `r params$encoder$M`
+- Generatoren : `r params$encoder$generators`
+
+## Kodierer Matrix : Nächster Zustand
+```{r, results='asis'}
+next.table <- params$encoder$next.state
+colnames(next.table) <- c("Bit 0", "Bit 1")
+row.counter <- rep(1:dim(next.table)[1])
+rownames(next.table) <- paste("Zustand ", row.counter)
+knitr::kable(next.table, align="c")
+```
+
+## Kodierer Matrix : Voriger Zustand
+```{r, results='asis'}
+prev.table <- params$encoder$prev.state
+colnames(prev.table) <- c("Bit 0", "Bit 1", "2.Möglichkeit")
+row.counter <- rep(1:dim(prev.table)[1])
+rownames(prev.table) <- paste("Zustand ", row.counter)
+knitr::kable(prev.table, align="c")
+```
+
+## Kodierer Matrix : Ausgangsbits
+```{r, results='asis'}
+output.table <- params$encoder$output
+colnames(output.table) <- c("Bit 0", "Bit 1")
+row.counter <- rep(1:dim(output.table)[1])
+rownames(output.table) <- paste("Zustand ", row.counter)
+knitr::kable(output.table, align="c")
 ```
 
 ## Turbo-Kodierer
