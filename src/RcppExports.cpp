@@ -50,8 +50,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_convolutionDecode
-List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output);
-RcppExport SEXP channelcoding_c_convolutionDecode(SEXP codeSEXP, SEXP NSEXP, SEXP MSEXP, SEXP previousStateSEXP, SEXP outputSEXP) {
+List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output, int IsTerminated);
+RcppExport SEXP channelcoding_c_convolutionDecode(SEXP codeSEXP, SEXP NSEXP, SEXP MSEXP, SEXP previousStateSEXP, SEXP outputSEXP, SEXP IsTerminatedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -60,13 +60,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type M(MSEXP);
     Rcpp::traits::input_parameter< IntegerMatrix >::type previousState(previousStateSEXP);
     Rcpp::traits::input_parameter< IntegerMatrix >::type output(outputSEXP);
-    __result = Rcpp::wrap(c_convolutionDecode(code, N, M, previousState, output));
+    Rcpp::traits::input_parameter< int >::type IsTerminated(IsTerminatedSEXP);
+    __result = Rcpp::wrap(c_convolutionDecode(code, N, M, previousState, output, IsTerminated));
     return __result;
 END_RCPP
 }
 // c_convolutionDecode_hard
-IntegerVector c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output);
-RcppExport SEXP channelcoding_c_convolutionDecode_hard(SEXP codeSEXP, SEXP NSEXP, SEXP MSEXP, SEXP previousStateSEXP, SEXP outputSEXP) {
+List c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output, int IsTerminated);
+RcppExport SEXP channelcoding_c_convolutionDecode_hard(SEXP codeSEXP, SEXP NSEXP, SEXP MSEXP, SEXP previousStateSEXP, SEXP outputSEXP, SEXP IsTerminatedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -75,7 +76,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type M(MSEXP);
     Rcpp::traits::input_parameter< IntegerMatrix >::type previousState(previousStateSEXP);
     Rcpp::traits::input_parameter< IntegerMatrix >::type output(outputSEXP);
-    __result = Rcpp::wrap(c_convolutionDecode_hard(code, N, M, previousState, output));
+    Rcpp::traits::input_parameter< int >::type IsTerminated(IsTerminatedSEXP);
+    __result = Rcpp::wrap(c_convolutionDecode_hard(code, N, M, previousState, output, IsTerminated));
     return __result;
 END_RCPP
 }

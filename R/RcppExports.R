@@ -13,12 +13,12 @@ c_convolutionEncode <- function(input, N, M, nextState, output, rsc, termination
     .Call('channelcoding_c_convolutionEncode', PACKAGE = 'channelcoding', input, N, M, nextState, output, rsc, termination, terminate)
 }
 
-c_convolutionDecode <- function(code, N, M, previousState, output) {
-    .Call('channelcoding_c_convolutionDecode', PACKAGE = 'channelcoding', code, N, M, previousState, output)
+c_convolutionDecode <- function(code, N, M, previousState, output, IsTerminated) {
+    .Call('channelcoding_c_convolutionDecode', PACKAGE = 'channelcoding', code, N, M, previousState, output, IsTerminated)
 }
 
-c_convolutionDecode_hard <- function(code, N, M, previousState, output) {
-    .Call('channelcoding_c_convolutionDecode_hard', PACKAGE = 'channelcoding', code, N, M, previousState, output)
+c_convolutionDecode_hard <- function(code, N, M, previousState, output, IsTerminated) {
+    .Call('channelcoding_c_convolutionDecode_hard', PACKAGE = 'channelcoding', code, N, M, previousState, output, IsTerminated)
 }
 
 c_insert_puncturing_bits <- function(punctured_message, puncturing_vector, rows, cols) {

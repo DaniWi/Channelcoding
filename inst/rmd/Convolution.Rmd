@@ -1,0 +1,385 @@
+---
+title: "Convolution"
+output: beamer_presentation
+author: Martin Nocker
+params:
+  conv.encoder: !r 0
+  decoded: !r 0
+  trellis: !r 0
+  survivor.states: !r 0
+header-includes:
+- \usepackage{tikz}
+- \usepackage{pgfplots}
+- \usepackage{mathtools}
+- \usetikzlibrary{calc}
+---
+
+```{r, echo=FALSE}
+# helper functions
+
+# transforms an integer value n to a at least min.length bit binary vector
+binVector <- function(n, min.length) {
+  
+  result <- integer()
+  i <- 0
+  while (n != 0) {
+    result <- c(n %% 2, result)
+    n = n %/% 2
+    i <- i + 1
+  }
+  
+  zeros <- rep(0, times = min.length)
+  
+  result <- c(zeros, result)
+
+  return(tail(result,min.length))
+}
+
+# returns an ordering of the state numbers for a nice state diagram
+ordering <- function(num.states, next.state) {
+  #next.state <- matrix(rep(0:(num.states-1), each = 2), ncol = 2)
+  result <- integer(1)
+  
+  n <- 0
+  for (i in 2:num.states) {
+    n0 <- next.state[n+1,1]
+    n1 <- next.state[n+1,2]
+    
+    if (n0 %in% result) {
+      n <- n1
+    }
+    else if (n1 %in% result) {
+      n <- n0
+    }
+    else {
+      n <- if (n0 > n1) n0 else n1
+    }
+    
+    result <- c(result, n)
+  }
+  
+  return(result)
+}
+```
+
+```{r, echo=FALSE}
+conv.encoder <- params$conv.encoder
+
+M <- conv.encoder$M
+N <- conv.encoder$N
+output <- conv.encoder$output
+next.state <- conv.encoder$next.state
+prev.state <- conv.encoder$prev.state
+decoded <- params$decoded
+trellis <- params$trellis
+survivor.states <- params$survivor.states
+
+num.states <- 2^M
+
+tikz.trellis <- ""
+tikz.trellis.full <- ""
+tikz.trellis.color <- ""
+tikz.diagram <- ""
+
+state.order <- ordering(num.states, next.state)
+
+## TRELLIS DIAGRAM
+# trellis nodes
+for (t in 1:ncol(trellis)) {
+  for (s in 1:num.states) {
+    
+    if (is.na(trellis[s,t])) {
+      nodetype <- "freestate"
+      value <- ""
+    }
+    else {
+      nodetype <- "state"
+      value <- trellis[s,t]
+    }
+    definition <- paste0("\\node[",nodetype,"]")
+    nodename <- paste0("(node",s-1,t-1,")")
+    coordinate <- paste0("at (",t-1,",",-s+1,")")
+    label <- paste0("{",value,"}")
+    single.node <- paste(definition,nodename,coordinate,label,";")
+    
+    tikz.trellis <- paste(tikz.trellis, single.node)
+  }
+}
+
+# state labels
+for (s in 0:(num.states-1)) {
+  value <- paste(binVector(s,M),collapse = "")
+  label <- paste0("\\node (statelabel",s,") [left of=node",s,"0] {",value,"};")
+  
+  tikz.trellis <- paste(tikz.trellis, label)
+}
+
+# time labels
+for (t in 0:(ncol(trellis)-1)) {
+  label <- paste0("\\node (timelabel",t,") [above of=node0",t,"] {",t,"};")
+  
+  tikz.trellis <- paste(tikz.trellis, label)
+}
+
+tikz.trellis.full <- tikz.trellis
+tikz.trellis.color <- tikz.trellis
+
+# tikz.trellis survivor paths
+x <- 0
+for (t in 2:ncol(trellis)) {
+  x <- next.state[x+1,decoded[t-1]+1]
+  for (s in 0:(num.states-1)) {
+    if (!is.na(trellis[s+1,t])) {
+
+      previous <- survivor.states[s+1,t]
+      
+      bit <- if(next.state[previous+1,1] == s) 0 else 1
+
+      if (!is.na(trellis[previous+1,t-1])) {
+        this.node <- paste0("(node",s,t-1,")")
+
+        color <- ""
+        if (x == s) {
+          color <- ",orange"
+        }
+        
+        definition <- ""
+        if (bit == 0) {
+          definition <- paste0("\\draw[->",color,"]")
+        }
+        else {
+          definition <- paste0("\\draw[->, dashed",color,"]")
+        }
+
+        prev.node <- paste0("(node",previous,t-2,")")
+        label.value <- paste(binVector(output[previous+1,bit+1],N),collapse = "")
+        label <- paste0("node [sloped, above, very near start] {",label.value,"}")
+        edge <- paste(definition,prev.node,"--",this.node,label,";")
+
+        tikz.trellis <- paste(tikz.trellis, edge)
+      }
+    }
+  }
+}
+
+# tikz.trellis fully connected
+for (t in 1:(ncol(trellis)-1)) {
+  for (s in 0:(num.states-1)) {
+
+    if (!is.na(trellis[s+1,t])) {
+      this.node <- paste0("(node",s,t-1,")")
+
+      if (!is.na(trellis[next.state[s+1,1]+1,t+1])) {
+        next.node.0 <- paste0("(node",next.state[s+1,1],t,")")
+        label.value.0 <- paste(binVector(output[s+1,1],N),collapse = "")
+        label.0 <- paste0("node [sloped, above, very near start] {",label.value.0,"}")
+        edge.0 <- paste("\\draw[->]",this.node,"--",next.node.0,label.0,";")
+
+        tikz.trellis.full <- paste(tikz.trellis.full, edge.0)
+      }
+
+      if (!is.na(trellis[next.state[s+1,2]+1,t+1])) {
+        next.node.1 <- paste0("(node",next.state[s+1,2],t,")")
+        label.value.1 <- paste(binVector(output[s+1,2],N),collapse = "")
+        label.1 <- paste0("node [sloped, above, very near start] {",label.value.1,"}")
+        edge.1 <- paste("\\draw[->, dashed]",this.node,"--",next.node.1,label.1,";")
+
+        tikz.trellis.full <- paste(tikz.trellis.full, edge.1)
+      }
+    }
+  }
+}
+
+# t-axis
+# taxis <- paste0("\\draw[->,thick] ($(timelabel0.north)+(0,.5)$) -- ($(timelabel",(ncol(trellis)-1),".north)+(0,.5)$) node [below right] {$t$};")
+# tikz.trellis <- paste(tikz.trellis, taxis)
+
+## STATE DIAGRAM
+# state diagram nodes
+for (s in 0:(num.states-1)) {
+  xpos <- 2.5*sin(s*2*pi/num.states)
+  ypos <- 2.5*cos(s*2*pi/num.states)
+  position <- paste0(xpos,",",ypos)
+  name <- paste(binVector(state.order[s+1],M),collapse = "")
+  state <- paste0("\\node[state] (state",state.order[s+1],") at (",position,") {",name,"};")
+  
+  tikz.diagram <- paste(tikz.diagram, state)
+}
+
+# state diagram connections
+for (s in 0:(num.states-1)) {
+  this.state <- paste0("(state",s,")")
+  n_next.state.0 <- next.state[s+1,1]
+  n_next.state.1 <- next.state[s+1,2]
+  str_next.state.0 <- paste0("(state",n_next.state.0,")")
+  str_next.state.1 <- paste0("(state",n_next.state.1,")")
+
+  label.value.0 <- paste(binVector(output[s+1,1],N),collapse = "")
+  label.value.1 <- paste(binVector(output[s+1,2],N),collapse = "")
+  
+  # indices of the states in the ordering vector (1 based)
+  this.ordering.index <- which(state.order == s)
+  next.0.ordering.index <- which(state.order == n_next.state.0)
+  next.1.ordering.index <- which(state.order == n_next.state.1)
+  
+  # if edges do not go to neighbour, set label near start
+  # to avoid label crossings
+  near.0 <- ""
+  near.1 <- ""
+  distance.to.0 <- abs(this.ordering.index - next.0.ordering.index)
+  distance.to.1 <- abs(this.ordering.index - next.1.ordering.index)
+  if (distance.to.0 > 1 && distance.to.0 < num.states-1) {
+    near.0 <- ",near start"
+  }
+  
+  if (distance.to.1 > 1 && distance.to.1 < num.states-1) {
+    near.1 <- ",near start"
+  }
+  # 2nd check in previous if clause necessary because if state numbers
+  # are in first and last position of the ordering, they have distance
+  # num.states-1 but are neighbours in the state diagram
+
+  label.0 <- paste0("node [sloped, above",near.0,"] {",label.value.0,"}")
+  label.1 <- paste0("node [sloped, above",near.1,"] {",label.value.1,"}")
+  
+  # in case of a loop
+  angle <- (90-(this.ordering.index-1)*360/num.states) %% 360
+  angle.out <- (angle + 15) %% 360
+  angle.in <- (angle - 15) %% 360
+  
+  if (n_next.state.0 == s) {
+    # loop with input bit 0
+    loop <- paste0("[looseness=8,out=",angle.out,",in=",angle.in,"]")
+
+    if (sin(angle*pi/180) < 0) {
+      label.0 <- paste0("node [sloped, below",near.0,"] {",label.value.0,"}")
+    }
+    
+    edge.0 <- paste("\\draw[->]",this.state,"to",loop,label.0,this.state,";")
+  }
+  else {
+    # 'normal' edge to other node
+    bend <- ""
+    if (next.state[n_next.state.0+1,1] == s || next.state[n_next.state.0+1,2] == s) {
+      # there is a connection back -> bend the edge
+      bend <- "[bend left=15]"
+    }
+    edge.0 <- paste("\\draw[->]",this.state,"to",bend,label.0,str_next.state.0,";")
+  }
+
+  if (n_next.state.1 == s) {
+    # loop with input bit 1
+    loop <- paste0("[looseness=8,out=",angle.out,",in=",angle.in,"]")
+
+    if (sin(angle*pi/180) < 0) {
+      label.1 <- paste0("node [sloped, below",near.1,"] {",label.value.1,"}")
+    }
+    
+    edge.1 <- paste("\\draw[->, dashed]",this.state,"to",loop,label.1,this.state,";")
+  }
+  else {
+    # 'normal' edge to other node
+    bend <- ""
+    if (next.state[n_next.state.1+1,1] == s || next.state[n_next.state.1+1,2] == s) {
+      # there is a connection back -> bend the edge
+      bend <- "[bend left=15]"
+    }
+    edge.1 <- paste("\\draw[->, dashed]",this.state,"to",bend,label.1,str_next.state.1,";")
+  }
+
+  tikz.diagram <- paste(tikz.diagram, edge.0, edge.1)
+}
+```
+
+## Trellis Diagram
+
+\begin{center}
+\begin{tikzpicture}[>=stealth, font=\tiny]
+\tikzstyle{state} = [draw, circle, teal, very thick, text=black, minimum size=4mm, inner sep=0mm]
+\tikzstyle{freestate} = [circle, teal, fill=teal, minimum size=1mm, inner sep=0mm]
+
+`r tikz.trellis.full`
+
+\end{tikzpicture}
+\end{center}
+
+## Trellis Diagram
+
+\begin{center}
+\begin{tikzpicture}[>=stealth, font=\tiny]
+\tikzstyle{state} = [draw, circle, teal, very thick, text=black, minimum size=4mm, inner sep=0mm]
+\tikzstyle{freestate} = [circle, teal, fill=teal, minimum size=1mm, inner sep=0mm]
+
+`r tikz.trellis`
+
+\end{tikzpicture}
+\end{center}
+
+## State Diagram
+
+\begin{center}
+\begin{tikzpicture}[>=stealth, font=\scriptsize]
+\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=8mm, font=\footnotesize]
+
+`r tikz.diagram`
+
+\end{tikzpicture}
+\end{center}
+
+## LaTeX Table
+
+\begin{tabular}{c c c c}
+\visible<1-> {state&input&output&next state\\ \hline}
+\visible<2-> {00&1&11&10\\}
+\visible<3-> {10&0&10&01\\}
+\visible<4-> {01&1&00&10\\}
+\visible<5-> {10&0&10&01\\}
+\visible<6-> {01&0&11&00\\}
+\end{tabular}
+
+## Markdown Table
+
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
+
+## Sandbox
+
+```{r, echo=FALSE}
+myFunction <- function() {
+  return("Hello from myFunction!")
+}
+```
+
+`r myFunction()`
+
+## Sandbox
+
+\begin{tikzpicture}[>=stealth, font=\tiny]
+\draw[lightgray] (0,0) grid (2,2);
+\draw (0,0) -- ({asin(1)/90},{sqrt(1)});
+
+\tikzstyle{state} = [draw, circle, font=\normalsize, inner sep=1mm, minimum size=10mm]
+
+\node[state] (hi) at (2,2) {hi};
+\draw[->] (hi) to [looseness=8,out=110,in=70] node [sloped,above] {123} (hi);
+
+\end{tikzpicture}
+
+## Dimensions
+
+\begin{tikzpicture}
+\draw (0,8) -- (0,0) -- (11,0);
+\end{tikzpicture}
+
+## Boxes
+\resizebox{!}{8cm}{
+  \begin{tikzpicture}
+  \tikzstyle{state} = [draw, circle, font=\normalsize, inner sep=1mm, minimum size=10mm]
+  \node[state] (n00) at (0,0) {$N00$};
+  \node[state] (n10) at (8,0) {$N10$};
+  \node[state] (n01) at (0,8) {$N01$};
+  \node[state] (n11) at (8,8) {$N11$};
+  \end{tikzpicture}
+}

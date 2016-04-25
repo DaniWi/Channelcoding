@@ -189,23 +189,34 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
 #' @export
 ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
 
-  output <- c_convolutionDecode(code,
+  result <- c_convolutionDecode(code,
                                 conv.encoder$N,
                                 conv.encoder$M,
                                 conv.encoder$prev.state,
-                                conv.encoder$output)
+                                conv.encoder$output,
+                                as.integer(terminate))
+
+  rmarkdown::render(system.file("rmd", "Convolution.Rmd", package = "channelcoding"),
+                    params = list(conv.encoder = conv.encoder,
+                                  decoded = result$hard.output,
+                                  trellis = result$trellis,
+                                  survivor.states = result$survivor.states))
+
+  # rstudioapi::viewer(system.file("rmd", "Convolution.Rmd", package = "channelcoding"))
+
+  result <- result[1:2]
 
   # if terminated, termination bits are thrown away
   if (terminate == TRUE) {
     M <- conv.encoder$M
-    soft <- head(output$soft.output, length(output$soft.output) - M)
-    hard <- head(output$hard.output, length(output$hard.output) - M)
+    soft <- head(result$soft.output, length(result$soft.output) - M)
+    hard <- head(result$hard.output, length(result$hard.output) - M)
 
     newlist <- list(soft.output = soft, hard.output = hard)
     return(newlist)
   }
 
-  return(output)
+  return(result)
 }
 
 #' convolutional decoding of a code (hard decision)
@@ -224,16 +235,25 @@ ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE) {
 
   code.copy <- c(code)
 
-  output <- c_convolutionDecode_hard(code.copy,
+  result <- c_convolutionDecode_hard(code.copy,
                                      conv.encoder$N,
                                      conv.encoder$M,
                                      conv.encoder$prev.state,
-                                     conv.encoder$output)
+                                     conv.encoder$output,
+                                     as.integer(terminate))
+
+  rmarkdown::render(system.file("rmd", "Convolution.Rmd", package = "channelcoding"),
+                    params = list(conv.encoder = conv.encoder,
+                                  decoded = result$hard.output,
+                                  trellis = result$trellis,
+                                  survivor.states = result$survivor.states))
+
+  # rstudioapi::viewer(system.file("rmd", "Convolution.Rmd", package = "channelcoding"))
 
   # if terminated, termination bits are thrown away
   if (terminate == TRUE) {
-    return(head(output, length(output) - conv.encoder$M))
+    return(head(result$hard.output, length(result$hard.output) - conv.encoder$M))
   }
 
-  return(output)
+  return(result$hard.output)
 }
