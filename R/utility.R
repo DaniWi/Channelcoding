@@ -10,14 +10,24 @@ GetPuncturingMatrix <- function(puncturing.vector, coder.info) {
     stop("Encoder has to specify list element N!")
   }
 
-  return(matrix(puncturing.vector, nrow = coder.info$N))
+  mat <- matrix(puncturing.vector, nrow = coder.info$N)
+
+  if (any(colSums(mat) == 0)) {
+    stop("Puncturing Matrix has a column only with 0, this is illegal!")
+  }
+
+  return(mat)
 }
 
 #' @export
 PunctureCode <- function(original.code, puncturing.matrix) {
   mask <- as.logical(puncturing.matrix)
 
-  return(original.code[mask])
+  if(length(original.code) < length(mask)) {
+    return(original.code[mask[1:length(original.code)]])
+  } else {
+    return(original.code[mask])
+  }
 }
 
 #' @export
