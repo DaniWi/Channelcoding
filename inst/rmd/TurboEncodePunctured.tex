@@ -1,30 +1,10 @@
----
-title: "Turbo Kodierer"
-author: "Witsch Daniel"
-date: "18 April 2016"
-output: 
-  beamer_presentation:
-    keep_tex: true
-params:
-  orig: !r c(1,1,1,0,0,0)
-  interl: !r c(1,1,0,0,0)
-  parity1: !r c(1,1,1,1,1)
-  parity2: !r c(1,1,1,1,1)
-  result: !r c(1,1,1,1,1,1,0,0,0,0,0,0,0,1,1)
-header-includes:
-- \usepackage{tikz}
-- \usepackage{pgfplots}
-- \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,positioning,fit,petri,calc}
+\begin{frame}{Turbo-Kodierer mit Punktierung}
 
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
-
-## Turbo-Kodierer
-
-- Input : `r params$orig`
+\begin{itemize}
+\tightlist
+\item
+  Input : 1, 1, 1, 0, 0, 0
+\end{itemize}
 
 \begin{center}
 \begin{tikzpicture}[node distance=8mm, inner sep=2mm, >=stealth, font=\small]
@@ -34,6 +14,7 @@ knitr::opts_chunk$set(echo = FALSE)
 \tikzstyle{encoderStyle} = [rectangle, draw]
 \tikzstyle{interleaverStyle} = [encoderStyle]
 \tikzstyle{startEndStyle} = [encoderStyle]
+\tikzstyle{punctureStyle} = [encoderStyle]
 \tikzstyle{multiplexerStyle} = [encoderStyle]
 \tikzstyle{showStyle} = [encoderStyle, thick, draw=red, text=red]
 \tikzstyle{arrowStyle} = [->]
@@ -45,7 +26,9 @@ knitr::opts_chunk$set(echo = FALSE)
 \node [] (multiplexerTemp) [right=of encoder 1] {};
 \node [multiplexerStyle, rotate=90] (multiplexer) at (multiplexerTemp.east) {Multiplexer};
 \node [startEndStyle] (start) [above left=of interleaver] {Input};
-\node [startEndStyle] (end) [right=of multiplexerTemp] {Output};
+\node [] (punctureTemp) [right=of multiplexerTemp] {};
+\node [punctureStyle, rotate=90] (puncture) at (punctureTemp.east) {Punktierung};
+\node [startEndStyle] (end) [right=of punctureTemp] {Output};
 
 \draw [arrowStyle] (interleaver.south) |- node (interleaved) {}(encoder 2.west);
 \draw [arrowStyle] (encoder 1.east) -- node (parity1) {} (multiplexer.north);
@@ -53,26 +36,37 @@ knitr::opts_chunk$set(echo = FALSE)
 \draw [arrowStyle] (tmp.center) |- (encoder 1.west);
 \draw [arrowStyle] (encoder 2.east) -| ++(0.2,0.7) node (parity2) {} |- ($(multiplexer.north)+(0,-.5)$);
 \draw [arrowStyle] (tmp.center) |- ($(multiplexer.north)+(0,.5)$);
-\draw [arrowStyle] (multiplexer.south) -- (end.west);
+\draw [arrowStyle] (multiplexer.south) -- node (multiplexed) {} (puncture.north);
+\draw [arrowStyle] (puncture.south) -- (end.west);
 
 \begin{scope}[on background layer]
-\node [draw, fit=(encoder 1) (interleaver) (encoder 2) (multiplexer)] (background) {};
+\node [draw, fit=(encoder 1) (interleaver) (encoder 2) (multiplexer) (puncture)] (background) {};
 \end{scope}
 
 \visible<2>{
-  \node [showStyle] (show) [above=of background] {\textbf{`r params$interl`}};
+  \node [showStyle] (show) [above=of background] {\textbf{1, 1, 0, 0, 0}};
   \draw [showDrawStyle] (show) -- (interleaved);
   }
 \visible<3>{
-  \node [showStyle] (show) [above=of background] {\textbf{`r params$parity1`}};
+  \node [showStyle] (show) [above=of background] {\textbf{1, 1, 1, 1, 1}};
   \draw [showDrawStyle] (show) -- (parity1.center);
   }
 \visible<4>{
-  \node [showStyle] (show) [above=of background] {\textbf{`r params$parity2`}};
+  \node [showStyle] (show) [above=of background] {\textbf{1, 1, 1, 1, 1}};
   \draw [showDrawStyle] (show) -- (parity2);
+  }
+\visible<5>{
+  \node [showStyle] (show) [above=of background] {\textbf{1, 1, 1, 1, 1}};
+  \draw [showDrawStyle] (show) -- (multiplexed.center);
   }
 
 \end{tikzpicture}
 \end{center}
 
-- Output : `r params$result`
+\begin{itemize}
+\tightlist
+\item
+  Output : 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1
+\end{itemize}
+
+\end{frame}

@@ -1,5 +1,5 @@
 ---
-title: "Turbo Kodierer"
+title: "Turbo Kodierer mit Punktierung"
 author: "Witsch Daniel"
 date: "18 April 2016"
 output: 
@@ -10,6 +10,7 @@ params:
   interl: !r c(1,1,0,0,0)
   parity1: !r c(1,1,1,1,1)
   parity2: !r c(1,1,1,1,1)
+  multipl: !r c(1,1,1,1,1)
   result: !r c(1,1,1,1,1,1,0,0,0,0,0,0,0,1,1)
 header-includes:
 - \usepackage{tikz}
@@ -22,7 +23,7 @@ header-includes:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## Turbo-Kodierer
+## Turbo-Kodierer mit Punktierung
 
 - Input : `r params$orig`
 
@@ -34,6 +35,7 @@ knitr::opts_chunk$set(echo = FALSE)
 \tikzstyle{encoderStyle} = [rectangle, draw]
 \tikzstyle{interleaverStyle} = [encoderStyle]
 \tikzstyle{startEndStyle} = [encoderStyle]
+\tikzstyle{punctureStyle} = [encoderStyle]
 \tikzstyle{multiplexerStyle} = [encoderStyle]
 \tikzstyle{showStyle} = [encoderStyle, thick, draw=red, text=red]
 \tikzstyle{arrowStyle} = [->]
@@ -45,7 +47,9 @@ knitr::opts_chunk$set(echo = FALSE)
 \node [] (multiplexerTemp) [right=of encoder 1] {};
 \node [multiplexerStyle, rotate=90] (multiplexer) at (multiplexerTemp.east) {Multiplexer};
 \node [startEndStyle] (start) [above left=of interleaver] {Input};
-\node [startEndStyle] (end) [right=of multiplexerTemp] {Output};
+\node [] (punctureTemp) [right=of multiplexerTemp] {};
+\node [punctureStyle, rotate=90] (puncture) at (punctureTemp.east) {Punktierung};
+\node [startEndStyle] (end) [right=of punctureTemp] {Output};
 
 \draw [arrowStyle] (interleaver.south) |- node (interleaved) {}(encoder 2.west);
 \draw [arrowStyle] (encoder 1.east) -- node (parity1) {} (multiplexer.north);
@@ -53,10 +57,11 @@ knitr::opts_chunk$set(echo = FALSE)
 \draw [arrowStyle] (tmp.center) |- (encoder 1.west);
 \draw [arrowStyle] (encoder 2.east) -| ++(0.2,0.7) node (parity2) {} |- ($(multiplexer.north)+(0,-.5)$);
 \draw [arrowStyle] (tmp.center) |- ($(multiplexer.north)+(0,.5)$);
-\draw [arrowStyle] (multiplexer.south) -- (end.west);
+\draw [arrowStyle] (multiplexer.south) -- node (multiplexed) {} (puncture.north);
+\draw [arrowStyle] (puncture.south) -- (end.west);
 
 \begin{scope}[on background layer]
-\node [draw, fit=(encoder 1) (interleaver) (encoder 2) (multiplexer)] (background) {};
+\node [draw, fit=(encoder 1) (interleaver) (encoder 2) (multiplexer) (puncture)] (background) {};
 \end{scope}
 
 \visible<2>{
@@ -70,6 +75,10 @@ knitr::opts_chunk$set(echo = FALSE)
 \visible<4>{
   \node [showStyle] (show) [above=of background] {\textbf{`r params$parity2`}};
   \draw [showDrawStyle] (show) -- (parity2);
+  }
+\visible<5>{
+  \node [showStyle] (show) [above=of background] {\textbf{`r params$multipl`}};
+  \draw [showDrawStyle] (show) -- (multiplexed.center);
   }
 
 \end{tikzpicture}

@@ -1,30 +1,10 @@
----
-title: "Turbo Kodierer"
-author: "Witsch Daniel"
-date: "18 April 2016"
-output: 
-  beamer_presentation:
-    keep_tex: true
-params:
-  orig: !r c(1,1,1,0,0,0)
-  interl: !r c(1,1,0,0,0)
-  parity1: !r c(1,1,1,1,1)
-  parity2: !r c(1,1,1,1,1)
-  result: !r c(1,1,1,1,1,1,0,0,0,0,0,0,0,1,1)
-header-includes:
-- \usepackage{tikz}
-- \usepackage{pgfplots}
-- \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,positioning,fit,petri,calc}
+\begin{frame}{Turbo-Kodierer}
 
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
-
-## Turbo-Kodierer
-
-- Input : `r params$orig`
+\begin{itemize}
+\tightlist
+\item
+  Input : 1, 1, 1, 0, 0, 0
+\end{itemize}
 
 \begin{center}
 \begin{tikzpicture}[node distance=8mm, inner sep=2mm, >=stealth, font=\small]
@@ -60,19 +40,25 @@ knitr::opts_chunk$set(echo = FALSE)
 \end{scope}
 
 \visible<2>{
-  \node [showStyle] (show) [above=of background] {\textbf{`r params$interl`}};
+  \node [showStyle] (show) [above=of background] {\textbf{1, 1, 0, 0, 0}};
   \draw [showDrawStyle] (show) -- (interleaved);
   }
 \visible<3>{
-  \node [showStyle] (show) [above=of background] {\textbf{`r params$parity1`}};
+  \node [showStyle] (show) [above=of background] {\textbf{1, 1, 1, 1, 1}};
   \draw [showDrawStyle] (show) -- (parity1.center);
   }
 \visible<4>{
-  \node [showStyle] (show) [above=of background] {\textbf{`r params$parity2`}};
+  \node [showStyle] (show) [above=of background] {\textbf{1, 1, 1, 1, 1}};
   \draw [showDrawStyle] (show) -- (parity2);
   }
 
 \end{tikzpicture}
 \end{center}
 
-- Output : `r params$result`
+\begin{itemize}
+\tightlist
+\item
+  Output : 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1
+\end{itemize}
+
+\end{frame}
