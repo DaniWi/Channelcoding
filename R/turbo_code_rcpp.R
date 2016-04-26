@@ -4,7 +4,7 @@
 # provided functions:
 #  - TurboEncode
 #  - TurboDecode
-#  - TurboGetPermutation
+#  - TurboGetpermutation.vector
 
 
 #' Kodieren einer Nachricht mittels dem Turbo-Code-Verfahren
@@ -21,7 +21,7 @@
 #' @author Witsch Daniel
 #'
 #' @param message Nachricht die kodiert werden sollte
-#' @param permutation Permutationsvektor der mittels \code{\link{TurboGetPermutation}} erzeugt werden sollte
+#' @param permutation.vector permutation.vectorsvektor der mittels \code{\link{TurboGetpermutation.vector}} erzeugt werden sollte
 #' @param coder.info Kodierer
 #' @param parity.index Index des zu verwendenten Ausgangs des Kodieres
 #'
@@ -30,33 +30,39 @@
 #' @examples
 #' input <- c(1,0,1,1,0)
 #' coder <- GenerateRscEncoder(2,2,c(5,7))
-#' perm <- TurboGetPermutation(length(input), coder, "RANDOM")
+#' perm <- TurboGetpermutation.vector(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
 #'
 #' @export
 TurboEncode <-
-  function(message, permutation, coder.info, parity.index = coder.info$N, dotting.matrix = NULL) {
+  function(message, permutation.vector, coder.info, parity.index = coder.info$N, punctuation.matrix = NULL) {
     #Checks all parameters
+
+    stopifnot(length(message) > 0)
+
     if (any((message != 1)[message != 0])) {
-      stop("Error: Nachricht darf nur 0er und 1er besitzen!")
+      stop("Nachricht darf nur 0er und 1er enthalten!")
     }
     if (coder.info$N < 2) {
-      stop("Error: coder muss 2 Ausgängen besitzen!")
+      stop("Kodierer muss mindestens 2 Ausgänge besitzen!")
     }
     if (coder.info$rsc != TRUE && coder.info$generators[1] != (2^coder.info$M)) {
       stop(
-        "Error: coder muss ein systematischer coder sein! (Ausgang 1 muss Polynom 2^M besitzen)"
+        "Kodierer muss ein systematischer coder sein! (Ausgang 1 muss Polynom 2^M besitzen)"
       )
     }
-    if (length(permutation) != (length(message) + coder.info$M)) {
-      stop("Error: Permutation hat die falsche Länge!")
+    if (length(permutation.vector) != (length(message) + coder.info$M)) {
+      stop("Permutationsvektor hat die falsche Länge!")
     }
-    if(!is.null(dotting.matrix) && ((dim(dotting.matrix))[1] != 3)) {
-      stop("Error: Punktierungsmatrix hat falsche Anzahl an Zeilen, bei Turbo-Codes müssen es 3 sein!")
+    if (any(is.na(match(0:length(permutation.vector)-1)))) {
+      stop("Permutationsvektor hat falsche Einträge!")
+    }
+    if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != 3)) {
+      stop("Punktierungsmatrix hat die falsche Anzahl an Zeilen, bei Turbo-Codes müssen es 3 sein!")
     }
 
-    #when parity.index is too high
-    if (parity.index > coder.info$N) {
+    #when parity.index is too high or to low
+    if (parity.index > coder.info$N || parity.index < 0) {
       parity.index = coder.info$N
     }
 
@@ -81,9 +87,9 @@ TurboEncode <-
     parity.2 <- parity.2[temp.index]
 
     result.orig <- Interleave(message.encoded, parity.1, parity.2)
-    if(!is.null(dotting.matrix)) {
-      #dotting the output
-      result.dot <- PunctureCode(result.orig, dotting.matrix)
+    if(!is.null(punctuation.matrix)) {
+      #punctuation the output
+      result.punct <- PunctureCode(result.orig, punctuation.matrix)
     }
 
     #rmarkdown::render(system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"), params = list(
@@ -94,8 +100,8 @@ TurboEncode <-
     #  result = c(message.encoded, parity.1, parity.2)))
     #rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
 
-    if(!is.null(dotting.matrix)) {
-      return(list(original=result.orig, punctured=result.dot))
+    if(!is.null(punctuation.matrix)) {
+      return(list(original=result.orig, punctured=result.punct))
     } else {
       return(result.orig)
     }
@@ -117,7 +123,7 @@ TurboEncode <-
 #' @author Witsch Daniel
 #'
 #' @param message Nachricht die dekodiert werden sollte
-#' @param permutation Permutationsvektor der mittels \code{\link{TurboGetPermutation}} erzeugt werden sollte
+#' @param permutation.vector permutation.vectorsvektor der mittels \code{\link{TurboGetpermutation.vector}} erzeugt werden sollte
 #' @param coder.info Dekodierer
 #' @param parity.index Index des zu verwendenten Ausgangs des Kodieres
 #'
@@ -126,68 +132,72 @@ TurboEncode <-
 #' @examples
 #' input <- c(1,0,1,1,0)
 #' coder <- GenerateRsccoder(2,2,c(5,7))
-#' perm <- TurboGetPermutation(length(input), coder, "RANDOM")
+#' perm <- TurboGetpermutation.vector(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
 #' result <- TurboDecode(input, perm, 5, coder)
 #'
 #' @export
 TurboDecode <-
-  function(message, permutation, iterations, coder.info, parity.index = coder.info$N, dotting.matrix = NULL) {
+  function(code, permutation.vector, iterations, coder.info, parity.index = coder.info$N, punctuation.matrix = NULL) {
     #Checks all parameters
+
+    stopifnot(length(code) > 0, iterations > 0)
+
     if (coder.info$N < 2) {
-      stop("Error: coder muss 2 Ausgängen besitzen!")
+      stop("Kodierer muss 2 Ausgänge besitzen!")
     }
     if (coder.info$rsc != TRUE && coder.info$generators[1] != (2^coder.info$M)) {
       stop(
-        "Error: coder muss ein systematischer coder sein! (Ausgang 1 muss Polynom 2^M besitzen)"
+        "Kodierer muss ein systematischer coder sein! (Ausgang 1 muss Polynom 2^M besitzen)"
       )
     }
-    if(!is.null(dotting.matrix) && ((dim(dotting.matrix))[1] != 3)) {
-      stop("Error: Punktierungsmatrix hat falsche Anzahl an Zeilen, bei Turbo-Codes müssen es 3 sein!")
+    if(!is.null(punctuation.matrix) && nrow(punctuation.matrix) != 3) {
+      stop("Punktierungsmatrix hat die falsche Anzahl an Zeilen, bei Turbo-Codes müssen es 3 sein!")
     }
 
-    if (parity.index > coder.info$N) {
+    #when parity.index is too high or to low
+    if (parity.index > coder.info$N || parity.index < 0) {
       parity.index = coder.info$N
     }
 
 
-    if(!is.null(dotting.matrix)) {
+    if(!is.null(punctuation.matrix)) {
       #insert missing bits from puncturing
-      message.afterPunct <- InsertPuncturingBits(message, dotting.matrix)
+      message <- InsertPuncturingBits(code, punctuation.matrix)
     } else {
-      message.afterPunct <- message
+      message <- code
     }
 
-    #Check length of input(with inserted bits) and permutation
-    if ((length(message.afterPunct) %% 3) != 0) {
-      if(!is.null(dotting.matrix)) {
-        stop("Error: Punktierung hat fehlgeschlagen, andere Punktierungsmatrix wählen")
+    #Check length of input(with inserted bits) and permutation.vector
+    if ((length(message) %% 3) != 0) {
+      if(!is.null(punctuation.matrix)) {
+        stop("Fehler während der Punktierung!")
       }
-      stop("Error: Nachricht hat die falsche Länge")
+      stop("Code hat die falsche Länge!")
     }
-    if (length(permutation) != (length(message.afterPunct) / 3)) {
-      stop("Error: Permutation hat die falsche Länge!")
+    if (length(permutation.vector) != (length(message) / 3)) {
+      stop("permutation.vector hat die falsche Länge!")
     }
 
     #parse original message from input message
-    message.length <- length(message.afterPunct) / 3
-    message.orig <- Deinterleave(message.afterPunct, 1)
-    parity.1 <- Deinterleave(message.afterPunct, 2)
-    parity.2 <- Deinterleave(message.afterPunct, 3)
+    message.length <- length(message) / 3
+    message.orig <- Deinterleave(message, 1)
+    parity.1 <- Deinterleave(message, 2)
+    parity.2 <- Deinterleave(message, 3)
 
     #decode message
     message.decoded.term <-
       c_turbo_decode(
-        message.orig, parity.1, parity.2, permutation,
+        message.orig, parity.1, parity.2, permutation.vector,
         iterations, coder.info$N, coder.info$M, coder.info$prev.state,
         coder.info$output, parity.index
       )
 
     #delete termination bits from result
     output.soft <-
-      message.decoded.term$soft.output[1:(message.length - coder.info$M)]
+      head(message.decoded.term$soft.output, message.length - coder.info$M)
     output.hard <-
-      message.decoded.term$hard.output[1:(message.length - coder.info$M)]
+      head(message.decoded.term$hard.output, message.length - coder.info$M)
     message.decoded <-
       list(output.soft = output.soft, output.hard = output.hard)
 
@@ -195,9 +205,9 @@ TurboDecode <-
   }
 
 #' @export
-TurboGetPermutation <- function(length, coder.info, type, args) {
+TurboGetpermutation.vector <- function(length, coder.info, type, args) {
   if (is.null(coder.info$M)) {
-    stop("Error: Kodierer nicht richtig gesetzt!")
+    stop("Kodierer nicht richtig gesetzt!")
   }
 
   switch(
@@ -209,7 +219,7 @@ TurboGetPermutation <- function(length, coder.info, type, args) {
     },
     PRIMITIVE = {
       if (is.null(args$root)) {
-        stop("Error: root(args) wurde nicht gesetzt")
+        stop("root(args) wurde nicht gesetzt")
       }
       N <- length + coder.info$M - 1
       init <- c(0:N)
@@ -223,12 +233,12 @@ TurboGetPermutation <- function(length, coder.info, type, args) {
     CYCLIC = {
       if (is.null(args$rows) |
           is.null(args$cols) | is.null(args$distance)) {
-        stop("Error: Argumente wurden nicht richtig gesetzt")
+        stop("Argumente wurden nicht richtig gesetzt")
       }
       rows <- args$rows
       cols <- args$cols
       if (rows * cols != (length + coder.info$M)) {
-        stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+        stop("Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols
       init <- matrix(c(0:(N - 1)), nrow = rows, byrow = FALSE)
@@ -237,7 +247,7 @@ TurboGetPermutation <- function(length, coder.info, type, args) {
       interleaver <-
         t(apply(init,1,function(x) {
           temp <-
-            binhf::shift(x,args$distance * (i)); i <<-
+            Shift(x,args$distance * (i)); i <<-
               i + 1; return(temp)
         }))
 
@@ -250,12 +260,12 @@ TurboGetPermutation <- function(length, coder.info, type, args) {
     },
     BLOCK = {
       if (is.null(args$rows) | is.null(args$cols)) {
-        stop("Error: Argumente wurden nicht richtig gesetzt")
+        stop("Argumente wurden nicht richtig gesetzt")
       }
       rows <- args$rows
       cols <- args$cols
       if (rows * cols != (length + coder.info$M)) {
-        stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+        stop("Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols
       init <- matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE)
@@ -269,12 +279,12 @@ TurboGetPermutation <- function(length, coder.info, type, args) {
     },
     HELICAL = {
       if (is.null(args$rows) | is.null(args$cols)) {
-        stop("Error: Argumente wurden nicht richtig gesetzt")
+        stop("Argumente wurden nicht richtig gesetzt")
       }
       rows <- args$rows
       cols <- args$cols
       if (rows * cols != (length + coder.info$M)) {
-        stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+        stop("Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols
       init <- vector(mode = "numeric", length = N)
@@ -294,12 +304,12 @@ TurboGetPermutation <- function(length, coder.info, type, args) {
     },
     DIAGONAL = {
       if (is.null(args$rows) | is.null(args$cols)) {
-        stop("Error: Argumente wurden nicht richtig gesetzt")
+        stop("Argumente wurden nicht richtig gesetzt")
       }
       rows <- args$rows
       cols <- args$cols
       if (rows * cols != (length + coder.info$M)) {
-        stop("Error: Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+        stop("Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
       }
       N <- rows * cols
       init <- vector(mode = "numeric", length = N)
@@ -318,7 +328,7 @@ TurboGetPermutation <- function(length, coder.info, type, args) {
       return(interleaver)
     }
   )
-  stop("Error: Type von Interleaver wurde nicht richtig gewählt!")
+  stop("Type von Interleaver wurde nicht richtig gewählt!")
 }
 
 #' @export
