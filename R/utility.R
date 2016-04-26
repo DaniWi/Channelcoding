@@ -10,10 +10,14 @@ GetPuncturingMatrix <- function(puncturing.vector, coder.info) {
     stop("Encoder has to specify list element N!")
   }
 
+  if (length(puncturing.vector) %% coder.info$N != 0) {
+    stop("Falsche Länge des Punktierungsvektors! Muss ein Vielfaches von N (Anzahl der Ausgänge) sein!")
+  }
+
   mat <- matrix(puncturing.vector, nrow = coder.info$N)
 
   if (any(colSums(mat) == 0)) {
-    stop("Puncturing Matrix has a column only with 0, this is illegal!")
+    stop("Punktierungsmatrix hat eine 0-Spalte!")
   }
 
   return(mat)
@@ -23,20 +27,24 @@ PunctureCode <- function(original.code, puncturing.matrix) {
   mask <- as.logical(puncturing.matrix)
 
   if(length(original.code) < length(mask)) {
-    return(original.code[mask[1:length(original.code)]])
+    punctured.code <- original.code[head(mask, length(original.code))]
+    return(punctured.code)
   } else {
     return(original.code[mask])
   }
+
 }
 
 InsertPuncturingBits <- function(punctured.code, puncturing.matrix) {
-  result <- c_insert_puncturing_bits(punctured.code, as.numeric(puncturing.matrix), (dim(puncturing.matrix))[1], (dim(puncturing.matrix))[2])
+  rows <- nrow(puncturing.matrix)
+  cols <- ncol(puncturing.matrix)
+  result <- c_insert_puncturing_bits(punctured.code, as.numeric(puncturing.matrix), rows, cols)
   return(result)
 }
 
-isOctal <- function(generators) {
+IsOctal <- function(generators) {
   # regex check for octal number format
-  x <- regexpr("^[1-7][0-7]*$",generators)
+  x <- regexpr("^[1-7][0-7]*$", generators)
 
   if (length(x[x < 0]) > 0) {
     # there are numbers that are NOT in octal form
@@ -46,31 +54,30 @@ isOctal <- function(generators) {
   return(TRUE)
 }
 
-maskGenerators <- function(generators, max.generator.octal) {
+MaskGenerators <- function(generators, max.generator.octal) {
 
   new.generators = bitwAnd(max.generator.octal, generators)
 
   return(new.generators)
 }
 
-isCatastrophicEncoder <- function(generators) {
-
+IsCatastrophicEncoder <- function(generators) {
   # convert octal generators to decimal
-  generators <- sapply(generators,octalToDecimal)
+  generators <- sapply(generators, octalToDecimal)
 
   # get GCD of all generators
-  gcd <- numbers::mGCD(generators)
+  gcd <- GCD(generators)
 
   # if gcd is a power of 2 the encoder is not catastrophic
   # this is done by bit checking
   return(!bitwAnd(gcd, gcd - 1) == 0)
 }
 
-octalToDecimal <- function(x) {
+OctalToDecimal <- function(x) {
   dec <- 0
   i <- 0
   while (x > 0) {
-    dec <- dec + (x %% 10)*(8^i)
+    dec <- dec + (x %% 10) * (8^i)
     i <- i + 1
     x = x %/% 10
   }
@@ -78,13 +85,13 @@ octalToDecimal <- function(x) {
   return(dec)
 }
 
-decimalToOctal <- function(x) {
+DecimalToOctal <- function(x) {
   oct <- 0
   i <- 0
   while (x > 0) {
-    oct <- oct + (x %% 8)*(10^i)
+    oct <- oct + (x %% 8) * (10^i)
     i <- i + 1
-    x = x%/% 8
+    x = x %/% 8
   }
 
   return(oct)
@@ -94,10 +101,43 @@ Interleave <- function(v1, v2, v3) {
   ord1 <- 3*(1:length(v1)) - 2
   ord2 <- 3*(1:length(v2)) - 1
   ord3 <- 3*(1:length(v3))
-  return(c(v1,v2,v3)[order(c(ord1,ord2,ord3))])
+  return(c(v1,v2,v3)[order(c(ord1, ord2, ord3))])
 }
 
 Deinterleave <- function(vec, index) {
   index <- c(rep(FALSE,index - 1), TRUE, rep(FALSE, 3 - index))
   return(vec[index])
+}
+
+Shift <- function(vector, n) {
+  l <- length(vector)
+  if (n %% l == 0) {
+    return(vector)
+  }
+
+  result <- c(tail(vector, n %% l), head(vector, (l - n) %% l))
+}
+
+GCD <- function(x) {
+  stopifnot(is.numeric(x))
+  if (floor(x) != ceiling(x) || length(x) < 2) {
+    stop("Argument 'x' muss ein integer vector mit Länge >= 2 sein!")
+  }
+
+  x <- x[x != 0]
+  n <- length(x)
+  if (n == 0) {
+    g <- 0
+  } else if (n == 1) {
+    g <- x
+  } else if (n == 2) {
+    g <- GCD(x[1], x[2])
+  } else {
+    g <- GCD(x[1], x[2])
+    for (i in 3:n) {
+      g <- GCD(g, x[i])
+      if (g == 1) break
+    }
+  }
+  return(g)
 }

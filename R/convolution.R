@@ -47,19 +47,19 @@ GenerateConvEncoder <- function(N, M, generators) {
     generators <- head(generators, N)
   }
 
-  if (!isOctal(generators)) {
+  if (!IsOctal(generators)) {
     # only octal generators are accepted
     stop("At least one generator is not in octal form!")
   }
 
-  max.generator.octal = decimalToOctal(2^(M+1) - 1)
+  max.generator.octal = DecimalToOctal(2^(M+1) - 1)
 
   if (any(generators > max.generator.octal)) {
     stop("At least one generator is greater than the maximum generator!")
-    # generators = maskGenerators(generators, max.generator.octal)
+    # generators = MaskGenerators(generators, max.generator.octal)
   }
 
-  if (isCatastrophicEncoder(generators)) {
+  if (IsCatastrophicEncoder(generators)) {
     warning("The result will be a catastrophic encoder!")
   }
 
@@ -118,19 +118,19 @@ GenerateRscEncoder <- function(N, M, generators) {
     generators <- head(generators, N)
   }
 
-  if (!isOctal(generators)) {
+  if (!IsOctal(generators)) {
     # only octal generators are accepted
     stop("At least one generator is not in octal form!")
   }
 
-  max.generator.octal = decimalToOctal(2^(M+1) - 1)
+  max.generator.octal = DecimalToOctal(2^(M+1) - 1)
 
   if (any(generators > max.generator.octal)) {
     stop("At least one generator is greater than the maximum generator!")
-    # generators = maskGenerators(generators, max.generator.octal)
+    # generators = MaskGenerators(generators, max.generator.octal)
   }
 
-  if (isCatastrophicEncoder(generators)) {
+  if (IsCatastrophicEncoder(generators)) {
     warning("The result will be a catastrophic encoder!")
   }
 
@@ -160,7 +160,17 @@ GenerateRscEncoder <- function(N, M, generators) {
 #' ConvEncode(c(1,0,0,1,1), coder)
 #' @author Martin Nocker
 #' @export
-ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
+ConvEncode <- function(message, conv.encoder, terminate = TRUE, punctuation.matrix = NULL) {
+
+  stopifnot(length(message) > 0)
+
+  if (any((message != 1)[message != 0])) {
+    stop("Nachricht darf nur 0er und 1er enthalten!")
+  }
+
+  if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != conv.encoder$N) {
+    stop("Punktierungsmatrix hat falsche Anzahl an Zeilen! Matrix muss N Zeilen haben!")
+  }
 
   code <- c_convolutionEncode(message,
                               conv.encoder$N,
@@ -170,6 +180,13 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
                               as.integer(conv.encoder$rsc),
                               conv.encoder$termination,
                               as.integer(terminate))
+
+  if (!is.null(puncturing.matrix)) {
+    punctured.code <- PunctureCode(code, punctuation.matrix)
+
+    return(list(original=code, punctured=punctured.code))
+  }
+
   return(code)
 }
 
@@ -187,7 +204,22 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE) {
 #' ConvDecode(coded, coder)
 #' @author Martin Nocker
 #' @export
-ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
+ConvDecode <- function(code, conv.encoder, terminate = TRUE, puncturing.matrix = NULL) {
+
+  stopifnot(length(code) > 0)
+
+  if(!is.null(puncturing.matrix)) {
+    #insert missing bits from puncturing
+    code <- InsertPuncturingBits(code, puncturing.matrix)
+  }
+
+  #Check length of input(with inserted bits) and permutation
+  if ((length(code) %% conv.encoder$N) != 0) {
+    if(!is.null(puncturing.matrix)) {
+      stop("Fehler während der Punktierung!")
+    }
+    stop("Code hat die falsche Länge")
+  }
 
   result <- c_convolutionDecode(code,
                                 conv.encoder$N,
@@ -231,9 +263,24 @@ ConvDecode <- function(code, conv.encoder, terminate = TRUE) {
 #' ConvDecodeHard(coded, coder)
 #' @author Martin Nocker
 #' @export
-ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE) {
+ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, puncturing.matrix = NULL) {
+
+  stopifnot(length(code) > 0)
 
   code.copy <- c(code)
+
+  if(!is.null(puncturing.matrix)) {
+    #insert missing bits from puncturing
+    code.copy <- InsertPuncturingBits(code.copy, puncturing.matrix)
+  }
+
+  #Check length of input(with inserted bits) and permutation
+  if ((length(code.copy) %% conv.encoder$N) != 0) {
+    if(!is.null(puncturing.matrix)) {
+      stop("Fehler während der Punktierung!")
+    }
+    stop("Code hat die falsche Länge")
+  }
 
   result <- c_convolutionDecode_hard(code.copy,
                                      conv.encoder$N,
