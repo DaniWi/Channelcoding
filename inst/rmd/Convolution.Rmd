@@ -1,25 +1,25 @@
 ---
 title: "Convolution"
-output: beamer_presentation
+output: 
+  beamer_presentation:
+    keep_tex: true
 author: Martin Nocker
 params:
   conv.encoder: !r 0
-  decoded: !r 0
+  decoded: !r c(1,0,1,0,0)
   trellis: !r 0
   survivor.states: !r 0
 header-includes:
 - \usepackage{tikz}
 - \usepackage{pgfplots}
 - \usepackage{mathtools}
-- \usetikzlibrary{calc}
+- \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,positioning,fit,petri,calc}
 ---
 
-```{r, echo=FALSE}
-# helper functions
-
+```{r, include=FALSE}
 # transforms an integer value n to a at least min.length bit binary vector
 binVector <- function(n, min.length) {
-  
+
   result <- integer()
   i <- 0
   while (n != 0) {
@@ -27,9 +27,9 @@ binVector <- function(n, min.length) {
     n = n %/% 2
     i <- i + 1
   }
-  
+
   zeros <- rep(0, times = min.length)
-  
+
   result <- c(zeros, result)
 
   return(tail(result,min.length))
@@ -39,12 +39,12 @@ binVector <- function(n, min.length) {
 ordering <- function(num.states, next.state) {
   #next.state <- matrix(rep(0:(num.states-1), each = 2), ncol = 2)
   result <- integer(1)
-  
+
   n <- 0
   for (i in 2:num.states) {
     n0 <- next.state[n+1,1]
     n1 <- next.state[n+1,2]
-    
+
     if (n0 %in% result) {
       n <- n1
     }
@@ -54,15 +54,15 @@ ordering <- function(num.states, next.state) {
     else {
       n <- if (n0 > n1) n0 else n1
     }
-    
+
     result <- c(result, n)
   }
-  
+
   return(result)
 }
 ```
 
-```{r, echo=FALSE}
+```{r, include=FALSE}
 conv.encoder <- params$conv.encoder
 
 M <- conv.encoder$M
@@ -87,7 +87,7 @@ state.order <- ordering(num.states, next.state)
 # trellis nodes
 for (t in 1:ncol(trellis)) {
   for (s in 1:num.states) {
-    
+
     if (is.na(trellis[s,t])) {
       nodetype <- "freestate"
       value <- ""
@@ -101,7 +101,7 @@ for (t in 1:ncol(trellis)) {
     coordinate <- paste0("at (",t-1,",",-s+1,")")
     label <- paste0("{",value,"}")
     single.node <- paste(definition,nodename,coordinate,label,";")
-    
+
     tikz.trellis <- paste(tikz.trellis, single.node)
   }
 }
@@ -110,14 +110,14 @@ for (t in 1:ncol(trellis)) {
 for (s in 0:(num.states-1)) {
   value <- paste(binVector(s,M),collapse = "")
   label <- paste0("\\node (statelabel",s,") [left of=node",s,"0] {",value,"};")
-  
+
   tikz.trellis <- paste(tikz.trellis, label)
 }
 
 # time labels
 for (t in 0:(ncol(trellis)-1)) {
   label <- paste0("\\node (timelabel",t,") [above of=node0",t,"] {",t,"};")
-  
+
   tikz.trellis <- paste(tikz.trellis, label)
 }
 
@@ -132,7 +132,7 @@ for (t in 2:ncol(trellis)) {
     if (!is.na(trellis[s+1,t])) {
 
       previous <- survivor.states[s+1,t]
-      
+
       bit <- if(next.state[previous+1,1] == s) 0 else 1
 
       if (!is.na(trellis[previous+1,t-1])) {
@@ -142,7 +142,7 @@ for (t in 2:ncol(trellis)) {
         if (x == s) {
           color <- ",orange"
         }
-        
+
         definition <- ""
         if (bit == 0) {
           definition <- paste0("\\draw[->",color,"]")
@@ -202,7 +202,7 @@ for (s in 0:(num.states-1)) {
   position <- paste0(xpos,",",ypos)
   name <- paste(binVector(state.order[s+1],M),collapse = "")
   state <- paste0("\\node[state] (state",state.order[s+1],") at (",position,") {",name,"};")
-  
+
   tikz.diagram <- paste(tikz.diagram, state)
 }
 
@@ -216,12 +216,12 @@ for (s in 0:(num.states-1)) {
 
   label.value.0 <- paste(binVector(output[s+1,1],N),collapse = "")
   label.value.1 <- paste(binVector(output[s+1,2],N),collapse = "")
-  
+
   # indices of the states in the ordering vector (1 based)
   this.ordering.index <- which(state.order == s)
   next.0.ordering.index <- which(state.order == n_next.state.0)
   next.1.ordering.index <- which(state.order == n_next.state.1)
-  
+
   # if edges do not go to neighbour, set label near start
   # to avoid label crossings
   near.0 <- ""
@@ -231,7 +231,7 @@ for (s in 0:(num.states-1)) {
   if (distance.to.0 > 1 && distance.to.0 < num.states-1) {
     near.0 <- ",near start"
   }
-  
+
   if (distance.to.1 > 1 && distance.to.1 < num.states-1) {
     near.1 <- ",near start"
   }
@@ -241,12 +241,12 @@ for (s in 0:(num.states-1)) {
 
   label.0 <- paste0("node [sloped, above",near.0,"] {",label.value.0,"}")
   label.1 <- paste0("node [sloped, above",near.1,"] {",label.value.1,"}")
-  
+
   # in case of a loop
   angle <- (90-(this.ordering.index-1)*360/num.states) %% 360
   angle.out <- (angle + 15) %% 360
   angle.in <- (angle - 15) %% 360
-  
+
   if (n_next.state.0 == s) {
     # loop with input bit 0
     loop <- paste0("[looseness=8,out=",angle.out,",in=",angle.in,"]")
@@ -254,7 +254,7 @@ for (s in 0:(num.states-1)) {
     if (sin(angle*pi/180) < 0) {
       label.0 <- paste0("node [sloped, below",near.0,"] {",label.value.0,"}")
     }
-    
+
     edge.0 <- paste("\\draw[->]",this.state,"to",loop,label.0,this.state,";")
   }
   else {
@@ -274,7 +274,7 @@ for (s in 0:(num.states-1)) {
     if (sin(angle*pi/180) < 0) {
       label.1 <- paste0("node [sloped, below",near.1,"] {",label.value.1,"}")
     }
-    
+
     edge.1 <- paste("\\draw[->, dashed]",this.state,"to",loop,label.1,this.state,";")
   }
   else {
@@ -326,60 +326,29 @@ for (s in 0:(num.states-1)) {
 \end{tikzpicture}
 \end{center}
 
-## LaTeX Table
+## Convolution Encode
 
+\begin{center}
+\begin{minipage}{.4\textwidth}
+\begin{center}
 \begin{tabular}{c c c c}
-\visible<1-> {state&input&output&next state\\ \hline}
-\visible<2-> {00&1&11&10\\}
-\visible<3-> {10&0&10&01\\}
-\visible<4-> {01&1&00&10\\}
-\visible<5-> {10&0&10&01\\}
-\visible<6-> {01&0&11&00\\}
+  \visible<1-> {state&input&output&next state\\ \hline}
+  \visible<2-> {00&1&11&10\\}
+  \visible<3-> {10&0&10&01\\}
+  \visible<4-> {01&1&00&10\\}
+  \visible<5-> {10&0&10&01\\}
+  \visible<6-> {01&0&11&00\\}
 \end{tabular}
-
-## Markdown Table
-
-First Header  | Second Header
-------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
-
-## Sandbox
-
-```{r, echo=FALSE}
-myFunction <- function() {
-  return("Hello from myFunction!")
-}
-```
-
-`r myFunction()`
-
-## Sandbox
-
-\begin{tikzpicture}[>=stealth, font=\tiny]
-\draw[lightgray] (0,0) grid (2,2);
-\draw (0,0) -- ({asin(1)/90},{sqrt(1)});
-
-\tikzstyle{state} = [draw, circle, font=\normalsize, inner sep=1mm, minimum size=10mm]
-
-\node[state] (hi) at (2,2) {hi};
-\draw[->] (hi) to [looseness=8,out=110,in=70] node [sloped,above] {123} (hi);
-
+\end{center}
+\end{minipage}
+\hfill
+\begin{minipage}{.4\textwidth}
+\begin{center}
+\begin{tikzpicture}[scale=.75, >=stealth, font=\scriptsize]
+\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=8mm, font=\footnotesize]
+`r tikz.diagram`
 \end{tikzpicture}
+\end{center}
+\end{minipage}
+\end{center}
 
-## Dimensions
-
-\begin{tikzpicture}
-\draw (0,8) -- (0,0) -- (11,0);
-\end{tikzpicture}
-
-## Boxes
-\resizebox{!}{8cm}{
-  \begin{tikzpicture}
-  \tikzstyle{state} = [draw, circle, font=\normalsize, inner sep=1mm, minimum size=10mm]
-  \node[state] (n00) at (0,0) {$N00$};
-  \node[state] (n10) at (8,0) {$N10$};
-  \node[state] (n01) at (0,8) {$N01$};
-  \node[state] (n11) at (8,8) {$N11$};
-  \end{tikzpicture}
-}

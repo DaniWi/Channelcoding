@@ -19,7 +19,6 @@ GetPuncturingMatrix <- function(puncturing.vector, coder.info) {
   return(mat)
 }
 
-#' @export
 PunctureCode <- function(original.code, puncturing.matrix) {
   mask <- as.logical(puncturing.matrix)
 
@@ -30,7 +29,6 @@ PunctureCode <- function(original.code, puncturing.matrix) {
   }
 }
 
-#' @export
 InsertPuncturingBits <- function(punctured.code, puncturing.matrix) {
   result <- c_insert_puncturing_bits(punctured.code, as.numeric(puncturing.matrix), (dim(puncturing.matrix))[1], (dim(puncturing.matrix))[2])
   return(result)
