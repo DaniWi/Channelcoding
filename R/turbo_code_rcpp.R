@@ -57,7 +57,7 @@ TurboEncode <-
     if (any(is.na(match(0:length(permutation.vector)-1)))) {
       stop("Permutationsvektor hat falsche Einträge!")
     }
-    if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != 3)) {
+    if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != 3) {
       stop("Punktierungsmatrix hat die falsche Anzahl an Zeilen, bei Turbo-Codes müssen es 3 sein!")
     }
 
