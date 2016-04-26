@@ -4,17 +4,17 @@
 \alias{TurboDecode}
 \title{Dekodieren einer Nachricht mittels dem Turbo-Code-Verfahren}
 \usage{
-TurboDecode(message, permutation, iterations, coder.info,
-  parity.index = coder.info$N, dotting.matrix = NULL)
+TurboDecode(code, permutation.vector, iterations, coder.info,
+  parity.index = coder.info$N, punctuation.matrix = NULL)
 }
 \arguments{
-\item{message}{Nachricht die dekodiert werden sollte}
-
-\item{permutation}{Permutationsvektor der mittels \code{\link{TurboGetPermutation}} erzeugt werden sollte}
+\item{permutation.vector}{permutation.vectorsvektor der mittels \code{\link{TurboGetpermutation.vector}} erzeugt werden sollte}
 
 \item{coder.info}{Dekodierer}
 
 \item{parity.index}{Index des zu verwendenten Ausgangs des Kodieres}
+
+\item{message}{Nachricht die dekodiert werden sollte}
 }
 \value{
 Deodierte Nachricht
@@ -32,7 +32,7 @@ Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit a
 \examples{
 input <- c(1,0,1,1,0)
 coder <- GenerateRsccoder(2,2,c(5,7))
-perm <- TurboGetPermutation(length(input), coder, "RANDOM")
+perm <- TurboGetpermutation.vector(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
 result <- TurboDecode(input, perm, 5, coder)
 

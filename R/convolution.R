@@ -160,7 +160,7 @@ GenerateRscEncoder <- function(N, M, generators) {
 #' ConvEncode(c(1,0,0,1,1), coder)
 #' @author Martin Nocker
 #' @export
-ConvEncode <- function(message, conv.encoder, terminate = TRUE, punctuation.matrix = NULL) {
+ConvEncode <- function(message, conv.encoder, terminate = TRUE, puncturing.matrix = NULL) {
 
   stopifnot(length(message) > 0)
 
@@ -168,7 +168,7 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE, punctuation.matr
     stop("Nachricht darf nur 0er und 1er enthalten!")
   }
 
-  if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != conv.encoder$N) {
+  if (!is.null(puncturing.matrix) && nrow(puncturing.matrix) != conv.encoder$N) {
     stop("Punktierungsmatrix hat falsche Anzahl an Zeilen! Matrix muss N Zeilen haben!")
   }
 
@@ -182,7 +182,7 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE, punctuation.matr
                               as.integer(terminate))
 
   if (!is.null(puncturing.matrix)) {
-    punctured.code <- PunctureCode(code, punctuation.matrix)
+    punctured.code <- PunctureCode(code, puncturing.matrix)
 
     return(list(original=code, punctured=punctured.code))
   }
