@@ -63,14 +63,45 @@ MaskGenerators <- function(generators, max.generator.octal) {
 
 IsCatastrophicEncoder <- function(generators) {
   # convert octal generators to decimal
-  generators <- sapply(generators, octalToDecimal)
+  generators <- sapply(generators, OctalToDecimal)
 
   # get GCD of all generators
-  gcd <- GCD(generators)
+  gcd <- VectorGCD(generators)
 
   # if gcd is a power of 2 the encoder is not catastrophic
   # this is done by bit checking
   return(!bitwAnd(gcd, gcd - 1) == 0)
+}
+
+CheckCoder <- function(coder) {
+  minimum.fields <-
+    c("N", "M", "generators", "next.state", "prev.state", "output", "rsc", "termination")
+
+  if (!all(minimum.fields %in% names(coder))) {
+    stop("Kodierer enthält nicht alle notwendigen Elemente!")
+  }
+
+  for (field in minimum.fields) {
+    if (is.null(coder[[field]])) {
+      stop("NULL Element im Kodierer!")
+    }
+  }
+
+  stopifnot(coder$N > 1, coder$M > 0)
+
+  if (length(coder$generators) < coder$N) {
+    stop("Kodierer enthält zu wenig Generatorpolynome!")
+  }
+
+  if (!IsOctal(generators)) {
+    stop("Zumindest ein Generatorpolynom ist nicht in oktaler Form!")
+  }
+
+  max.generator.octal = DecimalToOctal(2^(M+1) - 1)
+
+  if (any(generators > max.generator.octal)) {
+    stop("Zumindest ein Generatorpolynom ist größer als erlaubt!")
+  }
 }
 
 OctalToDecimal <- function(x) {
@@ -118,7 +149,7 @@ Shift <- function(vector, n) {
   result <- c(tail(vector, n %% l), head(vector, (l - n) %% l))
 }
 
-GCD <- function(x) {
+VectorGCD <- function(x) {
   stopifnot(is.numeric(x))
   if (floor(x) != ceiling(x) || length(x) < 2) {
     stop("Argument 'x' muss ein integer vector mit Länge >= 2 sein!")
@@ -140,4 +171,23 @@ GCD <- function(x) {
     }
   }
   return(g)
+}
+
+GCD <- function(n, m) {
+  stopifnot(is.numeric(n), is.numeric(m))
+  if (length(n) != 1 || floor(n) != ceiling(n) ||
+      length(m) != 1 || floor(m) != ceiling(m))
+    stop("Arguments 'n', 'm' must be integer scalars.")
+  if (n == 0 && m == 0) return(0)
+
+  n <- abs(n); m <- abs(m)
+  if (m > n) {
+    t <- n; n <- m; m <- t
+  }
+  while (m > 0) {
+    t <- n
+    n <- m
+    m <- t %% m
+  }
+  return(n)
 }
