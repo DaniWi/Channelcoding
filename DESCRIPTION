@@ -9,6 +9,7 @@ Description: An implementation to perform channelcoding in R. Encoding and Decod
     of three major types of channelcodes are provided: block codes, convolutional
     codes and turbo codes.
 License: What license is it under?
+Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 5.0.1
 LinkingTo: Rcpp
