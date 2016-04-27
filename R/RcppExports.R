@@ -21,6 +21,10 @@ c_convolutionDecode_hard <- function(code, N, M, previousState, output, IsTermin
     .Call('channelcoding_c_convolutionDecode_hard', PACKAGE = 'channelcoding', code, N, M, previousState, output, IsTerminated)
 }
 
+gcd_polynomial <- function(x) {
+    .Call('channelcoding_gcd_polynomial', PACKAGE = 'channelcoding', x)
+}
+
 c_insert_puncturing_bits <- function(punctured_message, puncturing_vector, rows, cols) {
     .Call('channelcoding_c_insert_puncturing_bits', PACKAGE = 'channelcoding', punctured_message, puncturing_vector, rows, cols)
 }

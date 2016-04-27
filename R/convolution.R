@@ -38,6 +38,8 @@ GenerateConvEncoder <- function(N, M, generators) {
 
   stopifnot(N > 1, M > 0)
 
+  generators <- generators[generators > 0]
+
   # encoder requires N generator polynoms
   if (length(generators) < N) {
     # stop execution if too few generators
@@ -109,6 +111,8 @@ GenerateRscEncoder <- function(N, M, generators) {
 
   stopifnot(N > 1, M > 0)
 
+  generators <- generators[generators > 0]
+
   # encoder requires N generator polynoms
   if (length(generators) < N) {
     # stop execution if too few generators
@@ -128,10 +132,6 @@ GenerateRscEncoder <- function(N, M, generators) {
   if (any(generators > max.generator.octal)) {
     stop("At least one generator is greater than the maximum generator!")
     # generators = MaskGenerators(generators, max.generator.octal)
-  }
-
-  if (IsCatastrophicEncoder(generators)) {
-    warning("The result will be a catastrophic encoder!")
   }
 
   matrix.list <- c_generateMatrices_rsc(N,M,generators)

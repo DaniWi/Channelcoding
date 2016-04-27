@@ -81,6 +81,17 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// gcd_polynomial
+int gcd_polynomial(IntegerVector x);
+RcppExport SEXP channelcoding_gcd_polynomial(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    __result = Rcpp::wrap(gcd_polynomial(x));
+    return __result;
+END_RCPP
+}
 // c_insert_puncturing_bits
 NumericVector c_insert_puncturing_bits(NumericVector punctured_message, NumericVector puncturing_vector, int rows, int cols);
 RcppExport SEXP channelcoding_c_insert_puncturing_bits(SEXP punctured_messageSEXP, SEXP puncturing_vectorSEXP, SEXP rowsSEXP, SEXP colsSEXP) {
