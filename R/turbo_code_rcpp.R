@@ -227,17 +227,22 @@ TurboDecode <-
   }
 
 #' @export
-TurboGetpermutation <- function(message.length, coder.info, type, args) {
+TurboGetpermutation <- function(message.length, coder.info, type = "RANDOM", args) {
+
+  stopifnot(message.length > 0)
+
   if (is.null(coder.info$M)) {
     stop("Kodierer nicht richtig gesetzt!")
   }
+  if (!is.character(type)) {
+    stop("Type muss ein String sein!")
+  }
 
-  switch(
-    type,
+  switch(type,
     RANDOM = {
       interleaver <- sample(c(0:(message.length + coder.info$M - 1)))
 
-      print("Interleaver Vektor")
+      print(paste("Interleaver-Vektor: ", type))
       print(interleaver)
 
       return(interleaver)
@@ -250,7 +255,7 @@ TurboGetpermutation <- function(message.length, coder.info, type, args) {
       init <- c(0:N)
       interleaver <- (init - args$root) %% (N + 1)
 
-      print("Interleaver Vektor")
+      print(paste("Interleaver-Vektor: ", type))
       print(interleaver)
 
       return(interleaver)
@@ -278,9 +283,9 @@ TurboGetpermutation <- function(message.length, coder.info, type, args) {
             }
           ))
 
-      print("Original")
+      print("Initial-Matrix")
       print(init)
-      print("Interleaver Matrix")
+      print(paste("Interleaver-Matrix: ", type))
       print(interleaver)
 
       return(as.vector(interleaver))
@@ -297,9 +302,9 @@ TurboGetpermutation <- function(message.length, coder.info, type, args) {
       N <- rows * cols
       init <- matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE)
 
-      print("Original")
+      print("Initial-Matrix")
       print(init)
-      print("Interleaver Vektor")
+      print(paste("Interleaver-Vektor: ", type))
       print(as.vector((init)))
 
       return(as.vector((init)))
@@ -319,14 +324,14 @@ TurboGetpermutation <- function(message.length, coder.info, type, args) {
       i <- 0
       interleaver <-
         sapply(init, function(x) {
-          x <- (((i %% cols) + (i * cols)) %% 15)
+          x <- (((i %% cols) + (i * cols)) %% N)
           i <<- i + 1
           return(x)
         })
 
-      print("Original")
+      print("Initial-Matrix")
       print(matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE))
-      print("Interleaver Vektor")
+      print(paste("Interleaver-Vektor: ", type))
       print(interleaver)
 
       return(interleaver)
@@ -351,9 +356,9 @@ TurboGetpermutation <- function(message.length, coder.info, type, args) {
           return(x)
         })
 
-      print("Original")
+      print("Initial-Matrix")
       print(matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE))
-      print("Interleaver Vektor")
+      print(paste("Interleaver-Vektor: ", type))
       print(interleaver)
 
       return(interleaver)
