@@ -228,13 +228,13 @@ ConvDecode <- function(code, conv.encoder, terminate = TRUE, puncturing.matrix =
                                 conv.encoder$output,
                                 as.integer(terminate))
 
-  rmarkdown::render(system.file("rmd", "Convolution.Rmd", package = "channelcoding"),
+  rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
                     params = list(conv.encoder = conv.encoder,
                                   decoded = result$hard.output,
                                   trellis = result$trellis,
                                   survivor.states = result$survivor.states))
 
-  # rstudioapi::viewer(system.file("rmd", "Convolution.Rmd", package = "channelcoding"))
+  # rstudioapi::viewer(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"))
 
   result <- result[1:2]
 
@@ -289,13 +289,13 @@ ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, puncturing.matr
                                      conv.encoder$output,
                                      as.integer(terminate))
 
-  rmarkdown::render(system.file("rmd", "Convolution.Rmd", package = "channelcoding"),
+  rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
                     params = list(conv.encoder = conv.encoder,
                                   decoded = result$hard.output,
                                   trellis = result$trellis,
                                   survivor.states = result$survivor.states))
 
-  # rstudioapi::viewer(system.file("rmd", "Convolution.Rmd", package = "channelcoding"))
+  # rstudioapi::viewer(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"))
 
   # if terminated, termination bits are thrown away
   if (terminate == TRUE) {
