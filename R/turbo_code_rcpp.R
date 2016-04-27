@@ -58,7 +58,7 @@ TurboEncode <-
     if (length(permutation.vector) != (length(message) + coder.info$M)) {
       stop("Permutationsvektor hat die falsche Länge!")
     }
-    if (any(is.na(match(0:length(permutation.vector) - 1)))) {
+    if (any(is.na(match(0:(length(permutation.vector) - 1), permutation.vector)))) {
       stop("Permutationsvektor hat falsche Einträge!")
     }
     if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != 3) {
@@ -92,17 +92,34 @@ TurboEncode <-
     code.result <- Interleave(code.orig, parity.1, parity.2)
 
     if (!is.null(punctuation.matrix)) {
-      #punctuation the output
+      #puncture the output
       code.punct <- PunctureCode(code.result, punctuation.matrix)
-    }
 
-    #rmarkdown::render(system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"), params = list(
-    #  orig = message,
-    #  interl = message.perm,
-    #  parity1 = parity.1,
-    #  parity2 = parity.2,
-    #  result = c(message.encoded, parity.1, parity.2)))
-    #rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
+      rmarkdown::render(
+        system.file("rmd", "TurboEncodePunctured.Rmd", package = "channelcoding"),
+        params = list(
+          orig = message,
+          interl = code.perm,
+          parity1 = parity.1,
+          parity2 = parity.2,
+          multipl = code.result,
+          result = code.punct,
+          encoder = coder.info),
+        encoding = "UTF-8")
+      rstudioapi::viewer(system.file("rmd", "TurboEncodePunctured.pdf", package = "channelcoding"))
+    } else {
+      rmarkdown::render(
+        system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"),
+          params = list(
+          orig = message,
+          interl = code.perm,
+          parity1 = parity.1,
+          parity2 = parity.2,
+          result = code.result,
+          encoder = coder.info),
+        encoding = "UTF-8")
+      rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
+    }
 
     if (!is.null(punctuation.matrix)) {
       return(list(original = code.result, punctured = code.punct))
@@ -145,7 +162,7 @@ TurboEncode <-
 #' # Mit Punktierung
 #' punct <- TurboGetPuncturingMatrix(c(1,1,0,1,0,1))
 #' message.encoded.punct <- TurboEncode(input, perm, coder, punctuation.matrix = punct)
-#' result.punct <- TurboDecode(message.encoded.punct, perm, 5, coder, punctuation.matrix = punct)
+#' result.punct <- TurboDecode(message.encoded.punct$punctured, perm, 5, coder, punctuation.matrix = punct)
 #'
 #' @export
 TurboDecode <-
@@ -162,10 +179,7 @@ TurboDecode <-
       stop("Kodierer muss ein systematischer Kodierer sein!
            (Ausgang 1 muss Polynom 2^M besitzen oder ein rekursiver Kodierer sein)")
     }
-    if (length(permutation.vector) != (length(message) + coder.info$M)) {
-      stop("Permutationsvektor hat die falsche Länge!")
-    }
-    if (any(is.na(match(0:length(permutation.vector) - 1)))) {
+    if (any(is.na(match(0:(length(permutation.vector) - 1), permutation.vector)))) {
       stop("Permutationsvektor hat falsche Einträge!")
     }
     if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != 3) {
@@ -178,7 +192,7 @@ TurboDecode <-
       parity.index = coder.info$N
     }
 
-
+    #Puncturing
     if (!is.null(punctuation.matrix)) {
       #insert missing bits from puncturing
       code.with.punct <- InsertPuncturingBits(code, punctuation.matrix)
@@ -191,7 +205,7 @@ TurboDecode <-
       if (!is.null(punctuation.matrix)) {
         stop("Fehler während der Punktierung!")
       }
-      stop("Code hat die falsche Länge!")
+      stop("Code hat die falsche Länge! (Code wurde eventuell punktiert)")
     }
     if (length(permutation.vector) != (length(code.with.punct) / 3)) {
       stop("Permutationsvektor hat die falsche Länge!")
@@ -220,7 +234,7 @@ TurboDecode <-
 
     #delete termination bits from result
     output.soft <- head(message.decoded$soft.output, code.length - coder.info$M)
-    output.hard <- head(message.decodedm$hard.output, code.length - coder.info$M)
+    output.hard <- head(message.decoded$hard.output, code.length - coder.info$M)
     message.decoded <- list(output.soft = output.soft, output.hard = output.hard)
 
     return(message.decoded)
