@@ -373,6 +373,18 @@ TurboGetPuncturingMatrix <- function(puncturing.vector) {
     # puncturing.vector has elements with value different from 0 or 1 which is not allowed
     stop("Ungültiger Punktierungsvektor, darf nur 0er und 1er enthalten!")
   }
+  if (length(puncturing.vector) %% 3 != 0) {
+    stop("Falsche Länge des Punktierungsvektors! Muss ein Vielfaches von 3 sein!")
+  }
 
-  return(matrix(puncturing.vector, nrow = 3))
+  mat <- matrix(puncturing.vector, nrow = 3)
+
+  print("Punktierungs-Matrix:")
+  print(mat)
+
+  if (any(colSums(mat) == 0)) {
+    stop("Punktierungsmatrix hat eine 0-Spalte, ist verboten!")
+  }
+
+  return(mat)
 }
