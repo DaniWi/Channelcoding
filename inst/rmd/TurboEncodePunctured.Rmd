@@ -6,12 +6,13 @@ output:
   beamer_presentation:
     keep_tex: true
 params:
-  orig: !r c(1,1,1,0,0,0)
-  interl: !r c(1,1,0,0,0)
-  parity1: !r c(1,1,1,1,1)
-  parity2: !r c(1,1,1,1,1)
-  multipl: !r c(1,1,1,1,1)
-  result: !r c(1,1,1,1,1,1,0,0,0,0,0,0,0,1,1)
+  orig: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  interl: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  parity1: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  parity2: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  multipl: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  result: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  encoder: !r list(N=2, M=2, generators=c(5,7), rsc=TRUE, termination=c(0,1,1,0), next.state=matrix(c(0,2,3,1,2,0,1,3), ncol =2), prev.state=matrix(c(0,3,1,2,1,2,0,3,-1,-1,-1,-1), ncol =3), output=matrix(c(0,0,1,1,3,3,2,2), ncol =2))
 header-includes:
 - \usepackage{tikz}
 - \usepackage{pgfplots}
@@ -23,12 +24,64 @@ header-includes:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+```{r}
+decToBin <- function(x) { if (all(x<2)) x else paste(decToBin(x%/%2), x%%2, sep="") }
+```
+
+
+```{r, echo=FALSE}
+node.short <- 20
+node.long <- 40
+dots <- function (v, node) if(length(v) > node) ", ..." else ""
+
+if (params$encoder$rsc == TRUE) {
+  art.coder <- "Rekursiver"
+} else {
+  art.coder <- "Nicht-Rekursiver"
+}
+```
+
+## Kodierer Information
+
+- `r art.coder` Kodierer
+- Anzahl von Ausgängen : `r params$encoder$N`
+- Anzahl von Registern : `r params$encoder$M`
+- Generatoren : `r params$encoder$generators`
+
+## Kodierer Matrix : Nächster Zustand
+```{r, results='asis'}
+next.table <- params$encoder$next.state
+colnames(next.table) <- c("Bit 0", "Bit 1")
+row.counter <- rep(1:dim(next.table)[1])
+rownames(next.table) <- paste("Zustand ", row.counter)
+knitr::kable(next.table, align="c")
+```
+
+## Kodierer Matrix : Voriger Zustand
+```{r, results='asis'}
+prev.table <- params$encoder$prev.state
+colnames(prev.table) <- c("Bit 0", "Bit 1", "2.Möglichkeit")
+row.counter <- rep(1:dim(prev.table)[1])
+rownames(prev.table) <- paste("Zustand ", row.counter)
+knitr::kable(prev.table, align="c")
+```
+
+## Kodierer Matrix : Ausgangsbits
+```{r, results='asis'}
+output.table <- params$encoder$output
+output.table <- matrix(decToBin(as.vector(output.table)),ncol=dim(output.table)[2])
+colnames(output.table) <- c("Bit 0", "Bit 1")
+row.counter <- rep(1:dim(output.table)[1])
+rownames(output.table) <- paste("Zustand ", row.counter)
+knitr::kable(output.table, align="c")
+```
+
 ## Turbo-Kodierer mit Punktierung
 
-- Input : `r params$orig`
+- Input : `r head(params$orig, node.short)``r dots(params$orig, node.short)`
 
 \begin{center}
-\begin{tikzpicture}[node distance=8mm, inner sep=2mm, >=stealth, font=\small]
+\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\small, minimum height=height("Inp")+5mm]
 
 \tikzstyle{encoderStyle} = [rectangle, draw]
 \tikzstyle{interleaverStyle} = [encoderStyle]
@@ -63,23 +116,23 @@ knitr::opts_chunk$set(echo = FALSE)
 \end{scope}
 
 \visible<2>{
-  \node [showStyle] (show) [above=of background] {\textbf{`r params$interl`}};
+  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
   \draw [showDrawStyle] (show) -- (interleaved);
   }
 \visible<3>{
-  \node [showStyle] (show) [above=of background] {\textbf{`r params$parity1`}};
+  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`}};
   \draw [showDrawStyle] (show) -- (parity1.center);
   }
 \visible<4>{
-  \node [showStyle] (show) [above=of background] {\textbf{`r params$parity2`}};
+  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
   \draw [showDrawStyle] (show) -- (parity2);
   }
 \visible<5>{
-  \node [showStyle] (show) [above=of background] {\textbf{`r params$multipl`}};
+  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$multipl, node.short)``r dots(params$multipl, node.short)`}};
   \draw [showDrawStyle] (show) -- (multiplexed.center);
   }
 
 \end{tikzpicture}
 \end{center}
 
-- Output : `r params$result`
+- Output : `r head(params$result, node.long)``r dots(params$result, node.long)`
