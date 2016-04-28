@@ -30,8 +30,6 @@ knitr::opts_chunk$set(echo = FALSE)
 \begin{center}
 \begin{tikzpicture}[node distance=8mm, inner sep=2mm, >=stealth, font=\small]
 
-\def\variable{1.5}
-
 \tikzstyle{encoderStyle} = [rectangle, draw]
 \tikzstyle{interleaverStyle} = [encoderStyle]
 \tikzstyle{startEndStyle} = [encoderStyle]
