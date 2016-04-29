@@ -12,7 +12,9 @@ params:
   parity2: !r c(4,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
   multipl: !r c(5,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
   result: !r c(6,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
-  encoder: !r list(N=2, M=2, generators=c(5,7), rsc=TRUE, termination=c(0,1,1,0), next.state=matrix(c(0,2,3,1,2,0,1,3), ncol =2), prev.state=matrix(c(0,3,1,2,1,2,0,3,-1,-1,-1,-1), ncol =3), output=matrix(c(0,0,1,1,3,3,2,2), ncol =2))
+  permutation: !r c(1,2,3,4,5,6,7)
+  punctuation: !r matrix(c(1,0,1,1,1,0), nrow = 3)
+  encoder: !r list(N=2, M=2, generators=c(5,7,3,7), rsc=TRUE, termination=c(0,1,1,0), next.state=matrix(c(0,2,3,1,2,0,1,3), ncol =2), prev.state=matrix(c(0,3,1,2,1,2,0,3,-1,-1,-1,-1), ncol =3), output=matrix(c(0,0,1,1,3,3,2,2), ncol =2))
 header-includes:
 - \usepackage{tikz}
 - \usepackage{pgfplots}
@@ -25,9 +27,41 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
-decToBin <- function(x) { if (all(x<2)) x else paste(decToBin(x%/%2), x%%2, sep="") }
-```
+binVector <- function(n, min.length) {
 
+  result <- integer()
+  i <- 0
+  while (n != 0) {
+    result <- c(n %% 2, result)
+    n = n %/% 2
+    i <- i + 1
+  }
+
+  zeros <- rep(0, times = min.length)
+
+  result <- c(zeros, result)
+
+  return(paste(tail(result,min.length), collapse = ""))
+}
+
+decToBin <- function(x) { if (all(x<2)) x else paste(decToBin(x%/%2), x%%2, sep="") }
+
+octalToDec <- function(x) {
+  res <- numeric()
+  for(j in 1:length(x)) {
+  dec <- 0
+  i <- 0
+    while (x[j] > 0) {
+      dec <- dec + (x[j] %% 10) * (8^i)
+      i <- i + 1
+      x[j] <- x[j] %/% 10
+    }
+  res[j] <- dec
+  }
+
+  return(res)
+}
+```
 
 ```{r, echo=FALSE}
 node.short <- 20
@@ -39,14 +73,31 @@ if (params$encoder$rsc == TRUE) {
 } else {
   art.coder <- "Nicht-Rekursiver"
 }
+
+if (params$encoder$rsc == FALSE) {
+  generator.matrix <- 
+    paste0(decToBin(octalToDec(params$encoder$generators)), " \\\\ ", collapse = "")
+  generator.print <- paste0("(", paste(params$encoder$generators, collapse=","), 
+                           ")_8 = \\begin{pmatrix}", generator.matrix, "\\end{pmatrix}")
+
+} else {
+  generator.print <- 
+    paste0("\\left(1,", 
+           paste0("\\frac{", 
+              head(params$encoder$generators, length(params$encoder$generators) - 1), "}{",
+                        tail(params$encoder$generators, 1), "}", collapse = ","), "\\right)")
+}
+
+punctuation.print <- 
+    paste0(apply(params$punctuation, 1, function(x) {paste0(x, collapse=" & ")}), collapse = " \\\\ ")
 ```
 
 ## Kodierer Information
 
 - `r art.coder` Kodierer
-- Anzahl von Ausgängen : `r params$encoder$N`
-- Anzahl von Registern : `r params$encoder$M`
-- Generatoren : `r params$encoder$generators`
+- Anzahl von Ausgängen : $$N=`r params$encoder$N`$$
+- Anzahl von Registern : $$M=`r params$encoder$M`$$
+- Generatoren : $$`r generator.print`$$
 
 ## Kodierer Matrix : Nächster Zustand
 ```{r, results='asis'}
@@ -69,12 +120,18 @@ knitr::kable(prev.table, align="c")
 ## Kodierer Matrix : Ausgangsbits
 ```{r, results='asis'}
 output.table <- params$encoder$output
-output.table <- matrix(decToBin(as.vector(output.table)),ncol=dim(output.table)[2])
+output.table <- matrix(decToBin(as.vector(output.table)), ncol = ncol(output.table))
 colnames(output.table) <- c("Bit 0", "Bit 1")
 row.counter <- rep(1:dim(output.table)[1])
 rownames(output.table) <- paste("Zustand ", row.counter)
 knitr::kable(output.table, align="c")
 ```
+
+## Turbo-Kodierer Information
+
+- Interleaver : (`r head(params$permutation, node.long)``r dots(params$permutation, node.long)`)
+- Kode-Rate : $$\frac{`r length(params$punctuation)`}{`r sum(params$punctuation) * 3`}$$
+- Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
 
 ## Turbo-Kodierer mit Punktierung
 
