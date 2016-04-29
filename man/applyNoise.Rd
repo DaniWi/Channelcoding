@@ -4,12 +4,12 @@
 \alias{applyNoise}
 \title{Failure function}
 \usage{
-applyNoise(msg, params, visualize = FALSE)
+applyNoise(msg, SNR.db = 5, visualize = FALSE)
 }
 \arguments{
 \item{msg}{message to alter}
 
-\item{params}{A vector with arguments}
+\item{SNR.db}{signal noise ratio of the simulated channel in dB}
 
 \item{visualize}{A flag for enabling visualization}
 }
