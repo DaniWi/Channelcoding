@@ -92,17 +92,17 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// c_insert_puncturing_bits
-NumericVector c_insert_puncturing_bits(NumericVector punctured_message, NumericVector puncturing_vector, int rows, int cols);
-RcppExport SEXP channelcoding_c_insert_puncturing_bits(SEXP punctured_messageSEXP, SEXP puncturing_vectorSEXP, SEXP rowsSEXP, SEXP colsSEXP) {
+// c_insert_punctuation_bits
+NumericVector c_insert_punctuation_bits(NumericVector punctured_message, NumericVector punctuation_vector, int rows, int cols);
+RcppExport SEXP channelcoding_c_insert_punctuation_bits(SEXP punctured_messageSEXP, SEXP punctuation_vectorSEXP, SEXP rowsSEXP, SEXP colsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericVector >::type punctured_message(punctured_messageSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type puncturing_vector(puncturing_vectorSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type punctuation_vector(punctuation_vectorSEXP);
     Rcpp::traits::input_parameter< int >::type rows(rowsSEXP);
     Rcpp::traits::input_parameter< int >::type cols(colsSEXP);
-    __result = Rcpp::wrap(c_insert_puncturing_bits(punctured_message, puncturing_vector, rows, cols));
+    __result = Rcpp::wrap(c_insert_punctuation_bits(punctured_message, punctuation_vector, rows, cols));
     return __result;
 END_RCPP
 }

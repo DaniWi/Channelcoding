@@ -5,7 +5,7 @@
 \title{convolutional decoding of a code (hard decision)}
 \usage{
 ConvDecodeHard(code, conv.encoder, terminate = TRUE,
-  puncturing.matrix = NULL)
+  punctuation.matrix = NULL)
 }
 \arguments{
 \item{code}{the code to be decoded}

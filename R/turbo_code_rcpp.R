@@ -5,7 +5,7 @@
 #  - TurboEncode
 #  - TurboDecode
 #  - TurboGetpermutation
-#  - TurboGetPuncturingMatrix
+#  - TurboGetPunctuationMatrix
 
 
 #' Kodieren einer Nachricht mittels dem Turbo-Code-Verfahren
@@ -34,7 +34,7 @@
 #' perm <- TurboGetpermutation(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
 #'
-#' punct <- TurboGetPuncturingMatrix(c(1,1,0,1,0,1))
+#' punct <- TurboGetPunctuationMatrix(c(1,1,0,1,0,1))
 #' message.encoded.punct <- TurboEncode(input, perm, coder, punctuation.matrix = punct)
 #'
 #' @export
@@ -167,7 +167,7 @@ TurboEncode <-
 #' result <- TurboDecode(message.encoded, perm, 5, coder)
 #'
 #' # Mit Punktierung
-#' punct <- TurboGetPuncturingMatrix(c(1,1,0,1,0,1))
+#' punct <- TurboGetPunctuationMatrix(c(1,1,0,1,0,1))
 #' message.encoded.punct <- TurboEncode(input, perm, coder, punctuation.matrix = punct)
 #' result.punct <- TurboDecode(message.encoded.punct$punctured, perm, 5, coder, punctuation.matrix = punct)
 #'
@@ -201,10 +201,10 @@ TurboDecode <-
       parity.index = coder.info$N
     }
 
-    #Puncturing
+    #Punctuation
     if (!is.null(punctuation.matrix)) {
-      #insert missing bits from puncturing
-      code.with.punct <- InsertPuncturingBits(code, punctuation.matrix)
+      #insert missing bits from punctuation
+      code.with.punct <- InsertPunctuationBits(code, punctuation.matrix)
     } else {
       code.with.punct <- code
     }
@@ -390,16 +390,16 @@ TurboGetPermutation <- function(message.length, coder.info, type = "RANDOM", arg
 }
 
 #' @export
-TurboGetPuncturingMatrix <- function(puncturing.vector) {
-  if (any((puncturing.vector != 1)[puncturing.vector != 0])) {
-    # puncturing.vector has elements with value different from 0 or 1 which is not allowed
+TurboGetPunctuationMatrix <- function(punctuation.vector) {
+  if (any((punctuation.vector != 1)[punctuation.vector != 0])) {
+    # punctuation.vector has elements with value different from 0 or 1 which is not allowed
     stop("Ungültiger Punktierungsvektor, darf nur 0er und 1er enthalten!")
   }
-  if (length(puncturing.vector) %% 3 != 0) {
+  if (length(punctuation.vector) %% 3 != 0) {
     stop("Falsche Länge des Punktierungsvektors! Muss ein Vielfaches von 3 sein!")
   }
 
-  mat <- matrix(puncturing.vector, nrow = 3)
+  mat <- matrix(punctuation.vector, nrow = 3)
 
   print("Punktierungs-Matrix:")
   print(mat)
@@ -409,4 +409,66 @@ TurboGetPuncturingMatrix <- function(puncturing.vector) {
   }
 
   return(mat)
+}
+
+#' @export
+TurboSimulation <- function(coder,
+                            permutation.type = "RANDOM",
+                            decode.iterations = 10,
+                            msg.length = 100,
+                            iterations.per.db = 100,
+                            min.db = 0.1,
+                            max.db = 3.0,
+                            db.interval = 0.1,
+                            punctuation.matrix = NULL)
+{
+  stopifnot(decode.iterations > 0, msg.length > 0, iterations.per.db > 0,
+            min.db > 0, max.db > 0, max.db >= min.db, db.interval > 0)
+
+  v.db <- seq(from = min.db, to = max.db, by = db.interval)
+  v.ber <- numeric(0)
+
+  perm <- TurboGetPermutation(msg.length, coder, permutation.type)
+
+  total.errors <- 0
+
+  for (db in v.db) {
+    for (i in 1 : iterations.per.db) {
+      # message erzeugen
+      message <- sample(c(0,1), msg.length, replace = TRUE)
+
+      # encode
+      coded <- TurboEncode(message, perm, coder, punctuation.matrix = punctuation.matrix)
+
+      # wenn punktiert, muss codierte nachricht aus liste geholt werden
+      if (!is.null(punctuation.matrix)) {
+        coded <- coded$punctured
+      }
+
+      # noise hinzufügen
+      noisy <- applyNoise(coded, db)
+
+      # anzahl flipped bits (channel errors)
+      # coded.hard <- ifelse(coded >= 0, 0, 1)
+      # noisy.hard <- ifelse(noisy >= 0, 0, 1)
+      # channel.errors <- sum(abs(coded.hard - noisy.hard))
+
+      # decode
+      decoded <- TurboDecode(noisy, perm, decode.iterations, coder,
+                             punctuation.matrix = punctuation.matrix)
+
+      # vgl decoded & message
+      decode.erros <- sum(abs(decoded$output.hard - message))
+
+      total.errors <- total.errors + decode.erros
+    }
+
+    v.ber <- c(v.ber, total.errors / (msg.length * iterations.per.db))
+    total.errors <- 0
+  }
+
+
+  df <- data.frame(db = v.db, ber = v.ber)
+
+  return(df)
 }

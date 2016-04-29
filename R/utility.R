@@ -1,20 +1,20 @@
 #' @export
-GetPuncturingMatrix <- function(puncturing.vector, coder.info) {
+GetPunctuationMatrix <- function(punctuation.vector, coder.info) {
 
-  if (any((puncturing.vector != 1)[puncturing.vector != 0])) {
-    # puncturing.vector has elements with value different from 0 or 1 which is not allowed
-    stop("Invalid puncturing vector! Only values 0/1 are allowed!")
+  if (any((punctuation.vector != 1)[punctuation.vector != 0])) {
+    # punctuation.vector has elements with value different from 0 or 1 which is not allowed
+    stop("Invalid punctuation vector! Only values 0/1 are allowed!")
   }
 
   if (is.null(coder.info$N)) {
     stop("Encoder has to specify list element N!")
   }
 
-  if (length(puncturing.vector) %% coder.info$N != 0) {
+  if (length(punctuation.vector) %% coder.info$N != 0) {
     stop("Falsche Länge des Punktierungsvektors! Muss ein Vielfaches von N (Anzahl der Ausgänge) sein!")
   }
 
-  mat <- matrix(puncturing.vector, nrow = coder.info$N)
+  mat <- matrix(punctuation.vector, nrow = coder.info$N)
 
   if (any(colSums(mat) == 0)) {
     stop("Punktierungsmatrix hat eine 0-Spalte!")
@@ -23,8 +23,8 @@ GetPuncturingMatrix <- function(puncturing.vector, coder.info) {
   return(mat)
 }
 
-PunctureCode <- function(original.code, puncturing.matrix) {
-  mask <- as.logical(puncturing.matrix)
+PunctureCode <- function(original.code, punctuation.matrix) {
+  mask <- as.logical(punctuation.matrix)
 
   if(length(original.code) < length(mask)) {
     punctured.code <- original.code[head(mask, length(original.code))]
@@ -35,10 +35,10 @@ PunctureCode <- function(original.code, puncturing.matrix) {
 
 }
 
-InsertPuncturingBits <- function(punctured.code, puncturing.matrix) {
-  rows <- nrow(puncturing.matrix)
-  cols <- ncol(puncturing.matrix)
-  result <- c_insert_puncturing_bits(punctured.code, as.numeric(puncturing.matrix), rows, cols)
+InsertPunctuationBits <- function(punctured.code, punctuation.matrix) {
+  rows <- nrow(punctuation.matrix)
+  cols <- ncol(punctuation.matrix)
+  result <- c_insert_punctuation_bits(punctured.code, as.numeric(punctuation.matrix), rows, cols)
   return(result)
 }
 
@@ -52,13 +52,6 @@ IsOctal <- function(generators) {
   }
 
   return(TRUE)
-}
-
-MaskGenerators <- function(generators, max.generator.octal) {
-
-  new.generators = bitwAnd(max.generator.octal, generators)
-
-  return(new.generators)
 }
 
 IsCatastrophicEncoder <- function(generators) {
@@ -147,4 +140,11 @@ Shift <- function(vector, n) {
   }
 
   result <- c(tail(vector, n %% l), head(vector, (l - n) %% l))
+}
+
+MaskGenerators <- function(generators, max.generator.octal) {
+
+  new.generators = bitwAnd(max.generator.octal, generators)
+
+  return(new.generators)
 }

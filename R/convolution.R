@@ -160,7 +160,7 @@ GenerateRscEncoder <- function(N, M, generators) {
 #' ConvEncode(c(1,0,0,1,1), coder)
 #' @author Martin Nocker
 #' @export
-ConvEncode <- function(message, conv.encoder, terminate = TRUE, puncturing.matrix = NULL) {
+ConvEncode <- function(message, conv.encoder, terminate = TRUE, punctuation.matrix = NULL) {
 
   stopifnot(length(message) > 0)
 
@@ -168,7 +168,7 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE, puncturing.matri
     stop("Nachricht darf nur 0er und 1er enthalten!")
   }
 
-  if (!is.null(puncturing.matrix) && nrow(puncturing.matrix) != conv.encoder$N) {
+  if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != conv.encoder$N) {
     stop("Punktierungsmatrix hat falsche Anzahl an Zeilen! Matrix muss N Zeilen haben!")
   }
 
@@ -181,8 +181,8 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE, puncturing.matri
                               conv.encoder$termination,
                               as.integer(terminate))
 
-  if (!is.null(puncturing.matrix)) {
-    punctured.code <- PunctureCode(code, puncturing.matrix)
+  if (!is.null(punctuation.matrix)) {
+    punctured.code <- PunctureCode(code, punctuation.matrix)
 
     return(list(original=code, punctured=punctured.code))
   }
@@ -212,18 +212,18 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE, puncturing.matri
 #' ConvDecode(coded, coder)
 #' @author Martin Nocker
 #' @export
-ConvDecode <- function(code, conv.encoder, terminate = TRUE, puncturing.matrix = NULL) {
+ConvDecode <- function(code, conv.encoder, terminate = TRUE, punctuation.matrix = NULL) {
 
   stopifnot(length(code) > 0)
 
-  if(!is.null(puncturing.matrix)) {
-    #insert missing bits from puncturing
-    code <- InsertPuncturingBits(code, puncturing.matrix)
+  if(!is.null(punctuation.matrix)) {
+    #insert missing bits from punctuation
+    code <- InsertPunctuationBits(code, punctuation.matrix)
   }
 
   #Check length of input(with inserted bits) and permutation
   if ((length(code) %% conv.encoder$N) != 0) {
-    if(!is.null(puncturing.matrix)) {
+    if(!is.null(punctuation.matrix)) {
       stop("Fehler während der Punktierung!")
     }
     stop("Code hat die falsche Länge")
@@ -273,20 +273,20 @@ ConvDecode <- function(code, conv.encoder, terminate = TRUE, puncturing.matrix =
 #' ConvDecodeHard(coded, coder)
 #' @author Martin Nocker
 #' @export
-ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, puncturing.matrix = NULL) {
+ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, punctuation.matrix = NULL) {
 
   stopifnot(length(code) > 0)
 
   code.copy <- c(code)
 
-  if(!is.null(puncturing.matrix)) {
-    #insert missing bits from puncturing
-    code.copy <- InsertPuncturingBits(code.copy, puncturing.matrix)
+  if(!is.null(punctuation.matrix)) {
+    #insert missing bits from punctuation
+    code.copy <- InsertPunctuationBits(code.copy, punctuation.matrix)
   }
 
   #Check length of input(with inserted bits) and permutation
   if ((length(code.copy) %% conv.encoder$N) != 0) {
-    if(!is.null(puncturing.matrix)) {
+    if(!is.null(punctuation.matrix)) {
       stop("Fehler während der Punktierung!")
     }
     stop("Code hat die falsche Länge")
@@ -315,4 +315,61 @@ ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, puncturing.matr
   }
 
   return(result$hard.output)
+}
+
+#' @export
+ConvolutionSimulation <- function(coder,
+                                  msg.length = 100,
+                                  iterations.per.db = 100,
+                                  min.db = 0.1,
+                                  max.db = 3.0,
+                                  db.interval = 0.1,
+                                  punctuation.matrix = NULL)
+{
+  stopifnot(msg.length > 0, iterations.per.db > 0,
+            min.db > 0, max.db > 0, max.db >= min.db, db.interval > 0)
+
+  v.db <- seq(from = min.db, to = max.db, by = db.interval)
+  v.ber <- numeric(0)
+
+  total.errors <- 0
+
+  for (db in v.db) {
+    for (i in 1 : iterations.per.db) {
+      # message erzeugen
+      message <- sample(c(0,1), msg.length, replace = TRUE)
+
+      # encode
+      coded <- ConvEncode(message, coder, punctuation.matrix = punctuation.matrix)
+
+      # wenn punktiert, muss codierte nachricht aus liste geholt werden
+      if (!is.null(punctuation.matrix)) {
+        coded <- coded$punctured
+      }
+
+      # noise hinzufügen
+      noisy <- applyNoise(coded, db)
+
+      # anzahl flipped bits (channel errors)
+      # coded.hard <- ifelse(coded >= 0, 0, 1)
+      # noisy.hard <- ifelse(noisy >= 0, 0, 1)
+      # channel.errors <- sum(abs(coded.hard - noisy.hard))
+
+      # decode
+      decoded <- ConvDecode(noisy, coder, punctuation.matrix = punctuation.matrix)
+
+      # vgl decoded & message
+      decode.erros <- sum(abs(decoded$output.hard - message))
+
+      total.errors <- total.errors + decode.erros
+    }
+
+    v.ber <- c(v.ber, total.errors / (msg.length * iterations.per.db))
+    total.errors <- 0
+  }
+
+
+  df <- data.frame(db = v.db, ber = v.ber)
+
+  return(df)
 }

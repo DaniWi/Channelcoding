@@ -39,7 +39,7 @@ message.encoded <- TurboEncode(input, perm, coder)
 result <- TurboDecode(message.encoded, perm, 5, coder)
 
 # Mit Punktierung
-punct <- TurboGetPuncturingMatrix(c(1,1,0,1,0,1))
+punct <- TurboGetPunctuationMatrix(c(1,1,0,1,0,1))
 message.encoded.punct <- TurboEncode(input, perm, coder, punctuation.matrix = punct)
 result.punct <- TurboDecode(message.encoded.punct$punctured, perm, 5, coder, punctuation.matrix = punct)
 

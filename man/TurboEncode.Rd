@@ -36,7 +36,7 @@ coder <- GenerateRscEncoder(2,2,c(5,7))
 perm <- TurboGetpermutation(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
 
-punct <- TurboGetPuncturingMatrix(c(1,1,0,1,0,1))
+punct <- TurboGetPunctuationMatrix(c(1,1,0,1,0,1))
 message.encoded.punct <- TurboEncode(input, perm, coder, punctuation.matrix = punct)
 
 }

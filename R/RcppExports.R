@@ -25,8 +25,8 @@ gcd_polynomial <- function(x) {
     .Call('channelcoding_gcd_polynomial', PACKAGE = 'channelcoding', x)
 }
 
-c_insert_puncturing_bits <- function(punctured_message, puncturing_vector, rows, cols) {
-    .Call('channelcoding_c_insert_puncturing_bits', PACKAGE = 'channelcoding', punctured_message, puncturing_vector, rows, cols)
+c_insert_punctuation_bits <- function(punctured_message, punctuation_vector, rows, cols) {
+    .Call('channelcoding_c_insert_punctuation_bits', PACKAGE = 'channelcoding', punctured_message, punctuation_vector, rows, cols)
 }
 
 c_turbo_decode <- function(x_noisy, parity_noisy1, parity_noisy2, permutation, N_ITERATION, N, M, previousState, output, output_index) {
