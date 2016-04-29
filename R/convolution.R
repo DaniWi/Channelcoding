@@ -160,7 +160,7 @@ GenerateRscEncoder <- function(N, M, generators) {
 #' ConvEncode(c(1,0,0,1,1), coder)
 #' @author Martin Nocker
 #' @export
-ConvEncode <- function(message, conv.encoder, terminate = TRUE, punctuation.matrix = NULL) {
+ConvEncode <- function(message, conv.encoder, terminate = TRUE, punctuation.matrix = NULL, visualize = FALSE) {
 
   stopifnot(length(message) > 0)
 
@@ -187,13 +187,15 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE, punctuation.matr
     return(list(original=code, punctured=punctured.code))
   }
 
-  #rmarkdown::render(system.file("rmd", "ConvolutionEncode.Rmd", package = "channelcoding"),
-  #                  encoding = "UTF-8",
-  #                  params = list(conv.encoder = conv.encoder,
-  #                                message = message,
-  #                                terminate = terminate))
+  if (visualize) {
+    rmarkdown::render(system.file("rmd", "ConvolutionEncode.Rmd", package = "channelcoding"),
+                      encoding = "UTF-8",
+                      params = list(conv.encoder = conv.encoder,
+                                    message = message,
+                                    terminate = terminate))
 
-  #rstudioapi::viewer(system.file("rmd", "ConvolutionEncode.pdf", package = "channelcoding"))
+    rstudioapi::viewer(system.file("rmd", "ConvolutionEncode.pdf", package = "channelcoding"))
+  }
 
   return(code)
 }
@@ -212,7 +214,7 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE, punctuation.matr
 #' ConvDecode(coded, coder)
 #' @author Martin Nocker
 #' @export
-ConvDecode <- function(code, conv.encoder, terminate = TRUE, punctuation.matrix = NULL) {
+ConvDecode <- function(code, conv.encoder, terminate = TRUE, punctuation.matrix = NULL, visualize = FALSE) {
 
   stopifnot(length(code) > 0)
 
@@ -236,15 +238,18 @@ ConvDecode <- function(code, conv.encoder, terminate = TRUE, punctuation.matrix 
                                 conv.encoder$output,
                                 as.integer(terminate))
 
-  #rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
-  #                  encoding = "UTF-8",
-  #                  params = list(conv.encoder = conv.encoder,
-  #                                code = code,
-  #                                decoded = result$hard.output,
-  #                                trellis = result$trellis,
-  #                                survivor.states = result$survivor.states))
+  if (visualize) {
+    rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
+                      encoding = "UTF-8",
+                      params = list(conv.encoder = conv.encoder,
+                                    code = code,
+                                    decoded = result$hard.output,
+                                    trellis = result$trellis,
+                                    survivor.states = result$survivor.states))
 
-  #rstudioapi::viewer(system.file("rmd", "ConvolutionDecode.pdf", package = "channelcoding"))
+    rstudioapi::viewer(system.file("rmd", "ConvolutionDecode.pdf", package = "channelcoding"))
+  }
+
 
   result <- result[1:2]
 
