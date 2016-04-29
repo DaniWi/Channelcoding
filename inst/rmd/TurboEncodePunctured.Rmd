@@ -31,7 +31,7 @@ decToBin <- function(x) { if (all(x<2)) x else paste(decToBin(x%/%2), x%%2, sep=
 
 ```{r, echo=FALSE}
 node.short <- 20
-node.long <- 40
+node.long <- 45
 dots <- function (v, node) if(length(v) > node) ", ..." else ""
 
 if (params$encoder$rsc == TRUE) {

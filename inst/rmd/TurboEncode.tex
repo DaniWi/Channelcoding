@@ -67,13 +67,12 @@ Zustand 4 & 01 & 10\tabularnewline
 \begin{itemize}
 \tightlist
 \item
-  Input : 1, 1, 1, 0, 0, 0
+  Input : 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  \ldots{}
 \end{itemize}
 
 \begin{center}
-\begin{tikzpicture}[node distance=8mm, inner sep=2mm, >=stealth, font=\small]
-
-\def\variable{1.5}
+\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\small, minimum height=height("Inp")+5mm]
 
 \tikzstyle{encoderStyle} = [rectangle, draw]
 \tikzstyle{interleaverStyle} = [encoderStyle]
@@ -84,35 +83,35 @@ Zustand 4 & 01 & 10\tabularnewline
 \tikzstyle{showDrawStyle} = [->, red, thick]
 
 \node [interleaverStyle] (interleaver) {Interleaver};
-\node [encoderStyle] (encoder 1) [above right=of interleaver] {Kodierer 1};
-\node [encoderStyle] (encoder 2) [below right=of interleaver] {Kodierer 2};
-\node [] (multiplexerTemp) [right=of encoder 1] {};
+\node [encoderStyle] (encoder1) [above right=of interleaver] {Kodierer 1};
+\node [encoderStyle] (encoder2) [below right=of interleaver] {Kodierer 2};
+\node [] (multiplexerTemp) [right=of encoder1] {};
 \node [multiplexerStyle, rotate=90] (multiplexer) at (multiplexerTemp.east) {Multiplexer};
 \node [startEndStyle] (start) [above left=of interleaver] {Input};
 \node [startEndStyle] (end) [right=of multiplexerTemp] {Output};
 
-\draw [arrowStyle] (interleaver.south) |- node (interleaved) {}(encoder 2.west);
-\draw [arrowStyle] (encoder 1.east) -- node (parity1) {} (multiplexer.north);
+\draw [arrowStyle] (interleaver.south) |- node (interleaved) {}(encoder2.west);
+\draw [arrowStyle] (encoder1.east) -- node (parity1) {} (multiplexer.north);
 \draw [arrowStyle] (start.east)  -| node[midway] (tmp) {} (interleaver.north);
-\draw [arrowStyle] (tmp.center) |- (encoder 1.west);
-\draw [arrowStyle] (encoder 2.east) -| ++(0.2,0.7) node (parity2) {} |- ($(multiplexer.north)+(0,-.5)$);
+\draw [arrowStyle] (tmp.center) |- (encoder1.west);
+\draw [arrowStyle] (encoder2.east) -| ++(0.2,0.7) node (parity2) {} |- ($(multiplexer.north)+(0,-.5)$);
 \draw [arrowStyle] (tmp.center) |- ($(multiplexer.north)+(0,.5)$);
 \draw [arrowStyle] (multiplexer.south) -- (end.west);
 
 \begin{scope}[on background layer]
-\node [draw, fit=(encoder 1) (interleaver) (encoder 2) (multiplexer)] (background) {};
+\node [draw, fit=(encoder1) (interleaver) (encoder2) (multiplexer)] (background) {};
 \end{scope}
 
 \visible<2>{
-  \node [showStyle] (show) [above=of background] {\textbf{1, 1, 0, 0, 0}};
+  \node [showStyle] (show) [above=3mm of background] {\textbf{1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...}};
   \draw [showDrawStyle] (show) -- (interleaved);
   }
 \visible<3>{
-  \node [showStyle] (show) [above=of background] {\textbf{1, 1, 1, 1, 1}};
+  \node [showStyle] (show) [above=3mm of background] {\textbf{1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...}};
   \draw [showDrawStyle] (show) -- (parity1.center);
   }
 \visible<4>{
-  \node [showStyle] (show) [above=of background] {\textbf{1, 1, 1, 1, 1}};
+  \node [showStyle] (show) [above=3mm of background] {\textbf{1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...}};
   \draw [showDrawStyle] (show) -- (parity2);
   }
 
@@ -122,7 +121,8 @@ Zustand 4 & 01 & 10\tabularnewline
 \begin{itemize}
 \tightlist
 \item
-  Output : 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1
+  Output : 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \ldots{}
 \end{itemize}
 
 \end{frame}
