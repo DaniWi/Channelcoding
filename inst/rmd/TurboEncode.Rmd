@@ -7,10 +7,10 @@ output:
     keep_tex: true
 params:
   orig: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
-  interl: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
-  parity1: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
-  parity2: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
-  result: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  interl: !r c(2,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  parity1: !r c(3,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  parity2: !r c(4,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  result: !r c(5,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
   encoder: !r list(N=2, M=2, generators=c(5,7), rsc=TRUE, termination=c(0,1,1,0), next.state=matrix(c(0,2,3,1,2,0,1,3), ncol =2), prev.state=matrix(c(0,3,1,2,1,2,0,3,-1,-1,-1,-1), ncol =3), output=matrix(c(0,0,1,1,3,3,2,2), ncol =2))
 header-includes:
 - \usepackage{tikz}
@@ -80,13 +80,13 @@ knitr::kable(output.table, align="c")
 - Input : `r head(params$orig, node.short)``r dots(params$orig, node.short)`
 
 \begin{center}
-\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\small, minimum height=height("Inp")+5mm]
+\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\tiny]
 
-\tikzstyle{encoderStyle} = [rectangle, draw]
+\tikzstyle{encoderStyle} = [rectangle, draw, minimum height=height("Inp")+4mm]
 \tikzstyle{interleaverStyle} = [encoderStyle]
 \tikzstyle{startEndStyle} = [encoderStyle]
 \tikzstyle{multiplexerStyle} = [encoderStyle]
-\tikzstyle{showStyle} = [encoderStyle, thick, draw=red, text=red]
+\tikzstyle{showStyle} = [rectangle, draw, thick, draw=red, text=red, inner sep=1.5mm]
 \tikzstyle{arrowStyle} = [->]
 \tikzstyle{showDrawStyle} = [->, red, thick]
 
@@ -98,29 +98,35 @@ knitr::kable(output.table, align="c")
 \node [startEndStyle] (start) [above left=of interleaver] {Input};
 \node [startEndStyle] (end) [right=of multiplexerTemp] {Output};
 
-\draw [arrowStyle] (interleaver.south) |- node (interleaved) {}(encoder2.west);
-\draw [arrowStyle] (encoder1.east) -- node (parity1) {} (multiplexer.north);
-\draw [arrowStyle] (start.east)  -| node[midway] (tmp) {} (interleaver.north);
-\draw [arrowStyle] (tmp.center) |- (encoder1.west);
-\draw [arrowStyle] (encoder2.east) -| ++(0.2,0.7) node (parity2) {} |- ($(multiplexer.north)+(0,-.5)$);
-\draw [arrowStyle] (tmp.center) |- ($(multiplexer.north)+(0,.5)$);
-\draw [arrowStyle] (multiplexer.south) -- (end.west);
+\draw [arrowStyle] (interleaver.south) |- node (afterInterleaver) {}(encoder2.west);
+\draw [arrowStyle] (encoder1.east) -- node (afterParity1) {} (multiplexer.north);
+\draw [arrowStyle] (start.east)  -| node[midway] (afterInput) {} (interleaver.north);
+\draw [arrowStyle] (afterInput.center) |- (encoder1.west);
+\draw [arrowStyle] (encoder2.east) -| ++(0.2,0.7) node (afterParity2) {} |- ($(multiplexer.north)+(0,-.5)$);
+\draw [arrowStyle] (afterInput.center) |- ($(multiplexer.north)+(0,.5)$);
+\draw [arrowStyle] (multiplexer.south) -- node (afterMultiplexer) {} (end.west);
 
 \begin{scope}[on background layer]
 \node [draw, fit=(encoder1) (interleaver) (encoder2) (multiplexer)] (background) {};
 \end{scope}
 
 \visible<2>{
-  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
-  \draw [showDrawStyle] (show) -- (interleaved);
+  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \draw [showDrawStyle] (showAbove) -- (afterInput.center);
+  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`}};
+  \draw [showDrawStyle] (showBelow) -- (afterParity1.center);
   }
 \visible<3>{
-  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`}};
-  \draw [showDrawStyle] (show) -- (parity1.center);
+  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \draw [showDrawStyle] (showAbove) -- (afterInput.center);
+  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
+  \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<4>{
-  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
-  \draw [showDrawStyle] (show) -- (parity2);
+  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
+  \draw [showDrawStyle] (showAbove) -- (afterInterleaver);
+  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
+  \draw [showDrawStyle] (showBelow) -- (afterParity2.center);
   }
 
 \end{tikzpicture}

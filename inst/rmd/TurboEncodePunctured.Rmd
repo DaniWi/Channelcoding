@@ -7,11 +7,11 @@ output:
     keep_tex: true
 params:
   orig: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
-  interl: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
-  parity1: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
-  parity2: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
-  multipl: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
-  result: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  interl: !r c(2,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  parity1: !r c(3,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  parity2: !r c(4,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  multipl: !r c(5,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+  result: !r c(6,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
   encoder: !r list(N=2, M=2, generators=c(5,7), rsc=TRUE, termination=c(0,1,1,0), next.state=matrix(c(0,2,3,1,2,0,1,3), ncol =2), prev.state=matrix(c(0,3,1,2,1,2,0,3,-1,-1,-1,-1), ncol =3), output=matrix(c(0,0,1,1,3,3,2,2), ncol =2))
 header-includes:
 - \usepackage{tikz}
@@ -81,55 +81,63 @@ knitr::kable(output.table, align="c")
 - Input : `r head(params$orig, node.short)``r dots(params$orig, node.short)`
 
 \begin{center}
-\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\small, minimum height=height("Inp")+5mm]
+\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\tiny]
 
-\tikzstyle{encoderStyle} = [rectangle, draw]
+\tikzstyle{encoderStyle} = [rectangle, draw, minimum height=height("Inp")+4mm]
 \tikzstyle{interleaverStyle} = [encoderStyle]
 \tikzstyle{startEndStyle} = [encoderStyle]
 \tikzstyle{punctureStyle} = [encoderStyle]
 \tikzstyle{multiplexerStyle} = [encoderStyle]
-\tikzstyle{showStyle} = [encoderStyle, thick, draw=red, text=red]
+\tikzstyle{showStyle} = [rectangle, draw, thick, draw=red, text=red, inner sep=1.5mm]
 \tikzstyle{arrowStyle} = [->]
 \tikzstyle{showDrawStyle} = [->, red, thick]
 
 \node [interleaverStyle] (interleaver) {Interleaver};
-\node [encoderStyle] (encoder 1) [above right=of interleaver] {Kodierer 1};
-\node [encoderStyle] (encoder 2) [below right=of interleaver] {Kodierer 2};
-\node [] (multiplexerTemp) [right=of encoder 1] {};
+\node [encoderStyle] (encoder1) [above right=of interleaver] {Kodierer 1};
+\node [encoderStyle] (encoder2) [below right=of interleaver] {Kodierer 2};
+\node [] (multiplexerTemp) [right=of encoder1] {};
 \node [multiplexerStyle, rotate=90] (multiplexer) at (multiplexerTemp.east) {Multiplexer};
 \node [startEndStyle] (start) [above left=of interleaver] {Input};
 \node [] (punctureTemp) [right=of multiplexerTemp] {};
 \node [punctureStyle, rotate=90] (puncture) at (punctureTemp.east) {Punktierung};
 \node [startEndStyle] (end) [right=of punctureTemp] {Output};
 
-\draw [arrowStyle] (interleaver.south) |- node (interleaved) {}(encoder 2.west);
-\draw [arrowStyle] (encoder 1.east) -- node (parity1) {} (multiplexer.north);
-\draw [arrowStyle] (start.east)  -| node[midway] (tmp) {} (interleaver.north);
-\draw [arrowStyle] (tmp.center) |- (encoder 1.west);
-\draw [arrowStyle] (encoder 2.east) -| ++(0.2,0.7) node (parity2) {} |- ($(multiplexer.north)+(0,-.5)$);
-\draw [arrowStyle] (tmp.center) |- ($(multiplexer.north)+(0,.5)$);
-\draw [arrowStyle] (multiplexer.south) -- node (multiplexed) {} (puncture.north);
-\draw [arrowStyle] (puncture.south) -- (end.west);
+\draw [arrowStyle] (interleaver.south) |- node (afterInterleaver) {}(encoder2.west);
+\draw [arrowStyle] (encoder1.east) -- node (afterParity1) {} (multiplexer.north);
+\draw [arrowStyle] (start.east)  -| node[midway] (afterInput) {} (interleaver.north);
+\draw [arrowStyle] (afterInput.center) |- (encoder1.west);
+\draw [arrowStyle] (encoder2.east) -| ++(0.2,0.7) node (afterParity2) {} |- ($(multiplexer.north)+(0,-.5)$);
+\draw [arrowStyle] (afterInput.center) |- ($(multiplexer.north)+(0,.5)$);
+\draw [arrowStyle] (multiplexer.south) -- node (afterMultiplexer) {} (puncture.north);
+\draw [arrowStyle] (puncture.south) -- node (afterPuncture) {}(end.west);
 
 \begin{scope}[on background layer]
-\node [draw, fit=(encoder 1) (interleaver) (encoder 2) (multiplexer) (puncture)] (background) {};
+\node [draw, fit=(encoder1) (interleaver) (encoder2) (multiplexer) (puncture)] (background) {};
 \end{scope}
 
 \visible<2>{
-  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
-  \draw [showDrawStyle] (show) -- (interleaved);
+  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \draw [showDrawStyle] (showAbove) -- (afterInput.center);
+  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`}};
+  \draw [showDrawStyle] (showBelow) -- (afterParity1.center);
   }
 \visible<3>{
-  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`}};
-  \draw [showDrawStyle] (show) -- (parity1.center);
+  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \draw [showDrawStyle] (showAbove) -- (afterInput.center);
+  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
+  \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<4>{
-  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
-  \draw [showDrawStyle] (show) -- (parity2);
+  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
+  \draw [showDrawStyle] (showAbove) -- (afterInterleaver);
+  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
+  \draw [showDrawStyle] (showBelow) -- (afterParity2.center);
   }
 \visible<5>{
-  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$multipl, node.short)``r dots(params$multipl, node.short)`}};
-  \draw [showDrawStyle] (show) -- (multiplexed.center);
+  \node [showStyle] (show) [above=4mm of background] {\textbf{`r head(params$multipl, node.short)``r dots(params$multipl, node.short)`}};
+  \draw [showDrawStyle] (show) -- (afterMultiplexer.center);
+  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$result, node.short)``r dots(params$result, node.short)`}};
+  \draw [showDrawStyle] (showBelow) -- (afterPuncture.center);
   }
 
 \end{tikzpicture}

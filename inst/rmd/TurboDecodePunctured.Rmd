@@ -35,7 +35,7 @@ knitr::opts_chunk$set(echo = FALSE)
 \tikzstyle{startEndStyle} = [rectangle, draw]
 \tikzstyle{depunctureStyle} = [rectangle, draw, node distance=4mm]
 \tikzstyle{demultiplexerStyle} = [depunctureStyle]
-\tikzstyle{showStyle} = [decoderStyle, thick, draw=red, text=red]
+\tikzstyle{showStyle} = [decoderStyle, thick, draw=red, text=red, inner sep=1mm]
 \tikzstyle{showDrawStyle} = [->, red, thick]
 
 \node [node distance=4mm] (demultiplexerTemp) {};
