@@ -30,11 +30,18 @@ vollzogen wird. Das hei?t, dass beim Eingang der tatsächliche Signalpegel berü
 Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit am Ausgang ist
 }
 \examples{
+
+# Ohne Punktierung
 input <- c(1,0,1,1,0)
 coder <- GenerateRsccoder(2,2,c(5,7))
 perm <- TurboGetpermutation.vector(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
-result <- TurboDecode(input, perm, 5, coder)
+result <- TurboDecode(message.encoded, perm, 5, coder)
+
+# Mit Punktierung
+punct <- TurboGetPuncturingMatrix(c(1,1,0,1,0,1))
+message.encoded.punct <- TurboEncode(input, perm, coder, punctuation.matrix = punct)
+result.punct <- TurboDecode(message.encoded.punct$punctured, perm, 5, coder, punctuation.matrix = punct)
 
 }
 \author{

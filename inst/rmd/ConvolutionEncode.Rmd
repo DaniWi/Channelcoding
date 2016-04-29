@@ -212,7 +212,7 @@ if (terminate) {
     encode.table <- paste(encode.table, table.row)
   
     index <- index + 1
-    state <- next.state[s+1,term.bit+1]
+    state <- next.state[state+1,term.bit+1]
   }
 }
 ```
@@ -242,8 +242,8 @@ if (terminate) {
 \hfill
 \begin{minipage}{.4\textwidth}
 \begin{center}
-\begin{tikzpicture}[scale=.75, >=stealth, font=\scriptsize]
-\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=8mm, font=\footnotesize]
+\begin{tikzpicture}[scale=.75, >=stealth, font=\tiny]
+\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=8mm, font=\scriptsize]
 `r tikz.diagram`
 \end{tikzpicture}
 \end{center}
