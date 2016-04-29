@@ -40,10 +40,12 @@
 #' @export
 TurboEncode <-
   function(message, permutation.vector, coder.info,
-           parity.index = coder.info$N, punctuation.matrix = NULL) {
+           parity.index = coder.info$N, punctuation.matrix = NULL, visualize = FALSE) {
 
     #Checks all parameters
     stopifnot(length(message) > 0)
+
+    CheckCoder(coder.info)
 
     if (any((message != 1)[message != 0])) {
       stop("Nachricht darf nur 0er und 1er enthalten!")
@@ -78,6 +80,7 @@ TurboEncode <-
     code.orig <- parity.1[temp.index]
 
     #permutate original message with termination (mapping important!!)
+    code.orig.01 <- as.numeric(code.orig < 0)
     code.perm <- as.numeric(code.orig[permutation.vector + 1] < 0)
 
     #second coder without termination
@@ -94,31 +97,35 @@ TurboEncode <-
     if (!is.null(punctuation.matrix)) {
       #puncture the output
       code.punct <- PunctureCode(code.result, punctuation.matrix)
+    }
 
-      rmarkdown::render(
-        system.file("rmd", "TurboEncodePunctured.Rmd", package = "channelcoding"),
-        params = list(
-          orig = message,
-          interl = code.perm,
-          parity1 = parity.1,
-          parity2 = parity.2,
-          multipl = code.result,
-          result = code.punct,
-          encoder = coder.info),
-        encoding = "UTF-8")
-      rstudioapi::viewer(system.file("rmd", "TurboEncodePunctured.pdf", package = "channelcoding"))
-    } else {
-      rmarkdown::render(
-        system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"),
+    if (visualize) {
+      if (!is.null(punctuation.matrix)) {
+        rmarkdown::render(
+          system.file("rmd", "TurboEncodePunctured.Rmd", package = "channelcoding"),
           params = list(
-          orig = message,
-          interl = code.perm,
-          parity1 = parity.1,
-          parity2 = parity.2,
-          result = code.result,
-          encoder = coder.info),
-        encoding = "UTF-8")
-      rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
+            orig = code.orig.01,
+            interl = code.perm,
+            parity1 = parity.1,
+            parity2 = parity.2,
+            multipl = code.result,
+            result = code.punct,
+            encoder = coder.info),
+          encoding = "UTF-8")
+        rstudioapi::viewer(system.file("rmd", "TurboEncodePunctured.pdf", package = "channelcoding"))
+      } else {
+        rmarkdown::render(
+          system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"),
+          params = list(
+            orig = code.orig.01,
+            interl = code.perm,
+            parity1 = parity.1,
+            parity2 = parity.2,
+            result = code.result,
+            encoder = coder.info),
+          encoding = "UTF-8")
+        rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
+      }
     }
 
     if (!is.null(punctuation.matrix)) {
@@ -171,6 +178,8 @@ TurboDecode <-
 
     #Checks all parameters
     stopifnot(length(code) > 0, iterations > 0)
+
+    CheckCoder(coder.info)
 
     if (coder.info$N < 2) {
       stop("Kodierer muss mindestens 2 Ausgänge besitzen!")
@@ -241,13 +250,12 @@ TurboDecode <-
   }
 
 #' @export
-TurboGetpermutation <- function(message.length, coder.info, type = "RANDOM", args) {
+TurboGetPermutation <- function(message.length, coder.info, type = "RANDOM", args) {
 
   stopifnot(message.length > 0)
 
-  if (is.null(coder.info$M)) {
-    stop("Kodierer nicht richtig gesetzt!")
-  }
+  CheckCoder(coder.info)
+
   if (!is.character(type)) {
     stop("Type muss ein String sein!")
   }

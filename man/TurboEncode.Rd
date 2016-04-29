@@ -5,7 +5,8 @@
 \title{Kodieren einer Nachricht mittels dem Turbo-Code-Verfahren}
 \usage{
 TurboEncode(message, permutation.vector, coder.info,
-  parity.index = coder.info$N, punctuation.matrix = NULL)
+  parity.index = coder.info$N, punctuation.matrix = NULL,
+  visualize = FALSE)
 }
 \arguments{
 \item{message}{Nachricht die kodiert werden sollte}

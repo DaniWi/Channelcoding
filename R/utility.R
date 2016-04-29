@@ -93,13 +93,13 @@ CheckCoder <- function(coder) {
     stop("Kodierer enthält zu wenig Generatorpolynome!")
   }
 
-  if (!IsOctal(generators)) {
+  if (!IsOctal(coder$generators)) {
     stop("Zumindest ein Generatorpolynom ist nicht in oktaler Form!")
   }
 
-  max.generator.octal = DecimalToOctal(2^(M+1) - 1)
+  max.generator.octal = DecimalToOctal(2^(coder$M+1) - 1)
 
-  if (any(generators > max.generator.octal)) {
+  if (any(coder$generators > max.generator.octal)) {
     stop("Zumindest ein Generatorpolynom ist größer als erlaubt!")
   }
 }
