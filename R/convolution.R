@@ -245,7 +245,8 @@ ConvDecode <- function(code, conv.encoder, terminate = TRUE, punctuation.matrix 
                                     code = code,
                                     decoded = result$hard.output,
                                     trellis = result$trellis,
-                                    survivor.states = result$survivor.states))
+                                    survivor.states = result$survivor.states,
+                                    soft.flag = TRUE))
 
     rstudioapi::viewer(system.file("rmd", "ConvolutionDecode.pdf", package = "channelcoding"))
   }
@@ -310,7 +311,8 @@ ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, punctuation.mat
                                   code = code.copy,
                                   decoded = result$hard.output,
                                   trellis = result$trellis,
-                                  survivor.states = result$survivor.states))
+                                  survivor.states = result$survivor.states,
+                                  soft.flag = FALSE))
 
   rstudioapi::viewer(system.file("rmd", "ConvolutionDecode.pdf", package = "channelcoding"))
 

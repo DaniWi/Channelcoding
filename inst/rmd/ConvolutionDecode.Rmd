@@ -7,10 +7,11 @@ author: Martin Nocker
 fontsize: 8pt
 params:
   conv.encoder: !r list(N=2, M=2, generators=c(7,5), rsc=FALSE, termination=logical(0), next.state=matrix(c(0,0,1,1,2,2,3,3), ncol =2), prev.state=matrix(c(0,2,-1,-1,-1,-1,0,2,1,3,1,3), ncol =3), output=matrix(c(0,3,2,1,3,0,1,2), ncol =2))
-  code: !r c(1,1,1,0,0,0,1,0,1,1)
+  code: !r c(-3.0409153, -1.3420658, -0.2564390,  2.6875566, -0.3180743, 1.1115148, 0.5514726, 0.8717883, -1.1767475, -1.0351160)
   decoded: !r c(1,0,1,0,0)
   trellis: !r matrix(c(0,NA,NA,NA,-2,NA,2,NA,-2,4,-2,0,2,0,6,0,2,8,NA,NA,10,NA,NA,NA), nrow = 4)
   survivor.states: !r matrix(c(0,0,0,0,0,3,0,3,0,2,0,2,1,3,1,3,0,2,0,2,1,3,1,3), nrow = 4)
+  soft.flag: !r TRUE
 header-includes:
 - \usepackage{tikz}
 - \usepackage{pgfplots}
@@ -72,7 +73,16 @@ N <- conv.encoder$N
 output <- conv.encoder$output
 next.state <- conv.encoder$next.state
 prev.state <- conv.encoder$prev.state
+
 code <- params$code
+if (params$soft.flag) {
+  code <- round(code, digits = 1)
+  code.hard <- ifelse(code >= 0, 0, 1)
+  code.hard <- paste0(" hard input: (",paste0(code.hard, collapse=","),")")
+} else {
+  code <- ifelse(code >= 0, 0, 1)
+}
+
 decoded <- params$decoded
 trellis <- params$trellis
 survivor.states <- params$survivor.states
@@ -115,7 +125,7 @@ for (t in 0:(length(decoded)-1)) {
   max.state <- num.states - 1
   visibility <- paste0("\\visible<",ncol(trellis)+1,">")
   position <- paste0("($(node",max.state,t,")!0.5!(node",max.state,t+1,")+(0,-.5)$)")
-  decoded.bit <- paste0(visibility,"{\\node at",position," {",decoded[t+1],"};}")
+  decoded.bit <- paste0(visibility,"{\\node [orange, font=\\small] at",position," {",decoded[t+1],"};}")
   
   tikz.trellis <- paste(tikz.trellis, decoded.bit)
 }
@@ -201,6 +211,8 @@ trellis.decoded <- paste0("\\visible<",ncol(trellis)+1,">{output: (",str.decoded
 ## Trellis Diagram
 
 input: (`r code`)
+
+`r if (params$soft.flag) { code.hard }`
 
 \begin{center}
 \begin{tikzpicture}[>=stealth, font=\tiny]

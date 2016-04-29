@@ -5,7 +5,7 @@
 \title{convolutional encoding of a message}
 \usage{
 ConvEncode(message, conv.encoder, terminate = TRUE,
-  punctuation.matrix = NULL)
+  punctuation.matrix = NULL, visualize = FALSE)
 }
 \arguments{
 \item{message}{the message to be encoded}

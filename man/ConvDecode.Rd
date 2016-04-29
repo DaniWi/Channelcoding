@@ -4,7 +4,8 @@
 \alias{ConvDecode}
 \title{convolutional decoding of a code (soft decision)}
 \usage{
-ConvDecode(code, conv.encoder, terminate = TRUE, punctuation.matrix = NULL)
+ConvDecode(code, conv.encoder, terminate = TRUE, punctuation.matrix = NULL,
+  visualize = FALSE)
 }
 \arguments{
 \item{code}{the code to be decoded}
