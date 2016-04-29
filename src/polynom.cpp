@@ -37,11 +37,10 @@ int polynom_division_remainder_mod2(int numerator, int denominator) {
 int gcd_polynomial(int a, int b) {
 	if (b > a) {
 		int c = a;
-		int a = b;
-		int b = c;
+		a = b;
+		b = c;
 	}
-	
-	int remainder = 0;
+
 	while (b > 0) {
 		int t = a;
 		a = b;

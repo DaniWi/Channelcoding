@@ -507,7 +507,7 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 	
 	for(int t = 1; t < msgLen+1; t++) {
 		softOutput[t-1] = delta[t][survivorStates[t]] * (1 - 2 * survivorBit[t][survivorStates[t]]);
-		hardOutput[t-1] = (softOutput[t-1] > 0) ? 0 : 1;
+		hardOutput[t-1] = (softOutput[t-1] >= 0) ? 0 : 1;
 	}
 	
 	#if DEBUG == 1
@@ -583,7 +583,8 @@ List c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix pr
 	
 	// reverse mapping for hard decision decoding {-1,+1} --> {1,0}
 	for (int i = 0; i < codeLen; i++) {
-		code[i] = (1 - code[i]) / 2;
+		// code[i] = (1 - code[i]) / 2;
+		code[i] = (code[i] >= 0) ? 0 : 1;
 	}
 	
 	int index = 0;	// index to select correct code bit
