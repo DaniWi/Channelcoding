@@ -5,7 +5,15 @@ Version: 0.1
 Date: 2015-11-02
 Author: Benedikt Wimmer, Martin Nocker, Daniel Witsch
 Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
+Description: An implementation to perform channelcoding in R. Encoding and Decoding
+    of three major types of channelcodes are provided: block codes, convolutional
+    codes and turbo codes.
 License: What license is it under?
+Encoding: UTF-8
+NeedsCompilation: yes
 LazyData: TRUE
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1
+LinkingTo: Rcpp
+Imports:
+    Rcpp (>= 0.12.4),
+    rmarkdown (>= 0.9.5)

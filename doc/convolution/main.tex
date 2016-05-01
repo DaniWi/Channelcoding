@@ -1,0 +1,61 @@
+\documentclass[germanthesis]{thesis-style}
+% options:
+% [germanthesis] - Thesis is written in German
+% [plainunnumbered] - Don't print numbers on plain pages
+% [earlydraft] - Settings for quick draft printouts
+% [watermark] - Print current time/date at bottom of each page
+% [phdthesis] - switch to PhD thesis style
+% [twoside] - double sided
+% [cutmargins] - text body fills complete page
+
+\author{Martin~Nocker}
+\title{R~package for channel~coding with convolutional~codes}
+\birthday{1. Mai 1993}
+\birthplace{Innsbruck}
+%\thesisstart{1. Januar 2009}
+\thesistype{Bachelor's thesis}
+\thesistypegerman{Bachelorarbeit}
+\thesiscite{Bachelor's thesis}
+\advisors{Dr.~Pascal~Schöttle}
+
+\newcommand{\plotwidth}{0.6\textwidth}
+\begin{document}
+
+\maketitle
+\tableofcontents
+\pagenumbering{arabic}
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\begin{otherlanguage*}{american}
+\end{otherlanguage*}
+
+\chapter*{Kurzfassung}
+\addcontentsline{toc}{chapter}{Kurzfassung}
+\begin{otherlanguage*}{ngerman}
+\end{otherlanguage*}
+\acresetall%
+
+\chapter{Einleitung}
+\chapter{Motivation}
+\chapter{Grundlagen}
+\section{Kanalkodierung}
+\section{Faltungskodierung}
+\chapter{Implementierung in R}
+\section{C Interface}
+\chapter{Zusammenfassung}
+
+\cleardoublepage%
+
+\listofabbreviations
+\clearpage
+
+\listoffigures
+\clearpage
+
+\listoftables
+\clearpage
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}
