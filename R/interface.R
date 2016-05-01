@@ -17,6 +17,9 @@ encode = function(msg, type, params, visualize)
          MATRIX={
            return(.MatrixEncode(msg,params,visualize))
          },
+         BCH={
+           return(.BCHEncode(msg,params,visualize))
+         },
          {
            print("No or Wrong Type selected")
            return()
@@ -44,6 +47,9 @@ decode = function(msg, type, params, visualize)
          MATRIX={
            return(.MatrixDecode(msg,params,visualize))
          },
+         BCH={
+           return(.BCHDecode(msg,params,visualize))
+         },
          {
            print("No or Wrong Type selected")
            return()
@@ -56,35 +62,60 @@ decode = function(msg, type, params, visualize)
 #' This function will randomly disturb a clean message
 #' @author Bene Wimmer
 #' @param msg message to alter
-#' @param SNR.db signal noise ratio of the simulated channel in dB
+#' @param params A vector with arguments
 #' @param visualize A flag for enabling visualization
 #' @return message with errors
 #' @export
-applyNoise <- function(msg, SNR.db = 5, visualize = FALSE)
+applyNoise = function(msg, params, visualize=FALSE)
 {
-   msg.len <- length(msg);
-   SNR.linear <- 10^(SNR.db/10);
-   power <- sum(msg^2)/(msg.len); #power of vector msg
 
-   # noise is a vector of lenth msg_len and contains
-   # normal distributed values with mean 0 and standard-deviation 1
-   noise <- sqrt(power / SNR.linear) * rnorm(msg.len,0,1)
+  SNR_db = 5; # Signal-Noise-Ratio in dB
+  msg_len = length(msg);
+  SNR_linear = 10^(SNR_db/10);
+  power = sum(msg)/(msg_len); #power of vector msg
 
-   msg.out <- msg + noise;
+  # noise is a vector of lenth msg_len and contains
+  # normal distributed values with mean 0 and standard-deviation 1
+  noise = sqrt(power / SNR_linear) * rnorm(msg_len,0,1)
 
-   if (visualize) {
-      v.flipped <- (msg + msg.out) %% 2;
-      # rle: run-length-encoding of the noise(v_flipped) vector
-      # results in a table with values and lengths
-      rlenc <- rle(v.flipped);
-      # get number of n-bit errors (where value==1)
-      my.sample <- rlenc$lengths[rlenc$values == 1];
-      # plot as table of n-bit error occurences
-      # from 1 to highest occuring error (most neighbouring error bits)
-      error.sum <- sum(v.flipped);
-      max.errorbits <- max(3,rlenc$lengths[rlenc$values == 1]);
-      barplot(table(factor(my.sample,levels=1:max.errorbits)),main=paste("Total error bits:",error.sum));
-   }
+  msg_out = msg + noise;
 
-   return(msg.out);
+  # map every vector element <= 0.5 to 0 and > 0.5 to 1
+  msg_out = ifelse(msg_out <= 0.5, 0, 1)
+
+  if (visualize) {
+    v_flipped <- (msg + msg_out) %% 2;
+    # rle: run-length-encoding of the noise(v_flipped) vector
+    # results in a table with values and lengths
+    rlenc <- rle(v_flipped);
+    # get number of n-bit errors (where value==1)
+    mysample <- rlenc$lengths[rlenc$values == 1];
+    # plot as table of n-bit error occurences
+    # from 1 to highest occuring error (most neighbouring error bits)
+    error_sum <- sum(v_flipped);
+    max_errorbits <- max(3,rlenc$lengths[rlenc$values == 1]);
+    barplot(table(factor(mysample,levels=1:max_errorbits)),main=paste("Total error bits:",error_sum));
+  }
+
+  return(msg_out);
+}
+
+#' Testing BCH codes
+#'
+#'
+#' @author Bene Wimmer
+#' @param String
+#' @param length
+#' @param t
+#' @return String
+#' @export
+testBCH = function(data, length, t)
+{
+  enc = .BCHEncode(as.integer(rawToBits(charToRaw(data))),c(length,t),FALSE)
+
+  dec = .BCHDecode(applyNoise(enc),c(length,t),FALSE)
+
+
+  return(rawToChar(packBits(dec[1:(length(dec)- (length(dec)%%8))])))
+
 }
