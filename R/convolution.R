@@ -194,12 +194,13 @@ ConvEncode <- function(message, conv.encoder = NULL, terminate = TRUE, punctuati
 
   if (visualize) {
     rmarkdown::render(system.file("rmd", "ConvolutionEncode.Rmd", package = "channelcoding"),
+                      output_dir = system.file("pdf", package = "channelcoding"),
                       encoding = "UTF-8",
                       params = list(conv.encoder = conv.encoder,
                                     message = message,
                                     terminate = terminate))
 
-    rstudioapi::viewer(system.file("rmd", "ConvolutionEncode.pdf", package = "channelcoding"))
+    rstudioapi::viewer(system.file("pdf", "ConvolutionEncode.pdf", package = "channelcoding"))
   }
 
   return(code)
@@ -250,6 +251,7 @@ ConvDecode <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.
 
   if (visualize) {
     rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
+                      output_dir = system.file("pdf", package = "channelcoding"),
                       encoding = "UTF-8",
                       params = list(conv.encoder = conv.encoder,
                                     code = code,
@@ -258,7 +260,7 @@ ConvDecode <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.
                                     survivor.states = result$survivor.states,
                                     soft.flag = TRUE))
 
-    rstudioapi::viewer(system.file("rmd", "ConvolutionDecode.pdf", package = "channelcoding"))
+    rstudioapi::viewer(system.file("pdf", "ConvolutionDecode.pdf", package = "channelcoding"))
   }
 
 
@@ -321,6 +323,7 @@ ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, punctuation.mat
                                      as.integer(terminate))
 
   rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
+                    output_dir = system.file("pdf", package = "channelcoding"),
                     encoding = "UTF-8",
                     params = list(conv.encoder = conv.encoder,
                                   code = code.copy,
@@ -329,7 +332,7 @@ ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, punctuation.mat
                                   survivor.states = result$survivor.states,
                                   soft.flag = FALSE))
 
-  rstudioapi::viewer(system.file("rmd", "ConvolutionDecode.pdf", package = "channelcoding"))
+  rstudioapi::viewer(system.file("pdf", "ConvolutionDecode.pdf", package = "channelcoding"))
 
   # if terminated, termination bits are thrown away
   if (terminate == TRUE) {
@@ -398,5 +401,47 @@ ConvolutionSimulation <- function(coder = NULL,
 
   df <- data.frame(db = v.db, ber = v.ber)
 
+  rmarkdown::render(system.file("rmd", "Simulation.Rmd", package = "channelcoding"),
+                    output_dir = system.file("pdf", package = "channelcoding"),
+                    output_file = "ConvolutionSimulation",
+                    encoding = "UTF-8",
+                    params = list(turbo = FALSE,
+                                  message.length = msg.length,
+                                  iterations.per.db = iterations.per.db,
+                                  min.db = min.db,
+                                  max.db = max.db,
+                                  db.interval = db.interval,
+                                  punctuation = punctuation.matrix,
+                                  encoder = coder,
+                                  dataframe = df))
+
+  rstudioapi::viewer(system.file("pdf", "Simulation.pdf", package = "channelcoding"))
+
   return(df)
+}
+
+#' @export
+ConvolutionOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
+  if (simulation) {
+    path <- system.file("pdf", "ConvolutionSimulation.pdf", package = "channelcoding")
+  } else {
+    if (encode) {
+      if (punctured) {
+        path <- system.file("pdf", "ConvolutionEncodePunctured.pdf", package = "channelcoding")
+      } else {
+        path <- system.file("pdf", "ConvolutionEncode.pdf", package = "channelcoding")
+      }
+    } else {
+      if (punctured) {
+        path <- system.file("pdf", "ConvolutionDecodePunctured.pdf", package = "channelcoding")
+      } else {
+        path <- system.file("pdf", "ConvolutionDecode.pdf", package = "channelcoding")
+      }
+    }
+  }
+  if (path != "") {
+    rstudioapi::viewer(path)
+  } else {
+    stop("Datei wurde noch nicht erzeugt!")
+  }
 }

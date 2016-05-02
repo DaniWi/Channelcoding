@@ -1,9 +1,7 @@
 ---
 title: "Simulation"
-output: 
-  beamer_presentation:
-    keep_tex: true
-fontsize: 10pt
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: beamer_presentation
 params:
   turbo: !r TRUE
   message.length: !r 100
@@ -59,6 +57,21 @@ octalToDec <- function(x) {
 
   return(res)
 }
+
+gcd <- function(n, m) {
+  if (n == 0 && m == 0) return(0)
+  
+  n <- abs(n); m <- abs(m)
+  if (m > n) {
+    t <- n; n <- m; m <- t
+  }
+  while (m > 0) {
+    t <- n
+    n <- m
+    m <- t %% m
+  }
+  return(n)
+}
 ```
 
 ```{r, include=FALSE}
@@ -109,7 +122,9 @@ if (is.null(params$punctuation)) {
     factor <- params$encoder$N
   }
   
-  code.rate <- paste0("$$\\frac{",length(params$punctuation),"}{",sum(params$punctuation) * factor,"}$$")
+  gcd.value <- gcd(length(params$punctuation), sum(params$punctuation) * factor)
+  
+  code.rate <- paste0("$$\\frac{",length(params$punctuation) / gcd.value,"}{",sum(params$punctuation) * factor / gcd.value,"}$$")
 }
 ```
 
