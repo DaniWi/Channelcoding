@@ -530,8 +530,8 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 		}
 	}
 	
-	List result = List::create(Rcpp::Named("soft.output") = softOutput,
-							   Rcpp::Named("hard.output") = hardOutput,
+	List result = List::create(Rcpp::Named("output.soft") = softOutput,
+							   Rcpp::Named("output.hard") = hardOutput,
 							   Rcpp::Named("trellis") = trellisMetrics,
 							   Rcpp::Named("survivor.states") = previousSurvivorStates);
 	
@@ -703,7 +703,7 @@ List c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix pr
 	}
 	#endif
 	
-	List result = List::create(Rcpp::Named("hard.output") = hardOutput,
+	List result = List::create(Rcpp::Named("output.hard") = hardOutput,
 							   Rcpp::Named("trellis") = trellisMetrics,
 							   Rcpp::Named("survivor.states") = previousSurvivorStates);
 	

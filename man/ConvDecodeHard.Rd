@@ -4,8 +4,8 @@
 \alias{ConvDecodeHard}
 \title{convolutional decoding of a code (hard decision)}
 \usage{
-ConvDecodeHard(code, conv.encoder, terminate = TRUE,
-  punctuation.matrix = NULL)
+ConvDecodeHard(code, conv.encoder = NULL, terminate = TRUE,
+  punctuation.matrix = NULL, visualize = FALSE)
 }
 \arguments{
 \item{code}{the code to be decoded}

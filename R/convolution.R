@@ -173,6 +173,8 @@ ConvEncode <- function(message, conv.encoder = NULL, terminate = TRUE, punctuati
     conv.encoder <- GenerateConvEncoder(2,2,c(7,5))
   }
 
+  CheckCoder(conv.encoder)
+
   if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != conv.encoder$N) {
     stop("Punktierungsmatrix hat falsche Anzahl an Zeilen! Matrix muss N Zeilen haben!")
   }
@@ -193,15 +195,30 @@ ConvEncode <- function(message, conv.encoder = NULL, terminate = TRUE, punctuati
   }
 
   if (visualize) {
-    rmarkdown::render(system.file("rmd", "ConvolutionEncode.Rmd", package = "channelcoding"),
-                      output_dir = system.file("pdf", package = "channelcoding"),
-                      encoding = "UTF-8",
-                      params = list(conv.encoder = conv.encoder,
-                                    message = message,
-                                    code = code,
-                                    terminate = terminate))
+    if ((length(message) + as.integer(terminate)*conv.encoder$M) > 19) {
+      warning("Die Nachricht ist zu lang für eine Visualisierung.")
+    } else if (is.null(punctuation.matrix)) {
+      rmarkdown::render(system.file("rmd", "ConvolutionEncode.Rmd", package = "channelcoding"),
+                        output_dir = system.file("pdf", package = "channelcoding"),
+                        encoding = "UTF-8",
+                        params = list(conv.encoder = conv.encoder,
+                                      message = message,
+                                      code = code,
+                                      terminate = terminate))
 
-    rstudioapi::viewer(system.file("pdf", "ConvolutionEncode.pdf", package = "channelcoding"))
+      rstudioapi::viewer(system.file("pdf", "ConvolutionEncode.pdf", package = "channelcoding"))
+    } else {
+      rmarkdown::render(system.file("rmd", "ConvolutionEncodePunctured.Rmd", package = "channelcoding"),
+                        output_dir = system.file("pdf", package = "channelcoding"),
+                        encoding = "UTF-8",
+                        params = list(conv.encoder = conv.encoder,
+                                      message = message,
+                                      code = code$original,
+                                      terminate = terminate,
+                                      punctuation = punctuation.matrix))
+
+      rstudioapi::viewer(system.file("pdf", "ConvolutionEncodePunctured.pdf", package = "channelcoding"))
+    }
   }
 
   return(code)
@@ -230,7 +247,11 @@ ConvDecode <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.
     conv.encoder <- GenerateConvEncoder(2,2,c(7,5))
   }
 
+  CheckCoder(conv.encoder)
+
+  punct.code <- 0  # needed for visualization in case code in punctured
   if(!is.null(punctuation.matrix)) {
+    punct.code <- c(code)
     #insert missing bits from punctuation
     code <- InsertPunctuationBits(code, punctuation.matrix)
   }
@@ -251,17 +272,34 @@ ConvDecode <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.
                                 as.integer(terminate))
 
   if (visualize) {
-    rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
-                      output_dir = system.file("pdf", package = "channelcoding"),
-                      encoding = "UTF-8",
-                      params = list(conv.encoder = conv.encoder,
-                                    code = code,
-                                    decoded = result$hard.output,
-                                    trellis = result$trellis,
-                                    survivor.states = result$survivor.states,
-                                    soft.flag = TRUE))
+    if (conv.encoder$M > 3) {
+      warning("Der Kodierer hat zu viele Zustände für eine Visualisierung.")
+    } else if (length(result$output.hard) > 13) {
+      warning("Das Codewort ist zu lang für eine Visualisierung.")
+    } else if (is.null(punctuation.matrix)) {
+      rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
+                        output_dir = system.file("pdf", package = "channelcoding"),
+                        encoding = "UTF-8",
+                        params = list(conv.encoder = conv.encoder,
+                                      code = code,
+                                      decoded = result$output.hard,
+                                      trellis = result$trellis,
+                                      survivor.states = result$survivor.states))
 
-    rstudioapi::viewer(system.file("pdf", "ConvolutionDecode.pdf", package = "channelcoding"))
+      rstudioapi::viewer(system.file("pdf", "ConvolutionDecode.pdf", package = "channelcoding"))
+    } else {
+      rmarkdown::render(system.file("rmd", "ConvolutionDecodePunctured.Rmd", package = "channelcoding"),
+                        output_dir = system.file("pdf", package = "channelcoding"),
+                        encoding = "UTF-8",
+                        params = list(conv.encoder = conv.encoder,
+                                      code = code,
+                                      decoded = result$output.hard,
+                                      trellis = result$trellis,
+                                      survivor.states = result$survivor.states,
+                                      punctuation = punctuation.matrix,
+                                      punctured.code = punct.code))
+      rstudioapi::viewer(system.file("pdf", "ConvolutionDecodePunctured.pdf", package = "channelcoding"))
+    }
   }
 
 
@@ -270,10 +308,10 @@ ConvDecode <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.
   # if terminated, termination bits are thrown away
   if (terminate == TRUE) {
     M <- conv.encoder$M
-    soft <- head(result$soft.output, length(result$soft.output) - M)
-    hard <- head(result$hard.output, length(result$hard.output) - M)
+    soft <- head(result$output.soft, length(result$output.soft) - M)
+    hard <- head(result$output.hard, length(result$output.hard) - M)
 
-    newlist <- list(soft.output = soft, hard.output = hard)
+    newlist <- list(output.soft = soft, output.hard = hard)
     return(newlist)
   }
 
@@ -292,7 +330,7 @@ ConvDecode <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.
 #' ConvDecodeHard(coded, coder)
 #' @author Martin Nocker
 #' @export
-ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, punctuation.matrix = NULL) {
+ConvDecodeHard <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.matrix = NULL, visualize = FALSE) {
 
   stopifnot(length(code) > 0)
 
@@ -301,9 +339,13 @@ ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, punctuation.mat
     conv.encoder <- GenerateConvEncoder(2,2,c(7,5))
   }
 
+  CheckCoder(conv.encoder)
+
   code.copy <- c(code)
 
+  punct.code <- 0 # needed for visualization in case code in punctured
   if(!is.null(punctuation.matrix)) {
+    punct.code <- c(code.copy)
     #insert missing bits from punctuation
     code.copy <- InsertPunctuationBits(code.copy, punctuation.matrix)
   }
@@ -323,24 +365,43 @@ ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, punctuation.mat
                                      conv.encoder$output,
                                      as.integer(terminate))
 
-  rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
-                    output_dir = system.file("pdf", package = "channelcoding"),
-                    encoding = "UTF-8",
-                    params = list(conv.encoder = conv.encoder,
-                                  code = code.copy,
-                                  decoded = result$hard.output,
-                                  trellis = result$trellis,
-                                  survivor.states = result$survivor.states,
-                                  soft.flag = FALSE))
+  if (visualize) {
+    if (conv.encoder$M > 3) {
+      warning("Der Kodierer hat zu viele Zustände für eine Visualisierung.")
+    } else if (length(result$output.hard) > 13) {
+      warning("Das Codewort ist zu lang für eine Visualisierung.")
+    } else if (is.null(punctuation.matrix)) {
+      rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
+                        output_dir = system.file("pdf", package = "channelcoding"),
+                        encoding = "UTF-8",
+                        params = list(conv.encoder = conv.encoder,
+                                      code = code,
+                                      decoded = result$output.hard,
+                                      trellis = result$trellis,
+                                      survivor.states = result$survivor.states))
 
-  rstudioapi::viewer(system.file("pdf", "ConvolutionDecode.pdf", package = "channelcoding"))
+      rstudioapi::viewer(system.file("pdf", "ConvolutionDecode.pdf", package = "channelcoding"))
+    } else {
+      rmarkdown::render(system.file("rmd", "ConvolutionDecodePunctured.Rmd", package = "channelcoding"),
+                        output_dir = system.file("pdf", package = "channelcoding"),
+                        encoding = "UTF-8",
+                        params = list(conv.encoder = conv.encoder,
+                                      code = code.copy,
+                                      decoded = result$output.hard,
+                                      trellis = result$trellis,
+                                      survivor.states = result$survivor.states,
+                                      punctuation = punctuation.matrix,
+                                      punctured.code = punct.code))
+      rstudioapi::viewer(system.file("pdf", "ConvolutionDecodePunctured.pdf", package = "channelcoding"))
+    }
+  }
 
   # if terminated, termination bits are thrown away
   if (terminate == TRUE) {
-    return(head(result$hard.output, length(result$hard.output) - conv.encoder$M))
+    return(head(result$output.hard, length(result$output.hard) - conv.encoder$M))
   }
 
-  return(result$hard.output)
+  return(result$output.hard)
 }
 
 #' @export
@@ -359,6 +420,8 @@ ConvolutionSimulation <- function(coder = NULL,
     warning("Standard-Faltungskodierer wurde verwendet! N=2, M=2, Generatoren: (7,5)")
     coder <- GenerateConvEncoder(2,2,c(7,5))
   }
+
+  CheckCoder(conv.encoder)
 
   v.db <- seq(from = min.db, to = max.db, by = db.interval)
   v.ber <- numeric(0)
@@ -390,7 +453,7 @@ ConvolutionSimulation <- function(coder = NULL,
       decoded <- ConvDecode(noisy, coder, punctuation.matrix = punctuation.matrix)
 
       # vgl decoded & message
-      decode.errors <- sum(abs(decoded$hard.output - message))
+      decode.errors <- sum(abs(decoded$output.hard - message))
 
       total.errors <- total.errors + decode.errors
     }
