@@ -30,19 +30,6 @@ Zustand 4 & 1 & 3\tabularnewline
 
 \end{frame}
 
-\begin{frame}{Kodierer Matrix : Zustandsdiagramm}
-
-\begin{center}
-\begin{tikzpicture}[>=stealth, font=\scriptsize]
-\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=8mm, font=\footnotesize]
-
- \node[state] (state0) at (0,2.5) {00}; \node[state] (state2) at (2.5,1.53075794227797e-16) {10}; \node[state] (state3) at (3.06151588455594e-16,-2.5) {11}; \node[state] (state1) at (-2.5,-4.59227382683391e-16) {01}; \draw[->] (state0) to [looseness=8,out=105,in=75] node [sloped, above] {00} (state0) ; \draw[->, dashed] (state0) to  node [sloped, above] {11} (state2) ; \draw[->] (state1) to [bend left=15] node [sloped, above,near start] {00} (state2) ; \draw[->, dashed] (state1) to  node [sloped, above] {11} (state0) ; \draw[->] (state2) to  node [sloped, above] {01} (state3) ; \draw[->, dashed] (state2) to [bend left=15] node [sloped, above,near start] {10} (state1) ; \draw[->] (state3) to  node [sloped, above] {01} (state1) ; \draw[->, dashed] (state3) to [looseness=8,out=285,in=255] node [sloped, below] {10} (state3) ;
-
-\end{tikzpicture}
-\end{center}
-
-\end{frame}
-
 \begin{frame}{Kodierer Matrix : Ausgangsbits}
 
 \begin{longtable}[c]{@{}lcc@{}}
@@ -56,6 +43,19 @@ Zustand 3 & 01 & 10\tabularnewline
 Zustand 4 & 01 & 10\tabularnewline
 \bottomrule
 \end{longtable}
+
+\end{frame}
+
+\begin{frame}{Kodierer Matrix : Zustandsdiagramm}
+
+\begin{center}
+\begin{tikzpicture}[>=stealth, font=\scriptsize]
+\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=8mm, font=\footnotesize]
+
+ \node[state] (state0) at (0,2.5) {00}; \node[state] (state2) at (2.5,1.53075794227797e-16) {10}; \node[state] (state3) at (3.06151588455594e-16,-2.5) {11}; \node[state] (state1) at (-2.5,-4.59227382683391e-16) {01}; \draw[->] (state0) to [looseness=8,out=105,in=75] node [sloped, above] {00} (state0) ; \draw[->, dashed] (state0) to  node [sloped, above] {11} (state2) ; \draw[->] (state1) to [bend left=15] node [sloped, above,near start] {00} (state2) ; \draw[->, dashed] (state1) to  node [sloped, above] {11} (state0) ; \draw[->] (state2) to  node [sloped, above] {01} (state3) ; \draw[->, dashed] (state2) to [bend left=15] node [sloped, above,near start] {10} (state1) ; \draw[->] (state3) to  node [sloped, above] {01} (state1) ; \draw[->, dashed] (state3) to [looseness=8,out=285,in=255] node [sloped, below] {10} (state3) ;
+
+\end{tikzpicture}
+\end{center}
 
 \end{frame}
 
@@ -124,10 +124,10 @@ Zustand 4 & 01 & 10\tabularnewline
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<4>{
-  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{2, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...}};
-  \draw [showDrawStyle] (showAbove) -- (afterInterleaver);
-  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{4, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...}};
-  \draw [showDrawStyle] (showBelow) -- (afterParity2.center);
+  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{4, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...}};
+  \draw [showDrawStyle] (showAbove) -- (afterParity2.center);
+  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{2, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...}};
+  \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 
 \end{tikzpicture}

@@ -4,14 +4,14 @@
 \alias{applyNoise}
 \title{Failure function}
 \usage{
-applyNoise(msg, params, visualize = FALSE)
+applyNoise(msg, SNR.db = 5, visualize = FALSE)
 }
 \arguments{
 \item{msg}{message to alter}
 
-\item{params}{A vector with arguments}
-
 \item{visualize}{A flag for enabling visualization}
+
+\item{params}{A vector with arguments}
 }
 \value{
 message with errors

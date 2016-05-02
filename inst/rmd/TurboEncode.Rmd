@@ -1,8 +1,7 @@
 ---
 title: "Turbo Kodierer"
-output: 
-  beamer_presentation:
-    keep_tex: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: beamer_presentation
 params:
   orig: !r c(1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
   interl: !r c(2,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)

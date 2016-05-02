@@ -51,7 +51,7 @@ TurboEncode <-
     }
     if (is.null(permutation.vector)) {
       warning("Standard-Permutationsvektor wurde verwendet! (PRIMITIVE)")
-      permutation.vector <- TurboGetPermutation(length(message), coder.info, type="PRIMITIVE", list(root=0))
+      permutation.vector <- TurboGetPermutation(length(message), coder.info, "PRIMITIVE", list(root=0))
     }
 
     #Checks all parameters
@@ -122,6 +122,8 @@ TurboEncode <-
             parity2 = parity.2,
             multipl = code.result,
             result = code.punct,
+            permutation = permutation.vector,
+            punctuation = punctuation.matrix,
             encoder = coder.info),
           encoding = "UTF-8")
         rstudioapi::viewer(system.file("rmd", "TurboEncodePunctured.pdf", package = "channelcoding"))
@@ -134,6 +136,7 @@ TurboEncode <-
             parity1 = parity.1,
             parity2 = parity.2,
             result = code.result,
+            permutation = permutation.vector,
             encoder = coder.info),
           encoding = "UTF-8")
         rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
@@ -198,7 +201,7 @@ TurboDecode <-
     }
     if (is.null(permutation.vector)) {
       warning("Standard-Permutationsvektor wurde verwendet! (PRIMITIVE)")
-      permutation.vector <- TurboGetPermutation(length(code) / 3  - coder.info$M, coder.info, type="PRIMITIVE", list(root=0))
+      permutation.vector <- TurboGetPermutation(length(code) / 3  - coder.info$M, coder.info, "PRIMITIVE", list(root=0))
     }
 
     #Checks all parameters
@@ -275,7 +278,11 @@ TurboDecode <-
   }
 
 #' @export
-TurboGetPermutation <- function(message.length, coder.info, type = "RANDOM", args) {
+TurboGetPermutation <- function(message.length,
+                                coder.info,
+                                type = "RANDOM",
+                                args = NULL,
+                                visualize = FALSE) {
 
   stopifnot(message.length > 0)
 
@@ -289,8 +296,10 @@ TurboGetPermutation <- function(message.length, coder.info, type = "RANDOM", arg
     RANDOM = {
       interleaver <- sample(c(0:(message.length + coder.info$M - 1)))
 
-      print(paste("Interleaver-Vektor: ", type))
-      print(interleaver)
+      if (visualize) {
+        print(paste("Interleaver-Vektor: ", type))
+        print(interleaver)
+      }
 
       return(interleaver)
     },
@@ -302,8 +311,10 @@ TurboGetPermutation <- function(message.length, coder.info, type = "RANDOM", arg
       init <- c(0:N)
       interleaver <- (init - args$root) %% (N + 1)
 
-      print(paste("Interleaver-Vektor: ", type))
-      print(interleaver)
+      if (visualize) {
+        print(paste("Interleaver-Vektor: ", type))
+        print(interleaver)
+      }
 
       return(interleaver)
     },
@@ -330,10 +341,12 @@ TurboGetPermutation <- function(message.length, coder.info, type = "RANDOM", arg
             }
           ))
 
-      print("Initial-Matrix")
-      print(init)
-      print(paste("Interleaver-Matrix: ", type))
-      print(interleaver)
+      if (visualize) {
+        print("Initial-Matrix")
+        print(init)
+        print(paste("Interleaver-Matrix: ", type))
+        print(interleaver)
+      }
 
       return(as.vector(interleaver))
     },
@@ -349,10 +362,12 @@ TurboGetPermutation <- function(message.length, coder.info, type = "RANDOM", arg
       N <- rows * cols
       init <- matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE)
 
-      print("Initial-Matrix")
-      print(init)
-      print(paste("Interleaver-Vektor: ", type))
-      print(as.vector((init)))
+      if (visualize) {
+        print("Initial-Matrix")
+        print(init)
+        print(paste("Interleaver-Vektor: ", type))
+        print(as.vector((init)))
+      }
 
       return(as.vector((init)))
     },
@@ -376,10 +391,12 @@ TurboGetPermutation <- function(message.length, coder.info, type = "RANDOM", arg
           return(x)
         })
 
-      print("Initial-Matrix")
-      print(matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE))
-      print(paste("Interleaver-Vektor: ", type))
-      print(interleaver)
+      if (visualize) {
+        print("Initial-Matrix")
+        print(matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE))
+        print(paste("Interleaver-Vektor: ", type))
+        print(interleaver)
+      }
 
       return(interleaver)
     },
@@ -403,10 +420,12 @@ TurboGetPermutation <- function(message.length, coder.info, type = "RANDOM", arg
           return(x)
         })
 
-      print("Initial-Matrix")
-      print(matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE))
-      print(paste("Interleaver-Vektor: ", type))
-      print(interleaver)
+      if (visualize) {
+        print("Initial-Matrix")
+        print(matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE))
+        print(paste("Interleaver-Vektor: ", type))
+        print(interleaver)
+      }
 
       return(interleaver)
     }
@@ -415,7 +434,7 @@ TurboGetPermutation <- function(message.length, coder.info, type = "RANDOM", arg
 }
 
 #' @export
-TurboGetPunctuationMatrix <- function(punctuation.vector) {
+TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
   if (any((punctuation.vector != 1)[punctuation.vector != 0])) {
     # punctuation.vector has elements with value different from 0 or 1 which is not allowed
     stop("Ungültiger Punktierungsvektor, darf nur 0er und 1er enthalten!")
@@ -426,8 +445,10 @@ TurboGetPunctuationMatrix <- function(punctuation.vector) {
 
   mat <- matrix(punctuation.vector, nrow = 3)
 
-  print("Punktierungs-Matrix:")
-  print(mat)
+  if (visualize) {
+    print("Punktierungs-Matrix:")
+    print(mat)
+  }
 
   if (any(colSums(mat) == 0)) {
     stop("Punktierungsmatrix hat eine 0-Spalte, ist verboten!")
@@ -438,12 +459,13 @@ TurboGetPunctuationMatrix <- function(punctuation.vector) {
 
 #' @export
 TurboSimulation <- function(coder,
-                            permutation.type = "RANDOM",
+                            permutation.type = "PRIMITIVE",
+                            permutation.args = list(root=0),
                             decode.iterations = 10,
                             msg.length = 100,
                             iterations.per.db = 100,
                             min.db = 0.1,
-                            max.db = 3.0,
+                            max.db = 2.0,
                             db.interval = 0.1,
                             punctuation.matrix = NULL)
 {
@@ -453,30 +475,25 @@ TurboSimulation <- function(coder,
   v.db <- seq(from = min.db, to = max.db, by = db.interval)
   v.ber <- numeric(0)
 
-  perm <- TurboGetPermutation(msg.length, coder, permutation.type)
+  perm <- TurboGetPermutation(msg.length, coder, permutation.type, permutation.args)
 
   total.errors <- 0
 
   for (db in v.db) {
     for (i in 1 : iterations.per.db) {
-      # message erzeugen
+      # create message
       message <- sample(c(0,1), msg.length, replace = TRUE)
 
       # encode
       coded <- TurboEncode(message, perm, coder, punctuation.matrix = punctuation.matrix)
 
-      # wenn punktiert, muss codierte nachricht aus liste geholt werden
+      # if punctured then take punctured code
       if (!is.null(punctuation.matrix)) {
         coded <- coded$punctured
       }
 
-      # noise hinzufügen
+      # add noise
       noisy <- applyNoise(coded, db)
-
-      # anzahl flipped bits (channel errors)
-      # coded.hard <- ifelse(coded >= 0, 0, 1)
-      # noisy.hard <- ifelse(noisy >= 0, 0, 1)
-      # channel.errors <- sum(abs(coded.hard - noisy.hard))
 
       # decode
       decoded <- TurboDecode(noisy, perm, decode.iterations, coder,
@@ -496,4 +513,26 @@ TurboSimulation <- function(coder,
   df <- data.frame(db = v.db, ber = v.ber)
 
   return(df)
+}
+
+#' @export
+TurboOpenPDF <- function(encode = TRUE, punctured = FALSE) {
+  if (encode) {
+    if (punctured) {
+      path <- system.file("rmd", "TurboEncodePunctured.pdf", package = "channelcoding")
+    } else {
+      path <- system.file("rmd", "TurboEncode.pdf", package = "channelcoding")
+    }
+  } else {
+    if (punctured) {
+      path <- system.file("rmd", "TurboDecodePunctured.pdf", package = "channelcoding")
+    } else {
+      path <- system.file("rmd", "TurboDecode.pdf", package = "channelcoding")
+    }
+  }
+  if (path != "") {
+    rstudioapi::viewer(path)
+  } else {
+    stop("Datei wurde noch nicht erzeugt!")
+  }
 }
