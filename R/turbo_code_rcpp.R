@@ -516,18 +516,22 @@ TurboSimulation <- function(coder,
 }
 
 #' @export
-TurboOpenPDF <- function(encode = TRUE, punctured = FALSE) {
-  if (encode) {
-    if (punctured) {
-      path <- system.file("rmd", "TurboEncodePunctured.pdf", package = "channelcoding")
-    } else {
-      path <- system.file("rmd", "TurboEncode.pdf", package = "channelcoding")
-    }
+TurboOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
+  if (simulation) {
+    path <- system.file("rmd", "TurboSimulation.pdf", package = "channelcoding")
   } else {
-    if (punctured) {
-      path <- system.file("rmd", "TurboDecodePunctured.pdf", package = "channelcoding")
+    if (encode) {
+      if (punctured) {
+        path <- system.file("rmd", "TurboEncodePunctured.pdf", package = "channelcoding")
+      } else {
+        path <- system.file("rmd", "TurboEncode.pdf", package = "channelcoding")
+      }
     } else {
-      path <- system.file("rmd", "TurboDecode.pdf", package = "channelcoding")
+      if (punctured) {
+        path <- system.file("rmd", "TurboDecodePunctured.pdf", package = "channelcoding")
+      } else {
+        path <- system.file("rmd", "TurboDecode.pdf", package = "channelcoding")
+      }
     }
   }
   if (path != "") {
