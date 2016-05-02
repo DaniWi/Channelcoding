@@ -4,7 +4,6 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-#define MAP_SOVA 1		//set which algorithm to use [0=>MAP,1=>SOVA]
 #define DEBUG 0
 //noise standard deviation
 double sigma = 1.0;	//Lc=2/(sigma * sigma)=2
@@ -274,6 +273,11 @@ List c_turbo_decode
 	NumericVector Le1_p(msgLen);  //decoder #1 extrinsic likelihood permuted
 	NumericVector Le2;    //decoder #2 extrinsic likelihood
 	NumericVector Le2_ip(msgLen); //decoder #2 extrinsic likelihood inverse permuted
+	
+	List decode1(N_ITERATION);
+	List decode1I(N_ITERATION);
+	List decode2Back(N_ITERATION);
+	List decode2IBack(N_ITERATION);
 
 
     //zero apriori information into very first iteration of BCJR
@@ -284,11 +288,7 @@ List c_turbo_decode
 
     for(int i = 0; i < N_ITERATION; i++)
     {
-		#if MAP_SOVA == 0
-    	//modified_bcjr(Lc, Le2_ip, x_d, p1_d, Le1, 1);
-		#elif MAP_SOVA == 1
 		Le1 = c_sova(x_noisy, parity_noisy1, Le2_ip, 1, N, M, previousState, output, output_index);
-		#endif
 
        //permute decoder#1 likelihoods to match decoder#2 order
     	for(int k = 0; k < msgLen; k++)
@@ -303,11 +303,7 @@ List c_turbo_decode
     		#endif
     	}
 
-		#if MAP_SOVA == 0
-		//modified_bcjr(Lc, Le1_p,  x_d_p, p2_d, Le2, 0);
-		#elif MAP_SOVA == 1
 		Le2 = c_sova(x_d_p, parity_noisy2, Le1_p, 0, N, M, previousState, output, output_index);
-		#endif
 
         //inverse permute decoder#2 likelihoods to match decoder#1 order
     	for(int k = 0; k < msgLen; k++)
@@ -320,12 +316,15 @@ List c_turbo_decode
 		{
  			printf("\ni=%d Le1[%i]=%f\t",i+1, k, Le1[k]);
  			printf("Le2_ip[%i]=%f\t", k, Le2_ip[k]);
- 			//printf("Le2[%i] = %f\t", k, Le2[k]);
- 			//printf("Lc*x_d[%i] = %f", k, Lc*x_d[k]);
 			printf("L[%i] = %f",k, Lc*x_noisy[k] + Le1[k] + Le2_ip[k]);
 		}
 		printf("\n");
 		#endif
+		
+		decode1[i] = Le1;
+		decode1I[i] = Le1_p;
+		decode2Back[i] = Le2;
+		decode2IBack[i] = Le2_ip;
 	}
 
 	NumericVector soft_output(msgLen);
@@ -351,9 +350,17 @@ List c_turbo_decode
     	printf("%i", hard_output[k]);
     printf("\n");
     #endif
+    
+    List infoDisp = List::create(Rcpp::Named("origI") = x_d_p ,
+								 Rcpp::Named("decode1") = decode1,
+								 Rcpp::Named("decode1I") = decode1I,
+								 Rcpp::Named("decode2Back") = decode2Back,
+								 Rcpp::Named("decode2IBack") = decode2IBack);
+								
 
     List result = List::create(Rcpp::Named("soft.output") = soft_output,
-							   Rcpp::Named("hard.output") = hard_output);
+							   Rcpp::Named("hard.output") = hard_output,
+							   Rcpp::Named("disp.info") = infoDisp);
 
 	return result;
 }

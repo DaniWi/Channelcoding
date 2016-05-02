@@ -6,7 +6,7 @@
 \usage{
 TurboDecode(code, permutation.vector = NULL, iterations = 1,
   coder.info = NULL, parity.index = coder.info$N,
-  punctuation.matrix = NULL)
+  punctuation.matrix = NULL, visualize = FALSE)
 }
 \arguments{
 \item{permutation.vector}{permutation.vectorsvektor der mittels \code{\link{TurboGetpermutation.vector}} erzeugt werden sollte}
