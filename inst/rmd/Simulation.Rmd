@@ -75,6 +75,10 @@ gcd <- function(n, m) {
 ```
 
 ```{r, include=FALSE}
+node.short <- 20
+node.long <- 45
+dots <- function (v, node) if(length(v) > node) ", ..." else ""
+
 if (params$encoder$rsc == TRUE) {
   art.coder <- "Rekursiver"
 } else {
@@ -129,7 +133,7 @@ if (is.null(params$punctuation)) {
 ```
 
 - Kode-Rate : `r code.rate`
-`r if(params$turbo) paste0("- Interleaver : (", paste(params$permutation, collapse = ", "), ")") `
+`r if(params$turbo) paste0("- Interleaver : (", paste(head(params$permutation, node.long), collapse = ", "), dots(params$permutation, node.long), ")") `
 `r if(!is.null(params$punctuation)) paste0("- Punktierungs-Matrix : $$\\begin{pmatrix} ",punctuation.print," \\end{pmatrix}$$")`
 
 ## Simulationsdaten
@@ -145,7 +149,18 @@ if (is.null(params$punctuation)) {
 ```{r, echo=FALSE}
 
 df <- params$dataframe
-ggplot2::ggplot(df,ggplot2::aes(db))+ggplot2::geom_line(ggplot2::aes(y = ber))+ggplot2::scale_y_log10()
+if (max(df$ber) == 0) {
+  ggplot2::ggplot(df,ggplot2::aes(db))+ggplot2::geom_line(ggplot2::aes(y = ber))+ggplot2::xlab("Signal Rausch Verhältnis [dB]")+ggplot2::ylab("Bitfehlerrate")
+} else {
+  ggplot2::ggplot(df,ggplot2::aes(db))+ggplot2::geom_line(ggplot2::aes(y = ber))+ggplot2::scale_y_log10(limits = c(min(df$ber) / 2, max(df$ber) * 2))+ggplot2::xlab("Signal Rausch Verhältnis [dB]")+ggplot2::ylab("Bitfehlerrate")
+}
 
 ```
 
+## Statistik
+
+Bitefehlerrate:
+
+```{r qplot, echo=FALSE, message=FALSE}
+summary(df$ber)
+```

@@ -4,7 +4,7 @@
 \alias{ConvEncode}
 \title{convolutional encoding of a message}
 \usage{
-ConvEncode(message, conv.encoder, terminate = TRUE,
+ConvEncode(message, conv.encoder = NULL, terminate = TRUE,
   punctuation.matrix = NULL, visualize = FALSE)
 }
 \arguments{

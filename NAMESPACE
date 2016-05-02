@@ -3,6 +3,7 @@
 export(ConvDecode)
 export(ConvDecodeHard)
 export(ConvEncode)
+export(ConvolutionOpenPDF)
 export(ConvolutionSimulation)
 export(GenerateConvEncoder)
 export(GenerateRscEncoder)
