@@ -189,7 +189,7 @@ ConvEncode <- function(message, conv.encoder = NULL, terminate = TRUE, punctuati
   if (!is.null(punctuation.matrix)) {
     punctured.code <- PunctureCode(code, punctuation.matrix)
 
-    return(list(original=code, punctured=punctured.code))
+    code <- list(original=code, punctured=punctured.code)
   }
 
   if (visualize) {
@@ -198,6 +198,7 @@ ConvEncode <- function(message, conv.encoder = NULL, terminate = TRUE, punctuati
                       encoding = "UTF-8",
                       params = list(conv.encoder = conv.encoder,
                                     message = message,
+                                    code = code,
                                     terminate = terminate))
 
     rstudioapi::viewer(system.file("pdf", "ConvolutionEncode.pdf", package = "channelcoding"))

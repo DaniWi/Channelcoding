@@ -121,7 +121,7 @@ if (params$encoder$rsc == FALSE) {
 ```{r, results='asis'}
 next.table <- params$encoder$next.state
 colnames(next.table) <- c("Bit 0", "Bit 1")
-row.counter <- rep(1:dim(next.table)[1])
+row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(next.table) <- paste("Zustand ", row.counter)
 knitr::kable(next.table, align="c")
 ```
@@ -131,7 +131,7 @@ knitr::kable(next.table, align="c")
 output.table <- params$encoder$output
 output.table <- matrix(decToBin(as.vector(output.table)), ncol = ncol(output.table))
 colnames(output.table) <- c("Bit 0", "Bit 1")
-row.counter <- rep(1:dim(output.table)[1])
+row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(output.table) <- paste("Zustand ", row.counter)
 knitr::kable(output.table, align="c")
 ```
@@ -259,7 +259,7 @@ for (s in 0:(num.states-1)) {
 - Input : `r head(params$orig, node.short)``r dots(params$orig, node.short)`
 
 \begin{center}
-\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\tiny]
+\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\footnotesize]
 
 \tikzstyle{encoderStyle} = [rectangle, draw, minimum height=height("Inp")+4mm]
 \tikzstyle{interleaverStyle} = [encoderStyle]

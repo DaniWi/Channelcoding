@@ -1,13 +1,12 @@
 ---
-title: "Convolution"
-output: 
-  beamer_presentation:
-    keep_tex: true
-author: Martin Nocker
+title: "Convolution Encode"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: beamer_presentation
 fontsize: 9pt
 params:
   conv.encoder: !r list(N=2, M=2, generators=c(7,5), rsc=FALSE, termination=logical(0), next.state=matrix(c(0,0,1,1,2,2,3,3), ncol =2), prev.state=matrix(c(0,2,-1,-1,-1,-1,0,2,1,3,1,3), ncol =3), output=matrix(c(0,3,2,1,3,0,1,2), ncol =2))
   message: !r c(1,0,1)
+  code: !r c(1,1,1,0,0,0,1,0,1,1)
   terminate: !r TRUE
 header-includes:
 - \usepackage{tikz}
@@ -37,7 +36,6 @@ binVector <- function(n, min.length) {
 
 # returns an ordering of the state numbers for a nice state diagram
 ordering <- function(num.states, next.state) {
-  #next.state <- matrix(rep(0:(num.states-1), each = 2), ncol = 2)
   result <- integer(1)
 
   n <- 0
@@ -60,15 +58,35 @@ ordering <- function(num.states, next.state) {
 
   return(result)
 }
+
+decToBin <- function(x) { if (all(x<2)) x else paste(decToBin(x%/%2), x%%2, sep="") }
+
+octalToDec <- function(x) {
+  res <- numeric()
+  for(j in 1:length(x)) {
+  dec <- 0
+  i <- 0
+    while (x[j] > 0) {
+      dec <- dec + (x[j] %% 10) * (8^i)
+      i <- i + 1
+      x[j] <- x[j] %/% 10
+    }
+  res[j] <- dec
+  }
+
+  return(res)
+}
 ```
 
 ```{r, include=FALSE}
 conv.encoder <- params$conv.encoder
 
 message <- params$message
+code <- params$code
 
 M <- conv.encoder$M
 N <- conv.encoder$N
+generators <- conv.encoder$generators
 output <- conv.encoder$output
 next.state <- conv.encoder$next.state
 prev.state <- conv.encoder$prev.state
@@ -78,19 +96,31 @@ terminate <- params$terminate
 
 num.states <- 2^M
 
-matrix.length <- num.states * (length(message) + as.integer(terminate)*M)
-state.color.matrix <- matrix(rep(NA,matrix.length), ncol = num.states)
-arrow.color.matrix <- matrix(rep(NA,matrix.length), ncol = num.states)
+# add termination bits to message if termination is TRUE
 s <- 0
-for (i in 1:(matrix.length/num.states)) {
-  state.color.matrix[i,s+1] <- i+1
-  if (i > length(message)) {
+if (terminate) {
+  for (i in 1:M) {
     bit <- if(rsc.flag) termination[s+1] else 0
-  } else {
-    bit <- message[i]
+    message <- c(message, bit)
+    s <- next.state[s+1,bit+1]
   }
-  arrow.color.matrix[i,s+1] <- bit
-  s <- next.state[s+1,bit+1]
+}
+
+state.color.vector <- rep(NA, length(message))
+arrow.color.vector.0 <- rep(NA, length(message))
+arrow.color.vector.1 <- rep(NA, length(message))
+
+s <- 0
+for (i in 1:length(message)) {
+  state.color.vector[i] <- s
+  
+  if (message[i] == 0) {
+    arrow.color.vector.0[i] <- s
+  } else {
+    arrow.color.vector.1[i] <- s
+  }
+  
+  s <- next.state[s+1,message[i]+1]
 }
 
 state.order <- ordering(num.states, next.state)
@@ -99,8 +129,7 @@ state.order <- ordering(num.states, next.state)
 tikz.diagram <- ""
 # state diagram nodes
 for (s in 0:(num.states-1)) {
-  color.frames <- state.color.matrix[,state.order[s+1]+1]
-  color.frames <- paste(color.frames[!is.na(color.frames)], collapse = ",")
+  color.frames <- paste(which(state.color.vector == state.order[s+1])+1, collapse = ",")
   color.frames <- if(color.frames == "") 0 else color.frames
   
   xpos <- 2.5*sin(s*2*pi/num.states)
@@ -119,11 +148,9 @@ for (s in 0:(num.states-1)) {
 
 # state diagram connections
 for (s in 0:(num.states-1)) {
-  color.frames.0 <- which(arrow.color.matrix[,s+1] == 0) + 1
-  color.frames.0 <- paste(color.frames.0, collapse = ",")
+  color.frames.0 <- paste(which(arrow.color.vector.0 == s) + 1, collapse = ",")
   color.frames.0 <- if(color.frames.0 == "") 0 else color.frames.0
-  color.frames.1 <- which(arrow.color.matrix[,s+1] == 1) + 1
-  color.frames.1 <- paste(color.frames.1, collapse = ",")
+  color.frames.1 <- paste(which(arrow.color.vector.1 == s) + 1, collapse = ",")
   color.frames.1 <- if(color.frames.1 == "") 0 else color.frames.1
   
   this.state <- paste0("(state",s,")")
@@ -228,7 +255,7 @@ for (i in message) {
   nextState <- paste(binVector(next.state[state+1,i+1],M),collapse = "")
   hline <- ""
   
-  if (terminate && index == length(message) + 1) {
+  if (terminate && index == length(message) + 1 - M) {
     hline <- "\\hline"
   }
   
@@ -239,31 +266,56 @@ for (i in message) {
   index <- index + 1
   state <- next.state[state+1,i+1]
 }
+```
 
-# termination bits
-if (terminate) {
-  for (i in 1:M) {
-    term.bit <- if(rsc.flag) termination[state+1] else 0
-    
-    visibility <- paste0("\\visible<",index,"->")
-    thisState <- paste(binVector(state,M),collapse = "")
-    code.output <- paste(binVector(output[state+1,term.bit+1],N),collapse = "")
-    nextState <- paste(binVector(next.state[state+1,term.bit+1],M),collapse = "")
-    
-    table.row <- paste(visibility,"{",thisState,"&",term.bit,"&",code.output,"&",nextState,"\\\\ }")
-    
-    encode.table <- paste(encode.table, table.row)
-  
-    index <- index + 1
-    state <- next.state[state+1,term.bit+1]
-  }
+```{r, include=FALSE}
+# Kodierer Informationen
+if (rsc.flag == TRUE) {
+  art.coder <- "Rekursiver"
+} else {
+  art.coder <- "Nicht-Rekursiver"
+}
+
+if (rsc.flag == FALSE) {
+  generator.matrix <- paste0(decToBin(octalToDec(generators)), " \\\\ ", collapse = "")
+  generator.print <- 
+    paste0("(", paste(generators, collapse=","), ")_8 = \\begin{pmatrix}", generator.matrix, "\\end{pmatrix}")
+
+} else {
+  generator.print <- paste0("\\left(1,", paste0("\\frac{", head(generators, length(generators) - 1), "}{", tail(generators, 1), "}", collapse = ","), "\\right)")
 }
 ```
 
+## Kodierer Information
 
+- `r art.coder` Kodierer
+- Anzahl von Ausgängen : $$N=`r N`$$
+- Anzahl von Registern : $$M=`r M`$$
+- Generatoren : $$`r generator.print`$$
+- Kode-Rate: $$\frac{1}{`r N`}$$
+
+## Kodierer Matrix : Nächster Zustand
+```{r, echo=FALSE, results='asis'}
+next.table <- next.state
+colnames(next.table) <- c("Bit 0", "Bit 1")
+row.counter <- rep(0:(dim(next.table)[1]-1))
+rownames(next.table) <- paste("Zustand ", row.counter)
+knitr::kable(next.table, align="c")
+```
+
+## Kodierer Matrix : Ausgangsbits
+```{r, echo=FALSE, results='asis'}
+output.table <- output
+output.table <- matrix(decToBin(as.vector(output.table)), ncol = ncol(output.table))
+colnames(output.table) <- c("Bit 0", "Bit 1")
+row.counter <- rep(0:(dim(next.table)[1]-1))
+rownames(output.table) <- paste("Zustand ", row.counter)
+knitr::kable(output.table, align="c")
+```
 
 ## Convolution Encode
 
+input: (`r message`)
 \begin{center}
 \begin{minipage}{.45\textwidth}
 \begin{center}
@@ -272,6 +324,8 @@ if (terminate) {
   `r encode.table`
 \end{tabular}
 \end{center}
+\vfill
+\visible<2-> {output: (`r code`)}
 \end{minipage}
 \hfill
 \begin{minipage}{.45\textwidth}
@@ -283,13 +337,3 @@ if (terminate) {
 \end{center}
 \end{minipage}
 \end{center}
-
-## state color matrix
-
-`r paste(state.color.matrix[,1][!is.na(state.color.matrix[,1])], collapse=",")`
-
-`r paste(state.color.matrix[,2][!is.na(state.color.matrix[,2])], collapse=",")`
-
-`r paste(state.color.matrix[,3][!is.na(state.color.matrix[,3])], collapse=",")`
-
-`r paste(state.color.matrix[,4][!is.na(state.color.matrix[,4])], collapse=",")`

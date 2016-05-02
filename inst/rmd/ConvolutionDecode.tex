@@ -1,3 +1,50 @@
+\begin{frame}{Kodierer Information}
+
+\begin{itemize}
+\tightlist
+\item
+  Nicht-Rekursiver Kodierer
+\item
+  Anzahl von Ausgängen : \[N=2\]
+\item
+  Anzahl von Registern : \[M=2\]
+\item
+  Generatoren : \[(7,5)_8 = \begin{pmatrix}111 \\ 101 \\ \end{pmatrix}\]
+\item
+  Kode-Rate: \[\frac{1}{2}\]
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Kodierer Matrix : Nächster Zustand}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{next.table <-}\StringTok{ }\NormalTok{next.state}
+\KeywordTok{colnames}\NormalTok{(next.table) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Bit 0"}\NormalTok{, }\StringTok{"Bit 1"}\NormalTok{)}
+\NormalTok{row.counter <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{dim}\NormalTok{(next.table)[}\DecValTok{1}\NormalTok{])}
+\KeywordTok{rownames}\NormalTok{(next.table) <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"Zustand "}\NormalTok{, row.counter)}
+\CommentTok{#knitr::kable(next.table, align="c")}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Kodierer Matrix : Ausgangsbits}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{output.table <-}\StringTok{ }\NormalTok{output}
+\NormalTok{output.table <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{decToBin}\NormalTok{(}\KeywordTok{as.vector}\NormalTok{(output.table)), }\DataTypeTok{ncol =} \KeywordTok{ncol}\NormalTok{(output.table))}
+\KeywordTok{colnames}\NormalTok{(output.table) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Bit 0"}\NormalTok{, }\StringTok{"Bit 1"}\NormalTok{)}
+\NormalTok{row.counter <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{:}\KeywordTok{dim}\NormalTok{(output.table)[}\DecValTok{1}\NormalTok{])}
+\KeywordTok{rownames}\NormalTok{(output.table) <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"Zustand "}\NormalTok{, row.counter)}
+\CommentTok{#knitr::kable(output.table, align="c")}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
 \begin{frame}{Trellis Diagram}
 
 \begin{tabular}{r l}input: & (-3,-1.3,-0.3,2.7,-0.3,1.1,0.6,0.9,-1.2,-1)\\hard input: & (1,1,1,0,1,0,0,0,1,1)\\\end{tabular}
@@ -8,7 +55,7 @@
 \tikzstyle{state} = [draw, circle, teal, thick, text=black, minimum size=3.5mm, inner sep=0mm]
 \tikzstyle{freestate} = [circle, teal, fill=teal, minimum size=1mm, inner sep=0mm]
 
- \node[state] (node00) at (0,0) {0} ; \node[freestate] (node10) at (0,-1.25) {} ; \node[freestate] (node20) at (0,-2.5) {} ; \node[freestate] (node30) at (0,-3.75) {} ; \node[state] (node01) at (1,0) {-2} ; \node[freestate] (node11) at (1,-1.25) {} ; \node[state] (node21) at (1,-2.5) {2} ; \node[freestate] (node31) at (1,-3.75) {} ; \node[state] (node02) at (2,0) {-2} ; \node[state] (node12) at (2,-1.25) {4} ; \node[state] (node22) at (2,-2.5) {-2} ; \node[state] (node32) at (2,-3.75) {0} ; \node[state] (node03) at (3,0) {2} ; \node[state] (node13) at (3,-1.25) {0} ; \node[state] (node23) at (3,-2.5) {6} ; \node[state] (node33) at (3,-3.75) {0} ; \node[state] (node04) at (4,0) {2} ; \node[state] (node14) at (4,-1.25) {8} ; \node[freestate] (node24) at (4,-2.5) {} ; \node[freestate] (node34) at (4,-3.75) {} ; \node[state] (node05) at (5,0) {10} ; \node[freestate] (node15) at (5,-1.25) {} ; \node[freestate] (node25) at (5,-2.5) {} ; \node[freestate] (node35) at (5,-3.75) {} ; \visible<7>{\node [orange, font=\small] at($(node30)!0.5!(node31)+(0,-.5)$) {1};} \visible<7>{\node [orange, font=\small] at($(node31)!0.5!(node32)+(0,-.5)$) {0};} \visible<7>{\node [orange, font=\small] at($(node32)!0.5!(node33)+(0,-.5)$) {1};} \visible<7>{\node [orange, font=\small] at($(node33)!0.5!(node34)+(0,-.5)$) {0};} \visible<7>{\node [orange, font=\small] at($(node34)!0.5!(node35)+(0,-.5)$) {0};} \node (statelabel0) [left of=node00] {00}; \node (statelabel1) [left of=node10] {01}; \node (statelabel2) [left of=node20] {10}; \node (statelabel3) [left of=node30] {11}; \node (timelabel0) [above of=node00, yshift=-4mm] {0}; \node (timelabel1) [above of=node01, yshift=-4mm] {1}; \node (timelabel2) [above of=node02, yshift=-4mm] {2}; \node (timelabel3) [above of=node03, yshift=-4mm] {3}; \node (timelabel4) [above of=node04, yshift=-4mm] {4}; \node (timelabel5) [above of=node05, yshift=-4mm] {5}; \draw[->] (node00) -- (node01) node [sloped, above, very near start] {00} ; \alt<6-> {\draw[->, dashed, orange] (node00) -- (node21) node [sloped, above, very near start] {11} ;}{\draw[->, dashed] (node00) -- (node21) node [sloped, above, very near start] {11} ;}; \draw[->] (node01) -- (node02) node [sloped, above, very near start] {00} ; \draw[->, dashed] (node01) -- (node22) node [sloped, above, very near start] {11} ; \alt<5-> {\draw[->, orange] (node21) -- (node12) node [sloped, above, very near start] {10} ;}{\draw[->] (node21) -- (node12) node [sloped, above, very near start] {10} ;}; \draw[->, dashed] (node21) -- (node32) node [sloped, above, very near start] {01} ; \alt<- 6 > { \draw[->] (node02) -- (node03) node [sloped, above, very near start] {00} ; }{}; \alt<- 6 > { \draw[->, dashed] (node02) -- (node23) node [sloped, above, very near start] {11} ; }{}; \draw[->] (node12) -- (node03) node [sloped, above, very near start] {11} ; \alt<4-> {\draw[->, dashed, orange] (node12) -- (node23) node [sloped, above, very near start] {00} ;}{\draw[->, dashed] (node12) -- (node23) node [sloped, above, very near start] {00} ;}; \alt<- 6 > { \draw[->] (node22) -- (node13) node [sloped, above, very near start] {10} ; }{}; \alt<- 6 > { \draw[->, dashed] (node22) -- (node33) node [sloped, above, very near start] {01} ; }{}; \draw[->] (node32) -- (node13) node [sloped, above, very near start] {01} ; \draw[->, dashed] (node32) -- (node33) node [sloped, above, very near start] {10} ; \draw[->] (node03) -- (node04) node [sloped, above, very near start] {00} ; \alt<- 6 > { \draw[->] (node13) -- (node04) node [sloped, above, very near start] {11} ; }{}; \alt<3-> {\draw[->, orange] (node23) -- (node14) node [sloped, above, very near start] {10} ;}{\draw[->] (node23) -- (node14) node [sloped, above, very near start] {10} ;}; \alt<- 6 > { \draw[->] (node33) -- (node14) node [sloped, above, very near start] {01} ; }{}; \alt<- 6 > { \draw[->] (node04) -- (node05) node [sloped, above, very near start] {00} ; }{}; \alt<2-> {\draw[->, orange] (node14) -- (node05) node [sloped, above, very near start] {11} ;}{\draw[->] (node14) -- (node05) node [sloped, above, very near start] {11} ;};
+ \node[state] (node00) at (0,0) {0} ; \node[freestate] (node10) at (0,-1.25) {} ; \node[freestate] (node20) at (0,-2.5) {} ; \node[freestate] (node30) at (0,-3.75) {} ; \node[state] (node01) at (1,0) {-2} ; \node[freestate] (node11) at (1,-1.25) {} ; \node[state] (node21) at (1,-2.5) {2} ; \node[freestate] (node31) at (1,-3.75) {} ; \node[state] (node02) at (2,0) {-2} ; \node[state] (node12) at (2,-1.25) {4} ; \node[state] (node22) at (2,-2.5) {-2} ; \node[state] (node32) at (2,-3.75) {0} ; \node[state] (node03) at (3,0) {2} ; \node[state] (node13) at (3,-1.25) {0} ; \node[state] (node23) at (3,-2.5) {6} ; \node[state] (node33) at (3,-3.75) {0} ; \node[state] (node04) at (4,0) {2} ; \node[state] (node14) at (4,-1.25) {8} ; \node[freestate] (node24) at (4,-2.5) {} ; \node[freestate] (node34) at (4,-3.75) {} ; \node[state] (node05) at (5,0) {10} ; \node[freestate] (node15) at (5,-1.25) {} ; \node[freestate] (node25) at (5,-2.5) {} ; \node[freestate] (node35) at (5,-3.75) {} ; \visible<7>{\node [orange, font=\small] at($(node30)!0.5!(node31)+(0,-.5)$) {1};} \visible<7>{\node [orange, font=\small] at($(node31)!0.5!(node32)+(0,-.5)$) {0};} \visible<7>{\node [orange, font=\small] at($(node32)!0.5!(node33)+(0,-.5)$) {1};} \visible<7>{\node [orange, font=\small] at($(node33)!0.5!(node34)+(0,-.5)$) {0};} \visible<7>{\node [orange, font=\small] at($(node34)!0.5!(node35)+(0,-.5)$) {0};} \node (statelabel0) [left of=node00] {00}; \node (statelabel1) [left of=node10] {01}; \node (statelabel2) [left of=node20] {10}; \node (statelabel3) [left of=node30] {11}; \node (timelabel0) [above of=node00, yshift=-4mm] {0}; \node (timelabel1) [above of=node01, yshift=-4mm] {1}; \node (timelabel2) [above of=node02, yshift=-4mm] {2}; \node (timelabel3) [above of=node03, yshift=-4mm] {3}; \node (timelabel4) [above of=node04, yshift=-4mm] {4}; \node (timelabel5) [above of=node05, yshift=-4mm] {5}; \draw[->] (node00) -- (node01) node [sloped, above, very near start] {00} ; \alt<7-> {\draw[->, dashed, orange] (node00) -- (node21) node [sloped, above, very near start] {11} ;}{\draw[->, dashed] (node00) -- (node21) node [sloped, above, very near start] {11} ;}; \draw[->] (node01) -- (node02) node [sloped, above, very near start] {00} ; \draw[->, dashed] (node01) -- (node22) node [sloped, above, very near start] {11} ; \alt<6-> {\draw[->, orange] (node21) -- (node12) node [sloped, above, very near start] {10} ;}{\draw[->] (node21) -- (node12) node [sloped, above, very near start] {10} ;}; \draw[->, dashed] (node21) -- (node32) node [sloped, above, very near start] {01} ; \alt<1> { \draw[->] (node02) -- (node03) node [sloped, above, very near start] {00} ; }{}; \alt<1> { \draw[->, dashed] (node02) -- (node23) node [sloped, above, very near start] {11} ; }{}; \draw[->] (node12) -- (node03) node [sloped, above, very near start] {11} ; \alt<5-> {\draw[->, dashed, orange] (node12) -- (node23) node [sloped, above, very near start] {00} ;}{\draw[->, dashed] (node12) -- (node23) node [sloped, above, very near start] {00} ;}; \alt<1> { \draw[->] (node22) -- (node13) node [sloped, above, very near start] {10} ; }{}; \alt<1> { \draw[->, dashed] (node22) -- (node33) node [sloped, above, very near start] {01} ; }{}; \draw[->] (node32) -- (node13) node [sloped, above, very near start] {01} ; \draw[->, dashed] (node32) -- (node33) node [sloped, above, very near start] {10} ; \draw[->] (node03) -- (node04) node [sloped, above, very near start] {00} ; \alt<1> { \draw[->] (node13) -- (node04) node [sloped, above, very near start] {11} ; }{}; \alt<4-> {\draw[->, orange] (node23) -- (node14) node [sloped, above, very near start] {10} ;}{\draw[->] (node23) -- (node14) node [sloped, above, very near start] {10} ;}; \alt<1> { \draw[->] (node33) -- (node14) node [sloped, above, very near start] {01} ; }{}; \alt<1> { \draw[->] (node04) -- (node05) node [sloped, above, very near start] {00} ; }{}; \alt<3-> {\draw[->, orange] (node14) -- (node05) node [sloped, above, very near start] {11} ;}{\draw[->] (node14) -- (node05) node [sloped, above, very near start] {11} ;};
 
 \end{tikzpicture}
 
