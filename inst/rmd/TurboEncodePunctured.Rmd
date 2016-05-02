@@ -1,7 +1,5 @@
 ---
 title: "Turbo Kodierer mit Punktierung"
-author: "Witsch Daniel"
-date: "18 April 2016"
 output: 
   beamer_presentation:
     keep_tex: true
@@ -61,6 +59,47 @@ octalToDec <- function(x) {
 
   return(res)
 }
+
+# returns an ordering of the state numbers for a nice state diagram
+ordering <- function(num.states, next.state) {
+  #next.state <- matrix(rep(0:(num.states-1), each = 2), ncol = 2)
+  result <- integer(1)
+
+  n <- 0
+  for (i in 2:num.states) {
+    n0 <- next.state[n+1,1]
+    n1 <- next.state[n+1,2]
+
+    if (n0 %in% result) {
+      n <- n1
+    }
+    else if (n1 %in% result) {
+      n <- n0
+    }
+    else {
+      n <- if (n0 > n1) n0 else n1
+    }
+
+    result <- c(result, n)
+  }
+
+  return(result)
+}
+
+gcd <- function(n, m) {
+  if (n == 0 && m == 0) return(0)
+  
+  n <- abs(n); m <- abs(m)
+  if (m > n) {
+    t <- n; n <- m; m <- t
+  }
+  while (m > 0) {
+    t <- n
+    n <- m
+    m <- t %% m
+  }
+  return(n)
+}
 ```
 
 ```{r, echo=FALSE}
@@ -108,15 +147,6 @@ rownames(next.table) <- paste("Zustand ", row.counter)
 knitr::kable(next.table, align="c")
 ```
 
-## Kodierer Matrix : Voriger Zustand
-```{r, results='asis'}
-prev.table <- params$encoder$prev.state
-colnames(prev.table) <- c("Bit 0", "Bit 1", "2.Möglichkeit")
-row.counter <- rep(1:dim(prev.table)[1])
-rownames(prev.table) <- paste("Zustand ", row.counter)
-knitr::kable(prev.table, align="c")
-```
-
 ## Kodierer Matrix : Ausgangsbits
 ```{r, results='asis'}
 output.table <- params$encoder$output
@@ -127,10 +157,126 @@ rownames(output.table) <- paste("Zustand ", row.counter)
 knitr::kable(output.table, align="c")
 ```
 
+## Kodierer Matrix : Zustandsdiagramm
+```{r}
+num.states <- 2^params$encoder$M
+
+state.order <- ordering(num.states, params$encoder$next.state)
+
+## STATE DIAGRAM
+tikz.diagram <- ""
+# state diagram nodes
+for (s in 0:(num.states-1)) {
+  xpos <- 2.5*sin(s*2*pi/num.states)
+  ypos <- 2.5*cos(s*2*pi/num.states)
+  position <- paste0(xpos,",",ypos)
+  name <- paste(binVector(state.order[s+1], params$encoder$M),collapse = "")
+  state <- paste0("\\node[state] (state",state.order[s+1],") at (",position,") {",name,"};")
+
+  tikz.diagram <- paste(tikz.diagram, state)
+}
+
+# state diagram connections
+for (s in 0:(num.states-1)) {
+  this.state <- paste0("(state",s,")")
+  n_next.state.0 <- params$encoder$next.state[s+1,1]
+  n_next.state.1 <- params$encoder$next.state[s+1,2]
+  str_next.state.0 <- paste0("(state",n_next.state.0,")")
+  str_next.state.1 <- paste0("(state",n_next.state.1,")")
+
+  label.value.0 <- paste(binVector(params$encoder$output[s+1,1],params$encoder$N),collapse = "")
+  label.value.1 <- paste(binVector(params$encoder$output[s+1,2],params$encoder$N),collapse = "")
+
+  # indices of the states in the ordering vector (1 based)
+  this.ordering.index <- which(state.order == s)
+  next.0.ordering.index <- which(state.order == n_next.state.0)
+  next.1.ordering.index <- which(state.order == n_next.state.1)
+
+  # if edges do not go to neighbour, set label near start
+  # to avoid label crossings
+  near.0 <- ""
+  near.1 <- ""
+  distance.to.0 <- abs(this.ordering.index - next.0.ordering.index)
+  distance.to.1 <- abs(this.ordering.index - next.1.ordering.index)
+  if (distance.to.0 > 1 && distance.to.0 < num.states-1) {
+    near.0 <- ",near start"
+  }
+
+  if (distance.to.1 > 1 && distance.to.1 < num.states-1) {
+    near.1 <- ",near start"
+  }
+  # 2nd check in previous if clause necessary because if state numbers
+  # are in first and last position of the ordering, they have distance
+  # num.states-1 but are neighbours in the state diagram
+
+  label.0 <- paste0("node [sloped, above",near.0,"] {",label.value.0,"}")
+  label.1 <- paste0("node [sloped, above",near.1,"] {",label.value.1,"}")
+
+  # in case of a loop
+  angle <- (90-(this.ordering.index-1)*360/num.states) %% 360
+  angle.out <- (angle + 15) %% 360
+  angle.in <- (angle - 15) %% 360
+
+  if (n_next.state.0 == s) {
+    # loop with input bit 0
+    loop <- paste0("[looseness=8,out=",angle.out,",in=",angle.in,"]")
+
+    if (sin(angle*pi/180) < 0) {
+      label.0 <- paste0("node [sloped, below",near.0,"] {",label.value.0,"}")
+    }
+
+    edge.0 <- paste("\\draw[->]",this.state,"to",loop,label.0,this.state,";")
+  }
+  else {
+    # 'normal' edge to other node
+    bend <- ""
+    if (params$encoder$next.state[n_next.state.0+1,1] == s || params$encoder$next.state[n_next.state.0+1,2] == s) {
+      # there is a connection back -> bend the edge
+      bend <- "[bend left=15]"
+    }
+    edge.0 <- paste("\\draw[->]",this.state,"to",bend,label.0,str_next.state.0,";")
+  }
+
+  if (n_next.state.1 == s) {
+    # loop with input bit 1
+    loop <- paste0("[looseness=8,out=",angle.out,",in=",angle.in,"]")
+
+    if (sin(angle*pi/180) < 0) {
+      label.1 <- paste0("node [sloped, below",near.1,"] {",label.value.1,"}")
+    }
+
+    edge.1 <- paste("\\draw[->, dashed]",this.state,"to",loop,label.1,this.state,";")
+  }
+  else {
+    # 'normal' edge to other node
+    bend <- ""
+    if (params$encoder$next.state[n_next.state.1+1,1] == s || params$encoder$next.state[n_next.state.1+1,2] == s) {
+      # there is a connection back -> bend the edge
+      bend <- "[bend left=15]"
+    }
+    edge.1 <- paste("\\draw[->, dashed]",this.state,"to",bend,label.1,str_next.state.1,";")
+  }
+
+  tikz.diagram <- paste(tikz.diagram, edge.0, edge.1)
+}
+```
+
+\begin{center}
+\begin{tikzpicture}[>=stealth, font=\scriptsize]
+\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=8mm, font=\footnotesize]
+
+`r tikz.diagram`
+
+\end{tikzpicture}
+\end{center}
+
 ## Turbo-Kodierer Information
 
 - Interleaver : (`r head(params$permutation, node.long)``r dots(params$permutation, node.long)`)
-- Kode-Rate : $$\frac{`r length(params$punctuation)`}{`r sum(params$punctuation) * 3`}$$
+```{r}
+  gcd.value <- gcd(length(params$punctuation), sum(params$punctuation) * 3)
+```
+- Kode-Rate : $$\frac{`r length(params$punctuation) / gcd.value`}{`r sum(params$punctuation) * 3 / gcd.value`}$$
 - Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
 
 ## Turbo-Kodierer mit Punktierung
@@ -185,10 +331,10 @@ knitr::kable(output.table, align="c")
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<4>{
-  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
-  \draw [showDrawStyle] (showAbove) -- (afterInterleaver);
-  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
-  \draw [showDrawStyle] (showBelow) -- (afterParity2.center);
+  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
+  \draw [showDrawStyle] (showAbove) -- (afterParity2.center);
+  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
+  \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<5>{
   \node [showStyle] (show) [above=4mm of background] {\textbf{`r head(params$multipl, node.short)``r dots(params$multipl, node.short)`}};

@@ -39,8 +39,20 @@
 #'
 #' @export
 TurboEncode <-
-  function(message, permutation.vector, coder.info,
-           parity.index = coder.info$N, punctuation.matrix = NULL, visualize = FALSE) {
+  function(message, permutation.vector = NULL,
+           coder.info = NULL,
+           parity.index = coder.info$N,
+           punctuation.matrix = NULL,
+           visualize = FALSE) {
+
+    if (is.null(coder.info)) {
+      warning("Standardkodierer wurde verwendet!")
+      coder.info <- GenerateRscEncoder(2, 2, c(5,7))
+    }
+    if (is.null(permutation.vector)) {
+      warning("Standard-Permutationsvektor wurde verwendet! (PRIMITIVE)")
+      permutation.vector <- TurboGetPermutation(length(message), coder.info, type="PRIMITIVE", list(root=0))
+    }
 
     #Checks all parameters
     stopifnot(length(message) > 0)
@@ -173,8 +185,21 @@ TurboEncode <-
 #'
 #' @export
 TurboDecode <-
-  function(code, permutation.vector, iterations, coder.info,
-           parity.index = coder.info$N, punctuation.matrix = NULL) {
+  function(code,
+           permutation.vector = NULL,
+           iterations = 1,
+           coder.info = NULL,
+           parity.index = coder.info$N,
+           punctuation.matrix = NULL) {
+
+    if (is.null(coder.info)) {
+      warning("Standardkodierer wurde verwendet!")
+      coder.info <- GenerateRscEncoder(2, 2, c(5,7))
+    }
+    if (is.null(permutation.vector)) {
+      warning("Standard-Permutationsvektor wurde verwendet! (PRIMITIVE)")
+      permutation.vector <- TurboGetPermutation(length(code) / 3  - coder.info$M, coder.info, type="PRIMITIVE", list(root=0))
+    }
 
     #Checks all parameters
     stopifnot(length(code) > 0, iterations > 0)
