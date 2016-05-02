@@ -347,14 +347,14 @@ ConvolutionSimulation <- function(coder = NULL,
                                   msg.length = 100,
                                   iterations.per.db = 100,
                                   min.db = 0.1,
-                                  max.db = 3.0,
+                                  max.db = 2.0,
                                   db.interval = 0.1,
                                   punctuation.matrix = NULL)
 {
   stopifnot(msg.length > 0, iterations.per.db > 0,
             min.db > 0, max.db > 0, max.db >= min.db, db.interval > 0)
 
-  if (is.null(conv.encoder)) {
+  if (is.null(coder)) {
     warning("Standard-Faltungskodierer wurde verwendet! N=2, M=2, Generatoren: (7,5)")
     coder <- GenerateConvEncoder(2,2,c(7,5))
   }
@@ -389,9 +389,9 @@ ConvolutionSimulation <- function(coder = NULL,
       decoded <- ConvDecode(noisy, coder, punctuation.matrix = punctuation.matrix)
 
       # vgl decoded & message
-      decode.erros <- sum(abs(decoded$output.hard - message))
+      decode.errors <- sum(abs(decoded$hard.output - message))
 
-      total.errors <- total.errors + decode.erros
+      total.errors <- total.errors + decode.errors
     }
 
     v.ber <- c(v.ber, total.errors / (msg.length * iterations.per.db))
@@ -403,7 +403,7 @@ ConvolutionSimulation <- function(coder = NULL,
 
   rmarkdown::render(system.file("rmd", "Simulation.Rmd", package = "channelcoding"),
                     output_dir = system.file("pdf", package = "channelcoding"),
-                    output_file = "ConvolutionSimulation",
+                    output_file = "ConvolutionSimulation.pdf",
                     encoding = "UTF-8",
                     params = list(turbo = FALSE,
                                   message.length = msg.length,
@@ -415,7 +415,7 @@ ConvolutionSimulation <- function(coder = NULL,
                                   encoder = coder,
                                   dataframe = df))
 
-  rstudioapi::viewer(system.file("pdf", "Simulation.pdf", package = "channelcoding"))
+  rstudioapi::viewer(system.file("pdf", "ConvolutionSimulation.pdf", package = "channelcoding"))
 
   return(df)
 }

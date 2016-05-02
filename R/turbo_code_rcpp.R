@@ -46,8 +46,8 @@ TurboEncode <-
            visualize = FALSE) {
 
     if (is.null(coder.info)) {
-      warning("Standardkodierer wurde verwendet!")
-      coder.info <- GenerateRscEncoder(2, 2, c(5,7))
+      warning("Standard-Kodierer wurde verwendet!RSC, N=2, M=2, Generatoren: (5,7)")
+      coder.info <- GenerateRscEncoder(2,2,c(5,7))
     }
     if (is.null(permutation.vector)) {
       warning("Standard-Permutationsvektor wurde verwendet! (PRIMITIVE)")
@@ -198,8 +198,8 @@ TurboDecode <-
            punctuation.matrix = NULL) {
 
     if (is.null(coder.info)) {
-      warning("Standardkodierer wurde verwendet!")
-      coder.info <- GenerateRscEncoder(2, 2, c(5,7))
+      warning("Standard-Kodierer wurde verwendet!RSC, N=2, M=2, Generatoren: (5,7)")
+      coder.info <- GenerateRscEncoder(2,2,c(5,7))
     }
     if (is.null(permutation.vector)) {
       warning("Standard-Permutationsvektor wurde verwendet! (PRIMITIVE)")
@@ -460,7 +460,7 @@ TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
 }
 
 #' @export
-TurboSimulation <- function(coder,
+TurboSimulation <- function(coder = NULL,
                             permutation.type = "PRIMITIVE",
                             permutation.args = list(root=0),
                             decode.iterations = 10,
@@ -474,6 +474,11 @@ TurboSimulation <- function(coder,
 {
   stopifnot(decode.iterations > 0, msg.length > 0, iterations.per.db > 0,
             min.db > 0, max.db > 0, max.db >= min.db, db.interval > 0)
+
+  if (is.null(coder)) {
+    warning("Standard-Kodierer wurde verwendet!RSC, N=2, M=2, Generatoren: (5,7)")
+    coder <- GenerateRscEncoder(2,2,c(5,7))
+  }
 
   v.db <- seq(from = min.db, to = max.db, by = db.interval)
   v.ber <- numeric(0)
@@ -503,19 +508,21 @@ TurboSimulation <- function(coder,
                              punctuation.matrix = punctuation.matrix)
 
       # vgl decoded & message
-      decode.erros <- sum(abs(decoded$output.hard - message))
+      decode.errors <- sum(abs(decoded$output.hard - message))
 
-      total.errors <- total.errors + decode.erros
+      total.errors <- total.errors + decode.errors
     }
 
     v.ber <- c(v.ber, total.errors / (msg.length * iterations.per.db))
     total.errors <- 0
   }
 
+  df <- data.frame(db = v.db, ber = v.ber)
+
   rmarkdown::render(
     system.file("rmd", "Simulation.Rmd", package = "channelcoding"),
     output_dir = system.file("pdf", package = "channelcoding"),
-    output_file = "SimulationTurbo",
+    output_file = "SimulationTurbo.pdf",
     params = list(
       turbo = TRUE,
       message.length = msg.length,
@@ -529,7 +536,7 @@ TurboSimulation <- function(coder,
       encoder = coder,
       dataframe = df),
     encoding = "UTF-8")
-  rstudioapi::viewer(system.file("pdf", "TurboEncodePunctured.pdf", package = "channelcoding"))
+  rstudioapi::viewer(system.file("pdf", "SimulationTurbo.pdf", package = "channelcoding"))
 
 
   df <- data.frame(db = v.db, ber = v.ber)
@@ -540,7 +547,7 @@ TurboSimulation <- function(coder,
 #' @export
 TurboOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
   if (simulation) {
-    path <- system.file("pdf", "TurboSimulation.pdf", package = "channelcoding")
+    path <- system.file("pdf", "SimulationTurbo.pdf", package = "channelcoding")
   } else {
     if (encode) {
       if (punctured) {
