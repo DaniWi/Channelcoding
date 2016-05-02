@@ -4,8 +4,9 @@
 \alias{TurboDecode}
 \title{Dekodieren einer Nachricht mittels dem Turbo-Code-Verfahren}
 \usage{
-TurboDecode(code, permutation.vector, iterations, coder.info,
-  parity.index = coder.info$N, punctuation.matrix = NULL)
+TurboDecode(code, permutation.vector = NULL, iterations = 1,
+  coder.info = NULL, parity.index = coder.info$N,
+  punctuation.matrix = NULL)
 }
 \arguments{
 \item{permutation.vector}{permutation.vectorsvektor der mittels \code{\link{TurboGetpermutation.vector}} erzeugt werden sollte}
