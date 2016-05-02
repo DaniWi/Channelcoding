@@ -1,20 +1,7 @@
-\begin{frame}{State Diagram}
-
-\begin{center}
-\begin{tikzpicture}[>=stealth, font=\scriptsize]
-\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=8mm, font=\footnotesize]
-
- \node[state] (state0) at (0,2.5) {00}; \node[state] (state2) at (2.5,1.53075794227797e-16) {10}; \node[state] (state3) at (3.06151588455594e-16,-2.5) {11}; \node[state] (state1) at (-2.5,-4.59227382683391e-16) {01}; \draw[->] (state0) to [looseness=8,out=105,in=75] node [sloped, above] {00} (state0) ; \draw[->, dashed] (state0) to  node [sloped, above] {11} (state2) ; \draw[->] (state1) to  node [sloped, above] {11} (state0) ; \draw[->, dashed] (state1) to [bend left=15] node [sloped, above,near start] {00} (state2) ; \draw[->] (state2) to [bend left=15] node [sloped, above,near start] {10} (state1) ; \draw[->, dashed] (state2) to  node [sloped, above] {01} (state3) ; \draw[->] (state3) to  node [sloped, above] {01} (state1) ; \draw[->, dashed] (state3) to [looseness=8,out=285,in=255] node [sloped, below] {10} (state3) ;
-
-\end{tikzpicture}
-\end{center}
-
-\end{frame}
-
 \begin{frame}{Convolution Encode}
 
 \begin{center}
-\begin{minipage}{.4\textwidth}
+\begin{minipage}{.45\textwidth}
 \begin{center}
 \begin{tabular}{c c c c}
   \visible<1-> {state&input&output&next state\\ \hline}
@@ -23,14 +10,24 @@
 \end{center}
 \end{minipage}
 \hfill
-\begin{minipage}{.4\textwidth}
+\begin{minipage}{.45\textwidth}
 \begin{center}
-\begin{tikzpicture}[scale=.75, >=stealth, font=\scriptsize]
-\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=8mm, font=\footnotesize]
- \node[state] (state0) at (0,2.5) {00}; \node[state] (state2) at (2.5,1.53075794227797e-16) {10}; \node[state] (state3) at (3.06151588455594e-16,-2.5) {11}; \node[state] (state1) at (-2.5,-4.59227382683391e-16) {01}; \draw[->] (state0) to [looseness=8,out=105,in=75] node [sloped, above] {00} (state0) ; \draw[->, dashed] (state0) to  node [sloped, above] {11} (state2) ; \draw[->] (state1) to  node [sloped, above] {11} (state0) ; \draw[->, dashed] (state1) to [bend left=15] node [sloped, above,near start] {00} (state2) ; \draw[->] (state2) to [bend left=15] node [sloped, above,near start] {10} (state1) ; \draw[->, dashed] (state2) to  node [sloped, above] {01} (state3) ; \draw[->] (state3) to  node [sloped, above] {01} (state1) ; \draw[->, dashed] (state3) to [looseness=8,out=285,in=255] node [sloped, below] {10} (state3) ;
+\begin{tikzpicture}[scale=.70, >=stealth, font=\tiny]
+\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=6mm, font=\scriptsize]
+ \alt<2> {\node[state, orange] (state0) at (0,2.5) {00};}{\node[state] (state0) at (0,2.5) {00};}; \alt<3,5> {\node[state, orange] (state2) at (2.5,1.53075794227797e-16) {10};}{\node[state] (state2) at (2.5,1.53075794227797e-16) {10};}; \alt<0> {\node[state, orange] (state3) at (3.06151588455594e-16,-2.5) {11};}{\node[state] (state3) at (3.06151588455594e-16,-2.5) {11};}; \alt<4,6> {\node[state, orange] (state1) at (-2.5,-4.59227382683391e-16) {01};}{\node[state] (state1) at (-2.5,-4.59227382683391e-16) {01};}; \draw[->] (state0) to [looseness=8,out=105,in=75] node [sloped, above] {00} (state0) ; \draw[->, dashed] (state0) to  node [sloped, above] {11} (state2) ; \draw[->] (state1) to  node [sloped, above] {11} (state0) ; \draw[->, dashed] (state1) to [bend left=15] node [sloped, above,near start] {00} (state2) ; \draw[->] (state2) to [bend left=15] node [sloped, above,near start] {10} (state1) ; \draw[->, dashed] (state2) to  node [sloped, above] {01} (state3) ; \draw[->] (state3) to  node [sloped, above] {01} (state1) ; \draw[->, dashed] (state3) to [looseness=8,out=285,in=255] node [sloped, below] {10} (state3) ;
 \end{tikzpicture}
 \end{center}
 \end{minipage}
 \end{center}
+
+\end{frame}
+
+\begin{frame}{state color matrix}
+
+2
+
+4,6
+
+3,5
 
 \end{frame}

@@ -1,0 +1,32 @@
+---
+title: "Simulation"
+output: 
+  beamer_presentation:
+    keep_tex: true
+fontsize: 10pt
+params:
+  dataframe: !r data.frame(db=c(0.5,0.6,0.7), ber=c(0.05,0.03,0.01))
+header-includes:
+- \usepackage{tikz}
+- \usepackage{pgfplots}
+- \usepackage{mathtools}
+- \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,positioning,fit,petri,calc}
+---
+
+## Plot
+
+```{r, include=FALSE}
+df <- params$dataframe
+
+db.limits <- c(max(0,min(df$db)-.5), max(df$db)+.5)
+ber.limits <- c(min(df$ber)/10, max(df$ber)*10)
+```
+
+
+```{r, echo=TRUE}
+
+#ggplot2::qplot(x = db, y = ber, data = df, xlim = db.limits, ylim = ber.limits, geom = "smooth")
+ggplot2::qplot(x = db, y = ber, data = df, xlim = db.limits, ylim = ber.limits)+ggplot2::scale_y_log10()
+
+```
+

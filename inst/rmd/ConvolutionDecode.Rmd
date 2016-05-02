@@ -73,27 +73,45 @@ N <- conv.encoder$N
 output <- conv.encoder$output
 next.state <- conv.encoder$next.state
 prev.state <- conv.encoder$prev.state
-
-code <- params$code
-if (params$soft.flag) {
-  code <- round(code, digits = 1)
-  code.hard <- ifelse(code >= 0, 0, 1)
-  code.hard <- paste0(" hard input: (",paste0(code.hard, collapse=","),")")
-} else {
-  code <- ifelse(code >= 0, 0, 1)
-}
-
 decoded <- params$decoded
 trellis <- params$trellis
 survivor.states <- params$survivor.states
+code <- params$code
+
+# input above trellis
+if (params$soft.flag) {
+  code.rounded <- round(code, digits = 1)
+  code.rounded <- paste0(code.rounded, collapse=",")
+  code.hard <- ifelse(code >= 0, 0, 1)
+  code.hard <- paste0(code.hard, collapse=",")
+  
+  table.def <- "\\begin{tabular}{r l}"
+  row1 <- paste0("input: & (",code.rounded,")\\\\")
+  row2 <- paste0("hard input: & (",code.hard,")\\\\")
+  table.end <- "\\end{tabular}"
+  
+  decode.input <- paste0(table.def, row1, row2, table.end)
+} else {
+  code <- ifelse(code >= 0, 0, 1)
+  code <- paste0(code, collapse=",")
+  
+  decode.input <- paste0("input: (", code,")")
+}
 
 num.states <- 2^M
 
 if (num.states > 4) {
-  factor = 0.75
+  yfactor = 0.75
 } else {
-  factor = 1.25
+  yfactor = 1.25
 }
+
+if (ncol(trellis) > 10) {
+  xfactor = 0.75
+} else {
+  xfactor = 1
+}
+
 
 tikz.trellis <- ""
 
@@ -112,7 +130,7 @@ for (t in 1:ncol(trellis)) {
     }
     definition <- paste0("\\node[",nodetype,"]")
     nodename <- paste0("(node",s-1,t-1,")")
-    coordinate <- paste0("at (",t-1,",",factor*(-s+1),")")
+    coordinate <- paste0("at (",xfactor*(t-1),",",yfactor*(-s+1),")")
     label <- paste0("{",value,"}")
     single.node <- paste(definition,nodename,coordinate,label,";")
 
@@ -209,12 +227,8 @@ trellis.decoded <- paste0("\\visible<",ncol(trellis)+1,">{output: (",str.decoded
 ```
 
 ## Trellis Diagram
-
-input: (`r code`)
-
-`r if (params$soft.flag) { code.hard }`
-
-\begin{center}
+`r decode.input`
+\vfill
 \begin{tikzpicture}[>=stealth, font=\tiny]
 \tikzstyle{state} = [draw, circle, teal, thick, text=black, minimum size=3.5mm, inner sep=0mm]
 \tikzstyle{freestate} = [circle, teal, fill=teal, minimum size=1mm, inner sep=0mm]
@@ -222,4 +236,3 @@ input: (`r code`)
 `r tikz.trellis`
 
 \end{tikzpicture}
-\end{center}

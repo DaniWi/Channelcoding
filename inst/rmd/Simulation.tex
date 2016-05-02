@@ -1,0 +1,17 @@
+\begin{frame}[fragile]{Plot}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#ggplot2::qplot(x = db, y = ber, data = df, xlim = db.limits, ylim = ber.limits, geom = "smooth")}
+\NormalTok{ggplot2::}\KeywordTok{qplot}\NormalTok{(}\DataTypeTok{x =} \NormalTok{db, }\DataTypeTok{y =} \NormalTok{ber, }\DataTypeTok{data =} \NormalTok{df, }\DataTypeTok{xlim =} \NormalTok{db.limits, }\DataTypeTok{ylim =} \NormalTok{ber.limits)+ggplot2::}\KeywordTok{scale_y_log10}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Scale for 'y' is already present. Adding another scale for 'y', which
+## will replace the existing scale.
+\end{verbatim}
+
+\includegraphics{Simulation_files/figure-beamer/unnamed-chunk-2-1.pdf}
+
+\end{frame}
