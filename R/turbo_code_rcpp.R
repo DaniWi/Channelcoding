@@ -115,6 +115,7 @@ TurboEncode <-
       if (!is.null(punctuation.matrix)) {
         rmarkdown::render(
           system.file("rmd", "TurboEncodePunctured.Rmd", package = "channelcoding"),
+          output_dir = system.file("pdf", package = "channelcoding"),
           params = list(
             orig = code.orig.01,
             interl = code.perm,
@@ -126,10 +127,11 @@ TurboEncode <-
             punctuation = punctuation.matrix,
             encoder = coder.info),
           encoding = "UTF-8")
-        rstudioapi::viewer(system.file("rmd", "TurboEncodePunctured.pdf", package = "channelcoding"))
+        rstudioapi::viewer(system.file("pdf", "TurboEncodePunctured.pdf", package = "channelcoding"))
       } else {
         rmarkdown::render(
           system.file("rmd", "TurboEncode.Rmd", package = "channelcoding"),
+          output_dir = system.file("pdf", package = "channelcoding"),
           params = list(
             orig = code.orig.01,
             interl = code.perm,
@@ -139,7 +141,7 @@ TurboEncode <-
             permutation = permutation.vector,
             encoder = coder.info),
           encoding = "UTF-8")
-        rstudioapi::viewer(system.file("rmd", "TurboEncode.pdf", package = "channelcoding"))
+        rstudioapi::viewer(system.file("pdf", "TurboEncode.pdf", package = "channelcoding"))
       }
     }
 
@@ -467,7 +469,8 @@ TurboSimulation <- function(coder,
                             min.db = 0.1,
                             max.db = 2.0,
                             db.interval = 0.1,
-                            punctuation.matrix = NULL)
+                            punctuation.matrix = NULL,
+                            visualize = TRUE)
 {
   stopifnot(decode.iterations > 0, msg.length > 0, iterations.per.db > 0,
             min.db > 0, max.db > 0, max.db >= min.db, db.interval > 0)
@@ -509,6 +512,25 @@ TurboSimulation <- function(coder,
     total.errors <- 0
   }
 
+  rmarkdown::render(
+    system.file("rmd", "Simulation.Rmd", package = "channelcoding"),
+    output_dir = system.file("pdf", package = "channelcoding"),
+    output_file = "SimulationTurbo",
+    params = list(
+      turbo = TRUE,
+      message.length = msg.length,
+      iterations.per.db = iterations.per.db,
+      min.db = min.db,
+      max.db = max.db,
+      db.interval = db.interval,
+      permutation = perm,
+      decode.iterations = decode.iterations,
+      punctuation = punctuation.matrix,
+      encoder = coder,
+      dataframe = df),
+    encoding = "UTF-8")
+  rstudioapi::viewer(system.file("pdf", "TurboEncodePunctured.pdf", package = "channelcoding"))
+
 
   df <- data.frame(db = v.db, ber = v.ber)
 
@@ -518,19 +540,19 @@ TurboSimulation <- function(coder,
 #' @export
 TurboOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
   if (simulation) {
-    path <- system.file("rmd", "TurboSimulation.pdf", package = "channelcoding")
+    path <- system.file("pdf", "TurboSimulation.pdf", package = "channelcoding")
   } else {
     if (encode) {
       if (punctured) {
-        path <- system.file("rmd", "TurboEncodePunctured.pdf", package = "channelcoding")
+        path <- system.file("pdf", "TurboEncodePunctured.pdf", package = "channelcoding")
       } else {
-        path <- system.file("rmd", "TurboEncode.pdf", package = "channelcoding")
+        path <- system.file("pdf", "TurboEncode.pdf", package = "channelcoding")
       }
     } else {
       if (punctured) {
-        path <- system.file("rmd", "TurboDecodePunctured.pdf", package = "channelcoding")
+        path <- system.file("pdf", "TurboDecodePunctured.pdf", package = "channelcoding")
       } else {
-        path <- system.file("rmd", "TurboDecode.pdf", package = "channelcoding")
+        path <- system.file("pdf", "TurboDecode.pdf", package = "channelcoding")
       }
     }
   }
