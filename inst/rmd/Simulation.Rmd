@@ -5,7 +5,18 @@ output:
     keep_tex: true
 fontsize: 10pt
 params:
-  dataframe: !r data.frame(db=c(0.5,0.6,0.7), ber=c(0.05,0.03,0.01))
+  turbo: !r TRUE
+  message.length: !r 100
+  iterations.per.db: !r 100
+  min.db: !r 0.1
+  max.db: !r 2.0
+  db.interval: !r 0.1
+  permutation: !r c(1,2,3,4,5,6,7)
+  decode.iterations: !r 10
+  #punctuation: !r NULL
+  punctuation: !r matrix(c(1,0,1,1,1,0), nrow = 3)
+  encoder: !r list(N=2, M=2, generators=c(5,7,3,7), rsc=TRUE, termination=c(0,1,1,0), next.state=matrix(c(0,2,3,1,2,0,1,3), ncol =2), prev.state=matrix(c(0,3,1,2,1,2,0,3,-1,-1,-1,-1), ncol =3), output=matrix(c(0,0,1,1,3,3,2,2), ncol =2))
+  dataframe: !r data.frame(ber=seq(from=0.01, to=0.001, length.out = 11), db=seq(from=0.5, to=2, length.out = 11))
 header-includes:
 - \usepackage{tikz}
 - \usepackage{pgfplots}
@@ -13,20 +24,113 @@ header-includes:
 - \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,positioning,fit,petri,calc}
 ---
 
-## Plot
-
 ```{r, include=FALSE}
-df <- params$dataframe
+binVector <- function(n, min.length) {
 
-db.limits <- c(max(0,min(df$db)-.5), max(df$db)+.5)
-ber.limits <- c(min(df$ber)/10, max(df$ber)*10)
+  result <- integer()
+  i <- 0
+  while (n != 0) {
+    result <- c(n %% 2, result)
+    n = n %/% 2
+    i <- i + 1
+  }
+
+  zeros <- rep(0, times = min.length)
+
+  result <- c(zeros, result)
+
+  return(paste(tail(result,min.length), collapse = ""))
+}
+
+decToBin <- function(x) { if (all(x<2)) x else paste(decToBin(x%/%2), x%%2, sep="") }
+
+octalToDec <- function(x) {
+  res <- numeric()
+  for(j in 1:length(x)) {
+  dec <- 0
+  i <- 0
+    while (x[j] > 0) {
+      dec <- dec + (x[j] %% 10) * (8^i)
+      i <- i + 1
+      x[j] <- x[j] %/% 10
+    }
+  res[j] <- dec
+  }
+
+  return(res)
+}
 ```
 
+```{r, include=FALSE}
+if (params$encoder$rsc == TRUE) {
+  art.coder <- "Rekursiver"
+} else {
+  art.coder <- "Nicht-Rekursiver"
+}
 
-```{r, echo=TRUE}
+if (params$encoder$rsc == FALSE) {
+  generator.matrix <- 
+    paste0(decToBin(octalToDec(params$encoder$generators)), " \\\\ ", collapse = "")
+  generator.print <- paste0("(", paste(params$encoder$generators, collapse=","), 
+                           ")_8 = \\begin{pmatrix}", generator.matrix, "\\end{pmatrix}")
 
-#ggplot2::qplot(x = db, y = ber, data = df, xlim = db.limits, ylim = ber.limits, geom = "smooth")
-ggplot2::qplot(x = db, y = ber, data = df, xlim = db.limits, ylim = ber.limits)+ggplot2::scale_y_log10()
+} else {
+  generator.print <- 
+    paste0("\\left(1,", 
+           paste0("\\frac{", 
+              head(params$encoder$generators, length(params$encoder$generators) - 1), "}{",
+                        tail(params$encoder$generators, 1), "}", collapse = ","), "\\right)")
+}
+
+
+punctuation.print <- if(!is.null(params$punctuation)) paste0(apply(params$punctuation, 1, function(x) {paste0(x, collapse=" & ")}), collapse = " \\\\ ")
+```
+
+## Kodierer Information
+
+- `r art.coder` Kodierer
+- Anzahl von Ausgängen : $$N=`r params$encoder$N`$$
+- Anzahl von Registern : $$M=`r params$encoder$M`$$
+- Generatoren : $$`r generator.print`$$
+`r if(params$turbo) paste0("- Turbo-Dekodierungsiterationen : ", params$decode.iterations)`
+
+## Kodierer Information
+
+```{r, include=FALSE}
+if (is.null(params$punctuation)) {
+  if (params$turbo) {
+    code.rate <- "$$\\frac{1}{3}$$"
+  } else {
+    code.rate <- paste0("$$\\frac{1}{",params$encoder$N,"}$$")
+  }
+} else {
+  factor <- 3
+  if (!params$turbo) {
+    factor <- params$encoder$N
+  }
+  
+  code.rate <- paste0("$$\\frac{",length(params$punctuation),"}{",sum(params$punctuation) * factor,"}$$")
+}
+```
+
+- Kode-Rate : `r code.rate`
+`r if(params$turbo) paste0("- Interleaver : (", paste(params$permutation, collapse = ", "), ")") `
+`r if(!is.null(params$punctuation)) paste0("- Punktierungs-Matrix : $$\\begin{pmatrix} ",punctuation.print," \\end{pmatrix}$$")`
+
+## Simulationsdaten
+
+- Nachrichtenlänge: `r params$message.length`
+- Iterationen pro SNR: `r params$iterations.per.db`
+- SNR Minimum: `r params$min.db`
+- SNR Maximum: `r params$max.db`
+- SNR Intervall: `r params$db.interval`
+
+## Plot
+
+```{r, echo=FALSE}
+
+df <- params$dataframe
+ggplot2::ggplot(df,ggplot2::aes(db))+ggplot2::geom_line(ggplot2::aes(y = ber))+ggplot2::scale_y_log10()
 
 ```
 

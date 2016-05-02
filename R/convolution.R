@@ -160,12 +160,17 @@ GenerateRscEncoder <- function(N, M, generators) {
 #' ConvEncode(c(1,0,0,1,1), coder)
 #' @author Martin Nocker
 #' @export
-ConvEncode <- function(message, conv.encoder, terminate = TRUE, punctuation.matrix = NULL, visualize = FALSE) {
+ConvEncode <- function(message, conv.encoder = NULL, terminate = TRUE, punctuation.matrix = NULL, visualize = FALSE) {
 
   stopifnot(length(message) > 0)
 
   if (any((message != 1)[message != 0])) {
     stop("Nachricht darf nur 0er und 1er enthalten!")
+  }
+
+  if (is.null(conv.encoder)) {
+    warning("Standard-Faltungskodierer wurde verwendet! N=2, M=2, Generatoren: (7,5)")
+    conv.encoder <- GenerateConvEncoder(2,2,c(7,5))
   }
 
   if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != conv.encoder$N) {
@@ -214,9 +219,14 @@ ConvEncode <- function(message, conv.encoder, terminate = TRUE, punctuation.matr
 #' ConvDecode(coded, coder)
 #' @author Martin Nocker
 #' @export
-ConvDecode <- function(code, conv.encoder, terminate = TRUE, punctuation.matrix = NULL, visualize = FALSE) {
+ConvDecode <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.matrix = NULL, visualize = FALSE) {
 
   stopifnot(length(code) > 0)
+
+  if (is.null(conv.encoder)) {
+    warning("Standard-Faltungskodierer wurde verwendet! N=2, M=2, Generatoren: (7,5)")
+    conv.encoder <- GenerateConvEncoder(2,2,c(7,5))
+  }
 
   if(!is.null(punctuation.matrix)) {
     #insert missing bits from punctuation
@@ -283,6 +293,11 @@ ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, punctuation.mat
 
   stopifnot(length(code) > 0)
 
+  if (is.null(conv.encoder)) {
+    warning("Standard-Faltungskodierer wurde verwendet! N=2, M=2, Generatoren: (7,5)")
+    conv.encoder <- GenerateConvEncoder(2,2,c(7,5))
+  }
+
   code.copy <- c(code)
 
   if(!is.null(punctuation.matrix)) {
@@ -325,7 +340,7 @@ ConvDecodeHard <- function(code, conv.encoder, terminate = TRUE, punctuation.mat
 }
 
 #' @export
-ConvolutionSimulation <- function(coder,
+ConvolutionSimulation <- function(coder = NULL,
                                   msg.length = 100,
                                   iterations.per.db = 100,
                                   min.db = 0.1,
@@ -335,6 +350,11 @@ ConvolutionSimulation <- function(coder,
 {
   stopifnot(msg.length > 0, iterations.per.db > 0,
             min.db > 0, max.db > 0, max.db >= min.db, db.interval > 0)
+
+  if (is.null(conv.encoder)) {
+    warning("Standard-Faltungskodierer wurde verwendet! N=2, M=2, Generatoren: (7,5)")
+    coder <- GenerateConvEncoder(2,2,c(7,5))
+  }
 
   v.db <- seq(from = min.db, to = max.db, by = db.interval)
   v.ber <- numeric(0)

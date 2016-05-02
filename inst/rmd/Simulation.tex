@@ -1,17 +1,56 @@
-\begin{frame}[fragile]{Plot}
+\begin{frame}{Kodierer Information}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{#ggplot2::qplot(x = db, y = ber, data = df, xlim = db.limits, ylim = ber.limits, geom = "smooth")}
-\NormalTok{ggplot2::}\KeywordTok{qplot}\NormalTok{(}\DataTypeTok{x =} \NormalTok{db, }\DataTypeTok{y =} \NormalTok{ber, }\DataTypeTok{data =} \NormalTok{df, }\DataTypeTok{xlim =} \NormalTok{db.limits, }\DataTypeTok{ylim =} \NormalTok{ber.limits)+ggplot2::}\KeywordTok{scale_y_log10}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
+\begin{itemize}
+\tightlist
+\item
+  Rekursiver Kodierer
+\item
+  Anzahl von Ausgängen : \[N=2\]
+\item
+  Anzahl von Registern : \[M=2\]
+\item
+  Generatoren : \[\left(1,\frac{5}{7},\frac{7}{7},\frac{3}{7}\right)\]
+\item
+  Turbo-Dekodierungsiterationen : 10
+\end{itemize}
 
-\begin{verbatim}
-## Scale for 'y' is already present. Adding another scale for 'y', which
-## will replace the existing scale.
-\end{verbatim}
+\end{frame}
 
-\includegraphics{Simulation_files/figure-beamer/unnamed-chunk-2-1.pdf}
+\begin{frame}{Kodierer Information}
+
+\begin{itemize}
+\tightlist
+\item
+  Kode-Rate : \[\frac{6}{12}\]
+\item
+  Interleaver : (1, 2, 3, 4, 5, 6, 7)
+\item
+  Punktierungs-Matrix :
+  \[\begin{pmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{pmatrix}\]
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Simulationsdaten}
+
+\begin{itemize}
+\tightlist
+\item
+  Nachrichtenlänge: 100
+\item
+  Iterationen pro SNR: 100
+\item
+  SNR Minimum: 0.1
+\item
+  SNR Maximum: 2
+\item
+  SNR Intervall: 0.1
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Plot}
+
+\includegraphics{Simulation_files/figure-beamer/unnamed-chunk-4-1.pdf}
 
 \end{frame}

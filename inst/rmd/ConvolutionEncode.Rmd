@@ -80,6 +80,7 @@ num.states <- 2^M
 
 matrix.length <- num.states * (length(message) + as.integer(terminate)*M)
 state.color.matrix <- matrix(rep(NA,matrix.length), ncol = num.states)
+arrow.color.matrix <- matrix(rep(NA,matrix.length), ncol = num.states)
 s <- 0
 for (i in 1:(matrix.length/num.states)) {
   state.color.matrix[i,s+1] <- i+1
@@ -88,6 +89,7 @@ for (i in 1:(matrix.length/num.states)) {
   } else {
     bit <- message[i]
   }
+  arrow.color.matrix[i,s+1] <- bit
   s <- next.state[s+1,bit+1]
 }
 
@@ -117,6 +119,13 @@ for (s in 0:(num.states-1)) {
 
 # state diagram connections
 for (s in 0:(num.states-1)) {
+  color.frames.0 <- which(arrow.color.matrix[,s+1] == 0) + 1
+  color.frames.0 <- paste(color.frames.0, collapse = ",")
+  color.frames.0 <- if(color.frames.0 == "") 0 else color.frames.0
+  color.frames.1 <- which(arrow.color.matrix[,s+1] == 1) + 1
+  color.frames.1 <- paste(color.frames.1, collapse = ",")
+  color.frames.1 <- if(color.frames.1 == "") 0 else color.frames.1
+  
   this.state <- paste0("(state",s,")")
   n_next.state.0 <- next.state[s+1,1]
   n_next.state.1 <- next.state[s+1,2]
@@ -163,8 +172,9 @@ for (s in 0:(num.states-1)) {
     if (sin(angle*pi/180) < 0) {
       label.0 <- paste0("node [sloped, below",near.0,"] {",label.value.0,"}")
     }
-
     edge.0 <- paste("\\draw[->]",this.state,"to",loop,label.0,this.state,";")
+    
+    color.edge.0 <- paste("\\draw[->, orange]",this.state,"to",loop,label.0,this.state,";")
   }
   else {
     # 'normal' edge to other node
@@ -174,6 +184,8 @@ for (s in 0:(num.states-1)) {
       bend <- "[bend left=15]"
     }
     edge.0 <- paste("\\draw[->]",this.state,"to",bend,label.0,str_next.state.0,";")
+    
+    color.edge.0 <- paste("\\draw[->, orange]",this.state,"to",bend,label.0,str_next.state.0,";")
   }
 
   if (n_next.state.1 == s) {
@@ -183,8 +195,9 @@ for (s in 0:(num.states-1)) {
     if (sin(angle*pi/180) < 0) {
       label.1 <- paste0("node [sloped, below",near.1,"] {",label.value.1,"}")
     }
-
     edge.1 <- paste("\\draw[->, dashed]",this.state,"to",loop,label.1,this.state,";")
+    
+    color.edge.1 <- paste("\\draw[->, dashed, orange]",this.state,"to",loop,label.1,this.state,";")
   }
   else {
     # 'normal' edge to other node
@@ -194,8 +207,13 @@ for (s in 0:(num.states-1)) {
       bend <- "[bend left=15]"
     }
     edge.1 <- paste("\\draw[->, dashed]",this.state,"to",bend,label.1,str_next.state.1,";")
+    
+    color.edge.1 <- paste("\\draw[->, dashed, orange]",this.state,"to",bend,label.1,str_next.state.1,";")
   }
 
+  edge.0 <- paste0("\\alt<",color.frames.0,"> {",color.edge.0,"}{",edge.0,"};")
+  edge.1 <- paste0("\\alt<",color.frames.1,"> {",color.edge.1,"}{",edge.1,"};")
+  
   tikz.diagram <- paste(tikz.diagram, edge.0, edge.1)
 }
 
