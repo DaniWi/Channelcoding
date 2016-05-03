@@ -16,5 +16,5 @@ RoxygenNote: 5.0.1
 LinkingTo: Rcpp
 Imports:
     ggplot2 (>= 2.1.0),
-    Rcpp (>= 0.12.4),
+    Rcpp (>= 0.11.4),
     rmarkdown (>= 0.9.5)
