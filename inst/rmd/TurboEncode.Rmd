@@ -259,7 +259,7 @@ for (s in 0:(num.states-1)) {
 - Input : `r head(params$orig, node.short)``r dots(params$orig, node.short)`
 
 \begin{center}
-\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\footnotesize]
+\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\footnotesize, align=center]
 
 \tikzstyle{encoderStyle} = [rectangle, draw, minimum height=height("Inp")+4mm]
 \tikzstyle{interleaverStyle} = [encoderStyle]

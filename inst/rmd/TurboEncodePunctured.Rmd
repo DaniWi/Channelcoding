@@ -23,7 +23,7 @@ header-includes:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r}
+```{r functions}
 binVector <- function(n, min.length) {
 
   result <- integer()
@@ -101,7 +101,7 @@ gcd <- function(n, m) {
 }
 ```
 
-```{r, echo=FALSE}
+```{r generatePrintVars, echo=FALSE}
 node.short <- 20
 node.long <- 45
 dots <- function (v, node) if(length(v) > node) ", ..." else ""
@@ -283,7 +283,7 @@ for (s in 0:(num.states-1)) {
 - Input : `r head(params$orig, node.short)``r dots(params$orig, node.short)`
 
 \begin{center}
-\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\footnotesize]
+\begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\footnotesize, align=center]
 
 \tikzstyle{encoderStyle} = [rectangle, draw, minimum height=height("Inp")+4mm]
 \tikzstyle{interleaverStyle} = [encoderStyle]

@@ -195,15 +195,12 @@ TurboDecode <-
            iterations = 1,
            coder.info = NULL,
            parity.index = coder.info$N,
-           punctuation.matrix = NULL) {
+           punctuation.matrix = NULL,
+           visualize = FALSE) {
 
     if (is.null(coder.info)) {
       warning("Standard-Kodierer wurde verwendet!RSC, N=2, M=2, Generatoren: (5,7)")
       coder.info <- GenerateRscEncoder(2,2,c(5,7))
-    }
-    if (is.null(permutation.vector)) {
-      warning("Standard-Permutationsvektor wurde verwendet! (PRIMITIVE)")
-      permutation.vector <- TurboGetPermutation(length(code) / 3  - coder.info$M, coder.info, "PRIMITIVE", list(root=0))
     }
 
     #Checks all parameters
@@ -218,7 +215,7 @@ TurboDecode <-
       stop("Kodierer muss ein systematischer Kodierer sein!
            (Ausgang 1 muss Polynom 2^M besitzen oder ein rekursiver Kodierer sein)")
     }
-    if (any(is.na(match(0:(length(permutation.vector) - 1), permutation.vector)))) {
+    if (!is.null(permutation.vector) && any(is.na(match(0:(length(permutation.vector) - 1), permutation.vector)))) {
       stop("Permutationsvektor hat falsche Einträge!")
     }
     if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != 3) {
@@ -239,6 +236,12 @@ TurboDecode <-
       code.with.punct <- code
     }
 
+    #create the default permutation.vector
+    if (is.null(permutation.vector)) {
+      warning("Standard-Permutationsvektor wurde verwendet! (PRIMITIVE)")
+      permutation.vector <- TurboGetPermutation(length(code.with.punct) / 3  - coder.info$M, coder.info, "PRIMITIVE", list(root=0))
+    }
+
     #Check length of input(with inserted bits) and permutation.vector
     if ((length(code.with.punct) %% 3) != 0) {
       if (!is.null(punctuation.matrix)) {
@@ -257,7 +260,7 @@ TurboDecode <-
     parity.2 <- Deinterleave(code.with.punct, 3)
 
     #decode message (c-function)
-    message.decoded <-
+    decoded <-
       c_turbo_decode(
         code.orig,
         parity.1,
@@ -272,9 +275,59 @@ TurboDecode <-
       )
 
     #delete termination bits from result
-    output.soft <- head(message.decoded$soft.output, code.length - coder.info$M)
-    output.hard <- head(message.decoded$hard.output, code.length - coder.info$M)
-    message.decoded <- list(output.soft = output.soft, output.hard = output.hard)
+    output.soft <- head(decoded$soft.output, code.length - coder.info$M)
+    output.hard <- head(decoded$hard.output, code.length - coder.info$M)
+    message.decoded <- list(output.soft = output.soft, output.hard = output.hard, j = decoded$disp.info)
+
+    if (visualize) {
+      if (!is.null(punctuation.matrix)) {
+        rmarkdown::render(
+          system.file("rmd", "TurboDecodePunctured.Rmd", package = "channelcoding"),
+          output_dir = system.file("pdf", package = "channelcoding"),
+          params = list(
+            code = code,
+            punctured = code.with.punct,
+            orig = code.orig,
+            parity1 = parity.1,
+            parity2 = parity.2,
+            origI = decoded$disp.info$origI,
+            decode1 = decoded$disp.info$decode1,
+            decode1I = decoded$disp.info$decode1I,
+            decode2Back = head(decoded$disp.info$decode2Back, iterations - 1),
+            decode2IBack = head(decoded$disp.info$decode2IBack, iterations - 1),
+            decode2 = tail(decoded$disp.info$decode2Back, 1)[[1]],
+            decode2I = tail(decoded$disp.info$decode2IBack, 1)[[1]],
+            result = message.decoded,
+            iterations = iterations,
+            permutation = permutation.vector,
+            punctuation = punctuation.matrix,
+            encoder = coder.info),
+          encoding = "UTF-8")
+        rstudioapi::viewer(system.file("pdf", "TurboDecodePunctured.pdf", package = "channelcoding"))
+      } else {
+        rmarkdown::render(
+          system.file("rmd", "TurboDecode.Rmd", package = "channelcoding"),
+          output_dir = system.file("pdf", package = "channelcoding"),
+          params = list(
+            code = code,
+            orig = code.orig,
+            parity1 = parity.1,
+            parity2 = parity.2,
+            origI = decoded$disp.info$origI,
+            decode1 = decoded$disp.info$decode1,
+            decode1I = decoded$disp.info$decode1I,
+            decode2Back = head(decoded$disp.info$decode2Back, iterations - 1),
+            decode2IBack = head(decoded$disp.info$decode2IBack, iterations - 1),
+            decode2 = tail(decoded$disp.info$decode2Back, 1)[[1]],
+            decode2I = tail(decoded$disp.info$decode2IBack, 1)[[1]],
+            result = message.decoded,
+            iterations = iterations,
+            permutation = permutation.vector,
+            encoder = coder.info),
+          encoding = "UTF-8")
+        rstudioapi::viewer(system.file("pdf", "TurboDecode.pdf", package = "channelcoding"))
+      }
+    }
 
     return(message.decoded)
   }
