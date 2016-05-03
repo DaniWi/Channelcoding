@@ -1,3 +1,11 @@
+#' get punctuation matrix from vector
+#'
+#' creates a punctuation matrix from the passed punctuation vector and the
+#' passed coder
+#' @param punctuation.vector vector containing the punctuation information which will
+#'     be transformed to a punctuation matrix
+#' @param coder.info channelcoder which is used for the matrix dimensions
+#' @return punctuation matrix suitable for encode and decode
 #' @export
 GetPunctuationMatrix <- function(punctuation.vector, coder.info) {
 

@@ -93,7 +93,7 @@ rsc.flag <- conv.encoder$rsc
 decoded <- params$decoded
 trellis <- params$trellis
 survivor.states <- params$survivor.states
-code <- params$code
+code <- c(params$code)
 
 code.rounded <- round(code, digits = 1)
 code.rounded <- paste0(code.rounded, collapse=",")

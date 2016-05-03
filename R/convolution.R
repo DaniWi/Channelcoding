@@ -7,6 +7,8 @@
 #  - encode
 #  - decode (soft in & out)
 #  - decode (hard decision)
+#  - simulation
+#  - open pdf
 
 #' generate convolutional encoder
 #'

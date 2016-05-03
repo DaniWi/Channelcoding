@@ -13,6 +13,10 @@ ConvDecodeHard(code, conv.encoder = NULL, terminate = TRUE,
 \item{conv.encoder}{convolutional encoder used for encoding [list]}
 
 \item{terminate}{flag if the code was terminated, default: TRUE}
+
+\item{punctuation.matrix}{if not null the code is depunctured prior to the decode algorithm}
+
+\item{visualize}{if TRUE a beamer pdf file is generated showing the decode process}
 }
 \value{
 the hard-decoded message vector

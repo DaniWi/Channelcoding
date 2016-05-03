@@ -81,9 +81,9 @@ octalToDec <- function(x) {
 ```{r, include=FALSE}
 conv.encoder <- params$conv.encoder
 
-message <- params$message
-code <- params$code
-code <- ifelse(code >= 0, 0, 1)
+message <- c(params$message)
+#code <- c(params$code)
+#code <- ifelse(code >= 0, 0, 1)
 
 M <- conv.encoder$M
 N <- conv.encoder$N
@@ -325,7 +325,7 @@ input: (`r message`)
   `r encode.table`
 \end{tabular}
 \end{center}
-\visible<`r length(message)+1`> {output: (`r code`)}
+\visible<`r length(message)+1`> {output: (`r ifelse(params$code >= 0, 0, 1)`)}
 \end{minipage}
 \hfill
 \begin{minipage}{.45\textwidth}

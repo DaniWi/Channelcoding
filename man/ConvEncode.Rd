@@ -13,6 +13,10 @@ ConvEncode(message, conv.encoder = NULL, terminate = TRUE,
 \item{conv.encoder}{convolutional encoder used for encoding [list]}
 
 \item{terminate}{flag if the code should be terminated, default: TRUE}
+
+\item{punctuation.matrix}{if not null the encoded message is punctured with the punctuation matrix}
+
+\item{visualize}{if TRUE a beamer pdf file is generated showing the encode process}
 }
 \value{
 the encoded message
