@@ -92,11 +92,11 @@ NumericVector c_sova
 				Max[0] = metric[t-1][previousState(s,survivorBit[t][s])];
 				Max[1] = metric[t-1][previousState(s,2)];
 
-				//Berechnung von erster Möglichkeit
+				//Berechnung von erster M?glichkeit
 				Max[0] += (1 - 2 * ((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> (N-1)) & 0x01)) * (Lc * x_d[t-1] + La[t-1]);
 				Max[0] += (1 - 2 * ((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> (N-output_index)) & 0x01)) * Lc * p_d[t-1];
 
-				//Berechnung von zweiter Möglichkeit
+				//Berechnung von zweiter M?glichkeit
 				Max[1] += (1 - 2 * ((output(previousState(s,2),survivorBit[t][s]) >> (N-1)) & 0x01)) * (Lc * x_d[t-1] + La[t-1]);
 				Max[1] += (1 - 2 * ((output(previousState(s,2),survivorBit[t][s]) >> (N-output_index)) & 0x01)) * Lc * p_d[t-1];
 
@@ -168,7 +168,7 @@ NumericVector c_sova
 			survivorStates[t] = previousState(survivorStates[t+1], previousMatrixColumn[t+1][survivorStates[t+1]]);
 		}
 
-		#if DEBUG > 0
+		#if DEBUG == 2
 		printf("\n");
 		printf("survivorStates[%d]=%d", t, survivorStates[t]);
 		#endif
@@ -190,7 +190,7 @@ NumericVector c_sova
 		else
 		{
 			// falls Entscheidung getroffen wird muss Spalte wechseln
-			// 2 Fälle:	a) 0 <--> 2
+			// 2 F?lle:	a) 0 <--> 2
 			//			b) 1 <--> 2
 			// ob 0 oder 1 steht im survivorBit
 			int column;
@@ -240,16 +240,10 @@ NumericVector c_sova
 	for(int t = 1; t < msgLen+1; t++)
 	{
 		softOutput[t-1] = delta[t][survivorStates[t]] * (1 - 2 * survivorBit[t][survivorStates[t]]) - La[t-1] - Lc * x_d[t-1];
-
-		#if DEBUG > 0
-		printf("\n");
-		printf("softOutput[%d]%f",t-1,softOutput[t-1]);
-		#endif
-
 	}
 
 	return softOutput;
-} 
+}
 
 // [[Rcpp::export]]
 List c_turbo_decode
@@ -265,19 +259,19 @@ List c_turbo_decode
 	IntegerMatrix output,
 	int output_index
 )
-{	
+{
 	const int msgLen = x_noisy.size();
 
+	List decode1(N_ITERATION);
+	List decode1I(N_ITERATION);
+	List decode2Back(N_ITERATION);
+	List decode2IBack(N_ITERATION);
+	
 	NumericVector x_d_p(msgLen);  //noisy data permutated
 	NumericVector Le1;    //decoder #1 extrinsic likelihood
 	NumericVector Le1_p(msgLen);  //decoder #1 extrinsic likelihood permuted
 	NumericVector Le2;    //decoder #2 extrinsic likelihood
 	NumericVector Le2_ip(msgLen); //decoder #2 extrinsic likelihood inverse permuted
-	
-	List decode1(N_ITERATION);
-	List decode1I(N_ITERATION);
-	List decode2Back(N_ITERATION);
-	List decode2IBack(N_ITERATION);
 
 
     //zero apriori information into very first iteration of BCJR
@@ -287,7 +281,7 @@ List c_turbo_decode
 	}
 
     for(int i = 0; i < N_ITERATION; i++)
-    {
+    {		
 		Le1 = c_sova(x_noisy, parity_noisy1, Le2_ip, 1, N, M, previousState, output, output_index);
 
        //permute decoder#1 likelihoods to match decoder#2 order
@@ -297,9 +291,9 @@ List c_turbo_decode
 			x_d_p[k] = x_noisy[permutation[k]];
 
 			#if DEBUG == 2
-			printf("\n");
-    		printf("%f ",x_d_p[k]=x_d[permutation[k]]);
-    		printf("%f ",p2_d[k]);
+			//printf("\n");
+    		//printf("%f ",x_d_p[k]=x_d[permutation[k]]);
+    		//printf("%f ",p2_d[k]);
     		#endif
     	}
 
@@ -311,20 +305,35 @@ List c_turbo_decode
     		Le2_ip[permutation[k]] = Le2[k];
 		}
 
-    	#if DEBUG == 2
+    	#if DEBUG > 0
+    	printf("\nIteration %d:\n",i+1);
 		for(int k = 0; k < msgLen; k++)
 		{
- 			printf("\ni=%d Le1[%i]=%f\t",i+1, k, Le1[k]);
- 			printf("Le2_ip[%i]=%f\t", k, Le2_ip[k]);
-			printf("L[%i] = %f",k, Lc*x_noisy[k] + Le1[k] + Le2_ip[k]);
+ 			printf("Le1[%i] = %0.2f\t", k, Le1[k]);
+ 			printf("Le1_p[%i] = %0.2f\t",k, Le1_p[k]);
+ 			printf("Le2[%i] = %0.2f\t",k, Le2[k]);
+ 			printf("Le2_ip[%i] = %0.2f\n", k, Le2_ip[k]);
 		}
 		printf("\n");
 		#endif
 		
-		decode1[i] = Le1;
-		decode1I[i] = Le1_p;
-		decode2Back[i] = Le2;
-		decode2IBack[i] = Le2_ip;
+		NumericVector Le1_o(msgLen);
+		NumericVector Le1_p_o(msgLen);
+		NumericVector Le2_o(msgLen);
+		NumericVector Le2_ip_o(msgLen);
+		for(int k = 0; k < msgLen; k++)
+		{
+ 			Le1_o[k] = Le1[k];
+			Le1_p_o[k] = Le1_p[k]; 
+			Le2_o[k] = Le2[k];
+			Le2_ip_o[k] = Le2_ip[k];
+		}
+		
+
+		decode1[i] = Le1_o;
+		decode1I[i] = Le1_p_o;
+		decode2Back[i] = Le2_o;
+		decode2IBack[i] = Le2_ip_o;
 	}
 
 	NumericVector soft_output(msgLen);
@@ -339,24 +348,24 @@ List c_turbo_decode
 
 	#if DEBUG > 0
     //print soft decisions
-    printf("\n");
+    printf("\nSoftDecision\n");
 	for(int k = 0; k < msgLen ; k++)
-		printf("L_h[%i] = %f\n", k, soft_output[k]);
+		printf("L_h[%i] = %0.2f\n", k, soft_output[k]);
 	printf("\n");
 
     //print hard decisions
-	printf("X_h = ");
+	printf("output_hard = ");
     for(int k = 0; k < msgLen; k++)
     	printf("%i", hard_output[k]);
     printf("\n");
     #endif
-    
+
     List infoDisp = List::create(Rcpp::Named("origI") = x_d_p ,
 								 Rcpp::Named("decode1") = decode1,
 								 Rcpp::Named("decode1I") = decode1I,
 								 Rcpp::Named("decode2Back") = decode2Back,
 								 Rcpp::Named("decode2IBack") = decode2IBack);
-								
+
 
     List result = List::create(Rcpp::Named("soft.output") = soft_output,
 							   Rcpp::Named("hard.output") = hard_output,
