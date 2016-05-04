@@ -15,6 +15,8 @@ params:
   decode2IBack: !r list(c(9,0,0,0),c(18,1,1,1))
   decode2: !r c(7,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1)
   decode2I: !r c(19,1,0,0,0,0,1,1,1,1,1,1)
+  tempResultSoft: !r list(c(9,0,0,0),c(18,1,1,1))
+  tempResultHard: !r list(c(9,0,0,0),c(18,1,1,1))
   result: !r list(output.hard=c(16,1,0,0),output.soft=c(16,0,0,1))
   iterations: !r 3
   permutation: !r c(1,2,3,4,5,6,7)
@@ -110,8 +112,9 @@ gcd <- function(n, m) {
 ```
 
 ```{r generatePrintVars, include=FALSE}
-node.short <- 8
-node.long <- 35
+node.short <- 10
+node.long <- 30
+decimal.digits <- 1
 dots <- function (v, node) if(length(v) > node) ", ..." else ""
 
 if (params$encoder$rsc == TRUE) {
@@ -140,45 +143,46 @@ punctuation.print <-
 
 ```{r cutting, include=FALSE}
 #cut off the parameters
-code <- paste0(
-  paste0(head(params$code, node.short), collapse = ","), dots(params$code, node.short))
 punctured <- 
-  paste0(paste0(head(params$punctured, node.short), collapse = ","),
+  paste0(paste0(head(round(params$punctured, decimal.digits), node.short), collapse = ","),
          dots(params$punctured, node.short))
 orig <- paste0(
-  paste0(head(params$orig, node.short), collapse = ","), dots(params$orig, node.short))
+  paste0(head(round(params$orig, decimal.digits), node.short), collapse = ","), dots(params$orig, node.short))
 parity1 <- paste0(
-  paste0(head(params$parity1, node.short), collapse = ","), dots(params$parity1, node.short))
+  paste0(head(round(params$parity1, decimal.digits), node.short), collapse = ","), dots(params$parity1, node.short))
 parity2 <- paste0(
-  paste0(head(params$parity2, node.short), collapse = ","), dots(params$parity2, node.short))
+  paste0(head(round(params$parity2, decimal.digits), node.short), collapse = ","), dots(params$parity2, node.short))
 origI <- paste0(
-  paste0(head(params$origI, node.short), collapse = ","), dots(params$origI, node.short))
+  paste0(head(round(params$origI, decimal.digits), node.short), collapse = ","), dots(params$origI, node.short))
 decode2 <- paste0(
-  paste0(head(params$decode2, node.short), collapse = ","), dots(params$decode2, node.short))
+  paste0(head(round(params$decode2, decimal.digits), node.short), collapse = ","), dots(params$decode2, node.short))
 decode2I <- paste0(
-  paste0(head(params$decode2I, node.short), collapse = ","), dots(params$decode2I, node.short))
-result <- paste0(
-  paste0(head(params$result, node.short), collapse = ","), dots(params$result, node.short))
+  paste0(head(round(params$decode2I, decimal.digits), node.short), collapse = ","), dots(params$decode2I, node.short))
 decode1 <- paste0(
-  lapply(
-    lapply(params$decode1, function(x) {head(x, node.short)}),
+  lapply(lapply(params$decode1, 
+          function(x) {head(round(x, decimal.digits), node.short)}),
     function(x) {paste0(x, collapse = ",")}),
   lapply(params$decode1, function(x) {dots(x, node.short)}))
 decode1I <- paste0(
-  lapply(
-    lapply(params$decode1I, function(x) {head(x, node.short)}),
+  lapply(lapply(params$decode1I,
+          function(x) {head(round(x, decimal.digits), node.short)}),
     function(x) {paste0(x, collapse = ",")}),
   lapply(params$decode1I, function(x) {dots(x, node.short)}))
 decode2Back <- paste0(
-  lapply(
-    lapply(params$decode2Back, function(x) {head(x, node.short)}),
+  lapply(lapply(params$decode2Back, 
+          function(x) {head(round(x, decimal.digits), node.short)}),
     function(x) {paste0(x, collapse = ",")}),
   lapply(params$decode2Back, function(x) {dots(x, node.short)}))
 decode2IBack <- paste0(
-  lapply(
-    lapply(params$decode2IBack, function(x) {head(x, node.short)}),
+  lapply(lapply(params$decode2IBack, 
+          function(x) {head(round(x, decimal.digits), node.short)}),
     function(x) {paste0(x, collapse = ",")}),
   lapply(params$decode2IBack, function(x) {dots(x, node.short)}))
+resultHard <- paste0(
+  lapply(lapply(params$tempResultHard, 
+          function(x) {head(x, node.long)}),
+    function(x) {paste0(x, collapse = ",")}),
+  lapply(params$tempResultHard, function(x) {dots(x, node.long)}))
 ```
 
 ## Kodierer Information
@@ -320,7 +324,7 @@ for (s in 0:(num.states-1)) {
 \end{tikzpicture}
 \end{center}
 
-## Turbo-Kodierer Information
+## Turbo-Dekodierer Information
 
 - Interleaver : (`r head(params$permutation, node.long)``r dots(params$permutation, node.long)`)
 ```{r}
@@ -329,9 +333,9 @@ for (s in 0:(num.states-1)) {
 - Kode-Rate : $$\frac{`r length(params$punctuation) / gcd.value`}{`r sum(params$punctuation) * 3 / gcd.value`}$$
 - Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
 
-## Turbo-Kodierer mit Punktierung
+## Turbo-Dekodierer mit Punktierung
 
-- Input : `r head(params$code, node.long)``r dots(params$code, node.long)`
+- Input : `r head(round(params$code, decimal.digits), node.long)``r dots(params$code, node.long)`
 
 \begin{center}
 \begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0,
@@ -505,8 +509,13 @@ if (params$iterations > 1) {
     ">{\\node [below =4mm of decoder2] {Iteration ", i + 1 ,"};}"
   )
   
+  output <- paste0(
+    "\\visible<", 6 + 4 * (i - 1), "-",  9 + 4 * (i - 1),
+    ">{\\node [below =12mm of background, font=\\small] {Output: ", resultHard[[i]],"};}"
+  )
   
-  tikz.string <- paste0(tikz.string, slide1, slide2, slide3, slide4, counter, collapse = "")
+  
+  tikz.string <- paste0(tikz.string, slide1, slide2, slide3, slide4, counter, output, collapse = "")
 } 
 }
 ```
@@ -517,6 +526,9 @@ if (params$iterations > 1) {
 
 \visible<`r params$iterations * 4 + 2`-`r params$iterations * 4 + 3`>{
   \node [below =4mm of decoder2] {Iteration `r params$iterations`};
+}
+\visible<`r params$iterations * 4 + 2`-`r params$iterations * 4 + 3`>{
+  \node [below =12mm of background, font=\small] {Output: `r resultHard[[params$iterations]]`};
 }
 
 % AfterInterleaver1, 2, AfterDemultiplexer - AfterDecoder2
@@ -546,4 +558,10 @@ if (params$iterations > 1) {
 \end{tikzpicture}
 \end{center}
 
-- Output : `r head(params$result$output.hard, node.short)``r dots(params$result$output.hard, node.short)`
+## Turbo-Dekodierer
+
+- Output mit Terminierung:
+`r resultHard[[params$iterations]]`
+- Output ohne Terminierung:
+`r head(params$result$output.hard, node.long)`
+`r dots(params$result$output.hard, node.long)`
