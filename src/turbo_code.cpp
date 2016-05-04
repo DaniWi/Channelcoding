@@ -4,12 +4,10 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-#define DEBUG 0
+#define DEBUG 3
 //noise standard deviation
-double sigma = 1.0;	//Lc=2/(sigma * sigma)=2
+double sigma = 1.0;	
 double Lc = 2/(sigma * sigma);
-
-
 
 /* c_convolutionDecode
  *
@@ -30,27 +28,26 @@ NumericVector c_sova
 	NumericVector x_d,
 	NumericVector p_d,
 	NumericVector La,
-	int	IsTerminated,
+	int	is_terminated,
 	int N,
 	int M,
-	IntegerMatrix previousState,
+	IntegerMatrix previous_state,
 	IntegerMatrix output,
 	int output_index
 )
 {
-
-	const int msgLen = x_d.size();		// includes termination bits (M termination bits)
+	const int msg_len = x_d.size();		// includes termination bits (M termination bits)
 	const int NUM_STATES = pow(2,M);
 
 	double deltamin;
-	double delta[msgLen+1][NUM_STATES];
-	double metric[msgLen+1][NUM_STATES];
-	int survivorBit[msgLen+1][NUM_STATES];
-	int survivorStates[msgLen+1];
-	int previousMatrixColumn[msgLen+1][NUM_STATES];
-	// NOTE: arrays have dimension msgLen+M+1 because i.e. delta[1][state] is delta from symbol at t=0 to t=1
-	//		 so delta from symbol at t=msgLen+M-1 to t=msgLen+M (+M because of termination) is stored in
-	//		 delta[msgLen+M][state] -> therefore delta[msgLen+M+1][NUM_STATES]
+	double delta[msg_len+1][NUM_STATES];
+	double metric[msg_len+1][NUM_STATES];
+	int survivor_bit[msg_len+1][NUM_STATES];
+	int survivor_states[msg_len+1];
+	int previous_matrix_column[msg_len+1][NUM_STATES];
+	// NOTE: arrays have dimension msg_len+M+1 because i.e. delta[1][state] is delta from symbol at t=0 to t=1
+	//		 so delta from symbol at t=msg_len+M-1 to t=msg_len+M (+M because of termination) is stored in
+	//		 delta[msg_len+M][state] -> therefore delta[msg_len+M+1][NUM_STATES]
 	//		 index 0 is not used!
 
 	// initialization
@@ -59,65 +56,63 @@ NumericVector c_sova
 	{
 		metric[0][i] = -1000;
 	}
-	for (int i = 0; i < msgLen+1; i++)
+	for (int i = 0; i < msg_len+1; i++)
 	{
 		for (int j = 0; j < NUM_STATES; j++)
 		{
-			previousMatrixColumn[i][j] = -1;
+			previous_matrix_column[i][j] = -1;
 		}
 	}
 
-
 	// loop: time t
-	for (int t = 1; t < msgLen+1; t++) {
+	for (int t = 1; t < msg_len+1; t++)
+	{
 		// loop: state s
 		for (int s = 0; s < NUM_STATES; s++)
 		{
 			double Max[2];
 
-			if (previousState(s,0) == -1 || previousState(s,1) == -1)
+			if (previous_state(s, 0) == -1 || previous_state(s, 1) == -1)
 			{
-				// Max[0] erh?lt die Metrik f?r previous State aus Spalte 0 bzw 1
-				// Max[1] erh?lt die Metrik f?r previous State aus Spalte 2
-				if (previousState(s,0) == -1)
+				// Max[0] contains the metrik for previous State from column 0 and 1
+				// Max[1] contains the metrik for previous State from column 2
+				if (previous_state(s, 0) == -1)
 				{
 					// no previous for input bit 0
-					survivorBit[t][s] = 1;
+					survivor_bit[t][s] = 1;
 				}
-				else if (previousState(s,1) == -1)
+				else if (previous_state(s, 1) == -1)
 				{
 					// no previous for input bit 1
-					survivorBit[t][s] = 0;
+					survivor_bit[t][s] = 0;
 				}
-				Max[0] = metric[t-1][previousState(s,survivorBit[t][s])];
-				Max[1] = metric[t-1][previousState(s,2)];
+				Max[0] = metric[t-1][previous_state(s,survivor_bit[t][s])];
+				Max[1] = metric[t-1][previous_state(s,2)];
 
-				//Berechnung von erster M?glichkeit
-				Max[0] += (1 - 2 * ((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> (N-1)) & 0x01)) * (Lc * x_d[t-1] + La[t-1]);
-				Max[0] += (1 - 2 * ((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> (N-output_index)) & 0x01)) * Lc * p_d[t-1];
+				//calculate the first possibility
+				Max[0] += (1 - 2 * ((output(previous_state(s,survivor_bit[t][s]),survivor_bit[t][s]) >> (N-1)) & 0x01)) * (Lc * x_d[t-1] + La[t-1]);
+				Max[0] += (1 - 2 * ((output(previous_state(s,survivor_bit[t][s]),survivor_bit[t][s]) >> (N-output_index)) & 0x01)) * Lc * p_d[t-1];
 
-				//Berechnung von zweiter M?glichkeit
-				Max[1] += (1 - 2 * ((output(previousState(s,2),survivorBit[t][s]) >> (N-1)) & 0x01)) * (Lc * x_d[t-1] + La[t-1]);
-				Max[1] += (1 - 2 * ((output(previousState(s,2),survivorBit[t][s]) >> (N-output_index)) & 0x01)) * Lc * p_d[t-1];
+				//calculate the second possibility
+				Max[1] += (1 - 2 * ((output(previous_state(s,2),survivor_bit[t][s]) >> (N-1)) & 0x01)) * (Lc * x_d[t-1] + La[t-1]);
+				Max[1] += (1 - 2 * ((output(previous_state(s,2),survivor_bit[t][s]) >> (N-output_index)) & 0x01)) * Lc * p_d[t-1];
 
-				previousMatrixColumn[t][s] = (Max[0] > Max[1]) ? survivorBit[t][s] : 2;
+				previous_matrix_column[t][s] = (Max[0] > Max[1]) ? survivor_bit[t][s] : 2;
 			}
 			else
 			{
 				// there are previous states for input bits 0 and 1
-				// Max[0] erh?lt die Metrik f?r previous State mittels previous bit 0
-				// Max[1] erh?lt die Metrik f?r previous State mittels previous bit 1
+				// Max[0] contains the metrik for previous State through previous bit 0
+				// Max[1] contains the metrik for previous State through previous bit 1
 				for (int i = 0; i < 2; i++)
 				{
-					Max[i] = metric[t-1][previousState(s,i)];
+					Max[i] = metric[t-1][previous_state(s,i)];
 
-					Max[i] += (1 - 2 * ((output(previousState(s,i),i) >> (N-1)) & 0x01)) * (Lc * x_d[t-1] + La[t-1]);
-					Max[i] += (1 - 2 * ((output(previousState(s,i),i) >> (N-output_index)) & 0x01)) * Lc * p_d[t-1];
+					Max[i] += (1 - 2 * ((output(previous_state(s,i),i) >> (N-1)) & 0x01)) * (Lc * x_d[t-1] + La[t-1]);
+					Max[i] += (1 - 2 * ((output(previous_state(s,i),i) >> (N-output_index)) & 0x01)) * Lc * p_d[t-1];
 				}
-
-				survivorBit[t][s] = (Max[0] > Max[1]) ? 0 : 1;
+				survivor_bit[t][s] = (Max[0] > Max[1]) ? 0 : 1;
 			}
-
 
 			if (Max[0] > Max[1])
 			{
@@ -130,119 +125,119 @@ NumericVector c_sova
 				delta[t][s] = (Max[1] - Max[0]) / 2;
 			}
 
-			#if DEBUG == 2
-			printf("\n");
-			printf("Metric[%d][%d]=%.2f\t delta[%d][%d]=%f\t M0=%.2f\t M1=%.2f\t survivorBit=%d", t, s, metric[t][s], t, s, delta[t][s], Max[0], Max[1], survivorBit[t][s]);
+			#if DEBUG > 1
+			Rprintf("\n");
+			Rprintf("Metric[%d][%d] = % 3.2f\t delta[%d][%d] = % 3.2f\t M0 = % 3.2f\t M1 = % 3.2f\t survivor_bit = %d", t, s, metric[t][s], t, s, delta[t][s], Max[0], Max[1], survivor_bit[t][s]);
 			#endif
 		}
 	}
 
-	if (IsTerminated > 0)
+	if (is_terminated > 0)
 	{
-		survivorStates[msgLen] = 0;
+		survivor_states[msg_len] = 0;
 	}
 	else
 	{
-		double max_metric = metric[msgLen][0];
-		survivorStates[msgLen] = 0;
+		double max_metric = metric[msg_len][0];
+		survivor_states[msg_len] = 0;
 		for (int s = 1; s < NUM_STATES; s++)
 		{
-			if (max_metric < metric[msgLen][s])
+			if (max_metric < metric[msg_len][s])
 			{
-				max_metric = metric[msgLen][s];
-				survivorStates[msgLen] = s;
+				max_metric = metric[msg_len][s];
+				survivor_states[msg_len] = s;
 			}
 		}
 	}
 
 	// reconstruction of survivor states, from right to left
-	// survivor state at index msgLen is known, start loop at 2nd but last index (= msgLen-1)
-	for (int t = msgLen-1; t >= 0; t--)
+	// survivor state at index msg_len is known, start loop at 2nd but last index (= msg_len-1)
+	for (int t = msg_len-1; t >= 0; t--)
 	{
-		if (previousMatrixColumn[t+1][survivorStates[t+1]] == -1)
+		if (previous_matrix_column[t+1][survivor_states[t+1]] == -1)
 		{
-			survivorStates[t] = previousState(survivorStates[t+1], survivorBit[t+1][survivorStates[t+1]]);
+			survivor_states[t] = previous_state(survivor_states[t+1], survivor_bit[t+1][survivor_states[t+1]]);
 		}
 		else
 		{
-			survivorStates[t] = previousState(survivorStates[t+1], previousMatrixColumn[t+1][survivorStates[t+1]]);
+			survivor_states[t] = previous_state(survivor_states[t+1], previous_matrix_column[t+1][survivor_states[t+1]]);
 		}
 
-		#if DEBUG == 2
-		printf("\n");
-		printf("survivorStates[%d]=%d", t, survivorStates[t]);
+		#if DEBUG > 1
+		Rprintf("\n");
+		Rprintf("survivor_states[%d] = %d", t, survivor_states[t]);
 		#endif
 	}
 
 
 
 	int s;
-	for (int t = M+1; t < msgLen+1; t++)
+	for (int t = M+1; t < msg_len+1; t++)
 	{
-		deltamin = delta[t][survivorStates[t]];
-		// s ... state aus dem man in den survivor state kommen h?tte k?nnen (2. M?glichkeit)
+		deltamin = delta[t][survivor_states[t]];
+		// s ... state which is the second possibility to come to the survivor state
 
-		if (previousMatrixColumn[t][survivorStates[t]] == -1)
+		if (previous_matrix_column[t][survivor_states[t]] == -1)
 		{
-			// wenn keine Entscheidung getroffen wurde muss Bit flippen
-			s = previousState(survivorStates[t], survivorBit[t][survivorStates[t]] * (-1) + 1);
+			// if no decision was made, bit has to flip
+			s = previous_state(survivor_states[t], survivor_bit[t][survivor_states[t]] * (-1) + 1);
 		}
 		else
 		{
-			// falls Entscheidung getroffen wird muss Spalte wechseln
-			// 2 F?lle:	a) 0 <--> 2
+			// if decision was made, change column
+			// 2 cases:	a) 0 <--> 2
 			//			b) 1 <--> 2
-			// ob 0 oder 1 steht im survivorBit
+			// 0 or 1 comes from the survivor bit
 			int column;
-			if (previousMatrixColumn[t][survivorStates[t]] == 2)
+			if (previous_matrix_column[t][survivor_states[t]] == 2)
 			{
-				column = survivorBit[t][survivorStates[t]];
+				column = survivor_bit[t][survivor_states[t]];
 			}
 			else
 			{
 				column = 2;
 			}
-			s = previousState(survivorStates[t], column);
+			s = previous_state(survivor_states[t], column);
 		}
 
 		for (int i = t-1; i > 0; i--)
 		{
-			//sucht das kleinste delta auf dem survivor state
-			if (delta[i][survivorStates[i]] < deltamin)
+			//searches the smallest delta from survivor state
+			if (delta[i][survivor_states[i]] < deltamin)
 			{
-				deltamin = delta[i][survivorStates[i]];
+				deltamin = delta[i][survivor_states[i]];
 			}
-			if (survivorBit[i][survivorStates[i]] != survivorBit[i][s])
+			if (survivor_bit[i][survivor_states[i]] != survivor_bit[i][s])
 			{
-				delta[i][survivorStates[i]] = deltamin;
-				#if DEBUG == 2
-				printf("\n");
-				printf("update\t k=%d\t i=%d\t delta=%f",t,i,delta[i][survivorStates[i]]);
+				delta[i][survivor_states[i]] = deltamin;
+				#if DEBUG == 3
+				Rprintf("\n");
+				Rprintf("update\t t  = %3d\t i = %3d\t delta = %3.2f", t, i, delta[i][survivor_states[i]]);
 				#endif
 			}
 
-			if (previousMatrixColumn[i][s] == -1)
+			if (previous_matrix_column[i][s] == -1)
 			{
-				//wenn keine Entscheidung getroffen wurde muss Bit flippen
-				s = previousState(s, survivorBit[i][s]);
+				//if no decision was made, bit has to flip
+				s = previous_state(s, survivor_bit[i][s]);
 			}
 			else
 			{
-				//falls Entscheidung getroffen wird muss Spalte wechseln
-				s = previousState(s, previousMatrixColumn[i][s]);
+				//if decision was made, switch column
+				s = previous_state(s, previous_matrix_column[i][s]);
 			}
 		}
 
 	}
 
-	NumericVector softOutput(msgLen);
+	NumericVector soft_output(msg_len);
 
-	for(int t = 1; t < msgLen+1; t++)
+	for(int t = 1; t < msg_len+1; t++)
 	{
-		softOutput[t-1] = delta[t][survivorStates[t]] * (1 - 2 * survivorBit[t][survivorStates[t]]) - La[t-1] - Lc * x_d[t-1];
+		soft_output[t-1] = delta[t][survivor_states[t]] * (1 - 2 * survivor_bit[t][survivor_states[t]]) - La[t-1] - Lc * x_d[t-1];
 	}
 
-	return softOutput;
+	return soft_output;
 }
 
 // [[Rcpp::export]]
@@ -255,13 +250,14 @@ List c_turbo_decode
 	int N_ITERATION,
 	int N,
 	int M,
-	IntegerMatrix previousState,
+	IntegerMatrix previous_state,
 	IntegerMatrix output,
 	int output_index
 )
 {
-	const int msgLen = x_noisy.size();
+	const int msg_len = x_noisy.size();
 
+	//lists to save the temporary results during soft decoding
 	List decode1(N_ITERATION);
 	List decode1I(N_ITERATION);
 	List decode2Back(N_ITERATION);
@@ -269,63 +265,60 @@ List c_turbo_decode
 	List tempResultSoft(N_ITERATION);
 	List tempResultHard(N_ITERATION);
 	
-	NumericVector x_d_p(msgLen);  //noisy data permutated
-	NumericVector Le1;    //decoder #1 extrinsic likelihood
-	NumericVector Le1_p(msgLen);  //decoder #1 extrinsic likelihood permuted
-	NumericVector Le2;    //decoder #2 extrinsic likelihood
-	NumericVector Le2_ip(msgLen); //decoder #2 extrinsic likelihood inverse permuted
+	NumericVector x_d_p(msg_len);  	//noisy data permutated
+	NumericVector Le1;    			//decoder #1 extrinsic likelihood
+	NumericVector Le1_p(msg_len);  	//decoder #1 extrinsic likelihood permuted
+	NumericVector Le2;    			//decoder #2 extrinsic likelihood
+	NumericVector Le2_ip(msg_len); 	//decoder #2 extrinsic likelihood inverse permuted
 
 
     //zero apriori information into very first iteration of BCJR
-    for(int k = 0; k < msgLen; k++)
+    for(int k = 0; k < msg_len; k++)
 	{
 		Le2_ip[k] = 0;
 	}
 
     for(int i = 0; i < N_ITERATION; i++)
     {		
-		Le1 = c_sova(x_noisy, parity_noisy1, Le2_ip, 1, N, M, previousState, output, output_index);
+		Le1 = c_sova(x_noisy, parity_noisy1, Le2_ip, 1, N, M, previous_state, output, output_index);
 
        //permute decoder#1 likelihoods to match decoder#2 order
-    	for(int k = 0; k < msgLen; k++)
+    	for(int k = 0; k < msg_len; k++)
     	{
 			Le1_p[k] = Le1[permutation[k]];
 			x_d_p[k] = x_noisy[permutation[k]];
-
-			#if DEBUG == 2
-			//printf("\n");
-    		//printf("%f ",x_d_p[k]=x_d[permutation[k]]);
-    		//printf("%f ",p2_d[k]);
-    		#endif
     	}
 
-		Le2 = c_sova(x_d_p, parity_noisy2, Le1_p, 0, N, M, previousState, output, output_index);
+		Le2 = c_sova(x_d_p, parity_noisy2, Le1_p, 0, N, M, previous_state, output, output_index);
 
         //inverse permute decoder#2 likelihoods to match decoder#1 order
-    	for(int k = 0; k < msgLen; k++)
+    	for(int k = 0; k < msg_len; k++)
 		{
     		Le2_ip[permutation[k]] = Le2[k];
 		}
 
     	#if DEBUG > 0
-    	printf("\nIteration %d:\n",i+1);
-		for(int k = 0; k < msgLen; k++)
+    	Rprintf("\nIteration %d:\n",i+1);
+		for(int k = 0; k < msg_len; k++)
 		{
- 			printf("Le1[%i] = %0.2f\t", k, Le1[k]);
- 			printf("Le1_p[%i] = %0.2f\t",k, Le1_p[k]);
- 			printf("Le2[%i] = %0.2f\t",k, Le2[k]);
- 			printf("Le2_ip[%i] = %0.2f\n", k, Le2_ip[k]);
+ 			Rprintf("Le1[%i] = % 3.2f\t", k, Le1[k]);
+ 			Rprintf("Le1_p[%i] = % 3.2f\t",k, Le1_p[k]);
+ 			Rprintf("Le2[%i] = % 3.2f\t",k, Le2[k]);
+ 			Rprintf("Le2_ip[%i] = % 3.2f\n", k, Le2_ip[k]);
 		}
-		printf("\n");
+		Rprintf("\n");
 		#endif
 		
-		NumericVector Le1_o(msgLen);
-		NumericVector Le1_p_o(msgLen);
-		NumericVector Le2_o(msgLen);
-		NumericVector Le2_ip_o(msgLen);
-		NumericVector soft(msgLen);
-		NumericVector hard(msgLen);
-		for(int k = 0; k < msgLen; k++)
+		//vectors to save in the list
+		NumericVector Le1_o(msg_len);
+		NumericVector Le1_p_o(msg_len);
+		NumericVector Le2_o(msg_len);
+		NumericVector Le2_ip_o(msg_len);
+		NumericVector soft(msg_len);
+		NumericVector hard(msg_len);
+		
+		//copy the vectors
+		for(int k = 0; k < msg_len; k++)
 		{
  			Le1_o[k] = Le1[k];
 			Le1_p_o[k] = Le1_p[k]; 
@@ -335,7 +328,7 @@ List c_turbo_decode
 			hard[k] = (soft[k] >= 0.0) ? 0 : 1;
 		}
 		
-
+		//save the vectors into the list
 		decode1[i] = Le1_o;
 		decode1I[i] = Le1_p_o;
 		decode2Back[i] = Le2_o;
@@ -345,11 +338,11 @@ List c_turbo_decode
 		
 	}
 
-	NumericVector soft_output(msgLen);
-	IntegerVector hard_output(msgLen);
+	NumericVector soft_output(msg_len);
+	IntegerVector hard_output(msg_len);
 
     //calculate overall likelihoods and then slice'em
-    for(int k = 0; k < msgLen; k++)
+    for(int k = 0; k < msg_len; k++)
     {
     	soft_output[k] = Lc * x_noisy[k] + Le1[k] + Le2_ip[k]; 		//soft decision
     	hard_output[k] = (soft_output[k] >= 0.0) ? 0 : 1;         //hard decision
@@ -357,16 +350,16 @@ List c_turbo_decode
 
 	#if DEBUG > 0
     //print soft decisions
-    printf("\nSoftDecision\n");
-	for(int k = 0; k < msgLen ; k++)
-		printf("L_h[%i] = %0.2f\n", k, soft_output[k]);
-	printf("\n");
+    Rprintf("\nSoftDecision\n");
+	for(int k = 0; k < msg_len ; k++)
+		Rprintf("L_h[%i] = % .2f\n", k, soft_output[k]);
+	Rprintf("\n");
 
     //print hard decisions
-	printf("output_hard = ");
-    for(int k = 0; k < msgLen; k++)
-    	printf("%i", hard_output[k]);
-    printf("\n");
+	Rprintf("output_hard = ");
+    for(int k = 0; k < msg_len; k++)
+    	Rprintf("%i", hard_output[k]);
+    Rprintf("\n");
     #endif
 
     List infoDisp = List::create(Rcpp::Named("origI") = x_d_p ,
