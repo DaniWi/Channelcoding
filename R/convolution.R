@@ -192,12 +192,6 @@ ConvEncode <- function(message, conv.encoder = NULL, terminate = TRUE, punctuati
                               conv.encoder$termination,
                               as.integer(terminate))
 
-  if (!is.null(punctuation.matrix)) {
-    punctured.code <- PunctureCode(code, punctuation.matrix)
-
-    code <- list(original=code, punctured=punctured.code)
-  }
-
   if (visualize) {
     if ((length(message) + as.integer(terminate)*conv.encoder$M) > 19) {
       warning("Die Nachricht ist zu lang für eine Visualisierung.")
@@ -217,12 +211,18 @@ ConvEncode <- function(message, conv.encoder = NULL, terminate = TRUE, punctuati
                         encoding = "UTF-8",
                         params = list(conv.encoder = conv.encoder,
                                       message = message,
-                                      code = code$original,
+                                      code = code,
                                       terminate = terminate,
                                       punctuation = punctuation.matrix))
 
       rstudioapi::viewer(system.file("pdf", "ConvolutionEncodePunctured.pdf", package = "channelcoding"))
     }
+  }
+
+  if (!is.null(punctuation.matrix)) {
+    punctured.code <- PunctureCode(code, punctuation.matrix)
+
+    return(list(original=code, punctured=punctured.code))
   }
 
   return(code)
