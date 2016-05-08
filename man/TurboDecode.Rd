@@ -9,16 +9,23 @@ TurboDecode(code, permutation.vector = NULL, iterations = 1,
   punctuation.matrix = NULL, visualize = FALSE)
 }
 \arguments{
-\item{permutation.vector}{permutation.vectorsvektor der mittels \code{\link{TurboGetpermutation.vector}} erzeugt werden sollte}
+\item{permutation.vector}{Permutation vector which will be created with \code{\link{TurboGetPermutation}}.}
 
-\item{coder.info}{Dekodierer}
+\item{iterations}{Amount of decoding iterations.}
 
-\item{parity.index}{Index des zu verwendenten Ausgangs des Kodieres}
+\item{coder.info}{Coder which will be created with \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.}
 
-\item{message}{Nachricht die dekodiert werden sollte}
+\item{parity.index}{Index to decide which exit of the coder will be used for the encoding (>1).
+Default value is always the last exit of the coder.}
+
+\item{punctuation.matrix}{Punctuation matrix to puncture the output, will be created with \code{\link{TurboGetPunctuationMatrix}}.}
+
+\item{visualize}{Flag to decide whether to create a visualization pdf or not.}
+
+\item{message}{Code which will be decoded to the original message.}
 }
 \value{
-Deodierte Nachricht
+Decoded message, will be a list (soft and hard values).
 }
 \description{
 Dekodiert eine Nachricht mittels dem Turbo-Code-Verfahren. Dabei wird die Nachricht in 2 systematische Dekodierer
@@ -31,18 +38,25 @@ vollzogen wird. Das hei?t, dass beim Eingang der tatsächliche Signalpegel berü
 Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit am Ausgang ist
 }
 \examples{
-
-# Ohne Punktierung
 input <- c(1,0,1,1,0)
-coder <- GenerateRsccoder(2,2,c(5,7))
-perm <- TurboGetpermutation.vector(length(input), coder, "RANDOM")
+
+#default coder and permutation vector
+message.encoded <- TurboEncode(input)
+result <- TurboDecode(message.encoded, 5)
+print(result)
+
+#custom coder and permutation vector
+coder <- GenerateRscEncoder(2, 2, c(5, 7))
+perm <- TurboGetpermutation(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
 result <- TurboDecode(message.encoded, perm, 5, coder)
+print(result)
 
-# Mit Punktierung
+#decoding with punctuation matrix
 punct <- TurboGetPunctuationMatrix(c(1,1,0,1,0,1))
 message.encoded.punct <- TurboEncode(input, perm, coder, punctuation.matrix = punct)
-result.punct <- TurboDecode(message.encoded.punct$punctured, perm, 5, coder, punctuation.matrix = punct)
+result <- TurboDecode(message.encoded.punct$punctured, perm, 5, coder, punctuation.matrix = punct)
+print(result)
 
 }
 \author{
