@@ -6,6 +6,8 @@
 #  - TurboDecode
 #  - TurboGetpermutation
 #  - TurboGetPunctuationMatrix
+#  - TurboSimutlation
+#  - TurboOpenPDF
 
 
 #' Kodieren einer Nachricht mittels dem Turbo-Code-Verfahren
@@ -21,25 +23,39 @@
 #'
 #' @author Witsch Daniel
 #'
-#' @param message Nachricht die kodiert werden sollte
-#' @param permutation.vector permutation.vectorsvektor der mittels \code{\link{TurboGetpermutation.vector}} erzeugt werden sollte
-#' @param coder.info Kodierer
-#' @param parity.index Index des zu verwendenten Ausgangs des Kodieres
+#' @param message Message which will be encoded.
+#' @param permutation.vector Permutation vector which will be created with \code{\link{TurboGetPermutation}}.
+#' @param coder.info Coder which will be created with \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.
+#' @param parity.index Index to decide which exit of the coder will be used for the encoding (>1).
+#'        Default value is always the last exit of the coder.
+#' @param punctuation.matrix Punctuation matrix to puncture the output, will be created with \code{\link{TurboGetPunctuationMatrix}}.
+#' @param visualize Flag to decide whether to create a visualization pdf or not.
 #'
-#' @return Kodierte Nachricht, die aus Ausgangsnachricht und den beiden kodierten Nachrichten besteht
+#' @return Encoded message, will be a list if the output was punctured (list with original and punctured).
 #'
 #' @examples
 #' input <- c(1,0,1,1,0)
-#' coder <- GenerateRscEncoder(2,2,c(5,7))
+#'
+#' #default coder and permutation vector
+#' message.encoded <- TurboEncode(input)
+#' print(message.encoded)
+#'
+#' #custom coder and permutation vector
+#' coder <- GenerateRscEncoder(2, 2, c(5, 7))
 #' perm <- TurboGetpermutation(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
+#' print(message.encoded)
 #'
+#' #encoding with punctuation matrix
 #' punct <- TurboGetPunctuationMatrix(c(1,1,0,1,0,1))
 #' message.encoded.punct <- TurboEncode(input, perm, coder, punctuation.matrix = punct)
+#' print(message.encoded.punct$original)
+#' print(message.encoded.punct$punctured)
 #'
 #' @export
 TurboEncode <-
-  function(message, permutation.vector = NULL,
+  function(message,
+           permutation.vector = NULL,
            coder.info = NULL,
            parity.index = coder.info$N,
            punctuation.matrix = NULL,
@@ -167,26 +183,37 @@ TurboEncode <-
 #'
 #' @author Witsch Daniel
 #'
-#' @param message Nachricht die dekodiert werden sollte
-#' @param permutation.vector permutation.vectorsvektor der mittels \code{\link{TurboGetpermutation.vector}} erzeugt werden sollte
-#' @param coder.info Dekodierer
-#' @param parity.index Index des zu verwendenten Ausgangs des Kodieres
+#' @param message Code which will be decoded to the original message.
+#' @param permutation.vector Permutation vector which will be created with \code{\link{TurboGetPermutation}}.
+#' @param iterations Amount of decoding iterations.
+#' @param coder.info Coder which will be created with \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.
+#' @param parity.index Index to decide which exit of the coder will be used for the encoding (>1).
+#'        Default value is always the last exit of the coder.
+#' @param punctuation.matrix Punctuation matrix to puncture the output, will be created with \code{\link{TurboGetPunctuationMatrix}}.
+#' @param visualize Flag to decide whether to create a visualization pdf or not.
 #'
-#' @return Deodierte Nachricht
+#' @return Decoded message, will be a list (soft and hard values).
 #'
 #' @examples
-#'
-#' # Ohne Punktierung
 #' input <- c(1,0,1,1,0)
-#' coder <- GenerateRsccoder(2,2,c(5,7))
-#' perm <- TurboGetpermutation.vector(length(input), coder, "RANDOM")
+#'
+#' #default coder and permutation vector
+#' message.encoded <- TurboEncode(input)
+#' result <- TurboDecode(message.encoded, 5)
+#' print(result)
+#'
+#' #custom coder and permutation vector
+#' coder <- GenerateRscEncoder(2, 2, c(5, 7))
+#' perm <- TurboGetpermutation(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
 #' result <- TurboDecode(message.encoded, perm, 5, coder)
+#' print(result)
 #'
-#' # Mit Punktierung
+#' #decoding with punctuation matrix
 #' punct <- TurboGetPunctuationMatrix(c(1,1,0,1,0,1))
 #' message.encoded.punct <- TurboEncode(input, perm, coder, punctuation.matrix = punct)
-#' result.punct <- TurboDecode(message.encoded.punct$punctured, perm, 5, coder, punctuation.matrix = punct)
+#' result <- TurboDecode(message.encoded.punct$punctured, perm, 5, coder, punctuation.matrix = punct)
+#' print(result)
 #'
 #' @export
 TurboDecode <-
@@ -336,6 +363,44 @@ TurboDecode <-
     return(message.decoded)
   }
 
+#' Function to generate a permutation vector.
+#'
+#' This function is a helper function which helps the user to create different permutation
+#' vectors. With the argument \code{type} the user can choose one of 6 different interleaver types.
+#' Some interleaver need additional informations in the \code{args} argument.
+#'
+#'
+#'
+#'
+#' \itemize{
+#'   \item RANDOM: Creates a random permutation vector. No arguments in \code{args}.
+#'   \item PRIMITIVE: Shift the initial vector (\code{c(1,2,3,...)}) so that the \code{args$root}
+#'                    value is the index of the 1.
+#'   \item CYCLIC: Creates a initial matrix with the arguments \code{args$cols}, \code{args$rows}
+#'                 and shift each row of the matrix by the index of the row multiplied by the \code{args$distance}.
+#'                 The resulting permutation vector is read out from top to bottom from each column of the matrix.
+#'   \item BLOCK: This is a type of interleaver in which the bits are read in from left to right in each row from the matrix
+#'                and read out from top to bottom each column. With the arguments \code{args$cols}, \code{args$rows}
+#'                the user can change the matrix size.
+#'   \item HELICAL: This is a type of interleaver in which the bits are read in from left to right in each row from the matrix
+#'                and read out from left top to bottom right. When the last row of the matrix is arrived
+#'                then the next bit is read out from the first row but from the next column. With the arguments \code{args$cols}, \code{args$rows}
+#'                the user can change the matrix size.
+#'   \item DIAGNOAL: The difference to the HELICAL interleaver is that when the last row is arrived
+#'                   the next bit is in the first row and the first unused column. With the arguments \code{args$cols}, \code{args$rows}
+#'                the user can change the matrix size.
+#' }
+#'
+#'
+#' @param message.length Length of message which will be encoded.
+#' @param coder.info Coder which will be used for encoding and decoding.
+#' @param type Type of the interleaver, possibilities: RANDOM, PRIMITIVE, CYCLIC, BLOCK
+#'             HELICAL, DIAGONAL.
+#' @param args Arguments for some interleaver. (must be a list)
+#' @param visualize Flag to visualize the resulting permutation matrix/vector.
+#'
+#' @return Created permutation vector.
+#'
 #' @export
 TurboGetPermutation <- function(message.length,
                                 coder.info,
@@ -492,6 +557,21 @@ TurboGetPermutation <- function(message.length,
   stop("Type of interleaver (type) was not set correctly!")
 }
 
+#' Create a punctuation matrix from a vector.
+#'
+#' This is a helper function to create a correct punctuation matrix. The punctuation.vector
+#' should only contain 0 and 1 and has to be a length which is a multiple of 3. The resulting
+#' punctuation matrix should not contain a 0 column because this could cause an error during
+#' decoding.
+#'
+#' @param punctuation.vector Vector which will be mapped to the matrix.
+#' @param visualize Flag to visualize the resulting punctuation matrix.
+#'
+#' @return Punctuation matrix for encoder and decoder.
+#'
+#' @examples
+#' TurboGetPunctuationMatrix(c(1, 1, 0, 1, 0, 1), TRUE)
+#'
 #' @export
 TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
   if (any((punctuation.vector != 1)[punctuation.vector != 0])) {
@@ -515,6 +595,37 @@ TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
   return(mat)
 }
 
+#' Function to make a automatic simulation of an coder with different signal/noise ratio.
+#'
+#' This easy functions makes it possible to compare different coders. The function encode
+#' a random message, apply noise to the code and then decode the code. This will be computed
+#' many times and after all iterations the bit error rate will be calculated. This procedure
+#' is applied to different signal/noise ratios. The result will be printed in a graph, when
+#' visualization flag is set to TRUE.
+#'
+#' @param coder Coder which will be created with \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.
+#' @param permutation.type Type of permutation vector.
+#' @param permutation.args Arguments to the \code{\link{TurboGetPermutation}} function.
+#' @param decode.iterations Amount of decoding iterations inside the turbo decoder.
+#' @param msg.length Length of the randomly created message.
+#' @param iterations.per.db Amount of iterations each signal/noise ration step.
+#' @param min.db Start value of the signal/noise ratio.
+#' @param max.db End value of the signal/noise ration.
+#' @param db.interval Interval which will be added to the actual signal/noise ratio after all
+#'                    iterations are applied.
+#' @param punctuation.matrix Punctuation matrix to puncture the output, will be created with \code{\link{TurboGetPunctuationMatrix}}.
+#' @param visualize Flag to decide whether to create a visualization pdf or not.
+#'
+#' @result DataFrame which contains the bit error rate for each signal/noise ratio step.
+#'
+#' @examples
+#' #all default parameters
+#' TurboSimulation()
+#'
+#' #without punctuation
+#' coder <- GenerateRscEncoder(2, 2, c(5, 7))
+#' TurboSimulation(coder, "RANDOM", NULL, 5, 10, 50, 0.01, 1, 0.05, NULL, TRUE)
+#'
 #' @export
 TurboSimulation <- function(coder = NULL,
                             permutation.type = "PRIMITIVE",
@@ -600,6 +711,16 @@ TurboSimulation <- function(coder = NULL,
   return(df)
 }
 
+#' Open the beforehand created visualization PDF files again.
+#'
+#' With this function it is easy to reopen the PDF files which will be created with
+#' \code{\link{TurboEncode}} and \code{\link{TurboDecode}}. The files are stored in the
+#' program files of R. (example path: "C:\Program Files\R\R-3.2.4\library\channelcoding\pdf")
+#'
+#' @param encode flag to open the encode pdfs
+#' @param punctured flag to open the decode pdfs
+#' @param simulation flag to open the simulation pdf
+#'
 #' @export
 TurboOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
   if (simulation) {

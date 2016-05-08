@@ -29,7 +29,7 @@ c_insert_punctuation_bits <- function(punctured_message, punctuation_vector, row
     .Call('channelcoding_c_insert_punctuation_bits', PACKAGE = 'channelcoding', punctured_message, punctuation_vector, rows, cols)
 }
 
-c_turbo_decode <- function(x_noisy, parity_noisy1, parity_noisy2, permutation, N_ITERATION, N, M, previousState, output, output_index) {
-    .Call('channelcoding_c_turbo_decode', PACKAGE = 'channelcoding', x_noisy, parity_noisy1, parity_noisy2, permutation, N_ITERATION, N, M, previousState, output, output_index)
+c_turbo_decode <- function(x_noisy, parity_noisy1, parity_noisy2, permutation, N_ITERATION, N, M, previous_state, output, output_index) {
+    .Call('channelcoding_c_turbo_decode', PACKAGE = 'channelcoding', x_noisy, parity_noisy1, parity_noisy2, permutation, N_ITERATION, N, M, previous_state, output, output_index)
 }
 
