@@ -266,6 +266,8 @@ List c_turbo_decode
 	List decode1I(N_ITERATION);
 	List decode2Back(N_ITERATION);
 	List decode2IBack(N_ITERATION);
+	List tempResultSoft(N_ITERATION);
+	List tempResultHard(N_ITERATION);
 	
 	NumericVector x_d_p(msgLen);  //noisy data permutated
 	NumericVector Le1;    //decoder #1 extrinsic likelihood
@@ -321,12 +323,16 @@ List c_turbo_decode
 		NumericVector Le1_p_o(msgLen);
 		NumericVector Le2_o(msgLen);
 		NumericVector Le2_ip_o(msgLen);
+		NumericVector soft(msgLen);
+		NumericVector hard(msgLen);
 		for(int k = 0; k < msgLen; k++)
 		{
  			Le1_o[k] = Le1[k];
 			Le1_p_o[k] = Le1_p[k]; 
 			Le2_o[k] = Le2[k];
 			Le2_ip_o[k] = Le2_ip[k];
+			soft[k] = Lc * x_noisy[k] + Le1[k] + Le2_ip[k];
+			hard[k] = (soft[k] >= 0.0) ? 0 : 1;
 		}
 		
 
@@ -334,6 +340,9 @@ List c_turbo_decode
 		decode1I[i] = Le1_p_o;
 		decode2Back[i] = Le2_o;
 		decode2IBack[i] = Le2_ip_o;
+		tempResultSoft[i] = soft;
+		tempResultHard[i] = hard;
+		
 	}
 
 	NumericVector soft_output(msgLen);
@@ -364,7 +373,9 @@ List c_turbo_decode
 								 Rcpp::Named("decode1") = decode1,
 								 Rcpp::Named("decode1I") = decode1I,
 								 Rcpp::Named("decode2Back") = decode2Back,
-								 Rcpp::Named("decode2IBack") = decode2IBack);
+								 Rcpp::Named("decode2IBack") = decode2IBack,
+								 Rcpp::Named("tempResultSoft") = tempResultSoft,
+								 Rcpp::Named("tempResultHard") = tempResultHard);
 
 
     List result = List::create(Rcpp::Named("soft.output") = soft_output,

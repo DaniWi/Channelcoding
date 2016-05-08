@@ -1,7 +1,9 @@
 ---
 title: "Convolution Encode"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: beamer_presentation
+output: 
+  beamer_presentation:
+    keep_tex: true
 fontsize: 8pt
 params:
   conv.encoder: !r list(N=2, M=2, generators=c(7,5), rsc=FALSE, termination=logical(0), next.state=matrix(c(0,0,1,1,2,2,3,3), ncol =2), prev.state=matrix(c(0,2,-1,-1,-1,-1,0,2,1,3,1,3), ncol =3), output=matrix(c(0,3,2,1,3,0,1,2), ncol =2))
@@ -301,7 +303,7 @@ next.table <- next.state
 colnames(next.table) <- c("Bit 0", "Bit 1")
 row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(next.table) <- paste("Zustand ", row.counter)
-knitr::kable(next.table, align="c")
+knitr::kable(next.table, format="latex", align="c")
 ```
 
 ## Kodierer Matrix : Ausgangsbits
@@ -311,7 +313,7 @@ output.table <- matrix(decToBin(as.vector(output.table)), ncol = ncol(output.tab
 colnames(output.table) <- c("Bit 0", "Bit 1")
 row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(output.table) <- paste("Zustand ", row.counter)
-knitr::kable(output.table, align="c")
+knitr::kable(output.table, format="latex", align="c")
 ```
 
 ## Convolution Encode

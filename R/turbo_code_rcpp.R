@@ -46,11 +46,11 @@ TurboEncode <-
            visualize = FALSE) {
 
     if (is.null(coder.info)) {
-      warning("Standard-Kodierer wurde verwendet!RSC, N=2, M=2, Generatoren: (5,7)")
+      warning("Standard-Coder was used! RSC, N=2, M=2, Generators: (5,7)")
       coder.info <- GenerateRscEncoder(2,2,c(5,7))
     }
     if (is.null(permutation.vector)) {
-      warning("Standard-Permutationsvektor wurde verwendet! (PRIMITIVE)")
+      warning("Standard-Permutationvector was used! (PRIMITIVE)")
       permutation.vector <- TurboGetPermutation(length(message), coder.info, "PRIMITIVE", list(root=0))
     }
 
@@ -60,24 +60,24 @@ TurboEncode <-
     CheckCoder(coder.info)
 
     if (any((message != 1)[message != 0])) {
-      stop("Nachricht darf nur 0er und 1er enthalten!")
+      stop("Message should only contain 0 and 1!")
     }
     if (coder.info$N < 2) {
-      stop("Kodierer muss mindestens 2 Ausgänge besitzen!")
+      stop("Coder must have minimum 2 exists!")
     }
     if (coder.info$rsc != TRUE && coder.info$generators[1] != (2 ^ coder.info$M)) {
-      stop("Kodierer muss ein systematischer Kodierer sein!
-            (Ausgang 1 muss Polynom 2^M besitzen oder ein rekursiver Kodierer sein)")
+      stop("Coder must be an systematic coder!
+            (exit 1 must have polynom 2^M or it must be a rescursiv coder)")
     }
     if (length(permutation.vector) != (length(message) + coder.info$M)) {
-      stop("Permutationsvektor hat die falsche Länge!")
+      stop("Permutation vector has the wrong length!")
     }
     if (any(is.na(match(0:(length(permutation.vector) - 1), permutation.vector)))) {
-      stop("Permutationsvektor hat falsche Einträge!")
+      stop("Permutation vector has the wrong entries!")
     }
     if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != 3) {
-      stop("Punktierungsmatrix hat die falsche Anzahl an Zeilen,
-            bei Turbo-Codes müssen es 3 sein!")
+      stop("Punctuation matrix has the wrong amount of rows,
+            with turbo codes it has to be 3!")
     }
 
     #when parity.index is too high or to low
@@ -199,7 +199,7 @@ TurboDecode <-
            visualize = FALSE) {
 
     if (is.null(coder.info)) {
-      warning("Standard-Kodierer wurde verwendet!RSC, N=2, M=2, Generatoren: (5,7)")
+      warning("Standard-Coder was used! RSC, N=2, M=2, Generators: (5,7)")
       coder.info <- GenerateRscEncoder(2,2,c(5,7))
     }
 
@@ -209,18 +209,18 @@ TurboDecode <-
     CheckCoder(coder.info)
 
     if (coder.info$N < 2) {
-      stop("Kodierer muss mindestens 2 Ausgänge besitzen!")
+      stop("Coder must have minimum 2 exists!")
     }
     if (coder.info$rsc != TRUE && coder.info$generators[1] != (2 ^ coder.info$M)) {
-      stop("Kodierer muss ein systematischer Kodierer sein!
-           (Ausgang 1 muss Polynom 2^M besitzen oder ein rekursiver Kodierer sein)")
+      stop("Coder must be an systematic coder!
+            (exit 1 must have polynom 2^M or it must be a rescursiv coder)")
     }
     if (!is.null(permutation.vector) && any(is.na(match(0:(length(permutation.vector) - 1), permutation.vector)))) {
-      stop("Permutationsvektor hat falsche Einträge!")
+      stop("Permutation vector has the wrong entries!")
     }
     if (!is.null(punctuation.matrix) && nrow(punctuation.matrix) != 3) {
-      stop("Punktierungsmatrix hat die falsche Anzahl an Zeilen,
-           bei Turbo-Codes müssen es 3 sein!")
+      stop("Punctuation matrix has the wrong amount of rows,
+            with turbo codes it has to be 3!")
     }
 
     #when parity.index is too high or to low
@@ -238,19 +238,19 @@ TurboDecode <-
 
     #create the default permutation.vector
     if (is.null(permutation.vector)) {
-      warning("Standard-Permutationsvektor wurde verwendet! (PRIMITIVE)")
+      warning("Standard-Permutationvector was used! (PRIMITIVE)")
       permutation.vector <- TurboGetPermutation(length(code.with.punct) / 3  - coder.info$M, coder.info, "PRIMITIVE", list(root=0))
     }
 
     #Check length of input(with inserted bits) and permutation.vector
     if ((length(code.with.punct) %% 3) != 0) {
       if (!is.null(punctuation.matrix)) {
-        stop("Fehler während der Punktierung!")
+        stop("Mistake during depunctation!")
       }
-      stop("Code hat die falsche Länge! (Code wurde eventuell punktiert)")
+      stop("Code has the wrong length! (Code is maybe punctuated)")
     }
     if (length(permutation.vector) != (length(code.with.punct) / 3)) {
-      stop("Permutationsvektor hat die falsche Länge!")
+      stop("Permutation vector has the wrong length!")
     }
 
     #parse original parts of the code from input code
@@ -277,7 +277,7 @@ TurboDecode <-
     #delete termination bits from result
     output.soft <- head(decoded$soft.output, code.length - coder.info$M)
     output.hard <- head(decoded$hard.output, code.length - coder.info$M)
-    message.decoded <- list(output.soft = output.soft, output.hard = output.hard, j = decoded$disp.info)
+    message.decoded <- list(output.soft = output.soft, output.hard = output.hard)
 
     if (visualize) {
       if (!is.null(punctuation.matrix)) {
@@ -297,6 +297,8 @@ TurboDecode <-
             decode2IBack = head(decoded$disp.info$decode2IBack, iterations - 1),
             decode2 = tail(decoded$disp.info$decode2Back, 1)[[1]],
             decode2I = tail(decoded$disp.info$decode2IBack, 1)[[1]],
+            tempResultSoft = decoded$disp.info$tempResultSoft,
+            tempResultHard = decoded$disp.info$tempResultHard,
             result = message.decoded,
             iterations = iterations,
             permutation = permutation.vector,
@@ -320,6 +322,8 @@ TurboDecode <-
             decode2IBack = head(decoded$disp.info$decode2IBack, iterations - 1),
             decode2 = tail(decoded$disp.info$decode2Back, 1)[[1]],
             decode2I = tail(decoded$disp.info$decode2IBack, 1)[[1]],
+            tempResultSoft = decoded$disp.info$tempResultSoft,
+            tempResultHard = decoded$disp.info$tempResultHard,
             result = message.decoded,
             iterations = iterations,
             permutation = permutation.vector,
@@ -344,7 +348,7 @@ TurboGetPermutation <- function(message.length,
   CheckCoder(coder.info)
 
   if (!is.character(type)) {
-    stop("Type muss ein String sein!")
+    stop("Type must be an string!")
   }
 
   switch(type,
@@ -352,7 +356,7 @@ TurboGetPermutation <- function(message.length,
       interleaver <- sample(c(0:(message.length + coder.info$M - 1)))
 
       if (visualize) {
-        print(paste("Interleaver-Vektor: ", type))
+        print(paste("Interleaver-Vector: ", type))
         print(interleaver)
       }
 
@@ -360,14 +364,14 @@ TurboGetPermutation <- function(message.length,
     },
     PRIMITIVE = {
       if (is.null(args$root)) {
-        stop("Argument args$root wurde nicht gesetzt!")
+        stop("Argument args$root was not set!")
       }
       N <- message.length + coder.info$M - 1
       init <- c(0:N)
       interleaver <- (init - args$root) %% (N + 1)
 
       if (visualize) {
-        print(paste("Interleaver-Vektor: ", type))
+        print(paste("Interleaver-Vector: ", type))
         print(interleaver)
       }
 
@@ -376,12 +380,12 @@ TurboGetPermutation <- function(message.length,
     CYCLIC = {
       if (is.null(args$rows) |
           is.null(args$cols) | is.null(args$distance)) {
-        stop("Argumente (args) wurden nicht richtig gesetzt")
+        stop("Argumente (args) was not set correctly!")
       }
       rows <- args$rows
       cols <- args$cols
       if (rows * cols != (message.length + coder.info$M)) {
-        stop("Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+        stop("Length of input does not match the amount of rows and columns!")
       }
       N <- rows * cols
       init <- matrix(c(0:(N - 1)), nrow = rows, byrow = FALSE)
@@ -407,12 +411,12 @@ TurboGetPermutation <- function(message.length,
     },
     BLOCK = {
       if (is.null(args$rows) | is.null(args$cols)) {
-        stop("Argumente (args) wurden nicht richtig gesetzt!")
+        stop("Argumente (args) was not set correctly!")
       }
       rows <- args$rows
       cols <- args$cols
       if (rows * cols != (message.length + coder.info$M)) {
-        stop("Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+        stop("Length of input does not match the amount of rows and columns!")
       }
       N <- rows * cols
       init <- matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE)
@@ -420,7 +424,7 @@ TurboGetPermutation <- function(message.length,
       if (visualize) {
         print("Initial-Matrix")
         print(init)
-        print(paste("Interleaver-Vektor: ", type))
+        print(paste("Interleaver-Vector: ", type))
         print(as.vector((init)))
       }
 
@@ -428,12 +432,12 @@ TurboGetPermutation <- function(message.length,
     },
     HELICAL = {
       if (is.null(args$rows) | is.null(args$cols)) {
-        stop("Argumente (args) wurden nicht richtig gesetzt!")
+        stop("Argumente (args) was not set correctly!")
       }
       rows <- args$rows
       cols <- args$cols
       if (rows * cols != (message.length + coder.info$M)) {
-        stop("Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+        stop("Length of input does not match the amount of rows and columns!")
       }
       N <- rows * cols
       init <- vector(mode = "numeric", length = N)
@@ -449,7 +453,7 @@ TurboGetPermutation <- function(message.length,
       if (visualize) {
         print("Initial-Matrix")
         print(matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE))
-        print(paste("Interleaver-Vektor: ", type))
+        print(paste("Interleaver-Vector: ", type))
         print(interleaver)
       }
 
@@ -457,12 +461,12 @@ TurboGetPermutation <- function(message.length,
     },
     DIAGONAL = {
       if (is.null(args$rows) | is.null(args$cols)) {
-        stop("Argumente (args) wurden nicht richtig gesetzt!")
+        stop("Argumente (args) was not set correctly!")
       }
       rows <- args$rows
       cols <- args$cols
       if (rows * cols != (message.length + coder.info$M)) {
-        stop("Länge von Input stimmt nicht mit Reihen- und Spaltenanzahl zusammen!")
+        stop("Length of input does not match the amount of rows and columns!")
       }
       N <- rows * cols
       init <- vector(mode = "numeric", length = N)
@@ -478,35 +482,34 @@ TurboGetPermutation <- function(message.length,
       if (visualize) {
         print("Initial-Matrix")
         print(matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE))
-        print(paste("Interleaver-Vektor: ", type))
+        print(paste("Interleaver-Vector: ", type))
         print(interleaver)
       }
 
       return(interleaver)
     }
   )
-  stop("Type von Interleaver (type) wurde nicht richtig gewählt!")
+  stop("Type of interleaver (type) was not set correctly!")
 }
 
 #' @export
 TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
   if (any((punctuation.vector != 1)[punctuation.vector != 0])) {
-    # punctuation.vector has elements with value different from 0 or 1 which is not allowed
-    stop("Ungültiger Punktierungsvektor, darf nur 0er und 1er enthalten!")
+    stop("Invalid punctuation vector! Only values 0/1 are allowed!")
   }
   if (length(punctuation.vector) %% 3 != 0) {
-    stop("Falsche Länge des Punktierungsvektors! Muss ein Vielfaches von 3 sein!")
+    stop("Wrong length of punctuation vector! Must be a multiple of 3!")
   }
 
   mat <- matrix(punctuation.vector, nrow = 3)
 
   if (visualize) {
-    print("Punktierungs-Matrix:")
+    print("Punctuation-Matrix:")
     print(mat)
   }
 
   if (any(colSums(mat) == 0)) {
-    stop("Punktierungsmatrix hat eine 0-Spalte, ist verboten!")
+    stop("Punctuation matrix should not have a 0 column!")
   }
 
   return(mat)
@@ -529,7 +532,7 @@ TurboSimulation <- function(coder = NULL,
             min.db > 0, max.db > 0, max.db >= min.db, db.interval > 0)
 
   if (is.null(coder)) {
-    warning("Standard-Kodierer wurde verwendet!RSC, N=2, M=2, Generatoren: (5,7)")
+    warning("Standard-Coder was used! RSC, N=2, M=2, Generators: (5,7)")
     coder <- GenerateRscEncoder(2,2,c(5,7))
   }
 
@@ -619,6 +622,6 @@ TurboOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
   if (path != "") {
     rstudioapi::viewer(path)
   } else {
-    stop("Datei wurde noch nicht erzeugt!")
+    stop("File does not exists!")
   }
 }

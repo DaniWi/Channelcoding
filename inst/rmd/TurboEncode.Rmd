@@ -123,7 +123,7 @@ next.table <- params$encoder$next.state
 colnames(next.table) <- c("Bit 0", "Bit 1")
 row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(next.table) <- paste("Zustand ", row.counter)
-knitr::kable(next.table, align="c")
+knitr::kable(next.table, format="latex", align="c")
 ```
 
 ## Kodierer Matrix : Ausgangsbits
@@ -133,7 +133,7 @@ output.table <- matrix(decToBin(as.vector(output.table)), ncol = ncol(output.tab
 colnames(output.table) <- c("Bit 0", "Bit 1")
 row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(output.table) <- paste("Zustand ", row.counter)
-knitr::kable(output.table, align="c")
+knitr::kable(output.table, format="latex", align="c")
 ```
 
 ## Kodierer Matrix : Zustandsdiagramm
@@ -261,7 +261,7 @@ for (s in 0:(num.states-1)) {
 \begin{center}
 \begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\footnotesize, align=center]
 
-\tikzstyle{encoderStyle} = [rectangle, draw, minimum height=height("Inp")+4mm]
+\tikzstyle{encoderStyle} = [rectangle, draw, minimum height=height("Inp")+4.5mm]
 \tikzstyle{interleaverStyle} = [encoderStyle]
 \tikzstyle{startEndStyle} = [encoderStyle]
 \tikzstyle{multiplexerStyle} = [encoderStyle]
