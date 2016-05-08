@@ -1,5 +1,5 @@
 ---
-title: "Convolution Decode Punktiert"
+title: "Faltungskode Dekodierung mit Punktierung"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: beamer_presentation
 fontsize: 8pt
@@ -11,6 +11,7 @@ params:
   survivor.states: !r matrix(c(0,0,0,0,0,3,0,3,0,2,0,2,1,3,1,3,0,2,0,2,1,3,1,3), nrow = 4)
   punctuation: !r matrix(c(1,1,0,1,1,0), nrow = 2)
   punctured.code: !r 0
+  soft.flag: !r TRUE
 header-includes:
 - \usepackage{tikz}
 - \usepackage{pgfplots}
@@ -110,21 +111,7 @@ rsc.flag <- conv.encoder$rsc
 decoded <- params$decoded
 trellis <- params$trellis
 survivor.states <- params$survivor.states
-code <- params$code
-
-code.rounded <- round(code, digits = 1)
-code.rounded <- paste0(code.rounded, collapse=",")
-code.hard <- ifelse(code >= 0, 0, 1)
-code.hard2 <- paste0(code.hard, collapse = ", ")
-code.hard <- paste0(code.hard, collapse=",")
-punctured.code.hard <- ifelse(params$punctured.code >= 0, 0, 1)
-
-table.def <- "\\begin{tabular}{r l}"
-row1 <- paste0("input: & (",code.rounded,")\\\\")
-row2 <- paste0("hard input: & (",code.hard,")\\\\")
-table.end <- "\\end{tabular}"
-
-decode.input <- paste0(table.def, row1, row2, table.end)
+code <- c(params$code)
 
 num.states <- 2^M
 
@@ -135,7 +122,7 @@ if (num.states > 4) {
 }
 
 if (ncol(trellis) > 10) {
-  xfactor = max(0.75, exp((10-ncol(trellis))/15))
+  xfactor = max(0.73, exp((10-ncol(trellis))/13))
 } else {
   xfactor = 1
 }
@@ -166,6 +153,14 @@ for (t in 1:ncol(trellis)) {
   }
 }
 
+# state labels
+for (s in 0:(num.states-1)) {
+  value <- paste(binVector(s,M),collapse = "")
+  label <- paste0("\\node (statelabel",s,") [left of=node",s,"0, xshift=4mm] {",value,"};")
+
+  tikz.trellis <- paste(tikz.trellis, label)
+}
+
 # decoded message under trellis diagram
 for (t in 0:(length(decoded)-1)) {
   max.state <- num.states - 1
@@ -176,13 +171,16 @@ for (t in 0:(length(decoded)-1)) {
   tikz.trellis <- paste(tikz.trellis, decoded.bit)
 }
 
-# state labels
-for (s in 0:(num.states-1)) {
-  value <- paste(binVector(s,M),collapse = "")
-  label <- paste0("\\node (statelabel",s,") [left of=node",s,"0] {",value,"};")
+# output label
+visibility <- paste0("\\visible<",ncol(trellis)+1,">")
+position <- paste0("below=.54 of statelabel",num.states - 1,".west, anchor=west")
+output.label <- paste0(visibility,"{\\node [orange, font=\\small,",position,"] (outlabel) {output:};}")
+tikz.trellis <- paste(tikz.trellis, output.label)
 
-  tikz.trellis <- paste(tikz.trellis, label)
-}
+# bit legend
+legend.bit.0 <- "\\draw [->] ($(outlabel.west)+(0,-1)$) -- ++(1,0) node (bit0) [right] {Bit 0};"
+legend.bit.1 <- "\\draw [->, dashed] ($(bit0.east)+(.5,0)$) -- ++(1,0) node (bit1) [right] {Bit 1};"
+tikz.trellis <- paste(tikz.trellis, legend.bit.0, legend.bit.1)
 
 # time labels
 for (t in 0:(ncol(trellis)-1)) {
@@ -191,7 +189,7 @@ for (t in 0:(ncol(trellis)-1)) {
   tikz.trellis <- paste(tikz.trellis, label)
 }
 
-# tikz.trellis
+# node connections
 x <- 0
 for (t in 1:(ncol(trellis)-1)) {
   x.next <- next.state[x+1,decoded[t]+1]
@@ -243,17 +241,6 @@ for (t in 1:(ncol(trellis)-1)) {
   }
   x <- x.next
 }
-
-# add an "no action" overlay to display the disappearing of the non-survivor paths
-# additional.slide <- paste0("\\visible<",ncol(trellis)+1,">{};")
-# tikz.trellis <- paste(tikz.trellis, additional.slide)
-
-str.decoded <- paste0(decoded, collapse = "")
-trellis.decoded <- paste0("\\visible<",ncol(trellis)+1,">{output: (",str.decoded,")};")
-
-# t-axis
-# taxis <- paste0("\\draw[->,thick] ($(timelabel0.north)+(0,.5)$) -- ($(timelabel",(ncol(trellis)-1),".north)+(0,.5)$) node [below right] {$t$};")
-# tikz.trellis <- paste(tikz.trellis, taxis)
 ```
 
 ```{r, include=FALSE}
@@ -310,13 +297,32 @@ rownames(output.table) <- paste("Zustand ", row.counter)
 
 ## Depunktierung
 
-- Punktierter Code: (`r punctured.code.hard`)
-- Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
-- Depunktierter Code: (`r code.hard`)
+- Punktiertes Signal: (`r round(params$punctured.code, digits = 1)`)
+\vspace*{10mm}
+- Punktierungs-Matrix:
+\begin{equation*}
+  \begin{pmatrix}  `r punctuation.print`  \end{pmatrix}
+\end{equation*}
+\vspace*{10mm}
+- Depunktiertes Signal: (`r round(params$code, digits = 1)`)
 
-## Trellis Diagram
+## Input: Signal zu Kode
 
-input: (`r code.rounded`) = (`r code.hard`)
+Signal: (`r round(params$code, digits = 1)`)
+\vspace*{10mm}
+\begin{equation*}
+  \text{Kode(signal)} =
+  \begin{cases}
+    0  & \quad \text{wenn signal } \geq 0\\
+    1  & \quad \text{sonst}\\
+  \end{cases}
+\end{equation*}
+\vspace*{10mm}
+Kode: (`r ifelse(params$code >= 0, 0, 1)`)
+
+## Trellis Diagram `r if(params$soft.flag) "(soft decision)" else "(hard decision)"`
+
+input: (`r ifelse(params$code >= 0, 0, 1)`)
 \vfill
 \begin{tikzpicture}[>=stealth, font=\tiny]
 \tikzstyle{state} = [draw, circle, teal, thick, text=black, minimum size=3.5mm, inner sep=0mm]

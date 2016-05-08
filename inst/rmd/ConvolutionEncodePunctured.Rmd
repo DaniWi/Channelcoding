@@ -1,5 +1,5 @@
 ---
-title: "Convolution Encode Punktiert"
+title: "Faltungskode Kodierung mit Punktierung"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: beamer_presentation
 fontsize: 8pt
@@ -98,9 +98,6 @@ gcd <- function(n, m) {
 conv.encoder <- params$conv.encoder
 
 message <- params$message
-
-code <- params$code
-code <- ifelse(code >= 0, 0, 1)
 
 M <- conv.encoder$M
 N <- conv.encoder$N
@@ -264,6 +261,13 @@ for (s in 0:(num.states-1)) {
   tikz.diagram <- paste(tikz.diagram, edge.0, edge.1)
 }
 
+# Legend of bit transitions (--- Bit 0, - - - Bit 1)
+mid.state.num <- state.order[num.states / 2 + 1]
+
+legend.bit.0 <- paste0("\\draw [->] ($(state",mid.state.num,")+(-.5,-2)$) node (bit0) {} -- ++(1,0) node [right] {Bit 0};")
+legend.bit.1 <- paste0("\\draw [->, dashed] ($(bit0)+(0,-.5)$) -- ++(1,0) node [right] {Bit 1};")
+tikz.diagram <- paste(tikz.diagram, legend.bit.0, legend.bit.1)
+
 ## ENCODE TABLE
 encode.table <- ""
 index <- 2
@@ -340,18 +344,18 @@ rownames(output.table) <- paste("Zustand ", row.counter)
 knitr::kable(output.table, format="latex", align="c")
 ```
 
-## Convolution Encode
+## Faltungskodierung
 
 input: (`r message`)
 \begin{center}
 \begin{minipage}{.45\textwidth}
 \begin{center}
 \begin{tabular}{c c c c}
-  \visible<1-> {state&input&output&next state\\ \hline}
+  \visible<1-> {Zustand & input & output & Folgezustand\\ \hline}
   `r encode.table`
 \end{tabular}
 \end{center}
-\visible<`r length(message)+1`> {output: (`r code`)}
+\visible<`r length(message)+1`> {output: (`r ifelse(params$code >= 0, 0, 1)`)}
 \end{minipage}
 \hfill
 \begin{minipage}{.45\textwidth}
@@ -364,14 +368,31 @@ input: (`r message`)
 \end{minipage}
 \end{center}
 
+## Output: Kode zu Signal
+
+Kode: (`r ifelse(params$code >= 0, 0, 1)`)
+\vspace*{10mm}
+\begin{equation*}
+  \text{Signal(bit)} =
+  \begin{cases}
+    -1  & \quad \text{wenn bit} = 0\\
+    +1  & \quad \text{wenn bit} = 1\\
+  \end{cases}
+\end{equation*}
+\vspace*{10mm}
+Signal: (`r params$code`)
+
 ## Punktierung
 ```{r, include=FALSE}
-punctured.code <- code
+punctured.code <- params$code
 punctured.code[punctuation == 0] <- "*"
 punctured.code <- paste(punctured.code, collapse = " , ")
 ```
-- Code: (`r code`)
-
-- Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
-
-- Punktierter Code: (`r punctured.code`)
+- Signal: (`r code`)
+\vspace*{10mm}
+- Punktierungs-Matrix:
+\begin{equation*}
+  \begin{pmatrix}  `r punctuation.print`  \end{pmatrix}
+\end{equation*}
+\vspace*{10mm}
+- Punktiertes Signal: (`r punctured.code`)
