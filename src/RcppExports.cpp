@@ -107,8 +107,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_turbo_decode
-List c_turbo_decode(NumericVector x_noisy, NumericVector parity_noisy1, NumericVector parity_noisy2, IntegerVector permutation, int N_ITERATION, int N, int M, IntegerMatrix previousState, IntegerMatrix output, int output_index);
-RcppExport SEXP channelcoding_c_turbo_decode(SEXP x_noisySEXP, SEXP parity_noisy1SEXP, SEXP parity_noisy2SEXP, SEXP permutationSEXP, SEXP N_ITERATIONSEXP, SEXP NSEXP, SEXP MSEXP, SEXP previousStateSEXP, SEXP outputSEXP, SEXP output_indexSEXP) {
+List c_turbo_decode(NumericVector x_noisy, NumericVector parity_noisy1, NumericVector parity_noisy2, IntegerVector permutation, int N_ITERATION, int N, int M, IntegerMatrix previous_state, IntegerMatrix output, int output_index);
+RcppExport SEXP channelcoding_c_turbo_decode(SEXP x_noisySEXP, SEXP parity_noisy1SEXP, SEXP parity_noisy2SEXP, SEXP permutationSEXP, SEXP N_ITERATIONSEXP, SEXP NSEXP, SEXP MSEXP, SEXP previous_stateSEXP, SEXP outputSEXP, SEXP output_indexSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -119,10 +119,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type N_ITERATION(N_ITERATIONSEXP);
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type M(MSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix >::type previousState(previousStateSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type previous_state(previous_stateSEXP);
     Rcpp::traits::input_parameter< IntegerMatrix >::type output(outputSEXP);
     Rcpp::traits::input_parameter< int >::type output_index(output_indexSEXP);
-    __result = Rcpp::wrap(c_turbo_decode(x_noisy, parity_noisy1, parity_noisy2, permutation, N_ITERATION, N, M, previousState, output, output_index));
+    __result = Rcpp::wrap(c_turbo_decode(x_noisy, parity_noisy1, parity_noisy2, permutation, N_ITERATION, N, M, previous_state, output, output_index));
     return __result;
 END_RCPP
 }

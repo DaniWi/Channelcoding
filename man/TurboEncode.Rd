@@ -4,21 +4,26 @@
 \alias{TurboEncode}
 \title{Kodieren einer Nachricht mittels dem Turbo-Code-Verfahren}
 \usage{
-TurboEncode(message, permutation.vector, coder.info,
+TurboEncode(message, permutation.vector = NULL, coder.info = NULL,
   parity.index = coder.info$N, punctuation.matrix = NULL,
   visualize = FALSE)
 }
 \arguments{
-\item{message}{Nachricht die kodiert werden sollte}
+\item{message}{Message which will be encoded.}
 
-\item{permutation.vector}{permutation.vectorsvektor der mittels \code{\link{TurboGetpermutation.vector}} erzeugt werden sollte}
+\item{permutation.vector}{Permutation vector which will be created with \code{\link{TurboGetPermutation}}.}
 
-\item{coder.info}{Kodierer}
+\item{coder.info}{Coder which will be created with \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.}
 
-\item{parity.index}{Index des zu verwendenten Ausgangs des Kodieres}
+\item{parity.index}{Index to decide which exit of the coder will be used for the encoding (>1).
+Default value is always the last exit of the coder.}
+
+\item{punctuation.matrix}{Punctuation matrix to puncture the output, will be created with \code{\link{TurboGetPunctuationMatrix}}.}
+
+\item{visualize}{Flag to decide whether to create a visualization pdf or not.}
 }
 \value{
-Kodierte Nachricht, die aus Ausgangsnachricht und den beiden kodierten Nachrichten besteht
+Encoded message, will be a list if the output was punctured (list with original and punctured).
 }
 \description{
 Kodiert eine Nachricht mittels dem Turbo-Code-Verfahren. Dabei wird die Nachricht in 2 systematische Kodierer
@@ -32,12 +37,22 @@ des Ausgangs angegeben werden.
 }
 \examples{
 input <- c(1,0,1,1,0)
-coder <- GenerateRscEncoder(2,2,c(5,7))
+
+#default coder and permutation vector
+message.encoded <- TurboEncode(input)
+print(message.encoded)
+
+#custom coder and permutation vector
+coder <- GenerateRscEncoder(2, 2, c(5, 7))
 perm <- TurboGetpermutation(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
+print(message.encoded)
 
+#encoding with punctuation matrix
 punct <- TurboGetPunctuationMatrix(c(1,1,0,1,0,1))
 message.encoded.punct <- TurboEncode(input, perm, coder, punctuation.matrix = punct)
+print(message.encoded.punct$original)
+print(message.encoded.punct$punctured)
 
 }
 \author{

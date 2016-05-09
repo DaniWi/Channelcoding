@@ -1,15 +1,14 @@
 ---
-title: "Faltungskode Kodierung"
+title: "Faltungskode Kodierung mit Punktierung"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: 
-  beamer_presentation:
-    keep_tex: true
+output: beamer_presentation
 fontsize: 8pt
 params:
   conv.encoder: !r list(N=2, M=2, generators=c(7,5), rsc=FALSE, termination=logical(0), next.state=matrix(c(0,0,1,1,2,2,3,3), ncol =2), prev.state=matrix(c(0,2,-1,-1,-1,-1,0,2,1,3,1,3), ncol =3), output=matrix(c(0,3,2,1,3,0,1,2), ncol =2))
   message: !r c(1,0,1)
-  code: !r c(-1,-1,-1,1,1,1,-1,1,-1,-1)
+  code: !r c(1,1,1,0,0,0,1,0,1,1)
   terminate: !r TRUE
+  punctuation: !r matrix(c(1,1,0,1,1,0), nrow = 2)
 header-includes:
 - \usepackage{tikz}
 - \usepackage{pgfplots}
@@ -78,14 +77,27 @@ octalToDec <- function(x) {
 
   return(res)
 }
+
+gcd <- function(n, m) {
+  if (n == 0 && m == 0) return(0)
+  
+  n <- abs(n); m <- abs(m)
+  if (m > n) {
+    t <- n; n <- m; m <- t
+  }
+  while (m > 0) {
+    t <- n
+    n <- m
+    m <- t %% m
+  }
+  return(n)
+}
 ```
 
 ```{r, include=FALSE}
 conv.encoder <- params$conv.encoder
 
-message <- c(params$message)
-#code <- c(params$code)
-#code <- ifelse(code >= 0, 0, 1)
+message <- params$message
 
 M <- conv.encoder$M
 N <- conv.encoder$N
@@ -96,6 +108,8 @@ prev.state <- conv.encoder$prev.state
 termination <- conv.encoder$termination
 rsc.flag <- conv.encoder$rsc
 terminate <- params$terminate
+
+punctuation <- params$punctuation
 
 num.states <- 2^M
 
@@ -294,6 +308,9 @@ if (rsc.flag == FALSE) {
 } else {
   generator.print <- paste0("\\left(1,", paste0("\\frac{", head(generators, length(generators) - 1), "}{", tail(generators, 1), "}", collapse = ","), "\\right)")
 }
+
+punctuation.print <- 
+    paste0(apply(params$punctuation, 1, function(x) {paste0(x, collapse=" & ")}), collapse = " \\\\ ")
 ```
 
 ## Kodierer Information
@@ -302,7 +319,11 @@ if (rsc.flag == FALSE) {
 - Anzahl von Ausgängen : $$N=`r N`$$
 - Anzahl von Registern : $$M=`r M`$$
 - Generatoren : $$`r generator.print`$$
-- Kode-Rate: $$\frac{1}{`r N`}$$
+- Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
+```{r, include=FALSE}
+  gcd.value <- gcd(length(params$punctuation), sum(params$punctuation) * N)
+```
+- Kode-Rate : $$\frac{`r length(params$punctuation) / gcd.value`}{`r sum(params$punctuation) * N / gcd.value`}$$
 
 ## Kodierer Matrix : Nächster Zustand
 ```{r, echo=FALSE, results='asis'}
@@ -310,7 +331,7 @@ next.table <- next.state
 colnames(next.table) <- c("Bit 0", "Bit 1")
 row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(next.table) <- paste("Zustand ", row.counter)
-knitr::kable(next.table, format="latex", align="c")
+knitr::kable(next.table,format="latex",align="c")
 ```
 
 ## Kodierer Matrix : Ausgangsbits
@@ -360,3 +381,18 @@ Kode: (`r ifelse(params$code >= 0, 0, 1)`)
 \end{equation*}
 \vspace*{10mm}
 Signal: (`r params$code`)
+
+## Punktierung
+```{r, include=FALSE}
+punctured.code <- params$code
+punctured.code[punctuation == 0] <- "*"
+punctured.code <- paste(punctured.code, collapse = " , ")
+```
+- Signal: (`r code`)
+\vspace*{10mm}
+- Punktierungs-Matrix:
+\begin{equation*}
+  \begin{pmatrix}  `r punctuation.print`  \end{pmatrix}
+\end{equation*}
+\vspace*{10mm}
+- Punktiertes Signal: (`r punctured.code`)

@@ -261,7 +261,7 @@ IntegerVector c_convolutionEncode
 		int out = output(state, input[i]);
 		
 		#if DEBUG == 1
-		printf("state %i, input %i, output %i%i, new state %i\n",state,input[i],(out>>1)&1,out&1,nextState(state, input[i]));
+		Rprintf("state %i, input %i, output %i%i, new state %i\n",state,input[i],(out>>1)&1,out&1,nextState(state, input[i]));
 		#endif
 		
 		state = nextState(state, input[i]);
@@ -296,9 +296,9 @@ IntegerVector c_convolutionEncode
 	#if DEBUG == 1
 	// print coded message
 	for (int i = 0; i < codeLen; i++) {
-		printf("%i",code[i]);
+		Rprintf("%i",code[i]);
 	}
-	printf("\n");
+	Rprintf("\n");
 	#endif
 	
 	return code;
@@ -407,7 +407,7 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 			}
 			
 			#if DEBUG == 1
-			printf("\ndelta[%d][%d]=%f\t M0=%.2f \tM1=%.2f \tmax=%f",t,s,delta[t][s], Max[0],Max[1], metric[t][s]);
+			Rprintf("\ndelta[%d][%d]=%f\t M0=%.2f \tM1=%.2f \tmax=%f",t,s,delta[t][s], Max[0],Max[1], metric[t][s]);
 			#endif
 		}
 		
@@ -486,7 +486,7 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 			if (survivorBit[i][survivorStates[i]] != survivorBit[i][s]) {
 				delta[i][survivorStates[i]] = deltamin;
 				#if DEBUG == 1
-				printf("\nupdate k=%d i=%d, delta=%f",t,i,delta[i][survivorStates[i]]);
+				Rprintf("\nupdate k=%d i=%d, delta=%f",t,i,delta[i][survivorStates[i]]);
 				#endif
 			}
 			
@@ -511,12 +511,12 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 	}
 	
 	#if DEBUG == 1
-	printf("\n");
+	Rprintf("\n");
 	for (int i = 0; i < msgLen; i++) {
-		printf("%f\n",softOutput[i]);
+		Rprintf("%f\n",softOutput[i]);
 	}
 	for (int i = 0; i < msgLen; i++) {
-		printf("%i",hardOutput[i]);
+		Rprintf("%i",hardOutput[i]);
 	}
 	#endif
 	
@@ -530,8 +530,8 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 		}
 	}
 	
-	List result = List::create(Rcpp::Named("soft.output") = softOutput,
-							   Rcpp::Named("hard.output") = hardOutput,
+	List result = List::create(Rcpp::Named("output.soft") = softOutput,
+							   Rcpp::Named("output.hard") = hardOutput,
 							   Rcpp::Named("trellis") = trellisMetrics,
 							   Rcpp::Named("survivor.states") = previousSurvivorStates);
 	
@@ -633,7 +633,7 @@ List c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix pr
 			metric[t][s] = (Min[0] < Min[1]) ? Min[0] : Min[1];
 			
 			#if DEBUG == 1
-			printf("metric[%d][%d]=%d\t M0=%d \tM1=%d\n",t,s,metric[t][s], Min[0],Min[1]);
+			Rprintf("metric[%d][%d]=%d\t M0=%d \tM1=%d\n",t,s,metric[t][s], Min[0],Min[1]);
 			#endif
 			
 			
@@ -645,9 +645,9 @@ List c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix pr
 	#if DEBUG == 1
 	for (int j = 0; j < NUM_STATES; j++) {
 		for (int i = 0; i < msgLen + 1; i++) {
-			printf("%3d",metric[i][j]);
+			Rprintf("%3d",metric[i][j]);
 		}
-		printf("\n");
+		Rprintf("\n");
 	}
 	#endif
 	
@@ -699,11 +699,11 @@ List c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix pr
 	
 	#if DEBUG == 1
 	for (int i = 0; i < msgLen; i++) {
-		printf("%i",hardOutput[i]);
+		Rprintf("%i",hardOutput[i]);
 	}
 	#endif
 	
-	List result = List::create(Rcpp::Named("hard.output") = hardOutput,
+	List result = List::create(Rcpp::Named("output.hard") = hardOutput,
 							   Rcpp::Named("trellis") = trellisMetrics,
 							   Rcpp::Named("survivor.states") = previousSurvivorStates);
 	

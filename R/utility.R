@@ -1,3 +1,11 @@
+#' get punctuation matrix from vector
+#'
+#' creates a punctuation matrix from the passed punctuation vector and the
+#' passed coder
+#' @param punctuation.vector vector containing the punctuation information which will
+#'     be transformed to a punctuation matrix
+#' @param coder.info channelcoder which is used for the matrix dimensions
+#' @return punctuation matrix suitable for encode and decode
 #' @export
 GetPunctuationMatrix <- function(punctuation.vector, coder.info) {
 
@@ -11,13 +19,13 @@ GetPunctuationMatrix <- function(punctuation.vector, coder.info) {
   }
 
   if (length(punctuation.vector) %% coder.info$N != 0) {
-    stop("Falsche Länge des Punktierungsvektors! Muss ein Vielfaches von N (Anzahl der Ausgänge) sein!")
+    stop("Wrong length of punctuation vector! Must be a multiple of N (amount of exits)!")
   }
 
   mat <- matrix(punctuation.vector, nrow = coder.info$N)
 
   if (any(colSums(mat) == 0)) {
-    stop("Punktierungsmatrix hat eine 0-Spalte!")
+    stop("Punctuation matrix should not have a 0 column!")
   }
 
   return(mat)
@@ -71,29 +79,29 @@ CheckCoder <- function(coder) {
     c("N", "M", "generators", "next.state", "prev.state", "output", "rsc", "termination")
 
   if (!all(minimum.fields %in% names(coder))) {
-    stop("Kodierer enthält nicht alle notwendigen Elemente!")
+    stop("Coder does not contain all fields!")
   }
 
   for (field in minimum.fields) {
     if (is.null(coder[[field]])) {
-      stop("NULL Element im Kodierer!")
+      stop("NULL element in the coder!")
     }
   }
 
   stopifnot(coder$N > 1, coder$M > 0)
 
   if (length(coder$generators) < coder$N) {
-    stop("Kodierer enthält zu wenig Generatorpolynome!")
+    stop("Coder has to few generator polynoms!")
   }
 
   if (!IsOctal(coder$generators)) {
-    stop("Zumindest ein Generatorpolynom ist nicht in oktaler Form!")
+    stop("At least one of the generators is not in octal form!")
   }
 
   max.generator.octal = DecimalToOctal(2^(coder$M+1) - 1)
 
   if (any(coder$generators > max.generator.octal)) {
-    stop("Zumindest ein Generatorpolynom ist größer als erlaubt!")
+    stop("At least one of the generators is bigger than allowed!")
   }
 }
 
@@ -148,3 +156,5 @@ MaskGenerators <- function(generators, max.generator.octal) {
 
   return(new.generators)
 }
+
+
