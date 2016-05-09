@@ -686,25 +686,26 @@ TurboSimulation <- function(coder = NULL,
 
   df <- data.frame(db = v.db, ber = v.ber)
 
-  rmarkdown::render(
-    system.file("rmd", "Simulation.Rmd", package = "channelcoding"),
-    output_dir = system.file("pdf", package = "channelcoding"),
-    output_file = "SimulationTurbo.pdf",
-    params = list(
-      turbo = TRUE,
-      message.length = msg.length,
-      iterations.per.db = iterations.per.db,
-      min.db = min.db,
-      max.db = max.db,
-      db.interval = db.interval,
-      permutation = perm,
-      decode.iterations = decode.iterations,
-      punctuation = punctuation.matrix,
-      encoder = coder,
-      dataframe = df),
-    encoding = "UTF-8")
-  rstudioapi::viewer(system.file("pdf", "SimulationTurbo.pdf", package = "channelcoding"))
-
+  if (visualize) {
+    rmarkdown::render(
+      system.file("rmd", "Simulation.Rmd", package = "channelcoding"),
+      output_dir = system.file("pdf", package = "channelcoding"),
+      output_file = "SimulationTurbo.pdf",
+      params = list(
+        turbo = TRUE,
+        message.length = msg.length,
+        iterations.per.db = iterations.per.db,
+        min.db = min.db,
+        max.db = max.db,
+        db.interval = db.interval,
+        permutation = perm,
+        decode.iterations = decode.iterations,
+        punctuation = punctuation.matrix,
+        encoder = coder,
+        dataframe = df),
+      encoding = "UTF-8")
+    rstudioapi::viewer(system.file("pdf", "SimulationTurbo.pdf", package = "channelcoding"))
+  }
 
   df <- data.frame(db = v.db, ber = v.ber)
 

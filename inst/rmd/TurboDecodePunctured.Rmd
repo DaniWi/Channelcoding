@@ -15,8 +15,8 @@ params:
   decode2IBack: !r list(c(9,0,0,0),c(18,1,1,1))
   decode2: !r c(7,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1)
   decode2I: !r c(19,1,0,0,0,0,1,1,1,1,1,1)
-  tempResultSoft: !r list(c(9,0,0,0),c(18,1,1,1))
-  tempResultHard: !r list(c(9,0,0,0),c(18,1,1,1))
+  tempResultSoft: !r list(c(20,0,0,0),c(22,1,1,1),c(24,1,1,1))
+  tempResultHard: !r list(c(21,0,0,0),c(23,1,1,1),c(25,1,1,1))
   result: !r list(output.hard=c(16,1,0,0),output.soft=c(16,0,0,1))
   iterations: !r 3
   permutation: !r c(1,2,3,4,5,6,7)
@@ -112,8 +112,8 @@ gcd <- function(n, m) {
 ```
 
 ```{r generatePrintVars, include=FALSE}
-node.short <- 10
-node.long <- 30
+node.short <- 15
+node.long <- 20
 decimal.digits <- 1
 dots <- function (v, node) if(length(v) > node) ", ..." else ""
 
@@ -143,46 +143,53 @@ punctuation.print <-
 
 ```{r cutting, include=FALSE}
 #cut off the parameters
+code <- paste0(
+  paste0(head(round(params$code, decimal.digits), node.short), collapse = ", "), dots(params$code, node.short))
 punctured <- 
-  paste0(paste0(head(round(params$punctured, decimal.digits), node.short), collapse = ","),
+  paste0(paste0(head(round(params$punctured, decimal.digits), node.short), collapse = ", "),
          dots(params$punctured, node.short))
 orig <- paste0(
-  paste0(head(round(params$orig, decimal.digits), node.short), collapse = ","), dots(params$orig, node.short))
+  paste0(head(round(params$orig, decimal.digits), node.short), collapse = ", "), dots(params$orig, node.short))
 parity1 <- paste0(
-  paste0(head(round(params$parity1, decimal.digits), node.short), collapse = ","), dots(params$parity1, node.short))
+  paste0(head(round(params$parity1, decimal.digits), node.short), collapse = ", "), dots(params$parity1, node.short))
 parity2 <- paste0(
-  paste0(head(round(params$parity2, decimal.digits), node.short), collapse = ","), dots(params$parity2, node.short))
+  paste0(head(round(params$parity2, decimal.digits), node.short), collapse = ", "), dots(params$parity2, node.short))
 origI <- paste0(
-  paste0(head(round(params$origI, decimal.digits), node.short), collapse = ","), dots(params$origI, node.short))
+  paste0(head(round(params$origI, decimal.digits), node.short), collapse = ", "), dots(params$origI, node.short))
 decode2 <- paste0(
-  paste0(head(round(params$decode2, decimal.digits), node.short), collapse = ","), dots(params$decode2, node.short))
+  paste0(head(round(params$decode2, decimal.digits), node.short), collapse = ", "), dots(params$decode2, node.short))
 decode2I <- paste0(
-  paste0(head(round(params$decode2I, decimal.digits), node.short), collapse = ","), dots(params$decode2I, node.short))
+  paste0(head(round(params$decode2I, decimal.digits), node.short), collapse = ", "), dots(params$decode2I, node.short))
 decode1 <- paste0(
   lapply(lapply(params$decode1, 
           function(x) {head(round(x, decimal.digits), node.short)}),
-    function(x) {paste0(x, collapse = ",")}),
+    function(x) {paste0(x, collapse = ", ")}),
   lapply(params$decode1, function(x) {dots(x, node.short)}))
 decode1I <- paste0(
   lapply(lapply(params$decode1I,
           function(x) {head(round(x, decimal.digits), node.short)}),
-    function(x) {paste0(x, collapse = ",")}),
+    function(x) {paste0(x, collapse = ", ")}),
   lapply(params$decode1I, function(x) {dots(x, node.short)}))
 decode2Back <- paste0(
   lapply(lapply(params$decode2Back, 
           function(x) {head(round(x, decimal.digits), node.short)}),
-    function(x) {paste0(x, collapse = ",")}),
+    function(x) {paste0(x, collapse = ", ")}),
   lapply(params$decode2Back, function(x) {dots(x, node.short)}))
 decode2IBack <- paste0(
   lapply(lapply(params$decode2IBack, 
           function(x) {head(round(x, decimal.digits), node.short)}),
-    function(x) {paste0(x, collapse = ",")}),
+    function(x) {paste0(x, collapse = ", ")}),
   lapply(params$decode2IBack, function(x) {dots(x, node.short)}))
 resultHard <- paste0(
   lapply(lapply(params$tempResultHard, 
           function(x) {head(x, node.long)}),
-    function(x) {paste0(x, collapse = ",")}),
+    function(x) {paste0(x, collapse = ", ")}),
   lapply(params$tempResultHard, function(x) {dots(x, node.long)}))
+resultSoft <- paste0(
+  lapply(lapply(params$tempResultSoft, 
+          function(x) {head(round(x, decimal.digits), node.short)}),
+    function(x) {paste0(x, collapse = ", ")}),
+  lapply(params$tempResultSoft, function(x) {dots(x, node.short)}))
 ```
 
 ## Kodierer Information
@@ -193,6 +200,7 @@ resultHard <- paste0(
 - Generatoren : $$`r generator.print`$$
 
 ## Kodierer Matrix : Nächster Zustand
+\begin{center}
 ```{r, results='asis'}
 next.table <- params$encoder$next.state
 colnames(next.table) <- c("Bit 0", "Bit 1")
@@ -200,8 +208,10 @@ row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(next.table) <- paste("Zustand ", row.counter)
 knitr::kable(next.table, format="latex", align="c")
 ```
+\end{center}
 
 ## Kodierer Matrix : Ausgangsbits
+\begin{center}
 ```{r, results='asis'}
 output.table <- params$encoder$output
 output.table <- matrix(decToBin(as.vector(output.table)), ncol = ncol(output.table))
@@ -210,6 +220,7 @@ row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(output.table) <- paste("Zustand ", row.counter)
 knitr::kable(output.table, format="latex", align="c")
 ```
+\end{center}
 
 ## Kodierer Matrix : Zustandsdiagramm
 ```{r stateDiagramm, include=FALSE}
@@ -325,7 +336,6 @@ for (s in 0:(num.states-1)) {
 \end{center}
 
 ## Turbo-Dekodierer Information
-
 - Interleaver : (`r head(params$permutation, node.long)``r dots(params$permutation, node.long)`)
 ```{r}
   gcd.value <- gcd(length(params$punctuation), sum(params$punctuation) * 3)
@@ -334,9 +344,6 @@ for (s in 0:(num.states-1)) {
 - Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
 
 ## Turbo-Dekodierer mit Punktierung
-
-- Input : `r head(round(params$code, decimal.digits), node.long)``r dots(params$code, node.long)`
-
 \begin{center}
 \begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0,
   >=stealth, font=\tiny, align=center]
@@ -346,28 +353,30 @@ for (s in 0:(num.states-1)) {
 \tikzstyle{startEndStyle} = [rectangle, draw]
 \tikzstyle{depunctureStyle} = [rectangle, draw, node distance=4mm]
 \tikzstyle{demultiplexerStyle} = [depunctureStyle]
-\tikzstyle{showStyle} = [decoderStyle, thick, draw=red, text=red, inner sep=1mm]
+\tikzstyle{showStyle} = [decoderStyle, thick, draw=red, text=red, inner sep=1mm, overlay]
 \tikzstyle{showDrawStyle} = [->, red, thick]
 
 \node [node distance=4mm] (demultiplexerTemp) {};
 \node [demultiplexerStyle, rotate=90] (demultiplexer) at (demultiplexerTemp.west) {Demultiplexer};
 \node [node distance=4mm] (depunctureTemp)[left=of demultiplexerTemp] {};
 \node [depunctureStyle, rotate=90] (depuncture) at (depunctureTemp.west) {Depunktierung};
-\node [decoderStyle] (decoder1) [above right=of demultiplexerTemp] {Soft-In/Soft-Out\\ Dekodierer 1};
+\node [decoderStyle] (decoder1) [above right=of demultiplexerTemp] {SISO\\ Dekodierer 1};
 \node [deinterleaverStyle] (interleaver1) [right=of decoder1] {$I$};
 \node [deinterleaverStyle] (interleaver2) [above=4mm of interleaver1] {$I^{-1}$};
 \node [deinterleaverStyle] (interleaver3) [below=4mm of interleaver1] {$I$};
-\node [decoderStyle, node distance=4mm] (decoder2) [right=of interleaver3] {Soft-In/Soft-Out\\ Dekodierer 2};
+\node [decoderStyle, node distance=4mm] (decoder2) [right=of interleaver3] {SISO\\ Dekodierer 2};
 \node [deinterleaverStyle] (interleaver4) [right=of decoder2] {$I^{-1}$};
+\node [deinterleaverStyle] (finalCalculation) [right=of interleaver4] {$=$};
 \node [startEndStyle] (start) [left=of depunctureTemp] {Input};
-\node [startEndStyle, node distance=5mm] (end) [right=of interleaver4] {Output};
+\node [startEndStyle, node distance=5mm] (end) [right=of finalCalculation] {Output};
 
-\draw [->] (start.east) -- (depuncture.north);
+\draw [->] (start.east) -- node (afterInput) {} (depuncture.north);
 \draw [->] (depuncture.south) -- node (afterDepuncture) {} (demultiplexer.north);
 \draw [->] (decoder1.east) -- node (afterDecoder1) {}(interleaver1.west);
 \draw [->] (interleaver3.east) -- node (afterInterleaver3) {} (decoder2.west);
 \draw [->] (decoder2.east) -- node (afterDecoder2) {} (interleaver4.west);
-\draw [->] (interleaver4.east) -- node (afterInterleaver4) {} (end.west);
+\draw [->] (interleaver4.east) -- node (afterInterleaver4) {} (finalCalculation.west);
+\draw [->] (finalCalculation.east) -- node (afterFinalCalculation) {} (end.west);
 
 \draw [->] ($(decoder2.east)+(0,+.2)$) -| ++(.2,.7) node (afterDecoder2Back) {} |- (interleaver2.east);
 \visible<1-6>{
@@ -388,60 +397,62 @@ for (s in 0:(num.states-1)) {
 \draw [<-] ($(decoder2.west)+(0,-.2)$) -| ++(-.2,-.3)|- node [near end] (afterDemParity2) {} ($(demultiplexer.south)+(0,-.4)$);
 
 \begin{scope}[on background layer]
-\node [draw, fit=(depuncture) (decoder1) (decoder2) (demultiplexer) (interleaver1) (interleaver2) (interleaver3)
-(interleaver4)] (background) {};
+\node [draw, fit=(depuncture) (decoder1) (decoder2) (demultiplexer) (interleaver1) (interleaver2) (interleaver3) (interleaver4) (finalCalculation)] (background) {};
 \end{scope}
 
 \visible<1-5>{
   \node [below =4mm of decoder2] {Iteration 1};
 }
 
-% AfterDepuncture
+% AfterInput - AfterDepuncture
 \visible<2>{
-	\node [showStyle] (showAboveLeft) [above=4mm of background.north west] {`r punctured`};
-	\draw [showDrawStyle] (showAboveLeft) -- (afterDepuncture.center);
+	\node [showStyle] (showAboveCenterTop) [above=9mm of background] {`r punctured`};
+	\draw [showDrawStyle] (showAboveCenterTop) -- (afterDepuncture.center);
+	
+	\node [showStyle] (showBelowBottom) [below=9mm of background] {`r code`};
+	\draw [showDrawStyle] (showBelowBottom) -- (afterInput.center);
 }
 
 % AfterDepuncture - AfterDemultiplexer
 \visible<3>{
-	\node [showStyle] (showAboveLeft) [above=4mm of background.north west] {`r punctured`};
-	\draw [showDrawStyle] (showAboveLeft) -- (afterDepuncture.center);
+	\node [showStyle] (showAboveCenterTop) [above=9mm of background] {`r punctured`};
+	\draw [showDrawStyle] (showAboveCenterTop) -- (afterDepuncture.center);
 	
-	\node [showStyle] (showAboveCenter) [above=4mm of background] {`r orig`};
+	\node [showStyle] (showAboveCenter) [above=3mm of background] {`r orig`};
 	\draw [showDrawStyle] (showAboveCenter) -- (afterDemOrig.center);
 	
-	\node [showStyle] (showBelowLeft) [below=4mm of background.south west] {`r parity1`};
-	\draw [showDrawStyle] (showBelowLeft) -- (afterDemParity1.center);
+	\node [showStyle] (showBelowBottom) [below=9mm of background] {`r parity1`};
+	\draw [showDrawStyle] (showBelowBottom) -- (afterDemParity1.center);
 	
-	\node [showStyle] (showBelowCenter) [below=4mm of background] {`r parity2`};
+	\node [showStyle] (showBelowCenter) [below=3mm of background] {`r parity2`};
 	\draw [showDrawStyle] (showBelowCenter) -- (afterDemParity2.center);
 }
 
 % AfterDemulitplexer, AfterInterleaver2 - AfterDecoder1
 \visible<4>{
-	\node [showStyle] (showAboveCenter) [above=4mm of background] {`r orig`};
+	\node [showStyle] (showAboveCenter) [above=3mm of background] {`r orig`};
 	\draw [showDrawStyle] (showAboveCenter) -- (afterDemOrig.center);
 	
-	\node [showStyle] (showBelowLeft) [below=4mm of background.south west] {`r parity1`};
-	\draw [showDrawStyle] (showBelowLeft) -- (afterDemParity1.center);
+	\node [showStyle] (showAboveCenterTop) [above=9mm of background] {`r decode1[[1]]`};
+	\draw [showDrawStyle] (showAboveCenterTop) -- (afterDecoder1.center);
 	
-	\node [showStyle] (showBelowCenter) [below=4mm of background] {`r decode1[[1]]`};
-	\draw [showDrawStyle] (showBelowCenter) -- (afterDecoder1.center);
+	\node [showStyle] (showBelowCenterBottom) [below=9mm of background] {`r parity1`};
+	\draw [showDrawStyle] (showBelowCenterBottom) -- (afterDemParity1.center);
 }
 
 % AfterDecoder1, AfterDemultiplexer - AfterInterleaver1, 2
 \visible<5>{
-	\node [showStyle] (showAboveCenter) [above=4mm of background] {`r decode1I[[1]]`};
+	\node [showStyle] (showAboveCenterTop) [above=9mm of background] {`r decode1[[1]]`};
+	\draw [showDrawStyle] (showAboveCenterTop) -- (afterDecoder1.center);
+
+	\node [showStyle] (showAboveCenter) [above=3mm of background] {`r decode1I[[1]]`};
 	\draw [showDrawStyle] (showAboveCenter) -- (afterInterleaver1.center);
 		
-	\node [showStyle] (showAboveRight) [above=4mm of background.north east] {`r origI`};
-	\draw [showDrawStyle] (showAboveRight) -- (afterInterleaver3.center);
+	\node [showStyle] (showBelowCenter) [below=3mm of background] {`r origI`};
+	\draw [showDrawStyle] (showBelowCenter) -- (afterInterleaver3.center);
 	
-	\node [showStyle] (showBelowLeft) [below=4mm of background.south west] {`r orig`};
-	\draw [showDrawStyle] (showBelowLeft) -- (afterDemOrigInterl.center);
-	
-	\node [showStyle] (showBelowCenter) [below=4mm of background] {`r decode1[[1]]`};
-	\draw [showDrawStyle] (showBelowCenter) -- (afterDecoder1.center);
+	\node [showStyle] (showBelowCenterBottom) [below=9mm of background] {`r orig`};
+	\draw [showDrawStyle] (showBelowCenterBottom) -- (afterDemOrigInterl.center);
 }
 
 ```{r tikzLoop, include=FALSE}
@@ -451,39 +462,39 @@ if (params$iterations > 1) {
   #AfterInterleaver1, 2, AfterDemultiplexer - AfterDecoder2Back
   slide1 <- paste0(
     "\\visible<", 6 + 4 * (i - 1),
-    ">{	\\node [showStyle] (showAboveCenter) [above=4mm of background] {",
+    ">{	\\node [showStyle] (showAboveCenter) [above=3mm of background] {",
     decode1I[[i]],
-    "};	\\draw [showDrawStyle] (showAboveCenter) -- (afterInterleaver1.center); \\node [showStyle] (showAboveRight) [above=4mm of background.north east] {",
+    "};	\\draw [showDrawStyle] (showAboveCenter) -- (afterInterleaver1.center); \\node [showStyle] (showBelowCenter) [below=3mm of background] {",
     origI,
-    "};	\\draw [showDrawStyle] (showAboveRight) -- (afterInterleaver3.center);	\\node [showStyle] (showBelowCenter) [below=4mm of background] {",
+    "};	\\draw [showDrawStyle] (showBelowCenter) -- (afterInterleaver3.center);	\\node [showStyle] (showAboveCenterTop) [above=9mm of background] {",
     parity2,
-    "};	\\draw [showDrawStyle] (showBelowCenter) -- (afterDemParity2.center); \\node [showStyle] (showBelowRight) [below=4mm of background.south east] {",
+    "};	\\draw [showDrawStyle] (showAboveCenterTop) -- (afterDemParity2.center); \\node [showStyle] (showBelowCenterBottom) [below=9mm of background] {",
     decode2Back[[i]],
-    "};	\\draw [showDrawStyle] (showBelowRight) -- (afterDecoder2Back.center);}",
+    "};	\\draw [showDrawStyle] (showBelowCenterBottom) -- (afterDecoder2Back.center);}",
     collapse = ""
   )
   
   # AfterDecoder2Back - AfterInterleaver2
   slide2 <- paste0(
     "\\visible<", 7 + 4 * (i - 1),
-    ">{	\\node [showStyle] (showAbove) [above=4mm of background] {",
+    ">{	\\node [showStyle] (showAboveCenterTop) [above=9mm of background] {",
     decode2IBack[[i]],
-    "};	\\draw [showDrawStyle] (showAbove) -- (afterInterleaver2.center);	\\node [showStyle] (showBelowRight) [below=4mm of background.south east] {",
+    "};	\\draw [showDrawStyle] (showAboveCenterTop) -- (afterInterleaver2.center);	\\node [showStyle] (showBelowCenterBottom) [below=9mm of background] {",
     decode2Back[[i]],
-    "};	\\draw [showDrawStyle] (showBelowRight) -- (afterDecoder2Back.center);}",
+    "};	\\draw [showDrawStyle] (showBelowCenterBottom) -- (afterDecoder2Back.center);}",
     collapse = ""
   )
   
   # AfterDemulitplexer, AfterInterleaver2 - AfterDecoder1
   slide3 <- paste0(
     "\\visible<", 8 + 4 * (i - 1),
-    ">{	\\node [showStyle] (showAboveLeft) [above=4mm of background.north west] {",
+    ">{	\\node [showStyle] (showAboveCenter) [above=3mm of background] {",
     orig,
-    "};	\\draw [showDrawStyle] (showAboveLeft) -- (afterDemOrig.center);	\\node [showStyle] (showAboveCenter) [above=4mm of background] {",
+    "};	\\draw [showDrawStyle] (showAboveCenter) -- (afterDemOrig.center);	\\node [showStyle] (showAboveCenterTop) [above=9mm of background] {",
     decode2IBack[[i]],
-    "};	\\draw [showDrawStyle] (showAboveCenter) -- (afterInterleaver2.center);	\\node [showStyle] (showBelowLeft) [below=4mm of background.south west] {",
+    "};	\\draw [showDrawStyle] (showAboveCenterTop) -- (afterInterleaver2.center);	\\node [showStyle] (showBelowCenterBottom) [below=9mm of background] {",
     parity1,
-    "};	\\draw [showDrawStyle] (showBelowLeft) -- (afterDemParity1.center); \\node [showStyle] (showBelowCenter) [below=4mm of background] {",
+    "};	\\draw [showDrawStyle] (showBelowCenterBottom) -- (afterDemParity1.center); \\node [showStyle] (showBelowCenter) [below=3mm of background] {",
     decode1[[i + 1]],
     "};	\\draw [showDrawStyle] (showBelowCenter) -- (afterDecoder1.center);}",
     collapse = ""
@@ -492,15 +503,15 @@ if (params$iterations > 1) {
   # AfterDecoder1, AfterDemultiplexer - AfterInterleaver1, 2
   slide4 <- paste0(
     "\\visible<", 9 + 4 * (i - 1),
-    ">{	\\node [showStyle] (showAboveCenter) [above=4mm of background] {",
+    ">{	\\node [showStyle] (showAboveCenter) [above=3mm of background] {",
     decode1I[[i + 1]],
-    "};	\\draw [showDrawStyle] (showAboveCenter) -- (afterInterleaver1.center); \\node [showStyle] (showAboveRight) [above=4mm of background.north east] {",
-    origI,
-    "};	\\draw [showDrawStyle] (showAboveRight) -- (afterInterleaver3.center);	\\node [showStyle] (showBelowLeft) [below=4mm of background.south west] {",
-    orig,
-    "};	\\draw [showDrawStyle] (showBelowLeft) -- (afterDemOrigInterl.center);	\\node [showStyle] (showBelowCenter) [below=4mm of background] {",
+    "};	\\draw [showDrawStyle] (showAboveCenter) -- (afterInterleaver1.center); \\node [showStyle] (showAboveCenterTop) [above=9mm of background] {",
     decode1[[i + 1]],
-    "};	\\draw [showDrawStyle] (showBelowCenter) -- (afterDecoder1.center);}",
+    "};	\\draw [showDrawStyle] (showAboveCenterTop) -- (afterDecoder1.center);	\\node [showStyle] (showBelowCenterBottom) [below=9mm of background] {",
+    orig,
+    "};	\\draw [showDrawStyle] (showBelowCenterBottom) -- (afterDemOrigInterl.center);	\\node [showStyle] (showBelowCenter) [below=3mm of background] {",
+    origI,
+    "};	\\draw [showDrawStyle] (showBelowCenter) -- (afterInterleaver3.center);}",
     collapse = ""
   )
   
@@ -511,7 +522,7 @@ if (params$iterations > 1) {
   
   output <- paste0(
     "\\visible<", 6 + 4 * (i - 1), "-",  9 + 4 * (i - 1),
-    ">{\\node [below =12mm of background, font=\\small] {Output: ", resultHard[[i]],"};}"
+    ">{\\node [below =15mm of background, font=\\small] {Output: ", resultHard[[i]],"};}"
   )
   
   
@@ -524,42 +535,50 @@ if (params$iterations > 1) {
 
 %END
 
-\visible<`r params$iterations * 4 + 2`-`r params$iterations * 4 + 3`>{
+\visible<`r params$iterations * 4 + 2`-`r params$iterations * 4 + 4`>{
   \node [below =4mm of decoder2] {Iteration `r params$iterations`};
 }
-\visible<`r params$iterations * 4 + 2`-`r params$iterations * 4 + 3`>{
-  \node [below =12mm of background, font=\small] {Output: `r resultHard[[params$iterations]]`};
+\visible<`r params$iterations * 4 + 2`-`r params$iterations * 4 + 4`>{
+  \node [below =15mm of background, font=\small] {Output: `r resultHard[[params$iterations]]`};
 }
 
 % AfterInterleaver1, 2, AfterDemultiplexer - AfterDecoder2
 \visible<`r params$iterations * 4 + 2`>{
-	\node [showStyle] (showAboveCenter) [above=4mm of background] {`r decode1I[[params$iterations]]`};
+	\node [showStyle] (showAboveCenter) [above=3mm of background] {`r decode1I[[params$iterations]]`};
 	\draw [showDrawStyle] (showAboveCenter) -- (afterInterleaver1.center);
 		
-	\node [showStyle] (showAboveRight) [above=4mm of background.north east] {`r origI`};
-	\draw [showDrawStyle] (showAboveRight) -- (afterInterleaver3.center);
+	\node [showStyle] (showBelowCenter) [below=3mm of background] {`r origI`};
+	\draw [showDrawStyle] (showBelowCenter) -- (afterInterleaver3.center);
 	
-	\node [showStyle] (showBelowCenter) [below=4mm of background] {`r parity2`};
-	\draw [showDrawStyle] (showBelowCenter) -- (afterDemParity2.center);
+	\node [showStyle] (showAboveCenterTop) [above=9mm of background] {`r parity2`};
+	\draw [showDrawStyle] (showAboveCenterTop) -- (afterDemParity2.center);
 	
-	\node [showStyle] (showBelowRight) [below=4mm of background.south east] {`r decode2`};
-	\draw [showDrawStyle] (showBelowRight) -- (afterDecoder2.center);
+	\node [showStyle] (showBelowCenterBottom) [below=9mm of background] {`r decode2`};
+	\draw [showDrawStyle] (showBelowCenterBottom) -- (afterDecoder2.center);
 }
 
 % AfterDecoder2 - AfterInterleaver4
 \visible<`r params$iterations * 4 + 3`>{
-	\node [showStyle] (showAboveCenter) [above=4mm of background] {`r decode2I`};
+	\node [showStyle] (showAboveCenter) [above=3mm of background] {`r decode2I`};
 	\draw [showDrawStyle] (showAboveCenter) -- (afterInterleaver4.center);
 	
-	\node [showStyle] (showBelowCenter) [below=4mm of background] {`r decode2`};
-	\draw [showDrawStyle] (showBelowCenter) -- (afterDecoder2.center);
+	\node [showStyle] (showBelowCenterBottom) [below=9mm of background] {`r decode2`};
+	\draw [showDrawStyle] (showBelowCenterBottom) -- (afterDecoder2.center);
+}
+
+% AfterInterleaver4 - AfterFinalCalculation
+\visible<`r params$iterations * 4 + 4`>{
+	\node [showStyle] (showAboveCenter) [above=3mm of background] {`r decode2I`};
+	\draw [showDrawStyle] (showAboveCenter) -- (afterInterleaver4.center);
+	
+	\node [showStyle] (showBelowCenterBottom) [below=9mm of background] {`r resultSoft[[params$iterations]]`};
+	\draw [showDrawStyle] (showBelowCenterBottom) -- (afterFinalCalculation.center);
 }
 
 \end{tikzpicture}
 \end{center}
 
-## Turbo-Dekodierer
-
+## Turbo-Dekodierer mit Punktierung
 - Output mit Terminierung:
 `r resultHard[[params$iterations]]`
 - Output ohne Terminierung:
