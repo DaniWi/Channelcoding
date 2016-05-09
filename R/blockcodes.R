@@ -115,14 +115,27 @@ for(i in (1:params[1])){
   genpoly = result$g[1:(result$length_g+1)]
   k = result$lm
 
+if(visualize){
+  print(sprintf("This is a (%d, %d, %d) binary BCH code", length, k, 2*t+1))
+  print(sprintf("Generator Polynomial g(x) = %s",paste(genpoly, collapse = "")))
+
+}
  # print(k)
+
 
  if((length(msg)%%k)!= 0){
     msg = c(msg, rep(0,(k-(length(msg)%%k))));
-  }
+ }
 
   msgMatrix = t(matrix(msg, nrow=k));
-  retMatrix = apply(msgMatrix,1,function(x) .encodePolynomial(x, genpoly, length, k))
+
+  if(visualize){
+    print("Computing the Codewort c(x) = c( b(x),d(x) ) with d(x) being the original message and b(x) the remainder of x^(length-k)*d(x) divided by g(x).")
+    print(sprintf("Message is divided into %d block(s) of length %d",(length(msg)/k),k))
+    print(apply(msgMatrix,1,function(x) sprintf("| %s |",paste(x,collapse = ""))))
+  }
+
+  retMatrix = apply(msgMatrix,1,function(x) .encodePolynomial(x, genpoly, length, k,visualize))
 
   return(as.vector(retMatrix))
 
@@ -144,8 +157,15 @@ for(i in (1:params[1])){
     msg = c(msg, rep(0,(length-(length(msg)%%length))));
   }
 
+  result = .getGenPoly(m,length,t)
+  genpoly = result$g[1:(result$length_g+1)]
+  k = result$lm
 
-  k = .getGenPoly(m,length,t)$lm
+  if(visualize){
+    print(sprintf("This is a (%d, %d, %d) binary BCH code", length, k, 2*t+1))
+    print(sprintf("Generator Polynomial g(x) = %s",paste(genpoly, collapse = "")))
+  }
+
  decMsg = .decodeBch(m,length,t,msg)
 
   msgMatrix = t(matrix(decMsg, nrow=length));
@@ -155,7 +175,7 @@ for(i in (1:params[1])){
 
 }
 
-.encodePolynomial = function(data, g, length, k)
+.encodePolynomial = function(data, g, length, k, visualize=FALSE)
 {
 
 #   data_star = c(rep(0,length(g)-1),data)
@@ -168,6 +188,10 @@ for(i in (1:params[1])){
 
   dyn.load("src/bch.so")
   result=.C("encode_bch",length_r=as.integer(length), lm=as.integer(k), g=as.integer(g),bb=as.integer(rep(0,(length-k))), recd=as.integer(rep(0,length)), data=as.integer(data), PACKAGE = "bch")
+  if(visualize){
+    print(sprintf("x^%d*d(%s) mod g(x) = b(%s)",(length-k),paste(data, collapse = ""),paste(result$bb, collapse = "")))
+    print(sprintf("Coefficient polynomial c(x) = %s",paste(result$recd,collapse = "")))
+    }
   return(result$recd)
 
 }
