@@ -1,0 +1,38 @@
+---
+title: "Blockcodes"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  beamer_presentation:
+    keep_tex: true
+fontsize: 8pt
+params:
+  message: !r c(1,0,1,0,1)
+  enc: !r c(1,0,1,0,1,0,1,0,1,0,1,0,1,0,1)
+  enc_error: !r c(0,0,1,0,1,0,1,0,0,0,1,0,1,0,1)
+  dec: !r c(1,0,1,0,1)
+header-includes:
+- \usepackage{tikz}
+- \usepackage{pgfplots}
+- \usepackage{mathtools}
+- \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,positioning,fit,petri,calc}
+---
+
+```{r, include=FALSE}
+
+message <- c(params$message)
+enc <- c(params$enc)
+enc_error <- c(params$enc_error)
+dec <- c(params$dec)
+
+
+
+
+```
+
+
+## Blockcodes
+
+- Message: (`r message`)
+- Encoded Message: (`r enc`)
+- Disturbed Encoded Message : (`r enc_error`)
+- Decoded Message : (`r dec`)
