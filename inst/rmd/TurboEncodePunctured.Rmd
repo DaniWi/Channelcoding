@@ -103,7 +103,7 @@ gcd <- function(n, m) {
 
 ```{r generatePrintVars, echo=FALSE}
 node.short <- 20
-node.long <- 45
+node.long <- 35
 dots <- function (v, node) if(length(v) > node) ", ..." else ""
 
 if (params$encoder$rsc == TRUE) {
@@ -336,10 +336,8 @@ for (s in 0:(num.states-1)) {
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<5>{
-  \node [showStyle] (show) [above=3mm of background] {\textbf{`r head(params$multipl, node.short)``r dots(params$multipl, node.short)`}};
-  \draw [showDrawStyle] (show) -- (afterMultiplexer.center);
-  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$result, node.short)``r dots(params$result, node.short)`}};
-  \draw [showDrawStyle] (showBelow) -- (afterPuncture.center);
+  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$multipl, node.short)``r dots(params$multipl, node.short)`}};
+  \draw [showDrawStyle] (showBelow) -- (afterMultiplexer.center);
   }
 
 \end{tikzpicture}

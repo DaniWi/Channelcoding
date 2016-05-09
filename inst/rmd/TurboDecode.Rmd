@@ -17,7 +17,7 @@ params:
   tempResultSoft: !r list(c(9,0,0,0),c(18,1,1,1))
   tempResultHard: !r list(c(9,0,0,0),c(18,1,1,1))
   result: !r list(output.hard=c(16,1,0,0),output.soft=c(16,0,0,1))
-  iterations: !r 3
+  iterations: !r 2
   permutation: !r c(1,2,3,4,5,6,7)
   encoder: !r list(N=2, M=2, generators=c(5,7), rsc=TRUE, termination=c(0,1,1,0), next.state=matrix(c(0,2,3,1,2,0,1,3), ncol =2), prev.state=matrix(c(0,3,1,2,1,2,0,3,-1,-1,-1,-1), ncol =3), output=matrix(c(0,0,1,1,3,3,2,2), ncol =2))
 header-includes:
@@ -323,7 +323,6 @@ for (s in 0:(num.states-1)) {
 
 ## Turbo-Dekodierer
 
-- Input : `r head(round(params$code, decimal.digits), node.long)``r dots(params$code, node.long)`
 
 \begin{center}
 \begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0,
@@ -344,14 +343,16 @@ for (s in 0:(num.states-1)) {
 \node [deinterleaverStyle] (interleaver3) [below=4mm of interleaver1] {$I$};
 \node [decoderStyle, node distance=4mm] (decoder2) [right=of interleaver3] {Soft-In/Soft-Out\\ Dekodierer 2};
 \node [deinterleaverStyle] (interleaver4) [right=of decoder2] {$I^{-1}$};
+\node [deinterleaverStyle] (finalCalculation) [right=of interleaver4] {$=$};
 \node [startEndStyle] (start) [left=of demultiplexerTemp] {Input};
-\node [startEndStyle, node distance=5mm] (end) [right=of interleaver4] {Output};
+\node [startEndStyle, node distance=5mm] (end) [right=of finalCalculation] {Output};
 
 \draw [->] (start.east) -- (demultiplexer.north);
 \draw [->] (decoder1.east) -- node (afterDecoder1) {}(interleaver1.west);
 \draw [->] (interleaver3.east) -- node (afterInterleaver3) {} (decoder2.west);
 \draw [->] (decoder2.east) -- node (afterDecoder2) {} (interleaver4.west);
-\draw [->] (interleaver4.east) -- node (afterInterleaver4) {} (end.west);
+\draw [->] (interleaver4.east) -- node (afterInterleaver4) {} (finalCalculation.west);
+\draw [->] (finalCalculation.east) -- node (afterFinalCalculation) {} (end.west);
 
 \draw [->] ($(decoder2.east)+(0,+.2)$) -| ++(.2,.7) node (afterDecoder2Back) {} |- (interleaver2.east);
 \visible<1-5>{
@@ -372,8 +373,7 @@ for (s in 0:(num.states-1)) {
 \draw [<-] ($(decoder2.west)+(0,-.2)$) -| ++(-.2,-.3)|- node [near end] (afterDemParity2) {} ($(demultiplexer.south)+(0,-.4)$);
 
 \begin{scope}[on background layer]
-\node [draw, fit=(decoder1) (decoder2) (demultiplexer) (interleaver1) (interleaver2) (interleaver3)
-(interleaver4)] (background) {};
+\node [draw, fit=(decoder1) (decoder2) (demultiplexer) (interleaver1) (interleaver2) (interleaver3) (interleaver4) (finalCalculation)] (background) {};
 \end{scope}
 
 \visible<1-4>{

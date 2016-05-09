@@ -86,7 +86,7 @@ ordering <- function(num.states, next.state) {
 
 ```{r, echo=FALSE}
 node.short <- 20
-node.long <- 45
+node.long <- 35
 dots <- function (v, node) if(length(v) > node) ", ..." else ""
 
 if (params$encoder$rsc == TRUE) {
@@ -290,21 +290,21 @@ for (s in 0:(num.states-1)) {
 \end{scope}
 
 \visible<2>{
-  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
   \draw [showDrawStyle] (showAbove) -- (afterInput.center);
-  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`}};
+  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`}};
   \draw [showDrawStyle] (showBelow) -- (afterParity1.center);
   }
 \visible<3>{
-  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
   \draw [showDrawStyle] (showAbove) -- (afterInput.center);
-  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
+  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<4>{
-  \node [showStyle] (showAbove) [above=4mm of background] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
   \draw [showDrawStyle] (showAbove) -- (afterParity2.center);
-  \node [showStyle] (showBelow) [below=4mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
+  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 
