@@ -99,18 +99,36 @@ applyNoise <- function(msg, SNR.db = 5, visualize = FALSE)
 #'
 #'
 #' @author Bene Wimmer
-#' @param String
-#' @param length
-#' @param t
+#' @param data MSG
+#' @param length Length of MSG
+#' @param t Errors to correct
 #' @return String
 #' @export
-testBCH = function(data, length, t)
+testBCH = function(data, length, t, visualize=FALSE)
 {
-  enc = .BCHEncode(as.integer(rawToBits(charToRaw(data))),c(length,t),FALSE)
+  if(!visualize){
+    data = rawToBits(charToRaw(data))
+  }
 
-  dec = .BCHDecode(applyNoise(enc),c(length,t),FALSE)
+  enc = .BCHEncode(as.integer(data),c(length,t),FALSE)
+  enc_error = ifelse(applyNoise(enc) <= 0.5, 0, 1)
+  dec = .BCHDecode(enc,c(length,t),FALSE)
+
+  if(visualize){
+    rmarkdown::render(system.file("rmd", "BlockEncode.Rmd", package = "channelcoding"),
+                      output_dir = system.file("pdf", package = "channelcoding"),
+                      encoding = "UTF-8",
+                      params = list(message = data,
+                                    enc = enc,
+                                    enc_error = enc_error,
+                                    dec = dec))
+
+    #rstudioapi::viewer(system.file("pdf", "BlockEncode.pdf", package = "channelcoding"))
+    return(dec)
+  }else{
+    return(rawToChar(packBits(dec[1:(length(dec)- (length(dec)%%8))])))
+  }
 
 
-  return(rawToChar(packBits(dec[1:(length(dec)- (length(dec)%%8))])))
 
 }

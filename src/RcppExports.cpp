@@ -5,6 +5,50 @@
 
 using namespace Rcpp;
 
+// c_bchEncode
+IntegerVector c_bchEncode(IntegerVector input, IntegerVector genPoly, int length, int k);
+RcppExport SEXP channelcoding_c_bchEncode(SEXP inputSEXP, SEXP genPolySEXP, SEXP lengthSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< IntegerVector >::type input(inputSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type genPoly(genPolySEXP);
+    Rcpp::traits::input_parameter< int >::type length(lengthSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    __result = Rcpp::wrap(c_bchEncode(input, genPoly, length, k));
+    return __result;
+END_RCPP
+}
+// c_bchDecode
+IntegerVector c_bchDecode(IntegerVector input, IntegerVector alpha_to, IntegerVector index_of, int length, int m, int t, int k);
+RcppExport SEXP channelcoding_c_bchDecode(SEXP inputSEXP, SEXP alpha_toSEXP, SEXP index_ofSEXP, SEXP lengthSEXP, SEXP mSEXP, SEXP tSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< IntegerVector >::type input(inputSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type alpha_to(alpha_toSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type index_of(index_ofSEXP);
+    Rcpp::traits::input_parameter< int >::type length(lengthSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type t(tSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    __result = Rcpp::wrap(c_bchDecode(input, alpha_to, index_of, length, m, t, k));
+    return __result;
+END_RCPP
+}
+// c_getGeneratorPoly
+List c_getGeneratorPoly(int length, int m, int t);
+RcppExport SEXP channelcoding_c_getGeneratorPoly(SEXP lengthSEXP, SEXP mSEXP, SEXP tSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< int >::type length(lengthSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type t(tSEXP);
+    __result = Rcpp::wrap(c_getGeneratorPoly(length, m, t));
+    return __result;
+END_RCPP
+}
 // c_generateMatrices
 List c_generateMatrices(int N, int M, IntegerVector generator);
 RcppExport SEXP channelcoding_c_generateMatrices(SEXP NSEXP, SEXP MSEXP, SEXP generatorSEXP) {
