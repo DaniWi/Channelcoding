@@ -1,5 +1,5 @@
 ---
-title: "Faltungskode Kodierung"
+title: "Faltungskodierung ohne Punktierung"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: beamer_presentation
 fontsize: 8pt
@@ -82,8 +82,6 @@ octalToDec <- function(x) {
 conv.encoder <- params$conv.encoder
 
 message <- c(params$message)
-#code <- c(params$code)
-#code <- ifelse(code >= 0, 0, 1)
 
 M <- conv.encoder$M
 N <- conv.encoder$N
@@ -254,6 +252,8 @@ tikz.diagram <- paste(tikz.diagram, legend.bit.0, legend.bit.1)
 
 ## ENCODE TABLE
 encode.table <- ""
+alt.output <- ""
+cummulative.output <- ""
 index <- 2
 state <- 0
 for (i in message) {
@@ -267,9 +267,25 @@ for (i in message) {
     hline <- "\\hline"
   }
   
-  table.row <- paste(visibility,"{",thisState,"&",i,"&",code.output,"&",nextState,"\\\\",hline,"}")
-  
+  table.row <- paste(visibility,"{",i,"&",thisState,"&",nextState,"&",code.output,"\\\\",hline,"}")
   encode.table <- paste(encode.table, table.row)
+  
+  # step for step output is displayed
+  first.char <- if(index - 2 == 0) "(" else ", "
+  output.bits <- paste(binVector(output[state+1,i+1],N) , collapse = ", ")
+  cummulative.output <- paste0(cummulative.output, first.char, output.bits)
+  if (index - 1 == length(message)) {
+    cummulative.output <- paste0(cummulative.output, ")")
+  }
+  alt.def <- paste0("\\alt<",index,">")
+  alt.part <- paste0(alt.def,"{",cummulative.output,"}{")
+  
+  if (index - 1 == length(message)) {
+    # last output reached
+    alt.part <- paste0(alt.part, paste(rep("}", index - 1) , collapse = ""))
+  }
+  
+  alt.output <- paste0(alt.output, alt.part)
   
   index <- index + 1
   state <- next.state[state+1,i+1]
@@ -294,7 +310,7 @@ if (rsc.flag == FALSE) {
 }
 ```
 
-## Kodierer Information
+## Faltungskodierer Informationen
 
 - `r art.coder` Kodierer
 - Anzahl von Ausgängen : $$N=`r N`$$
@@ -302,7 +318,7 @@ if (rsc.flag == FALSE) {
 - Generatoren : $$`r generator.print`$$
 - Kode-Rate: $$\frac{1}{`r N`}$$
 
-## Kodierer Matrix : Nächster Zustand
+## Faltungskodierer Matrix : Nächster Zustand
 \begin{center}
 ```{r, echo=FALSE, results='asis'}
 next.table <- next.state
@@ -313,7 +329,7 @@ knitr::kable(next.table, format="latex", align="c")
 ```
 \end{center}
 
-## Kodierer Matrix : Ausgangsbits
+## Faltungskodierer Matrix : Ausgangsbits
 \begin{center}
 ```{r, echo=FALSE, results='asis'}
 output.table <- output
@@ -327,16 +343,16 @@ knitr::kable(output.table, format="latex", align="c")
 
 ## Faltungskodierung
 
-input: (`r message`)
+Input: (`r message`)
 \begin{center}
 \begin{minipage}{.45\textwidth}
 \begin{center}
 \begin{tabular}{c c c c}
-  \visible<1-> {Zustand & input & output & Folgezustand\\ \hline}
+  \visible<1-> {Input & Zustand & Folgezustand & Output\\ \hline}
   `r encode.table`
 \end{tabular}
 \end{center}
-\visible<`r length(message)+1`> {output: (`r ifelse(params$code >= 0, 0, 1)`)}
+Output: `r alt.output`
 \end{minipage}
 \hfill
 \begin{minipage}{.45\textwidth}

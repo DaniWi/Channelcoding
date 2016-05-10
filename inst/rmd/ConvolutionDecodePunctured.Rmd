@@ -1,5 +1,5 @@
 ---
-title: "Faltungskode Dekodierung mit Punktierung"
+title: "Faltungsdekodierung mit Punktierung"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: beamer_presentation
 fontsize: 8pt
@@ -174,7 +174,7 @@ for (t in 0:(length(decoded)-1)) {
 # output label
 visibility <- paste0("\\visible<",ncol(trellis)+1,">")
 position <- paste0("below=.54 of statelabel",num.states - 1,".west, anchor=west")
-output.label <- paste0(visibility,"{\\node [orange, font=\\small,",position,"] (outlabel) {output:};}")
+output.label <- paste0(visibility,"{\\node [orange, font=\\small,",position,"] (outlabel) {Output:};}")
 tikz.trellis <- paste(tikz.trellis, output.label)
 
 # bit legend
@@ -264,7 +264,7 @@ punctuation.print <-
     paste0(apply(params$punctuation, 1, function(x) {paste0(x, collapse=" & ")}), collapse = " \\\\ ")
 ```
 
-## Kodierer Information
+## Faltungskodierer Informationen
 
 - `r art.coder` Kodierer
 - Anzahl von Ausgängen : $$N=`r N`$$
@@ -276,7 +276,7 @@ punctuation.print <-
 ```
 - Kode-Rate : $$\frac{`r length(params$punctuation) / gcd.value`}{`r sum(params$punctuation) * N / gcd.value`}$$
 
-## Kodierer Matrix : Nächster Zustand
+## Faltungskodierer Matrix : Nächster Zustand
 \begin{center}
 ```{r, echo=FALSE, results='asis'}
 next.table <- next.state
@@ -287,7 +287,7 @@ knitr::kable(next.table, format="latex", align="c")
 ```
 \end{center}
 
-## Kodierer Matrix : Ausgangsbits
+## Faltungskodierer Matrix : Ausgangsbits
 \begin{center}
 ```{r, echo=FALSE, results='asis'}
 output.table <- output
@@ -324,9 +324,9 @@ Signal: (`r round(params$code, digits = 1)`)
 \vspace*{10mm}
 Kode: (`r ifelse(params$code >= 0, 0, 1)`)
 
-## Trellis Diagram `r if(params$soft.flag) "(soft decision)" else "(hard decision)"`
+## Viterbi-Algorithmus `r if(params$soft.flag) "(soft decision)" else "(hard decision)"`
 
-input: (`r ifelse(params$code >= 0, 0, 1)`)
+Input: (`r ifelse(params$code >= 0, 0, 1)`)
 \vfill
 \begin{tikzpicture}[>=stealth, font=\tiny]
 \tikzstyle{state} = [draw, circle, teal, thick, text=black, minimum size=3.5mm, inner sep=0mm]

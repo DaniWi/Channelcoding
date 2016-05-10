@@ -1,5 +1,5 @@
 ---
-title: "Faltungskode Dekodierung"
+title: "Faltungsdekodierung ohne Punktierung"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: beamer_presentation
 fontsize: 8pt
@@ -155,8 +155,8 @@ for (t in 0:(length(decoded)-1)) {
 
 # output label
 visibility <- paste0("\\visible<",ncol(trellis)+1,">")
-position <- paste0("below=.54 of statelabel",num.states - 1,".west, anchor=west")
-output.label <- paste0(visibility,"{\\node [orange, font=\\small,",position,"] (outlabel) {output:};}")
+position <- paste0("below=.51 of statelabel",num.states - 1,".west, anchor=west")
+output.label <- paste0(visibility,"{\\node [orange, font=\\small,",position,"] (outlabel) {Output:};}")
 tikz.trellis <- paste(tikz.trellis, output.label)
 
 # bit legend
@@ -192,9 +192,15 @@ for (t in 1:(ncol(trellis)-1)) {
           edge.0 <- paste0("\\alt<",ncol(trellis)+2-t,"-> {",color.edge,"}{",edge.0,"};")
         }
         else if (survivor.states[next.state[s+1,1]+1,t+1] != s) {
-          # remove non-survivor paths at the end
+          # remove non-survivor paths
           # edge.0 <- paste("\\alt<-",ncol(trellis),"> {",edge.0,"}{};")
           edge.0 <- paste("\\alt<1> {",edge.0,"}{};")
+        }
+        else {
+          # survivor path, but not THE correct path
+          # gray when correct path is colored orange
+          color.edge <- paste("\\draw[->, lightgray]",this.node,"--",next.node.0,label.0,";")
+          edge.0 <- paste0("\\alt<",ncol(trellis)+2-t,"-> {",color.edge,"}{",edge.0,"};")
         }
 
         tikz.trellis <- paste(tikz.trellis, edge.0)
@@ -215,6 +221,12 @@ for (t in 1:(ncol(trellis)-1)) {
           # remove non-survivor paths at the end
           # edge.1 <- paste("\\alt<-",ncol(trellis),"> {",edge.1,"}{};")
           edge.1 <- paste("\\alt<1> {",edge.1,"}{};")
+        }
+        else {
+          # survivor path, but not THE correct path
+          # gray when correct path is colored orange
+          color.edge <- paste("\\draw[->, dashed, lightgray]",this.node,"--",next.node.1,label.1,";")
+          edge.1 <- paste0("\\alt<",ncol(trellis)+2-t,"-> {",color.edge,"}{",edge.1,"};")
         }
 
         tikz.trellis <- paste(tikz.trellis, edge.1)
@@ -243,7 +255,7 @@ if (rsc.flag == FALSE) {
 }
 ```
 
-## Kodierer Information
+## Faltungskodierer Informationen
 
 - `r art.coder` Kodierer
 - Anzahl von Ausgängen : $$N=`r N`$$
@@ -251,7 +263,7 @@ if (rsc.flag == FALSE) {
 - Generatoren : $$`r generator.print`$$
 - Kode-Rate: $$\frac{1}{`r N`}$$
 
-## Kodierer Matrix : Nächster Zustand
+## Faltungskodierer Matrix : Nächster Zustand
 \begin{center}
 ```{r, echo=FALSE, results='asis'}
 next.table <- next.state
@@ -262,7 +274,7 @@ knitr::kable(next.table, format="latex", align="c")
 ```
 \end{center}
 
-## Kodierer Matrix : Ausgangsbits
+## Faltungskodierer Matrix : Ausgangsbits
 \begin{center}
 ```{r, echo=FALSE, results='asis'}
 output.table <- output
@@ -288,9 +300,9 @@ Signal: (`r round(params$code, digits = 1)`)
 \vspace*{10mm}
 Kode: (`r ifelse(params$code >= 0, 0, 1)`)
 
-## Trellis Diagramm `r if(params$soft.flag) "(soft decision)" else "(hard decision)"`
+## Viterbi-Algorithmus `r if(params$soft.flag) "(soft decision)" else "(hard decision)"`
 
-input: (`r ifelse(params$code >= 0, 0, 1)`)
+Input: (`r ifelse(params$code >= 0, 0, 1)`)
 \vfill
 \begin{tikzpicture}[>=stealth, font=\tiny]
 \tikzstyle{state} = [draw, circle, teal, thick, text=black, minimum size=3.5mm, inner sep=0mm]
