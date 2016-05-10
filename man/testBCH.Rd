@@ -4,7 +4,14 @@
 \alias{testBCH}
 \title{Testing BCH codes}
 \usage{
-testBCH(data, length, t)
+testBCH(data, length, t, visualize = FALSE)
+}
+\arguments{
+\item{data}{MSG}
+
+\item{length}{Length of MSG}
+
+\item{t}{Errors to correct}
 }
 \value{
 String

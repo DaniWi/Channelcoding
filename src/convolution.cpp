@@ -552,7 +552,7 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
  * output: the output-matrix of the convolutional encoder
  */
 // [[Rcpp::export]]
-List c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output, int IsTerminated) {
+List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output, int IsTerminated) {
 	
 	const int codeLen = code.size();
 	const int msgLen = (codeLen / N);		// includes termination bits (M termination bits)
@@ -582,9 +582,10 @@ List c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix pr
 	}
 	
 	// reverse mapping for hard decision decoding {-1,+1} --> {1,0}
+	IntegerVector code_int(codeLen);
 	for (int i = 0; i < codeLen; i++) {
 		// code[i] = (1 - code[i]) / 2;
-		code[i] = (code[i] >= 0) ? 0 : 1;
+		code_int[i] = (code[i] >= 0) ? 0 : 1;
 	}
 	
 	int index = 0;	// index to select correct code bit
@@ -609,8 +610,8 @@ List c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix pr
 				Min[1] = metric[t-1][previousState(s,2)];
 				for (int n = 0; n < N; n++) {
 					int sr = N-n-1;	// shift right
-					Min[0] += ((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> sr) & 0x01) ^ code[index+n];
-					Min[1] += ((output(previousState(s,2),survivorBit[t][s]) >> sr) & 0x01) ^ code[index+n];
+					Min[0] += ((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> sr) & 0x01) ^ code_int[index+n];
+					Min[1] += ((output(previousState(s,2),survivorBit[t][s]) >> sr) & 0x01) ^ code_int[index+n];
 				}
 				
 				previousMatrixColumn[t][s] = (Min[0] < Min[1]) ? survivorBit[t][s] : 2;
@@ -622,7 +623,7 @@ List c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix pr
 					Min[i] = metric[t-1][previousState(s,i)];
 					for (int n = 0; n < N; n++) {
 						int sr = N-n-1;	// shift right
-						Min[i] += ((output(previousState(s,i),i) >> sr) & 0x01) ^ code[index+n];
+						Min[i] += ((output(previousState(s,i),i) >> sr) & 0x01) ^ code_int[index+n];
 					}
 				}
 				

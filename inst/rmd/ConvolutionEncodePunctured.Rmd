@@ -326,6 +326,7 @@ punctuation.print <-
 - Kode-Rate : $$\frac{`r length(params$punctuation) / gcd.value`}{`r sum(params$punctuation) * N / gcd.value`}$$
 
 ## Kodierer Matrix : Nächster Zustand
+\begin{center}
 ```{r, echo=FALSE, results='asis'}
 next.table <- next.state
 colnames(next.table) <- c("Bit 0", "Bit 1")
@@ -333,8 +334,10 @@ row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(next.table) <- paste("Zustand ", row.counter)
 knitr::kable(next.table,format="latex",align="c")
 ```
+\end{center}
 
 ## Kodierer Matrix : Ausgangsbits
+\begin{center}
 ```{r, echo=FALSE, results='asis'}
 output.table <- output
 output.table <- matrix(decToBin(as.vector(output.table)), ncol = ncol(output.table))
@@ -343,6 +346,7 @@ row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(output.table) <- paste("Zustand ", row.counter)
 knitr::kable(output.table, format="latex", align="c")
 ```
+\end{center}
 
 ## Faltungskodierung
 

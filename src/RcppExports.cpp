@@ -110,12 +110,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_convolutionDecode_hard
-List c_convolutionDecode_hard(IntegerVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output, int IsTerminated);
+List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output, int IsTerminated);
 RcppExport SEXP channelcoding_c_convolutionDecode_hard(SEXP codeSEXP, SEXP NSEXP, SEXP MSEXP, SEXP previousStateSEXP, SEXP outputSEXP, SEXP IsTerminatedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< IntegerVector >::type code(codeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type code(codeSEXP);
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type M(MSEXP);
     Rcpp::traits::input_parameter< IntegerMatrix >::type previousState(previousStateSEXP);

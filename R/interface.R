@@ -66,7 +66,7 @@ decode = function(msg, type, params, visualize)
 #' @param visualize A flag for enabling visualization
 #' @return message with errors
 #' @export
-applyNoise <- function(msg, SNR.db = 5, visualize = FALSE)
+ApplyNoise <- function(msg, SNR.db = 5, visualize = FALSE)
 {
   msg.len <- length(msg);
   SNR.linear <- 10^(SNR.db/10);

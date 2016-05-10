@@ -5,7 +5,7 @@
 #  - generate non-recursive coder
 #  - generate rsc coder
 #  - encode
-#  - decode (soft in & out)
+#  - decode (soft decision)
 #  - decode (hard decision)
 #  - simulation
 #  - open pdf
@@ -157,15 +157,19 @@ GenerateRscEncoder <- function(N, M, generators) {
 #' @param conv.encoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code should be terminated, default: TRUE
 #' @param punctuation.matrix if not null the encoded message is punctured with the punctuation matrix
-#' @param visualize if TRUE a beamer pdf file is generated showing the encode process
+#' @param visualize if TRUE a beamer PDF file is generated showing the encode process
 #' @return the encoded message
 #' @examples
 #' coder <- GenerateConvEncoder(2,2,c(7,5))
 #' ConvEncode(c(1,0,0,1,1), coder)
 #' @author Martin Nocker
 #' @export
-ConvEncode <- function(message, conv.encoder = NULL, terminate = TRUE, punctuation.matrix = NULL, visualize = FALSE) {
-
+ConvEncode <- function(message,
+                       conv.encoder = NULL,
+                       terminate = TRUE,
+                       punctuation.matrix = NULL,
+                       visualize = FALSE)
+{
   stopifnot(length(message) > 0)
 
   if (any((message != 1)[message != 0])) {
@@ -242,7 +246,7 @@ ConvEncode <- function(message, conv.encoder = NULL, terminate = TRUE, punctuati
 #' @param conv.encoder convolutional encoder used for encoding [list]
 #' @param terminate flag if the code was terminated, default: TRUE
 #' @param punctuation.matrix if not null the code is depunctured prior to the decode algorithm
-#' @param visualize if TRUE a beamer pdf file is generated showing the decode process
+#' @param visualize if TRUE a beamer PDF file is generated showing the decode process
 #' @return the decoded message, list(softOutput, hardOutput)
 #' @examples
 #' coder <- GenerateConvEncoder(2,2,c(7,5))
@@ -250,8 +254,12 @@ ConvEncode <- function(message, conv.encoder = NULL, terminate = TRUE, punctuati
 #' ConvDecode(coded, coder)
 #' @author Martin Nocker
 #' @export
-ConvDecode <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.matrix = NULL, visualize = FALSE) {
-
+ConvDecode <- function(code,
+                       conv.encoder = NULL,
+                       terminate = TRUE,
+                       punctuation.matrix = NULL,
+                       visualize = FALSE)
+{
   stopifnot(length(code) > 0)
 
   if (is.null(conv.encoder)) {
@@ -273,7 +281,7 @@ ConvDecode <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.
     if(!is.null(punctuation.matrix)) {
       stop("Mistake during depunctuation!")
     }
-    stop("Code has the wrong length! (Code is maybe punctuated)")
+    stop("Code has the wrong length! (Code is maybe punctured)")
   }
 
   result <- c_convolutionDecode(code,
@@ -344,8 +352,12 @@ ConvDecode <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.
 #' ConvDecodeHard(coded, coder)
 #' @author Martin Nocker
 #' @export
-ConvDecodeHard <- function(code, conv.encoder = NULL, terminate = TRUE, punctuation.matrix = NULL, visualize = FALSE) {
-
+ConvDecodeHard <- function(code,
+                           conv.encoder = NULL,
+                           terminate = TRUE,
+                           punctuation.matrix = NULL,
+                           visualize = FALSE)
+{
   stopifnot(length(code) > 0)
 
   if (is.null(conv.encoder)) {
@@ -369,7 +381,7 @@ ConvDecodeHard <- function(code, conv.encoder = NULL, terminate = TRUE, punctuat
     if(!is.null(punctuation.matrix)) {
       stop("Mistake during depunctuation!")
     }
-    stop("Code has the wrong length! (Code is maybe punctuated)")
+    stop("Code has the wrong length! (Code is maybe punctured)")
   }
 
   result <- c_convolutionDecode_hard(code.copy,
@@ -424,26 +436,37 @@ ConvDecodeHard <- function(code, conv.encoder = NULL, terminate = TRUE, punctuat
 #'
 #' Simulation of a convolutional encode and decode process over a noisy channel
 #'
-#' @param coder convolutional coder used for the simulation
-#' @param msg.length message length of the encoded messages
+#' @param coder convolutional coder used for the simulation. Can be created via
+#'     \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.
+#' @param msg.length message length of the randomly created messages to be encoded
 #' @param iterations.per.db number of encode and decode processes per SNR
 #' @param min.db minimum SNR to be tested
 #' @param max.db maximum SNR to be tested
 #' @param db.interval step between two SNRs tested
-#' @param punctuation.matrix if not null the process involves the punctuation
-#' @return dataframe containing the bit-error-rates for several SNRs
+#' @param punctuation.matrix if not null the process involves the punctuation. Can
+#'     be created via \code{\link{GetPunctuationMatrix}}.
+#' @param visualize if true a PDF report is generated
+#' @return dataframe containing the bit-error-rates for each SNR tested
 #' @examples
 #' coder <- GenerateConvEncoder(2,2,c(7,5))
-#' ConvolutionSimulation(coder, 100, 100, 0.1, 2.0, 0.1, NULL)
+#' ConvSimulation(coder, 100, 100, 0.1, 2.0, 0.1, NULL)
+#'
+#' #all default parameters
+#' ConvSimulation()
+#'
+#' #without punctuation
+#' coder <- GenerateConvEncoder(2,2,c(7,5))
+#' ConvSimulation(coder, 10, 50, 0.01, 1, 0.05, NULL, TRUE)
 #' @author Martin Nocker
 #' @export
-ConvolutionSimulation <- function(coder = NULL,
-                                  msg.length = 100,
-                                  iterations.per.db = 100,
-                                  min.db = 0.1,
-                                  max.db = 2.0,
-                                  db.interval = 0.1,
-                                  punctuation.matrix = NULL)
+ConvSimulation <- function(coder = NULL,
+                           msg.length = 100,
+                           iterations.per.db = 100,
+                           min.db = 0.1,
+                           max.db = 2.0,
+                           db.interval = 0.1,
+                           punctuation.matrix = NULL,
+                           visualize = TRUE)
 {
   stopifnot(msg.length > 0, iterations.per.db > 0,
             min.db > 0, max.db > 0, max.db >= min.db, db.interval > 0)
@@ -497,31 +520,42 @@ ConvolutionSimulation <- function(coder = NULL,
 
   df <- data.frame(db = v.db, ber = v.ber)
 
-  rmarkdown::render(system.file("rmd", "Simulation.Rmd", package = "channelcoding"),
-                    output_dir = system.file("pdf", package = "channelcoding"),
-                    output_file = "ConvolutionSimulation.pdf",
-                    encoding = "UTF-8",
-                    params = list(turbo = FALSE,
-                                  message.length = msg.length,
-                                  iterations.per.db = iterations.per.db,
-                                  min.db = min.db,
-                                  max.db = max.db,
-                                  db.interval = db.interval,
-                                  punctuation = punctuation.matrix,
-                                  encoder = coder,
-                                  dataframe = df))
+  if (visualize) {
+    rmarkdown::render(system.file("rmd", "Simulation.Rmd", package = "channelcoding"),
+                      output_dir = system.file("pdf", package = "channelcoding"),
+                      output_file = "ConvolutionSimulation.pdf",
+                      encoding = "UTF-8",
+                      params = list(turbo = FALSE,
+                                    message.length = msg.length,
+                                    iterations.per.db = iterations.per.db,
+                                    min.db = min.db,
+                                    max.db = max.db,
+                                    db.interval = db.interval,
+                                    punctuation = punctuation.matrix,
+                                    encoder = coder,
+                                    dataframe = df))
 
-  rstudioapi::viewer(system.file("pdf", "ConvolutionSimulation.pdf", package = "channelcoding"))
+    rstudioapi::viewer(system.file("pdf", "ConvolutionSimulation.pdf", package = "channelcoding"))
+  }
 
   return(df)
 }
 
 #' Open visualization PDF
 #'
-#' Opens a PDF of the encode, decode or simulation visualizations or prints a message
-#' if the corresponding file does not exist yet.
+#' With this function it is easy to reopen the PDF files created with
+#'     \code{\link{ConvEncode}}, \code{\link{ConvDecode}},
+#'     \code{\link{ConvDecodeHard}} and \code{\link{ConvSimulation}}.
+#'     The files are stored in the program files of R.
+#'     If the corresponding file does not exist yet an error message is printed.
+#' @param encode flag to open encode PDFs (if true) or decode PDFs (if false)
+#' @param punctured flag to open encode or decode PDFs with punctuation
+#' @param simulation flag to open simulation PDFs. This flag has highest precedence
+#'     meaning that if the simulation flag is TRUE the function will look for the
+#'     simulation PDF. Only if FALSE the others are evaluated.
+#' @author Martin Nocker
 #' @export
-ConvolutionOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
+ConvOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
   if (simulation) {
     path <- system.file("pdf", "ConvolutionSimulation.pdf", package = "channelcoding")
   } else {

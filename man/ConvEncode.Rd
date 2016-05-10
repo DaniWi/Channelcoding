@@ -16,7 +16,7 @@ ConvEncode(message, conv.encoder = NULL, terminate = TRUE,
 
 \item{punctuation.matrix}{if not null the encoded message is punctured with the punctuation matrix}
 
-\item{visualize}{if TRUE a beamer pdf file is generated showing the encode process}
+\item{visualize}{if TRUE a beamer PDF file is generated showing the encode process}
 }
 \value{
 the encoded message

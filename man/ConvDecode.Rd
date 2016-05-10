@@ -16,7 +16,7 @@ ConvDecode(code, conv.encoder = NULL, terminate = TRUE,
 
 \item{punctuation.matrix}{if not null the code is depunctured prior to the decode algorithm}
 
-\item{visualize}{if TRUE a beamer pdf file is generated showing the decode process}
+\item{visualize}{if TRUE a beamer PDF file is generated showing the decode process}
 }
 \value{
 the decoded message, list(softOutput, hardOutput)
