@@ -35,10 +35,11 @@ N is an integer and gives the number of output bits per input bit.
     The generator polynom for the systematic output doesn't have to be
     passed as an argument. So the generators argument contains all polynoms
     for non-systematic outputs and at the last position the recursion
-    polynom. The LSB of the recursion polynom handles the input signal,
-    the other bits handle the memory outputs. The LSB of the output polynoms
+    polynom. The MSB of the recursion polynom handles the input signal,
+    the other bits handle the memory outputs. The MSB of the output polynoms
     handle the recursion output(!), not the original input signal. The other
-    bits also handle the memory outputs.
+    bits also handle the memory outputs. See 'The art of error correcting
+    coding' (p.92f) for a detailed definition and an example.
 }
 \examples{
 ConvGenerateRscEncoder(2,2,c(5,7))

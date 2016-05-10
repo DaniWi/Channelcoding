@@ -10,13 +10,13 @@
 #' @return Dataframe containing the bit-error-rates for each coding technique
 #'     and each SNR tested.
 #' @export
-ChannelcodingSimulation(msg.length = 100,
-                        min.db = 0.1,
-                        max.db = 2.0,
-                        db.interval = 0.1,
-                        visualize = FALSE)
+ChannelcodingSimulation <- function(msg.length = 100,
+                                    min.db = 0.1,
+                                    max.db = 2.0,
+                                    db.interval = 0.1,
+                                    visualize = FALSE)
 {
-  block.df <- BlockSimulation()
+  #block.df <- BlockSimulation()
 
   conv.df <- ConvSimulation(msg.length = msg.length,
                             min.db = min.db,
@@ -28,8 +28,11 @@ ChannelcodingSimulation(msg.length = 100,
                               max.db = max.db,
                               db.interval = db.interval)
 
-  df <- data.frame(db = block.df$db,
-                   block.ber = block.df$ber,
+  # df <- data.frame(db = block.df$db,
+  #                  block.ber = block.df$ber,
+  #                  conv.ber = conv.df$ber,
+  #                  turbo.ber = turbo.df$ber)
+  df <- data.frame(db = conv.df$db,
                    conv.ber = conv.df$ber,
                    turbo.ber = turbo.df$ber)
 
