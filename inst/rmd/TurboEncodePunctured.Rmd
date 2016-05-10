@@ -102,8 +102,8 @@ gcd <- function(n, m) {
 ```
 
 ```{r generatePrintVars, echo=FALSE}
-node.short <- 20
-node.long <- 35
+node.short <- 18
+node.long <- 36
 dots <- function (v, node) if(length(v) > node) ", ..." else ""
 
 if (params$encoder$rsc == TRUE) {
@@ -138,6 +138,8 @@ punctuation.print <-
 - Generatoren : $$`r generator.print`$$
 
 ## Kodierer Matrix : Nächster Zustand
+
+\begin{center}
 ```{r, results='asis'}
 next.table <- params$encoder$next.state
 colnames(next.table) <- c("Bit 0", "Bit 1")
@@ -145,8 +147,11 @@ row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(next.table) <- paste("Zustand ", row.counter)
 knitr::kable(next.table, format="latex", align="c")
 ```
+\end{center}
 
 ## Kodierer Matrix : Ausgangsbits
+
+\begin{center}
 ```{r, results='asis'}
 output.table <- params$encoder$output
 output.table <- matrix(decToBin(as.vector(output.table)), ncol = ncol(output.table))
@@ -155,8 +160,10 @@ row.counter <- rep(0:(dim(next.table)[1]-1))
 rownames(output.table) <- paste("Zustand ", row.counter)
 knitr::kable(output.table, format="latex", align="c")
 ```
+\end{center}
 
 ## Kodierer Matrix : Zustandsdiagramm
+
 ```{r}
 num.states <- 2^params$encoder$M
 
@@ -269,13 +276,15 @@ for (s in 0:(num.states-1)) {
 \end{tikzpicture}
 \end{center}
 
-## Turbo-Kodierer Information
+## Turbo-Kodierer Informationen
 
 - Interleaver : (`r head(params$permutation, node.long)``r dots(params$permutation, node.long)`)
 ```{r}
   gcd.value <- gcd(length(params$punctuation), sum(params$punctuation) * 3)
 ```
+\vspace*{6mm}
 - Kode-Rate : $$\frac{`r length(params$punctuation) / gcd.value`}{`r sum(params$punctuation) * 3 / gcd.value`}$$
+\vspace*{6mm}
 - Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
 
 ## Turbo-Kodierer mit Punktierung
@@ -317,26 +326,45 @@ for (s in 0:(num.states-1)) {
 \node [draw, fit=(encoder1) (interleaver) (encoder2) (multiplexer) (puncture)] (background) {};
 \end{scope}
 
+```{r MultiplexColor, include=FALSE}
+tikz.string <- character()
+vec <- head(params$multipl, node.short)
+for (i in c(0:((length(vec) / 3) - 1))) {
+  temp <- paste0(
+    "\\textcolor{orange}{", vec[i * 3 + 1], "}, ",
+    "\\textcolor{green}{", vec[i * 3 + 2], "}, ",
+    "\\textcolor{blue}{", vec[i * 3 + 3], "}",
+    collapse = ""
+  )
+  
+  if (i == ((length(vec) / 3) - 1)) {
+    tikz.string <- paste0(tikz.string, temp, collapse = "")
+  } else {
+    tikz.string <- paste0(tikz.string, temp, ", ", collapse = "")
+  }
+}
+```
+
 \visible<2>{
-  \node [showStyle] (showAbove) [above=3mm of background] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background, text=orange] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
   \draw [showDrawStyle] (showAbove) -- (afterInput.center);
-  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`}};
+  \node [showStyle] (showBelow) [below=3mm of background, text=green] {\textbf{`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`}};
   \draw [showDrawStyle] (showBelow) -- (afterParity1.center);
   }
 \visible<3>{
-  \node [showStyle] (showAbove) [above=3mm of background] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background, text=orange] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
   \draw [showDrawStyle] (showAbove) -- (afterInput.center);
   \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<4>{
-  \node [showStyle] (showAbove) [above=3mm of background] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background, text=blue] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
   \draw [showDrawStyle] (showAbove) -- (afterParity2.center);
   \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<5>{
-  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$multipl, node.short)``r dots(params$multipl, node.short)`}};
+  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r tikz.string``r dots(params$multipl, node.short)`}};
   \draw [showDrawStyle] (showBelow) -- (afterMultiplexer.center);
   }
 
@@ -344,3 +372,17 @@ for (s in 0:(num.states-1)) {
 \end{center}
 
 - Output : `r head(params$result, node.long)``r dots(params$result, node.long)`
+
+## Punktierung
+
+```{r, include=FALSE}
+punctured.code <- head(params$result, node.long)
+punctured.code[params$punctuation == 0] <- "*"
+punctured.code <- paste(punctured.code, collapse = " , ")
+```
+
+- Signal: `r head(params$multipl, node.long)``r dots(params$multipl, node.long)`
+\vspace*{6mm}
+- Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
+\vspace*{6mm}
+- Punktiertes Signal: `r punctured.code``r dots(params$result, node.long)`

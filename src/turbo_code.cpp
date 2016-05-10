@@ -4,9 +4,9 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-#define DEBUG 3
+#define DEBUG 0
 //noise standard deviation
-double sigma = 1.0;	
+double sigma = 1.0;
 double Lc = 2/(sigma * sigma);
 
 /* c_convolutionDecode
@@ -264,7 +264,7 @@ List c_turbo_decode
 	List decode2IBack(N_ITERATION);
 	List tempResultSoft(N_ITERATION);
 	List tempResultHard(N_ITERATION);
-	
+
 	NumericVector x_d_p(msg_len);  	//noisy data permutated
 	NumericVector Le1;    			//decoder #1 extrinsic likelihood
 	NumericVector Le1_p(msg_len);  	//decoder #1 extrinsic likelihood permuted
@@ -279,7 +279,7 @@ List c_turbo_decode
 	}
 
     for(int i = 0; i < N_ITERATION; i++)
-    {		
+    {
 		Le1 = c_sova(x_noisy, parity_noisy1, Le2_ip, 1, N, M, previous_state, output, output_index);
 
        //permute decoder#1 likelihoods to match decoder#2 order
@@ -308,7 +308,7 @@ List c_turbo_decode
 		}
 		Rprintf("\n");
 		#endif
-		
+
 		//vectors to save in the list
 		NumericVector Le1_o(msg_len);
 		NumericVector Le1_p_o(msg_len);
@@ -316,18 +316,18 @@ List c_turbo_decode
 		NumericVector Le2_ip_o(msg_len);
 		NumericVector soft(msg_len);
 		NumericVector hard(msg_len);
-		
+
 		//copy the vectors
 		for(int k = 0; k < msg_len; k++)
 		{
  			Le1_o[k] = Le1[k];
-			Le1_p_o[k] = Le1_p[k]; 
+			Le1_p_o[k] = Le1_p[k];
 			Le2_o[k] = Le2[k];
 			Le2_ip_o[k] = Le2_ip[k];
 			soft[k] = Lc * x_noisy[k] + Le1[k] + Le2_ip[k];
 			hard[k] = (soft[k] >= 0.0) ? 0 : 1;
 		}
-		
+
 		//save the vectors into the list
 		decode1[i] = Le1_o;
 		decode1I[i] = Le1_p_o;
@@ -335,7 +335,7 @@ List c_turbo_decode
 		decode2IBack[i] = Le2_ip_o;
 		tempResultSoft[i] = soft;
 		tempResultHard[i] = hard;
-		
+
 	}
 
 	NumericVector soft_output(msg_len);

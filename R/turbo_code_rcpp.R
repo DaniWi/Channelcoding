@@ -128,6 +128,9 @@ TurboEncode <-
     }
 
     if (visualize) {
+      if (length(message) > 10) {
+        warning("Maybe not the whole informations could be visualized!")
+      }
       if (!is.null(punctuation.matrix)) {
         rmarkdown::render(
           system.file("rmd", "TurboEncodePunctured.Rmd", package = "channelcoding"),
@@ -307,6 +310,9 @@ TurboDecode <-
     message.decoded <- list(output.soft = output.soft, output.hard = output.hard)
 
     if (visualize) {
+      if (length(output.hard) > 10 || iterations > 10) {
+        warning("Maybe not the whole informations could be visualized!")
+      }
       if (!is.null(punctuation.matrix)) {
         rmarkdown::render(
           system.file("rmd", "TurboDecodePunctured.Rmd", package = "channelcoding"),
