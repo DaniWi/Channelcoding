@@ -476,7 +476,7 @@ ConvSimulation <- function(coder = NULL,
     coder <- GenerateConvEncoder(2,2,c(7,5))
   }
 
-  CheckCoder(conv.encoder)
+  CheckCoder(coder)
 
   v.db <- seq(from = min.db, to = max.db, by = db.interval)
   v.ber <- numeric(0)
@@ -497,7 +497,7 @@ ConvSimulation <- function(coder = NULL,
       }
 
       # noise hinzufügen
-      noisy <- applyNoise(coded, db)
+      noisy <- ApplyNoise(coded, db)
 
       # anzahl flipped bits (channel errors)
       # coded.hard <- ifelse(coded >= 0, 0, 1)

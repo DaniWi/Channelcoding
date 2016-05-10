@@ -622,7 +622,7 @@ TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
 #' @param punctuation.matrix Punctuation matrix to puncture the output, will be created with \code{\link{TurboGetPunctuationMatrix}}.
 #' @param visualize Flag to decide whether to create a visualization pdf or not.
 #'
-#' @result DataFrame which contains the bit error rate for each signal/noise ratio step.
+#' @return DataFrame which contains the bit error rate for each signal/noise ratio step.
 #'
 #' @examples
 #' #all default parameters
@@ -674,7 +674,7 @@ TurboSimulation <- function(coder = NULL,
       }
 
       # add noise
-      noisy <- applyNoise(coded, db)
+      noisy <- ApplyNoise(coded, db)
 
       # decode
       decoded <- TurboDecode(noisy, perm, decode.iterations, coder,

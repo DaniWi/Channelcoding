@@ -111,8 +111,8 @@ testBCH = function(data, length, t, visualize=FALSE)
   }
 
   enc = .BCHEncode(as.integer(data),c(length,t),FALSE)
-  enc_error = ifelse(applyNoise(enc) <= 0.5, 0, 1)
-  dec = .BCHDecode(enc,c(length,t),FALSE)
+  enc_error = ifelse(ApplyNoise(enc) <= 0.5, 0, 1)
+  dec = .BCHDecode(enc_error,c(length,t),FALSE)
 
   if(visualize){
     rmarkdown::render(system.file("rmd", "BlockEncode.Rmd", package = "channelcoding"),
@@ -123,7 +123,7 @@ testBCH = function(data, length, t, visualize=FALSE)
                                     enc_error = enc_error,
                                     dec = dec))
 
-    #rstudioapi::viewer(system.file("pdf", "BlockEncode.pdf", package = "channelcoding"))
+    rstudioapi::viewer(system.file("pdf", "BlockEncode.pdf", package = "channelcoding"))
     return(dec)
   }else{
     return(rawToChar(packBits(dec[1:(length(dec)- (length(dec)%%8))])))
