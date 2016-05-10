@@ -1,3 +1,55 @@
+#' Channelcoding Simulation
+#'
+#' Simulation of channelcoding techniques (blockcodes, convolutional codes
+#'     and turbo codes) and comparison of their bit-error-rates.
+#' @param msg.length Message length of the randomly created messages to be encoded.
+#' @param min.db Minimum SNR to be tested.
+#' @param max.db Maximum SNR to be tested.
+#' @param db.interval Step between two SNRs tested.
+#' @param visualize If true a PDF report is generated.
+#' @return Dataframe containing the bit-error-rates for each coding technique
+#'     and each SNR tested.
+#' @export
+ChannelcodingSimulation(msg.length = 100,
+                        min.db = 0.1,
+                        max.db = 2.0,
+                        db.interval = 0.1,
+                        visualize = FALSE)
+{
+  block.df <- BlockSimulation()
+
+  conv.df <- ConvSimulation(msg.length = msg.length,
+                            min.db = min.db,
+                            max.db = max.db,
+                            db.interval = db.interval)
+
+  turbo.df <- TurboSimulation(msg.length = msg.length,
+                              min.db = min.db,
+                              max.db = max.db,
+                              db.interval = db.interval)
+
+  df <- data.frame(db = block.df$db,
+                   block.ber = block.df$ber,
+                   conv.ber = conv.df$ber,
+                   turbo.ber = turbo.df$ber)
+
+  if (visualize) {
+    rmarkdown::render(system.file("rmd", "ChannelcodingSimulation.Rmd", package = "channelcoding"),
+                      output_dir = system.file("pdf", package = "channelcoding"),
+                      output_file = "ChannelcodingSimulation.pdf",
+                      encoding = "UTF-8",
+                      params = list(message.length = msg.length,
+                                    min.db = min.db,
+                                    max.db = max.db,
+                                    db.interval = db.interval,
+                                    dataframe = df))
+
+    rstudioapi::viewer(system.file("pdf", "ChannelcodingSimulation.pdf", package = "channelcoding"))
+  }
+
+  return(df)
+}
+
 PunctureCode <- function(original.code, punctuation.matrix) {
   mask <- as.logical(punctuation.matrix)
 
