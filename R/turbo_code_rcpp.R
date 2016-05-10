@@ -25,7 +25,7 @@
 #'
 #' @param message Message which will be encoded.
 #' @param permutation.vector Permutation vector which will be created with \code{\link{TurboGetPermutation}}.
-#' @param coder.info Coder which will be created with \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.
+#' @param coder.info Coder which will be created with \code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.
 #' @param parity.index Index to decide which exit of the coder will be used for the encoding (>1).
 #'        Default value is always the last exit of the coder.
 #' @param punctuation.matrix Punctuation matrix to puncture the output, will be created with \code{\link{TurboGetPunctuationMatrix}}.
@@ -41,7 +41,7 @@
 #' print(message.encoded)
 #'
 #' #custom coder and permutation vector
-#' coder <- GenerateRscEncoder(2, 2, c(5, 7))
+#' coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
 #' perm <- TurboGetpermutation(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
 #' print(message.encoded)
@@ -63,7 +63,7 @@ TurboEncode <-
 
     if (is.null(coder.info)) {
       warning("Standard-Coder was used! RSC, N=2, M=2, Generators: (5,7)")
-      coder.info <- GenerateRscEncoder(2,2,c(5,7))
+      coder.info <- ConvGenerateRscEncoder(2,2,c(5,7))
     }
     if (is.null(permutation.vector)) {
       warning("Standard-Permutationvector was used! (PRIMITIVE)")
@@ -189,7 +189,7 @@ TurboEncode <-
 #' @param message Code which will be decoded to the original message.
 #' @param permutation.vector Permutation vector which will be created with \code{\link{TurboGetPermutation}}.
 #' @param iterations Amount of decoding iterations.
-#' @param coder.info Coder which will be created with \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.
+#' @param coder.info Coder which will be created with \code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.
 #' @param parity.index Index to decide which exit of the coder will be used for the encoding (>1).
 #'        Default value is always the last exit of the coder.
 #' @param punctuation.matrix Punctuation matrix to puncture the output, will be created with \code{\link{TurboGetPunctuationMatrix}}.
@@ -206,7 +206,7 @@ TurboEncode <-
 #' print(result)
 #'
 #' #custom coder and permutation vector
-#' coder <- GenerateRscEncoder(2, 2, c(5, 7))
+#' coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
 #' perm <- TurboGetpermutation(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
 #' result <- TurboDecode(message.encoded, perm, 5, coder)
@@ -230,7 +230,7 @@ TurboDecode <-
 
     if (is.null(coder.info)) {
       warning("Standard-Coder was used! RSC, N=2, M=2, Generators: (5,7)")
-      coder.info <- GenerateRscEncoder(2,2,c(5,7))
+      coder.info <- ConvGenerateRscEncoder(2,2,c(5,7))
     }
 
     #Checks all parameters
@@ -609,7 +609,7 @@ TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
 #' is applied to different signal/noise ratios. The result will be printed in a graph, when
 #' visualization flag is set to TRUE.
 #'
-#' @param coder Coder which will be created with \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.
+#' @param coder Coder which will be created with \code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.
 #' @param permutation.type Type of permutation vector.
 #' @param permutation.args Arguments to the \code{\link{TurboGetPermutation}} function.
 #' @param decode.iterations Amount of decoding iterations inside the turbo decoder.
@@ -629,7 +629,7 @@ TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
 #' TurboSimulation()
 #'
 #' #without punctuation
-#' coder <- GenerateRscEncoder(2, 2, c(5, 7))
+#' coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
 #' TurboSimulation(coder, "RANDOM", NULL, 5, 10, 50, 0.01, 1, 0.05, NULL, TRUE)
 #'
 #' @export
@@ -643,14 +643,14 @@ TurboSimulation <- function(coder = NULL,
                             max.db = 2.0,
                             db.interval = 0.1,
                             punctuation.matrix = NULL,
-                            visualize = TRUE)
+                            visualize = FALSE)
 {
   stopifnot(decode.iterations > 0, msg.length > 0, iterations.per.db > 0,
             min.db > 0, max.db > 0, max.db >= min.db, db.interval > 0)
 
   if (is.null(coder)) {
     warning("Standard-Coder was used! RSC, N=2, M=2, Generators: (5,7)")
-    coder <- GenerateRscEncoder(2,2,c(5,7))
+    coder <- ConvGenerateRscEncoder(2,2,c(5,7))
   }
 
   v.db <- seq(from = min.db, to = max.db, by = db.interval)

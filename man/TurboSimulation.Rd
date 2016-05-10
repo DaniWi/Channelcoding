@@ -7,10 +7,10 @@
 TurboSimulation(coder = NULL, permutation.type = "PRIMITIVE",
   permutation.args = list(root = 0), decode.iterations = 10,
   msg.length = 100, iterations.per.db = 100, min.db = 0.1, max.db = 2,
-  db.interval = 0.1, punctuation.matrix = NULL, visualize = TRUE)
+  db.interval = 0.1, punctuation.matrix = NULL, visualize = FALSE)
 }
 \arguments{
-\item{coder}{Coder which will be created with \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.}
+\item{coder}{Coder which will be created with \code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.}
 
 \item{permutation.type}{Type of permutation vector.}
 
@@ -48,7 +48,7 @@ visualization flag is set to TRUE.
 TurboSimulation()
 
 #without punctuation
-coder <- GenerateRscEncoder(2, 2, c(5, 7))
+coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
 TurboSimulation(coder, "RANDOM", NULL, 5, 10, 50, 0.01, 1, 0.05, NULL, TRUE)
 
 }

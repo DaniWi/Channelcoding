@@ -13,7 +13,7 @@ TurboEncode(message, permutation.vector = NULL, coder.info = NULL,
 
 \item{permutation.vector}{Permutation vector which will be created with \code{\link{TurboGetPermutation}}.}
 
-\item{coder.info}{Coder which will be created with \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.}
+\item{coder.info}{Coder which will be created with \code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.}
 
 \item{parity.index}{Index to decide which exit of the coder will be used for the encoding (>1).
 Default value is always the last exit of the coder.}
@@ -43,7 +43,7 @@ message.encoded <- TurboEncode(input)
 print(message.encoded)
 
 #custom coder and permutation vector
-coder <- GenerateRscEncoder(2, 2, c(5, 7))
+coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
 perm <- TurboGetpermutation(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
 print(message.encoded)
