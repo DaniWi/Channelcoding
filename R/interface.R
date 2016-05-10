@@ -8,7 +8,7 @@
 #' @param visualize A flag for enabling visualization
 #' @return encoded message
 #' @export
-encode = function(msg, type, params, visualize)
+Encode = function(msg, type, params, visualize)
 {
   switch(type,
          HAMMING={
@@ -38,7 +38,7 @@ encode = function(msg, type, params, visualize)
 #' @param visualize A flag for enabling visualization
 #' @return decoded message
 #' @export
-decode = function(msg, type, params, visualize)
+Decode = function(msg, type, params, visualize)
 {
   switch(type,
          HAMMING={
@@ -66,7 +66,7 @@ decode = function(msg, type, params, visualize)
 #' @param visualize A flag for enabling visualization
 #' @return message with errors
 #' @export
-ApplyNoise <- function(msg, SNR.db = 5, visualize = FALSE)
+ApplyNoise <- function(msg, SNR.db = 3)
 {
   msg.len <- length(msg);
   SNR.linear <- 10^(SNR.db/10);
@@ -77,20 +77,6 @@ ApplyNoise <- function(msg, SNR.db = 5, visualize = FALSE)
   noise <- sqrt(power / SNR.linear) * rnorm(msg.len,0,1)
 
   msg.out <- msg + noise;
-
-  if (visualize) {
-    v.flipped <- (msg + msg.out) %% 2;
-    # rle: run-length-encoding of the noise(v_flipped) vector
-    # results in a table with values and lengths
-    rlenc <- rle(v.flipped);
-    # get number of n-bit errors (where value==1)
-    my.sample <- rlenc$lengths[rlenc$values == 1];
-    # plot as table of n-bit error occurences
-    # from 1 to highest occuring error (most neighbouring error bits)
-    error.sum <- sum(v.flipped);
-    max.errorbits <- max(3,rlenc$lengths[rlenc$values == 1]);
-    barplot(table(factor(my.sample,levels=1:max.errorbits)),main=paste("Total error bits:",error.sum));
-  }
 
   return(msg.out);
 }

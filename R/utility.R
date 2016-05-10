@@ -1,36 +1,3 @@
-#' get punctuation matrix from vector
-#'
-#' creates a punctuation matrix from the passed punctuation vector and the
-#' passed coder
-#' @param punctuation.vector vector containing the punctuation information which will
-#'     be transformed to a punctuation matrix
-#' @param coder.info channelcoder which is used for the matrix dimensions
-#' @return punctuation matrix suitable for encode and decode
-#' @export
-GetPunctuationMatrix <- function(punctuation.vector, coder.info) {
-
-  if (any((punctuation.vector != 1)[punctuation.vector != 0])) {
-    # punctuation.vector has elements with value different from 0 or 1 which is not allowed
-    stop("Invalid punctuation vector! Only values 0/1 are allowed!")
-  }
-
-  if (is.null(coder.info$N)) {
-    stop("Encoder has to specify list element N!")
-  }
-
-  if (length(punctuation.vector) %% coder.info$N != 0) {
-    stop("Wrong length of punctuation vector! Must be a multiple of N (amount of exits)!")
-  }
-
-  mat <- matrix(punctuation.vector, nrow = coder.info$N)
-
-  if (any(colSums(mat) == 0)) {
-    stop("Punctuation matrix should not have a 0 column!")
-  }
-
-  return(mat)
-}
-
 PunctureCode <- function(original.code, punctuation.matrix) {
   mask <- as.logical(punctuation.matrix)
 

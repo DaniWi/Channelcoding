@@ -10,7 +10,7 @@
 #  - simulation
 #  - open pdf
 
-#' generate convolutional encoder
+#' Generate convolutional encoder.
 #'
 #' Generates a convolutional encoder for nonrecursive convolutional codes.
 #' @details N is an integer and gives the number of output bits per input bit.
@@ -26,17 +26,18 @@
 #'     element). Therefore octal 5 means the output symbol is computed as
 #'     the xor combination of the input symbol and the last memory element's
 #'     output.
-#' @param N numer ob output symbols per input symbol
-#' @param M memory length of the encoder
-#' @param generators vector of N octal generator polynoms
-#'     (one for each output symbol)
-#' @return a convolutional encoder represented as a list containing:
+#' @param N Numer ob output symbols per input symbol.
+#' @param M Memory length of the encoder.
+#' @param generators Vector of N octal generator polynoms
+#'     (one for each output symbol).
+#' @return A convolutional encoder represented as a list containing:
 #'     N, M, vector of generator polynoms,
-#'     4 matrices: nextState, previousState, output and termination, rsc (flag)
-#' @examples GenerateConvEncoder(2,2,c(7,5))
+#'     4 matrices: nextState, previousState, output and termination, rsc (flag),
+#'     termination vector
+#' @examples ConvGenerateEncoder(2,2,c(7,5))
 #' @author Martin Nocker
 #' @export
-GenerateConvEncoder <- function(N, M, generators) {
+ConvGenerateEncoder <- function(N, M, generators) {
 
   stopifnot(N > 1, M > 0)
 
@@ -81,7 +82,7 @@ GenerateConvEncoder <- function(N, M, generators) {
   return(conv.encoder)
 }
 
-#' generate rsc encoder
+#' Generate rsc encoder.
 #'
 #' Generates a recursive systematic convolutional (rsc) encoder.
 #' @details N is an integer and gives the number of output bits per input bit.
@@ -90,7 +91,7 @@ GenerateConvEncoder <- function(N, M, generators) {
 #'     has to be at least one.
 #'     The generator polynoms define how the output bits are computed for each
 #'     of the N output signals. The polynoms are octal numbers. See details of
-#'     \code{\link{GenerateConvEncoder}} for an example.
+#'     \code{\link{ConvGenerateEncoder}} for an example.
 #'     An rsc encoder has exactly one fixed systematic output signal.
 #'     The generator polynom for the systematic output doesn't have to be
 #'     passed as an argument. So the generators argument contains all polynoms
@@ -99,17 +100,18 @@ GenerateConvEncoder <- function(N, M, generators) {
 #'     the other bits handle the memory outputs. The LSB of the output polynoms
 #'     handle the recursion output(!), not the original input signal. The other
 #'     bits also handle the memory outputs.
-#' @param N numer ob output symbols per input symbol
-#' @param M memory length of the encoder
-#' @param generators vector of generator polynoms
-#'     (one for each non-systematic output symbol and one for the recursion)
-#' @return a convolutional encoder represented as a list containing:
+#' @param N Numer ob output symbols per input symbol.
+#' @param M Memory length of the encoder.
+#' @param generators Vector of generator polynoms
+#'     (one for each non-systematic output symbol and one for the recursion).
+#' @return A convolutional encoder represented as a list containing:
 #'     N, M, vector of generator polynoms,
-#'     4 matrices: nextState, previousState, output and termination, rsc (flag)
-#' @examples GenerateRscEncoder(2,2,c(5,7))
+#'     4 matrices: nextState, previousState, output and termination, rsc (flag),
+#'     termination vector
+#' @examples ConvGenerateRscEncoder(2,2,c(5,7))
 #' @author Martin Nocker
 #' @export
-GenerateRscEncoder <- function(N, M, generators) {
+ConvGenerateRscEncoder <- function(N, M, generators) {
 
   stopifnot(N > 1, M > 0)
 
@@ -150,17 +152,17 @@ GenerateRscEncoder <- function(N, M, generators) {
   return(conv.encoder)
 }
 
-#' convolutional encoding of a message
+#' Convolutional encoding of a message.
 #'
-#' \code{ConvEncode} produces a convolutional code of a message
-#' @param message the message to be encoded
-#' @param conv.encoder convolutional encoder used for encoding [list]
-#' @param terminate flag if the code should be terminated, default: TRUE
-#' @param punctuation.matrix if not null the encoded message is punctured with the punctuation matrix
-#' @param visualize if TRUE a beamer PDF file is generated showing the encode process
-#' @return the encoded message
+#' Produces a convolutional code of a message.
+#' @param message The message to be encoded.
+#' @param conv.encoder Convolutional encoder used for encoding.
+#' @param terminate Flag if the code should be terminated.
+#' @param punctuation.matrix If not null the encoded message is punctured with the punctuation matrix.
+#' @param visualize If TRUE a beamer PDF file is generated showing the encode process.
+#' @return The encoded message with signal values {-1,+1} which map to {1,0} respectively.
 #' @examples
-#' coder <- GenerateConvEncoder(2,2,c(7,5))
+#' coder <- ConvGenerateEncoder(2,2,c(7,5))
 #' ConvEncode(c(1,0,0,1,1), coder)
 #' @author Martin Nocker
 #' @export
@@ -178,7 +180,7 @@ ConvEncode <- function(message,
 
   if (is.null(conv.encoder)) {
     warning("Standard Convolutional Coder was used! N=2, M=2, Generators: (7,5)")
-    conv.encoder <- GenerateConvEncoder(2,2,c(7,5))
+    conv.encoder <- ConvGenerateEncoder(2,2,c(7,5))
   }
 
   CheckCoder(conv.encoder)
@@ -238,33 +240,33 @@ ConvEncode <- function(message,
   return(code)
 }
 
-#' convolutional decoding of a code (soft decision)
+#' Convolutional decoding of a code (soft decision).
 #'
-#' \code{ConvDecode} decodes a convolutional codeword
-#' This decoder is a soft-input soft-output decoder
-#' @param code the code to be decoded
-#' @param conv.encoder convolutional encoder used for encoding [list]
-#' @param terminate flag if the code was terminated, default: TRUE
-#' @param punctuation.matrix if not null the code is depunctured prior to the decode algorithm
-#' @param visualize if TRUE a beamer PDF file is generated showing the decode process
-#' @return the decoded message, list(softOutput, hardOutput)
+#' Decodes a convolutional codeword.
+#' This decoder is a soft-input soft-output decoder.
+#' @param code The code to be decoded.
+#' @param conv.encoder Convolutional encoder used for encoding.
+#' @param terminate flag If the code was terminated.
+#' @param punctuation.matrix If not null the code is depunctured prior to the decode algorithm.
+#' @param visualize If TRUE a beamer PDF file is generated showing the decode process.
+#' @return The decoded message, list(softOutput, hardOutput)
 #' @examples
-#' coder <- GenerateConvEncoder(2,2,c(7,5))
+#' coder <- ConvGenerateEncoder(2,2,c(7,5))
 #' coded <- ConvEncode(c(1,0,0,1,1), coder)
-#' ConvDecode(coded, coder)
+#' ConvDecodeSoft(coded, coder)
 #' @author Martin Nocker
 #' @export
-ConvDecode <- function(code,
-                       conv.encoder = NULL,
-                       terminate = TRUE,
-                       punctuation.matrix = NULL,
-                       visualize = FALSE)
+ConvDecodeSoft <- function(code,
+                           conv.encoder = NULL,
+                           terminate = TRUE,
+                           punctuation.matrix = NULL,
+                           visualize = FALSE)
 {
   stopifnot(length(code) > 0)
 
   if (is.null(conv.encoder)) {
     warning("Standard Convolutional Coder was used! N=2, M=2, Generators: (7,5)")
-    conv.encoder <- GenerateConvEncoder(2,2,c(7,5))
+    conv.encoder <- ConvGenerateEncoder(2,2,c(7,5))
   }
 
   CheckCoder(conv.encoder)
@@ -340,14 +342,14 @@ ConvDecode <- function(code,
   return(result)
 }
 
-#' convolutional decoding of a code (hard decision)
+#' Convolutional decoding of a code (hard decision).
 #'
-#' \code{ConvDecodeHard} decodes a codeword that was encoded with the given
-#' encoder. This decoder is a hard-decision decoder
-#' @inheritParams ConvDecode
-#' @return the hard-decoded message vector
+#' Decodes a codeword that was encoded with the given encoder.
+#' This decoder is a hard-decision decoder.
+#' @inheritParams ConvDecodeSoft
+#' @return The hard-decoded message vector.
 #' @examples
-#' coder <- GenerateConvEncoder(2,2,c(7,5))
+#' coder <- ConvGenerateEncoder(2,2,c(7,5))
 #' coded <- ConvEncode(c(1,0,0,1,1), coder)
 #' ConvDecodeHard(coded, coder)
 #' @author Martin Nocker
@@ -362,7 +364,7 @@ ConvDecodeHard <- function(code,
 
   if (is.null(conv.encoder)) {
     warning("Standard Convolutional Coder was used! N=2, M=2, Generators: (7,5)")
-    conv.encoder <- GenerateConvEncoder(2,2,c(7,5))
+    conv.encoder <- ConvGenerateEncoder(2,2,c(7,5))
   }
 
   CheckCoder(conv.encoder)
@@ -432,51 +434,48 @@ ConvDecodeHard <- function(code,
   return(result$output.hard)
 }
 
-#' Convolutional Simulation
+#' Convolutional Simulation.
 #'
-#' Simulation of a convolutional encode and decode process over a noisy channel
+#' Simulation of a convolutional encode and decode process over a noisy channel.
 #'
-#' @param coder convolutional coder used for the simulation. Can be created via
-#'     \code{\link{GenerateConvEncoder}} or \code{\link{GenerateRscEncoder}}.
-#' @param msg.length message length of the randomly created messages to be encoded
-#' @param iterations.per.db number of encode and decode processes per SNR
-#' @param min.db minimum SNR to be tested
-#' @param max.db maximum SNR to be tested
-#' @param db.interval step between two SNRs tested
-#' @param punctuation.matrix if not null the process involves the punctuation. Can
-#'     be created via \code{\link{GetPunctuationMatrix}}.
-#' @param visualize if true a PDF report is generated
-#' @return dataframe containing the bit-error-rates for each SNR tested
+#' @param coder Convolutional coder used for the simulation. Can be created via
+#'     \code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.
+#' @param msg.length Message length of the randomly created messages to be encoded.
+#' @param iterations.per.db Number of encode and decode processes per SNR.
+#' @param min.db Minimum SNR to be tested.
+#' @param max.db Maximum SNR to be tested.
+#' @param db.interval Step between two SNRs tested.
+#' @param punctuation.matrix If not null the process involves the punctuation. Can
+#'     be created via \code{\link{ConvGetPunctuationMatrix}}.
+#' @param visualize If true a PDF report is generated.
+#' @return Dataframe containing the bit-error-rates for each SNR tested.
 #' @examples
-#' coder <- GenerateConvEncoder(2,2,c(7,5))
-#' ConvSimulation(coder, 100, 100, 0.1, 2.0, 0.1, NULL)
-#'
 #' #all default parameters
 #' ConvSimulation()
 #'
 #' #without punctuation
-#' coder <- GenerateConvEncoder(2,2,c(7,5))
-#' ConvSimulation(coder, 10, 50, 0.01, 1, 0.05, NULL, TRUE)
+#' coder <- ConvGenerateEncoder(2,2,c(7,5))
+#' ConvSimulation(coder, 10, 50, 0.01, 1, 0.05, NULL, FALSE)
 #' @author Martin Nocker
 #' @export
-ConvSimulation <- function(coder = NULL,
+ConvSimulation <- function(conv.coder = NULL,
                            msg.length = 100,
                            iterations.per.db = 100,
                            min.db = 0.1,
                            max.db = 2.0,
                            db.interval = 0.1,
                            punctuation.matrix = NULL,
-                           visualize = TRUE)
+                           visualize = FALSE)
 {
   stopifnot(msg.length > 0, iterations.per.db > 0,
             min.db > 0, max.db > 0, max.db >= min.db, db.interval > 0)
 
-  if (is.null(coder)) {
+  if (is.null(conv.coder)) {
     warning("Standard Convolutional Coder was used! N=2, M=2, Generators: (7,5)")
-    coder <- GenerateConvEncoder(2,2,c(7,5))
+    conv.coder <- ConvGenerateEncoder(2,2,c(7,5))
   }
 
-  CheckCoder(coder)
+  CheckCoder(conv.coder)
 
   v.db <- seq(from = min.db, to = max.db, by = db.interval)
   v.ber <- numeric(0)
@@ -489,7 +488,7 @@ ConvSimulation <- function(coder = NULL,
       message <- sample(c(0,1), msg.length, replace = TRUE)
 
       # encode
-      coded <- ConvEncode(message, coder, punctuation.matrix = punctuation.matrix)
+      coded <- ConvEncode(message, conv.coder, punctuation.matrix = punctuation.matrix)
 
       # wenn punktiert, muss codierte nachricht aus liste geholt werden
       if (!is.null(punctuation.matrix)) {
@@ -505,7 +504,7 @@ ConvSimulation <- function(coder = NULL,
       # channel.errors <- sum(abs(coded.hard - noisy.hard))
 
       # decode
-      decoded <- ConvDecode(noisy, coder, punctuation.matrix = punctuation.matrix)
+      decoded <- ConvDecodeSoft(noisy, conv.coder, punctuation.matrix = punctuation.matrix)
 
       # vgl decoded & message
       decode.errors <- sum(abs(decoded$output.hard - message))
@@ -532,7 +531,7 @@ ConvSimulation <- function(coder = NULL,
                                     max.db = max.db,
                                     db.interval = db.interval,
                                     punctuation = punctuation.matrix,
-                                    encoder = coder,
+                                    encoder = conv.coder,
                                     dataframe = df))
 
     rstudioapi::viewer(system.file("pdf", "ConvolutionSimulation.pdf", package = "channelcoding"))
@@ -541,16 +540,16 @@ ConvSimulation <- function(coder = NULL,
   return(df)
 }
 
-#' Open visualization PDF
+#' Open visualization PDF.
 #'
 #' With this function it is easy to reopen the PDF files created with
-#'     \code{\link{ConvEncode}}, \code{\link{ConvDecode}},
+#'     \code{\link{ConvEncode}}, \code{\link{ConvDecodeSoft}},
 #'     \code{\link{ConvDecodeHard}} and \code{\link{ConvSimulation}}.
 #'     The files are stored in the program files of R.
 #'     If the corresponding file does not exist yet an error message is printed.
-#' @param encode flag to open encode PDFs (if true) or decode PDFs (if false)
-#' @param punctured flag to open encode or decode PDFs with punctuation
-#' @param simulation flag to open simulation PDFs. This flag has highest precedence
+#' @param encode Flag to open encode PDFs (if true) or decode PDFs (if false).
+#' @param punctured Flag to open encode or decode PDFs with punctuation.
+#' @param simulation Flag to open simulation PDFs. This flag has highest precedence
 #'     meaning that if the simulation flag is TRUE the function will look for the
 #'     simulation PDF. Only if FALSE the others are evaluated.
 #' @author Martin Nocker
@@ -578,4 +577,38 @@ ConvOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
   } else {
     stop("File does not exists!")
   }
+}
+
+#' Get punctuation matrix from vector.
+#'
+#' Creates a punctuation matrix from the passed punctuation vector and the
+#' passed coder.
+#' @param punctuation.vector Vector containing the punctuation information which will
+#'     be transformed to a punctuation matrix.
+#' @param conv.coder Convolutional coder which is used for the matrix dimensions.
+#' @return Punctuation matrix suitable for \code{\link{ConvEncode}}, \code{\link{ConvDecodeSoft}},
+#'     \code{\link{ConvDecodeHard}} and \code{\link{ConvSimulation}}.
+#' @export
+ConvGetPunctuationMatrix <- function(punctuation.vector, conv.coder) {
+
+  if (any((punctuation.vector != 1)[punctuation.vector != 0])) {
+    # punctuation.vector has elements with value different from 0 or 1 which is not allowed
+    stop("Invalid punctuation vector! Only values 0/1 are allowed!")
+  }
+
+  if (is.null(conv.coder$N)) {
+    stop("Encoder has to specify list element N!")
+  }
+
+  if (length(punctuation.vector) %% conv.coder$N != 0) {
+    stop("Wrong length of punctuation vector! Must be a multiple of N (amount of exits)!")
+  }
+
+  mat <- matrix(punctuation.vector, nrow = conv.coder$N)
+
+  if (any(colSums(mat) == 0)) {
+    stop("Punctuation matrix should not have a 0 column!")
+  }
+
+  return(mat)
 }
