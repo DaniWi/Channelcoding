@@ -316,7 +316,7 @@ if (rsc.flag == FALSE) {
 - Anzahl von Ausgängen : $$N=`r N`$$
 - Anzahl von Registern : $$M=`r M`$$
 - Generatoren : $$`r generator.print`$$
-- Kode-Rate: $$\frac{1}{`r N`}$$
+- Kode-Rate : $$\frac{1}{`r N`}$$
 
 ## Faltungskodierer Matrix : Nächster Zustand
 \begin{center}
@@ -343,7 +343,7 @@ knitr::kable(output.table, format="latex", align="c")
 
 ## Faltungskodierung
 
-Input: (`r message`)
+Input : (`r message`)
 \begin{center}
 \begin{minipage}{.45\textwidth}
 \begin{center}
@@ -352,7 +352,7 @@ Input: (`r message`)
   `r encode.table`
 \end{tabular}
 \end{center}
-Output: `r alt.output`
+Output : `r alt.output`
 \end{minipage}
 \hfill
 \begin{minipage}{.45\textwidth}
@@ -365,9 +365,9 @@ Output: `r alt.output`
 \end{minipage}
 \end{center}
 
-## Output: Kode zu Signal
+## Output : Kode zu Signal
 
-Kode: (`r ifelse(params$code >= 0, 0, 1)`)
+Kode : (`r ifelse(params$code >= 0, 0, 1)`)
 \vspace*{10mm}
 \begin{equation*}
   \text{Signal(bit)} =
@@ -377,4 +377,4 @@ Kode: (`r ifelse(params$code >= 0, 0, 1)`)
   \end{cases}
 \end{equation*}
 \vspace*{10mm}
-Signal: (`r params$code`)
+Signal : (`r params$code`)

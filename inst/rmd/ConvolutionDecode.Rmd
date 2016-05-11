@@ -156,7 +156,7 @@ for (t in 0:(length(decoded)-1)) {
 # output label
 visibility <- paste0("\\visible<",ncol(trellis)+1,">")
 position <- paste0("below=.51 of statelabel",num.states - 1,".west, anchor=west")
-output.label <- paste0(visibility,"{\\node [orange, font=\\small,",position,"] (outlabel) {Output:};}")
+output.label <- paste0(visibility,"{\\node [orange, font=\\small,",position,"] (outlabel) {Output :};}")
 tikz.trellis <- paste(tikz.trellis, output.label)
 
 # bit legend
@@ -261,7 +261,7 @@ if (rsc.flag == FALSE) {
 - Anzahl von Ausgängen : $$N=`r N`$$
 - Anzahl von Registern : $$M=`r M`$$
 - Generatoren : $$`r generator.print`$$
-- Kode-Rate: $$\frac{1}{`r N`}$$
+- Kode-Rate : $$\frac{1}{`r N`}$$
 
 ## Faltungskodierer Matrix : Nächster Zustand
 \begin{center}
@@ -288,7 +288,7 @@ knitr::kable(output.table, format="latex", align="c")
 
 ## Input: Signal zu Kode
 
-Signal: (`r round(params$code, digits = 1)`)
+Signal : (`r round(params$code, digits = 1)`)
 \vspace*{10mm}
 \begin{equation*}
   \text{Kode(signal)} =
@@ -298,11 +298,11 @@ Signal: (`r round(params$code, digits = 1)`)
   \end{cases}
 \end{equation*}
 \vspace*{10mm}
-Kode: (`r ifelse(params$code >= 0, 0, 1)`)
+Kode : (`r ifelse(params$code >= 0, 0, 1)`)
 
 ## Viterbi-Algorithmus `r if(params$soft.flag) "(soft decision)" else "(hard decision)"`
 
-Input: (`r ifelse(params$code >= 0, 0, 1)`)
+Input : (`r ifelse(params$code >= 0, 0, 1)`)
 \vfill
 \begin{tikzpicture}[>=stealth, font=\tiny]
 \tikzstyle{state} = [draw, circle, teal, thick, text=black, minimum size=3.5mm, inner sep=0mm]

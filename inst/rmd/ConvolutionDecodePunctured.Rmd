@@ -174,7 +174,7 @@ for (t in 0:(length(decoded)-1)) {
 # output label
 visibility <- paste0("\\visible<",ncol(trellis)+1,">")
 position <- paste0("below=.54 of statelabel",num.states - 1,".west, anchor=west")
-output.label <- paste0(visibility,"{\\node [orange, font=\\small,",position,"] (outlabel) {Output:};}")
+output.label <- paste0(visibility,"{\\node [orange, font=\\small,",position,"] (outlabel) {Output :};}")
 tikz.trellis <- paste(tikz.trellis, output.label)
 
 # bit legend
@@ -310,18 +310,18 @@ punct <- rep(params$punctuation, length.out = length(params$code))
 depunctured.colored <- paste(ifelse(punct == 0, color.wrap(code.rounded), code.rounded), collapse = ", ")
 ```
 
-- Punktiertes Signal: (`r round(params$punctured.code, digits = 1)`)
+- Punktiertes Signal : (`r round(params$punctured.code, digits = 1)`)
 \vspace*{10mm}
-- Punktierungs-Matrix:
+- Punktierungs-Matrix :
 \begin{equation*}
   \begin{pmatrix}  `r punctuation.print`  \end{pmatrix}
 \end{equation*}
 \vspace*{10mm}
-- Depunktiertes Signal: (`r depunctured.colored`)
+- Depunktiertes Signal : (`r depunctured.colored`)
 
-## Input: Signal zu Kode
+## Input : Signal zu Kode
 
-Signal: (`r round(params$code, digits = 1)`)
+Signal : (`r round(params$code, digits = 1)`)
 \vspace*{10mm}
 \begin{equation*}
   \text{Kode(signal)} =
@@ -331,11 +331,11 @@ Signal: (`r round(params$code, digits = 1)`)
   \end{cases}
 \end{equation*}
 \vspace*{10mm}
-Kode: (`r ifelse(params$code >= 0, 0, 1)`)
+Kode : (`r ifelse(params$code >= 0, 0, 1)`)
 
 ## Viterbi-Algorithmus `r if(params$soft.flag) "(soft decision)" else "(hard decision)"`
 
-Input: (`r ifelse(params$code >= 0, 0, 1)`)
+Input : (`r ifelse(params$code >= 0, 0, 1)`)
 \vfill
 \begin{tikzpicture}[>=stealth, font=\tiny]
 \tikzstyle{state} = [draw, circle, teal, thick, text=black, minimum size=3.5mm, inner sep=0mm]

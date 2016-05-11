@@ -367,7 +367,7 @@ knitr::kable(output.table, format="latex", align="c")
 
 ## Faltungskodierung
 
-Input: (`r message`)
+Input : (`r message`)
 \begin{center}
 \begin{minipage}{.45\textwidth}
 \begin{center}
@@ -376,7 +376,7 @@ Input: (`r message`)
   `r encode.table`
 \end{tabular}
 \end{center}
-Output: `r alt.output`
+Output : `r alt.output`
 \end{minipage}
 \hfill
 \begin{minipage}{.45\textwidth}
@@ -389,9 +389,9 @@ Output: `r alt.output`
 \end{minipage}
 \end{center}
 
-## Output: Kode zu Signal
+## Output : Kode zu Signal
 
-Kode: (`r ifelse(params$code >= 0, 0, 1)`)
+Kode : (`r ifelse(params$code >= 0, 0, 1)`)
 \vspace*{10mm}
 \begin{equation*}
   \text{Signal(bit)} =
@@ -401,7 +401,7 @@ Kode: (`r ifelse(params$code >= 0, 0, 1)`)
   \end{cases}
 \end{equation*}
 \vspace*{10mm}
-Signal: (`r params$code`)
+Signal : (`r params$code`)
 
 ## Punktierung
 ```{r, include=FALSE}
@@ -410,13 +410,13 @@ punctured.code <- params$code
 punctured.code[punctuation == 0] <- "*"
 punctured.code <- paste(punctured.code, collapse = " , ")
 ```
-- Signal: (`r code`)
+- Signal : (`r code`)
 \vspace*{10mm}
-- Punktierungs-Matrix:
+- Punktierungs-Matrix :
 \begin{equation*}
   \begin{pmatrix}  `r punctuation.print`  \end{pmatrix}
 \end{equation*}
 \vspace*{10mm}
-- Punktiertes Signal: (`r punctured.code`)
+- Punktiertes Signal : (`r punctured.code`)
 \vspace*{5mm}
-- Output: (`r final.code`)
+- Output : (`r final.code`)
