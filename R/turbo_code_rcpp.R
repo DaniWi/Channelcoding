@@ -228,6 +228,10 @@ TurboDecode <-
            punctuation.matrix = NULL,
            visualize = FALSE) {
 
+    if (!is.numeric(code) || !is.vector(code)) {
+      stop("Code was not a numeric vector! Check the code parameter!")
+    }
+
     if (is.null(coder.info)) {
       warning("Standard-Coder was used! RSC, N=2, M=2, Generators: (5,7)")
       coder.info <- ConvGenerateRscEncoder(2,2,c(5,7))

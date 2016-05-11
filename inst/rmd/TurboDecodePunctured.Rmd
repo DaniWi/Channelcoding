@@ -1,5 +1,5 @@
 ---
-title: "Turbo Dekodierer mit Punktierung"
+title: "Turbodekodierung mit Punktierung"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: beamer_presentation
 params:
@@ -112,8 +112,8 @@ gcd <- function(n, m) {
 ```
 
 ```{r generatePrintVars, include=FALSE}
-node.short <- 15
-node.long <- 20
+node.short <- 18
+node.long <- 33
 decimal.digits <- 1
 dots <- function (v, node) if(length(v) > node) ", ..." else ""
 
@@ -145,9 +145,10 @@ punctuation.print <-
 #cut off the parameters
 code <- paste0(
   paste0(head(round(params$code, decimal.digits), node.short), collapse = ", "), dots(params$code, node.short))
-punctured <- 
-  paste0(paste0(head(round(params$punctured, decimal.digits), node.short), collapse = ", "),
-         dots(params$punctured, node.short))
+punctured <- paste0(
+  paste0(head(round(params$punctured, decimal.digits), node.short), collapse = ", "), dots(params$punctured, node.short))
+code.long <- paste0(
+  paste0(head(round(params$code, decimal.digits), node.long), collapse = ", "), dots(params$code, node.long))
 orig <- paste0(
   paste0(head(round(params$orig, decimal.digits), node.short), collapse = ", "), dots(params$orig, node.short))
 parity1 <- paste0(
@@ -182,9 +183,9 @@ decode2IBack <- paste0(
   lapply(params$decode2IBack, function(x) {dots(x, node.short)}))
 resultHard <- paste0(
   lapply(lapply(params$tempResultHard, 
-          function(x) {head(x, node.long)}),
+          function(x) {head(x, node.short)}),
     function(x) {paste0(x, collapse = ", ")}),
-  lapply(params$tempResultHard, function(x) {dots(x, node.long)}))
+  lapply(params$tempResultHard, function(x) {dots(x, node.short)}))
 resultSoft <- paste0(
   lapply(lapply(params$tempResultSoft, 
           function(x) {head(round(x, decimal.digits), node.short)}),
@@ -192,14 +193,15 @@ resultSoft <- paste0(
   lapply(params$tempResultSoft, function(x) {dots(x, node.short)}))
 ```
 
-## Kodierer Information
+## Faltungskodierer Informationen
 
 - `r art.coder` Kodierer
 - Anzahl von Ausgängen : $$N=`r params$encoder$N`$$
 - Anzahl von Registern : $$M=`r params$encoder$M`$$
 - Generatoren : $$`r generator.print`$$
 
-## Kodierer Matrix : Nächster Zustand
+## Faltungskodierer Matrix : Nächster Zustand
+
 \begin{center}
 ```{r, results='asis'}
 next.table <- params$encoder$next.state
@@ -210,7 +212,8 @@ knitr::kable(next.table, format="latex", align="c")
 ```
 \end{center}
 
-## Kodierer Matrix : Ausgangsbits
+## Faltungskodierer Matrix : Ausgangsbits
+
 \begin{center}
 ```{r, results='asis'}
 output.table <- params$encoder$output
@@ -222,7 +225,8 @@ knitr::kable(output.table, format="latex", align="c")
 ```
 \end{center}
 
-## Kodierer Matrix : Zustandsdiagramm
+## Faltungskodierer Matrix : Zustandsdiagramm
+
 ```{r stateDiagramm, include=FALSE}
 num.states <- 2^params$encoder$M
 
@@ -340,11 +344,32 @@ for (s in 0:(num.states-1)) {
 ```{r}
   gcd.value <- gcd(length(params$punctuation), sum(params$punctuation) * 3)
 ```
+\vspace*{6mm}
 - Kode-Rate : $$\frac{`r length(params$punctuation) / gcd.value`}{`r sum(params$punctuation) * 3 / gcd.value`}$$
-- Dekodierungsiterationen: `r params$iterations`
+\vspace*{6mm}
+- Dekodierungsiterationen : `r params$iterations`
+\vspace*{6mm}
 - Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
 
-## Turbo-Dekodierer mit Punktierung
+## Depunktierung
+
+```{r}
+colorWrap <- function(value) paste0("\\textcolor{orange}{", value, "}")
+punctured.rounded <- head(round(params$punctured, decimal.digits), node.long)
+punct <- rep(params$punctuation, length.out = length(punctured.rounded))
+punctured.colored <- ifelse(punct == 0, colorWrap(punctured.rounded), punctured.rounded)
+punctured.long <- paste0(
+  paste0(punctured.colored, collapse = ", "), dots(params$punctured, node.long))
+```
+
+- Punktiertes Signal: (`r code.long`)
+\vspace*{10mm}
+- Punktierungs-Matrix: $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
+\vspace*{10mm}
+- Depunktiertes Signal: (`r punctured.long`)
+
+## Turbodekodierung mit Punktierung
+
 \begin{center}
 \begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0,
   >=stealth, font=\tiny, align=center]
@@ -435,7 +460,7 @@ for (s in 0:(num.states-1)) {
 	\draw [showDrawStyle] (showAboveCenterTop) -- (afterDecoder1.center);
 
 	\node [showStyle] (showAboveCenter) [above=3mm of background] {`r orig`};
-	\draw [showDrawStyle] ($(showAboveCenter.south)+(-1,0)$) -- (afterDemOrig.center);
+	\draw [showDrawStyle] ($(showAboveCenter.south)+(-.5,0)$) -- (afterDemOrig.center);
 	
 	\node [showStyle] (showBelowCenterBottom) [below=9mm of background] {`r parity1`};
 	\draw [showDrawStyle] (showBelowCenterBottom) -- (afterDemParity1.center);
@@ -523,7 +548,7 @@ if (params$iterations > 1) {
   
   output <- paste0(
     "\\visible<", 6 + 4 * (i - 1), "-",  9 + 4 * (i - 1),
-    ">{\\node [below =15mm of background, font=\\small] {Output: ", resultHard[[i]],"};}"
+    ">{\\node [below =15mm of background, font=\\small] {Output : (", resultHard[[i]],")};}"
   )
   
   
@@ -540,7 +565,7 @@ if (params$iterations > 1) {
   \node [below =4mm of decoder2] {Iteration `r params$iterations`};
 }
 \visible<`r params$iterations * 4 + 2`-`r params$iterations * 4 + 4`>{
-  \node [below =15mm of background, font=\small] {Output: `r resultHard[[params$iterations]]`};
+  \node [below =15mm of background, font=\small] {Output : (`r resultHard[[params$iterations]]`)};
 }
 
 % AfterInterleaver1, 2, AfterDemultiplexer - AfterDecoder2
@@ -579,9 +604,23 @@ if (params$iterations > 1) {
 \end{tikzpicture}
 \end{center}
 
-## Turbo-Dekodierer mit Punktierung
-- Output mit Terminierung:
-`r resultHard[[params$iterations]]`
-- Output ohne Terminierung:
-`r head(params$result$output.hard, node.long)`
-`r dots(params$result$output.hard, node.long)`
+## Terminierung
+
+```{r}
+  term.string <- paste0(
+    "- Output mit Terminierung : (",
+    paste0(head(params$tempResultHard[[params$iterations]], length(params$tempResultHard[[params$iterations]]) - params$encoder$M), collapse = ", "),
+    "\\textcolor{orange}{, ",
+    paste0(tail(params$tempResultHard[[params$iterations]], params$encoder$M), collapse = ", "),
+    "})",
+    "\\vspace*{6mm}",
+    "\n- Output ohne Terminierung : (",
+    paste0(params$result$output.hard, collapse = ", "),
+    ")"
+  )
+
+  if (length(params$result$output.hard) > node.long) {
+    term.string <- "Da der Output zu lang ist, kann die Terminierung leider nicht angezeigt werden!"
+  }
+```
+`r term.string`

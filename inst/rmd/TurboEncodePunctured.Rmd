@@ -1,5 +1,5 @@
 ---
-title: "Turbo Kodierer mit Punktierung"
+title: "Turbokodierung mit Punktierung"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: beamer_presentation
 params:
@@ -23,7 +23,14 @@ header-includes:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r functions}
+```{r Definition}
+colorOrig <- "gray"
+colorParity1 <- "orange"
+colorParity2 <- "violet"
+
+node.short <- 18
+node.long <- 33
+
 binVector <- function(n, min.length) {
 
   result <- integer()
@@ -102,8 +109,6 @@ gcd <- function(n, m) {
 ```
 
 ```{r generatePrintVars, echo=FALSE}
-node.short <- 18
-node.long <- 36
 dots <- function (v, node) if(length(v) > node) ", ..." else ""
 
 if (params$encoder$rsc == TRUE) {
@@ -130,14 +135,14 @@ punctuation.print <-
     paste0(apply(params$punctuation, 1, function(x) {paste0(x, collapse=" & ")}), collapse = " \\\\ ")
 ```
 
-## Kodierer Information
+## Faltungskodierer Informationen
 
 - `r art.coder` Kodierer
 - Anzahl von Ausgängen : $$N=`r params$encoder$N`$$
 - Anzahl von Registern : $$M=`r params$encoder$M`$$
 - Generatoren : $$`r generator.print`$$
 
-## Kodierer Matrix : Nächster Zustand
+## Faltungskodierer Matrix : Nächster Zustand
 
 \begin{center}
 ```{r, results='asis'}
@@ -149,7 +154,7 @@ knitr::kable(next.table, format="latex", align="c")
 ```
 \end{center}
 
-## Kodierer Matrix : Ausgangsbits
+## Faltungskodierer Matrix : Ausgangsbits
 
 \begin{center}
 ```{r, results='asis'}
@@ -162,7 +167,7 @@ knitr::kable(output.table, format="latex", align="c")
 ```
 \end{center}
 
-## Kodierer Matrix : Zustandsdiagramm
+## Faltungskodierer Matrix : Zustandsdiagramm
 
 ```{r}
 num.states <- 2^params$encoder$M
@@ -287,9 +292,30 @@ for (s in 0:(num.states-1)) {
 \vspace*{6mm}
 - Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
 
-## Turbo-Kodierer mit Punktierung
+## Terminierung
 
-- Input : `r head(params$orig, node.short)``r dots(params$orig, node.short)`
+```{r}
+  term.string <- paste0(
+    "- Input ohne Terminierung : (",
+    paste0(head(params$orig, length(params$orig) - params$encoder$M), collapse = ", "),
+    ")",
+    "\\vspace*{6mm}",
+    "\n- Input mit Terminierung : (",
+    paste0(head(params$orig, length(params$orig) - params$encoder$M), collapse = ", "),
+    "\\textcolor{orange}{, ",
+    paste0(tail(params$orig, params$encoder$M), collapse = ", "),
+    "})"
+  )
+
+  if (length(params$orig) > node.long) {
+    term.string <- "Da der Input zu lang ist, kann die Terminierung leider nicht angezeigt werden!"
+  }
+```
+`r term.string`
+
+## Turbokodierung mit Punktierung
+
+- Input : (`r head(params$orig, node.short)``r dots(params$orig, node.short)`)
 
 \begin{center}
 \begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\footnotesize, align=center]
@@ -299,11 +325,11 @@ for (s in 0:(num.states-1)) {
 \tikzstyle{startEndStyle} = [encoderStyle]
 \tikzstyle{punctureStyle} = [encoderStyle]
 \tikzstyle{multiplexerStyle} = [encoderStyle]
-\tikzstyle{showStyle} = [rectangle, draw, thick, draw=red, text=red, inner sep=1.5mm]
+\tikzstyle{showStyle} = [rectangle, thick, draw=red, text=red, inner sep=1.5mm]
 \tikzstyle{arrowStyle} = [->]
 \tikzstyle{showDrawStyle} = [->, red, thick]
 
-\node [interleaverStyle] (interleaver) {Interleaver};
+\node [interleaverStyle] (interleaver) {Interleaver$I$};
 \node [encoderStyle] (encoder1) [above right=of interleaver] {Kodierer 1};
 \node [encoderStyle] (encoder2) [below right=of interleaver] {Kodierer 2};
 \node [] (multiplexerTemp) [right=of encoder1] {};
@@ -318,7 +344,7 @@ for (s in 0:(num.states-1)) {
 \draw [arrowStyle] (start.east)  -| node[midway] (afterInput) {} (interleaver.north);
 \draw [arrowStyle] (afterInput.center) |- (encoder1.west);
 \draw [arrowStyle] (encoder2.east) -| ++(0.2,0.7) node (afterParity2) {} |- ($(multiplexer.north)+(0,-.5)$);
-\draw [arrowStyle] (afterInput.center) |- ($(multiplexer.north)+(0,.5)$);
+\draw [arrowStyle] (afterInput.center) |- node[near end] (beforeMultiplexerOrig) {} ($(multiplexer.north)+(0,.5)$);
 \draw [arrowStyle] (multiplexer.south) -- node (afterMultiplexer) {} (puncture.north);
 \draw [arrowStyle] (puncture.south) -- node (afterPuncture) {}(end.west);
 
@@ -331,9 +357,9 @@ tikz.string <- character()
 vec <- head(params$multipl, node.short)
 for (i in c(0:((length(vec) / 3) - 1))) {
   temp <- paste0(
-    "\\textcolor{orange}{", vec[i * 3 + 1], "}, ",
-    "\\textcolor{green}{", vec[i * 3 + 2], "}, ",
-    "\\textcolor{blue}{", vec[i * 3 + 3], "}",
+    "\\textcolor{", colorOrig, "}{", vec[i * 3 + 1], "}, ",
+    "\\textcolor{", colorParity1, "}{", vec[i * 3 + 2], "}, ",
+    "\\textcolor{", colorParity2, "}{", vec[i * 3 + 3], "}",
     collapse = ""
   )
   
@@ -346,43 +372,47 @@ for (i in c(0:((length(vec) / 3) - 1))) {
 ```
 
 \visible<2>{
-  \node [showStyle] (showAbove) [above=3mm of background, text=orange] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background, text=`r colorOrig`] {`r head(params$orig, node.short)``r dots(params$orig, node.short)`};
   \draw [showDrawStyle] (showAbove) -- (afterInput.center);
-  \node [showStyle] (showBelow) [below=3mm of background, text=green] {\textbf{`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`}};
+  \draw [showDrawStyle] (showAbove) -- (beforeMultiplexerOrig.center);
+  \node [showStyle] (showBelow) [below=3mm of background, text=`r colorParity1`] {`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`};
   \draw [showDrawStyle] (showBelow) -- (afterParity1.center);
   }
 \visible<3>{
-  \node [showStyle] (showAbove) [above=3mm of background, text=orange] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background, text=`r colorOrig`] {`r head(params$orig, node.short)``r dots(params$orig, node.short)`};
   \draw [showDrawStyle] (showAbove) -- (afterInput.center);
-  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
+  \draw [showDrawStyle] (showAbove) -- (beforeMultiplexerOrig.center);
+  \node [showStyle] (showBelow) [below=3mm of background] {`r head(params$interl, node.short)``r dots(params$interl, node.short)`};
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<4>{
-  \node [showStyle] (showAbove) [above=3mm of background, text=blue] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background, text=`r colorParity2`] {`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`};
   \draw [showDrawStyle] (showAbove) -- (afterParity2.center);
-  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
+  \node [showStyle] (showBelow) [below=3mm of background] {`r head(params$interl, node.short)``r dots(params$interl, node.short)`};
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<5>{
-  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r tikz.string``r dots(params$multipl, node.short)`}};
+  \node [showStyle] (showBelow) [below=3mm of background] {`r tikz.string``r dots(params$multipl, node.short)`};
   \draw [showDrawStyle] (showBelow) -- (afterMultiplexer.center);
   }
 
 \end{tikzpicture}
 \end{center}
 
-- Output : `r head(params$result, node.long)``r dots(params$result, node.long)`
+- Output : (`r head(params$result, node.long)``r dots(params$result, node.long)`)
 
 ## Punktierung
 
 ```{r, include=FALSE}
-punctured.code <- head(params$result, node.long)
+punctured.code <- head(params$multipl, node.long)
 punctured.code[params$punctuation == 0] <- "*"
 punctured.code <- paste(punctured.code, collapse = " , ")
 ```
 
-- Signal: `r head(params$multipl, node.long)``r dots(params$multipl, node.long)`
+- Signal : (`r head(params$multipl, node.long)``r dots(params$multipl, node.long)`)
 \vspace*{6mm}
 - Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
 \vspace*{6mm}
-- Punktiertes Signal: `r punctured.code``r dots(params$result, node.long)`
+- Punktiertes Signal : (`r punctured.code``r dots(params$result, node.long)`)
+\vspace*{6mm}
+- Output : (`r head(params$result, node.long)``r dots(params$result, node.long)`)
