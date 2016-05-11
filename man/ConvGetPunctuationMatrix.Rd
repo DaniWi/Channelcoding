@@ -13,11 +13,23 @@ be transformed to a punctuation matrix.}
 \item{conv.coder}{Convolutional coder which is used for the matrix dimensions.}
 }
 \value{
-Punctuation matrix suitable for \code{\link{ConvEncode}}, \code{\link{ConvDecodeSoft}},
-    \code{\link{ConvDecodeHard}} and \code{\link{ConvSimulation}}.
+Punctuation matrix suitable for \code{\link{ConvEncode}},
+    \code{\link{ConvDecodeSoft}}, \code{\link{ConvDecodeHard}} and
+    \code{\link{ConvSimulation}}.
 }
 \description{
 Creates a punctuation matrix from the passed punctuation vector and the
 passed coder.
+Important: punctuation vector has to contain k*N elements, where N is the
+amount of coder outputs and k a natural number \eqn{\ge 1}.
+}
+\examples{
+# coder with 2 outputs, vector has to have k*2 elements
+coder <- ConvGenerateEncoder(2,2,c(7,5))
+punctuation.vector <- c(1,1,0,1,1,0)
+punctuation.matrix <- ConvGetPunctuationMatrix(punctuation.vector, coder)
+}
+\author{
+Martin Nocker
 }
 

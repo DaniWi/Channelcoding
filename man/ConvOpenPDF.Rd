@@ -22,6 +22,16 @@ With this function it is easy to reopen the PDF files created with
     The files are stored in the program files of R.
     If the corresponding file does not exist yet an error message is printed.
 }
+\examples{
+# open encode without punctuation PDF
+ConvOpenPDF(encode = TRUE, punctured = FALSE)
+
+# open decode with punctuation PDF
+ConvOpenPDF(encode = FALSE, punctured = TRUE)
+
+# open convolution simulation PDF
+ConvOpenPDF(simulation = TRUE)
+}
 \author{
 Martin Nocker
 }

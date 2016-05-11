@@ -17,7 +17,7 @@ ConvGenerateEncoder(N, M, generators)
 \value{
 A convolutional encoder represented as a list containing:
     N, M, vector of generator polynoms,
-    4 matrices: nextState, previousState, output and termination, rsc (flag),
+    3 matrices: nextState, previousState and output, rsc (flag),
     termination vector
 }
 \description{
@@ -39,6 +39,7 @@ N is an integer and gives the number of output bits per input bit.
     output.
 }
 \examples{
+# standard convolutional encoder with code-rate = 0.5
 ConvGenerateEncoder(2,2,c(7,5))
 }
 \author{

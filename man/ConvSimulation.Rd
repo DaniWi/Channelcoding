@@ -34,10 +34,10 @@ Dataframe containing the bit-error-rates for each SNR tested.
 Simulation of a convolutional encode and decode process over a noisy channel.
 }
 \examples{
-#all default parameters
+# use all default parameters
 ConvSimulation()
 
-#without punctuation
+# without punctuation
 coder <- ConvGenerateEncoder(2,2,c(7,5))
 ConvSimulation(coder, 10, 50, 0.01, 1, 0.05, NULL, FALSE)
 }

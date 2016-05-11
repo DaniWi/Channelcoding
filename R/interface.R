@@ -57,14 +57,13 @@ Decode = function(msg, type, params, visualize)
 }
 
 
-#' Failure function
+#' Message distortion.
 #'
-#' This function will randomly disturb a clean message
+#' This function will randomly distort a clean message.
 #' @author Bene Wimmer
-#' @param msg message to alter
-#' @param params A vector with arguments
-#' @param visualize A flag for enabling visualization
-#' @return message with errors
+#' @param msg Message to alter.
+#' @param SNR.db Signal-Noise-Ratio in dB simulating the noisy channel.
+#' @return Distorted message containing noise.
 #' @export
 ApplyNoise <- function(msg, SNR.db = 3)
 {

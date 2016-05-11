@@ -2,22 +2,20 @@
 % Please edit documentation in R/interface.R
 \name{ApplyNoise}
 \alias{ApplyNoise}
-\title{Failure function}
+\title{Message distortion.}
 \usage{
 ApplyNoise(msg, SNR.db = 3)
 }
 \arguments{
-\item{msg}{message to alter}
+\item{msg}{Message to alter.}
 
-\item{params}{A vector with arguments}
-
-\item{visualize}{A flag for enabling visualization}
+\item{SNR.db}{Signal-Noise-Ratio in dB simulating the noisy channel.}
 }
 \value{
-message with errors
+Distorted message containing noise.
 }
 \description{
-This function will randomly disturb a clean message
+This function will randomly distort a clean message.
 }
 \author{
 Bene Wimmer

@@ -17,7 +17,7 @@ ConvGenerateRscEncoder(N, M, generators)
 \value{
 A convolutional encoder represented as a list containing:
     N, M, vector of generator polynoms,
-    4 matrices: nextState, previousState, output and termination, rsc (flag),
+    3 matrices: nextState, previousState and output, rsc (flag),
     termination vector
 }
 \description{
@@ -42,6 +42,7 @@ N is an integer and gives the number of output bits per input bit.
     coding' (p.92f) for a detailed definition and an example.
 }
 \examples{
+# standard rsc encoder with code-rate = 0.5
 ConvGenerateRscEncoder(2,2,c(5,7))
 }
 \author{

@@ -26,7 +26,20 @@ Produces a convolutional code of a message.
 }
 \examples{
 coder <- ConvGenerateEncoder(2,2,c(7,5))
-ConvEncode(c(1,0,0,1,1), coder)
+plain <- c(1,0,0,1,1)
+
+# standard encoding with termination
+ConvEncode(plain, coder)
+
+# without termination
+ConvEncode(plain, coder, terminate = FALSE)
+
+# with punctuation and visualization
+punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
+ConvEncode(plain, coder, punctuation.matrix = punctuation, visualize = TRUE)
+
+# use default values
+ConvEncode(plain)
 }
 \author{
 Martin Nocker

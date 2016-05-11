@@ -32,9 +32,11 @@
 #'     (one for each output symbol).
 #' @return A convolutional encoder represented as a list containing:
 #'     N, M, vector of generator polynoms,
-#'     4 matrices: nextState, previousState, output and termination, rsc (flag),
+#'     3 matrices: nextState, previousState and output, rsc (flag),
 #'     termination vector
-#' @examples ConvGenerateEncoder(2,2,c(7,5))
+#' @examples
+#' # standard convolutional encoder with code-rate = 0.5
+#' ConvGenerateEncoder(2,2,c(7,5))
 #' @author Martin Nocker
 #' @export
 ConvGenerateEncoder <- function(N, M, generators) {
@@ -107,9 +109,11 @@ ConvGenerateEncoder <- function(N, M, generators) {
 #'     (one for each non-systematic output symbol and one for the recursion).
 #' @return A convolutional encoder represented as a list containing:
 #'     N, M, vector of generator polynoms,
-#'     4 matrices: nextState, previousState, output and termination, rsc (flag),
+#'     3 matrices: nextState, previousState and output, rsc (flag),
 #'     termination vector
-#' @examples ConvGenerateRscEncoder(2,2,c(5,7))
+#' @examples
+#' # standard rsc encoder with code-rate = 0.5
+#' ConvGenerateRscEncoder(2,2,c(5,7))
 #' @author Martin Nocker
 #' @export
 ConvGenerateRscEncoder <- function(N, M, generators) {
@@ -164,7 +168,20 @@ ConvGenerateRscEncoder <- function(N, M, generators) {
 #' @return The encoded message with signal values {-1,+1} which map to {1,0} respectively.
 #' @examples
 #' coder <- ConvGenerateEncoder(2,2,c(7,5))
-#' ConvEncode(c(1,0,0,1,1), coder)
+#' plain <- c(1,0,0,1,1)
+#'
+#' # standard encoding with termination
+#' ConvEncode(plain, coder)
+#'
+#' # without termination
+#' ConvEncode(plain, coder, terminate = FALSE)
+#'
+#' # with punctuation and visualization
+#' punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
+#' ConvEncode(plain, coder, punctuation.matrix = punctuation, visualize = TRUE)
+#'
+#' # use default values
+#' ConvEncode(plain)
 #' @author Martin Nocker
 #' @export
 ConvEncode <- function(message,
@@ -253,8 +270,25 @@ ConvEncode <- function(message,
 #' @return The decoded message, list(softOutput, hardOutput)
 #' @examples
 #' coder <- ConvGenerateEncoder(2,2,c(7,5))
-#' coded <- ConvEncode(c(1,0,0,1,1), coder)
+#' plain <- c(1,0,0,1,1)
+#'
+#' # standard encoding and decoding with termination
+#' coded <- ConvEncode(plain, coder)
 #' ConvDecodeSoft(coded, coder)
+#'
+#' # without termination
+#' coded <- ConvEncode(plain, coder, terminate = FALSE)
+#' ConvDecodeSoft(coded, coder, terminate = FALSE)
+#'
+#' # with punctuation and visualization
+#' punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
+#' coded <- ConvEncode(plain, coder, punctuation.matrix = punctuation)
+#' ConvDecodeSoft(coded, coder, punctuation.matrix = punctuation, visualize = TRUE)
+#'
+#' # with message distortion
+#' coded <- ConvEncode(plain, coder)
+#' noisy <- ApplyNoise(coded, SNR.db = 3)
+#' ConvDecodeSoft(noisy, coder)
 #' @author Martin Nocker
 #' @export
 ConvDecodeSoft <- function(code,
@@ -263,6 +297,10 @@ ConvDecodeSoft <- function(code,
                            punctuation.matrix = NULL,
                            visualize = FALSE)
 {
+  if (!is.numeric(code) || !is.vector(code)) {
+    stop("Code was not a numeric vector! Check the code parameter!")
+  }
+
   stopifnot(length(code) > 0)
 
   if (is.null(conv.encoder)) {
@@ -351,8 +389,25 @@ ConvDecodeSoft <- function(code,
 #' @return The hard-decoded message vector.
 #' @examples
 #' coder <- ConvGenerateEncoder(2,2,c(7,5))
-#' coded <- ConvEncode(c(1,0,0,1,1), coder)
+#' plain <- c(1,0,0,1,1)
+#'
+#' # standard encoding and decoding with termination
+#' coded <- ConvEncode(plain, coder)
 #' ConvDecodeHard(coded, coder)
+#'
+#' # without termination
+#' coded <- ConvEncode(plain, coder, terminate = FALSE)
+#' ConvDecodeHard(coded, coder, terminate = FALSE)
+#'
+#' # with punctuation and visualization
+#' punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
+#' coded <- ConvEncode(plain, coder, punctuation.matrix = punctuation)
+#' ConvDecodeHard(coded, coder, punctuation.matrix = punctuation, visualize = TRUE)
+#'
+#' # with message distortion
+#' coded <- ConvEncode(plain, coder)
+#' noisy <- ApplyNoise(coded, SNR.db = 3)
+#' ConvDecodeHard(noisy, coder)
 #' @author Martin Nocker
 #' @export
 ConvDecodeHard <- function(code,
@@ -361,6 +416,10 @@ ConvDecodeHard <- function(code,
                            punctuation.matrix = NULL,
                            visualize = FALSE)
 {
+  if (!is.numeric(code) || !is.vector(code)) {
+    stop("Code was not a numeric vector! Check the code parameter!")
+  }
+
   stopifnot(length(code) > 0)
 
   if (is.null(conv.encoder)) {
@@ -451,10 +510,10 @@ ConvDecodeHard <- function(code,
 #' @param visualize If true a PDF report is generated.
 #' @return Dataframe containing the bit-error-rates for each SNR tested.
 #' @examples
-#' #all default parameters
+#' # use all default parameters
 #' ConvSimulation()
 #'
-#' #without punctuation
+#' # without punctuation
 #' coder <- ConvGenerateEncoder(2,2,c(7,5))
 #' ConvSimulation(coder, 10, 50, 0.01, 1, 0.05, NULL, FALSE)
 #' @author Martin Nocker
@@ -553,6 +612,15 @@ ConvSimulation <- function(conv.coder = NULL,
 #' @param simulation Flag to open simulation PDFs. This flag has highest precedence
 #'     meaning that if the simulation flag is TRUE the function will look for the
 #'     simulation PDF. Only if FALSE the others are evaluated.
+#' @examples
+#' # open encode without punctuation PDF
+#' ConvOpenPDF(encode = TRUE, punctured = FALSE)
+#'
+#' # open decode with punctuation PDF
+#' ConvOpenPDF(encode = FALSE, punctured = TRUE)
+#'
+#' # open convolution simulation PDF
+#' ConvOpenPDF(simulation = TRUE)
 #' @author Martin Nocker
 #' @export
 ConvOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
@@ -584,11 +652,20 @@ ConvOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
 #'
 #' Creates a punctuation matrix from the passed punctuation vector and the
 #' passed coder.
+#' Important: punctuation vector has to contain k*N elements, where N is the
+#' amount of coder outputs and k a natural number \eqn{\ge 1}.
 #' @param punctuation.vector Vector containing the punctuation information which will
 #'     be transformed to a punctuation matrix.
 #' @param conv.coder Convolutional coder which is used for the matrix dimensions.
-#' @return Punctuation matrix suitable for \code{\link{ConvEncode}}, \code{\link{ConvDecodeSoft}},
-#'     \code{\link{ConvDecodeHard}} and \code{\link{ConvSimulation}}.
+#' @return Punctuation matrix suitable for \code{\link{ConvEncode}},
+#'     \code{\link{ConvDecodeSoft}}, \code{\link{ConvDecodeHard}} and
+#'     \code{\link{ConvSimulation}}.
+#' @examples
+#' # coder with 2 outputs, vector has to have k*2 elements
+#' coder <- ConvGenerateEncoder(2,2,c(7,5))
+#' punctuation.vector <- c(1,1,0,1,1,0)
+#' punctuation.matrix <- ConvGetPunctuationMatrix(punctuation.vector, coder)
+#' @author Martin Nocker
 #' @export
 ConvGetPunctuationMatrix <- function(punctuation.vector, conv.coder) {
 

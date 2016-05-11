@@ -27,8 +27,25 @@ This decoder is a hard-decision decoder.
 }
 \examples{
 coder <- ConvGenerateEncoder(2,2,c(7,5))
-coded <- ConvEncode(c(1,0,0,1,1), coder)
+plain <- c(1,0,0,1,1)
+
+# standard encoding and decoding with termination
+coded <- ConvEncode(plain, coder)
 ConvDecodeHard(coded, coder)
+
+# without termination
+coded <- ConvEncode(plain, coder, terminate = FALSE)
+ConvDecodeHard(coded, coder, terminate = FALSE)
+
+# with punctuation and visualization
+punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
+coded <- ConvEncode(plain, coder, punctuation.matrix = punctuation)
+ConvDecodeHard(coded, coder, punctuation.matrix = punctuation, visualize = TRUE)
+
+# with message distortion
+coded <- ConvEncode(plain, coder)
+noisy <- ApplyNoise(coded, SNR.db = 3)
+ConvDecodeHard(noisy, coder)
 }
 \author{
 Martin Nocker
