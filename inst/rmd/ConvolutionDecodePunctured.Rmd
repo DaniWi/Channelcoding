@@ -300,6 +300,15 @@ knitr::kable(output.table, format="latex", align="c")
 \end{center}
 
 ## Depunktierung
+```{r, include=FALSE}
+color.wrap <- function(value) paste0("\\textcolor{orange}{",value,"}")
+
+code.rounded <- round(params$code, digits = 1)
+
+punct <- rep(params$punctuation, length.out = length(params$code))
+
+depunctured.colored <- paste(ifelse(punct == 0, color.wrap(code.rounded), code.rounded), collapse = ", ")
+```
 
 - Punktiertes Signal: (`r round(params$punctured.code, digits = 1)`)
 \vspace*{10mm}
@@ -308,7 +317,7 @@ knitr::kable(output.table, format="latex", align="c")
   \begin{pmatrix}  `r punctuation.print`  \end{pmatrix}
 \end{equation*}
 \vspace*{10mm}
-- Depunktiertes Signal: (`r round(params$code, digits = 1)`)
+- Depunktiertes Signal: (`r depunctured.colored`)
 
 ## Input: Signal zu Kode
 
