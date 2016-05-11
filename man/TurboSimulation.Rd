@@ -5,9 +5,9 @@
 \title{Function to make a automatic simulation of an coder with different signal/noise ratio.}
 \usage{
 TurboSimulation(coder = NULL, permutation.type = "PRIMITIVE",
-  permutation.args = list(root = 0), decode.iterations = 10,
-  msg.length = 100, iterations.per.db = 100, min.db = 0.1, max.db = 2,
-  db.interval = 0.1, punctuation.matrix = NULL, visualize = FALSE)
+  permutation.args = list(root = 0), decode.iterations = 5,
+  msg.length = 100, min.db = 0.1, max.db = 2, db.interval = 0.1,
+  iterations.per.db = 100, punctuation.matrix = NULL, visualize = FALSE)
 }
 \arguments{
 \item{coder}{Coder which will be created with \code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.}
@@ -20,14 +20,14 @@ TurboSimulation(coder = NULL, permutation.type = "PRIMITIVE",
 
 \item{msg.length}{Length of the randomly created message.}
 
-\item{iterations.per.db}{Amount of iterations each signal/noise ration step.}
-
 \item{min.db}{Start value of the signal/noise ratio.}
 
 \item{max.db}{End value of the signal/noise ration.}
 
 \item{db.interval}{Interval which will be added to the actual signal/noise ratio after all
 iterations are applied.}
+
+\item{iterations.per.db}{Amount of iterations each signal/noise ration step.}
 
 \item{punctuation.matrix}{Punctuation matrix to puncture the output, will be created with \code{\link{TurboGetPunctuationMatrix}}.}
 
@@ -49,7 +49,7 @@ TurboSimulation()
 
 #without punctuation
 coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
-TurboSimulation(coder, "RANDOM", NULL, 5, 10, 50, 0.01, 1, 0.05, NULL, TRUE)
+TurboSimulation(coder, "RANDOM", NULL, 5, 10, 0.01, 1, 0.05, 50, NULL, TRUE)
 
 }
 

@@ -501,10 +501,10 @@ ConvDecodeHard <- function(code,
 #' @param coder Convolutional coder used for the simulation. Can be created via
 #'     \code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.
 #' @param msg.length Message length of the randomly created messages to be encoded.
-#' @param iterations.per.db Number of encode and decode processes per SNR.
 #' @param min.db Minimum SNR to be tested.
 #' @param max.db Maximum SNR to be tested.
 #' @param db.interval Step between two SNRs tested.
+#' @param iterations.per.db Number of encode and decode processes per SNR.
 #' @param punctuation.matrix If not null the process involves the punctuation. Can
 #'     be created via \code{\link{ConvGetPunctuationMatrix}}.
 #' @param visualize If true a PDF report is generated.
@@ -515,15 +515,15 @@ ConvDecodeHard <- function(code,
 #'
 #' # without punctuation
 #' coder <- ConvGenerateEncoder(2,2,c(7,5))
-#' ConvSimulation(coder, 10, 50, 0.01, 1, 0.05, NULL, FALSE)
+#' ConvSimulation(coder, 10, 0.01, 1, 0.05, 50, NULL, FALSE)
 #' @author Martin Nocker
 #' @export
 ConvSimulation <- function(conv.coder = NULL,
                            msg.length = 100,
-                           iterations.per.db = 100,
                            min.db = 0.1,
                            max.db = 2.0,
                            db.interval = 0.1,
+                           iterations.per.db = 100,
                            punctuation.matrix = NULL,
                            visualize = FALSE)
 {
@@ -541,6 +541,13 @@ ConvSimulation <- function(conv.coder = NULL,
   v.ber <- numeric(0)
 
   total.errors <- 0
+
+  total.iterations <- length(v.db) * iterations.per.db
+
+  print("Convolution Simulation")
+  progress.bar <- txtProgressBar(min = 0, max = total.iterations, style = 3)
+
+  progress.counter <- 0
 
   for (db in v.db) {
     for (i in 1 : iterations.per.db) {
@@ -570,12 +577,17 @@ ConvSimulation <- function(conv.coder = NULL,
       decode.errors <- sum(abs(decoded$output.hard - message))
 
       total.errors <- total.errors + decode.errors
+
+      progress.counter <- progress.counter + 1
+
+      setTxtProgressBar(progress.bar, progress.counter)
     }
 
     v.ber <- c(v.ber, total.errors / (msg.length * iterations.per.db))
     total.errors <- 0
   }
 
+  close(progress.bar)
 
   df <- data.frame(db = v.db, ber = v.ber)
 

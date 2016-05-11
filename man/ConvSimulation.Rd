@@ -4,20 +4,20 @@
 \alias{ConvSimulation}
 \title{Convolutional Simulation.}
 \usage{
-ConvSimulation(conv.coder = NULL, msg.length = 100,
-  iterations.per.db = 100, min.db = 0.1, max.db = 2, db.interval = 0.1,
+ConvSimulation(conv.coder = NULL, msg.length = 100, min.db = 0.1,
+  max.db = 2, db.interval = 0.1, iterations.per.db = 100,
   punctuation.matrix = NULL, visualize = FALSE)
 }
 \arguments{
 \item{msg.length}{Message length of the randomly created messages to be encoded.}
-
-\item{iterations.per.db}{Number of encode and decode processes per SNR.}
 
 \item{min.db}{Minimum SNR to be tested.}
 
 \item{max.db}{Maximum SNR to be tested.}
 
 \item{db.interval}{Step between two SNRs tested.}
+
+\item{iterations.per.db}{Number of encode and decode processes per SNR.}
 
 \item{punctuation.matrix}{If not null the process involves the punctuation. Can
 be created via \code{\link{ConvGetPunctuationMatrix}}.}
@@ -39,7 +39,7 @@ ConvSimulation()
 
 # without punctuation
 coder <- ConvGenerateEncoder(2,2,c(7,5))
-ConvSimulation(coder, 10, 50, 0.01, 1, 0.05, NULL, FALSE)
+ConvSimulation(coder, 10, 0.01, 1, 0.05, 50, NULL, FALSE)
 }
 \author{
 Martin Nocker

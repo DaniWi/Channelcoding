@@ -33,7 +33,11 @@ header-includes:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r functions, include=FALSE}
+```{r Definition}
+colorOrig <- "gray"
+colorParity1 <- "orange"
+colorParity2 <- "violet"
+
 binVector <- function(n, min.length) {
 
   result <- integer()
@@ -362,11 +366,11 @@ punctured.long <- paste0(
   paste0(punctured.colored, collapse = ", "), dots(params$punctured, node.long))
 ```
 
-- Punktiertes Signal: (`r code.long`)
+- Punktiertes Signal : (`r code.long`)
 \vspace*{10mm}
-- Punktierungs-Matrix: $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
+- Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
 \vspace*{10mm}
-- Depunktiertes Signal: (`r punctured.long`)
+- Depunktiertes Signal : (`r punctured.long`)
 
 ## Turbodekodierung mit Punktierung
 
@@ -439,18 +443,37 @@ punctured.long <- paste0(
 	\draw [showDrawStyle] (showBelowBottom) -- (afterInput.center);
 }
 
+```{r MultiplexColor, include=FALSE}
+multipl.color <- character()
+vec <- head(round(params$punctured, decimal.digits), node.short)
+for (i in c(0:((length(vec) / 3) - 1))) {
+  temp <- paste0(
+    "\\textcolor{", colorOrig, "}{", vec[i * 3 + 1], "}, ",
+    "\\textcolor{", colorParity1, "}{", vec[i * 3 + 2], "}, ",
+    "\\textcolor{", colorParity2, "}{", vec[i * 3 + 3], "}",
+    collapse = ""
+  )
+  
+  if (i == ((length(vec) / 3) - 1)) {
+    multipl.color <- paste0(multipl.color, temp, collapse = "")
+  } else {
+    multipl.color <- paste0(multipl.color, temp, ", ", collapse = "")
+  }
+}
+```
+
 % AfterDepuncture - AfterDemultiplexer
 \visible<3>{
-	\node [showStyle] (showAboveCenterTop) [above=9mm of background] {`r punctured`};
-	\draw [showDrawStyle] (showAboveCenterTop) -- (afterDepuncture.center);
-	
-	\node [showStyle] (showAboveCenter) [above=3mm of background] {`r orig`};
+	\node [showStyle] (showAboveCenterTop) [above=9mm of background] {`r multipl.color``r dots(params$punctured, node.short)`};
+	\draw [showDrawStyle] (showAboveCenterTop) -- (afterInput.center);
+
+	\node [showStyle] (showAboveCenter) [above=3mm of background, text=`r colorOrig`] {`r orig`};
 	\draw [showDrawStyle] (showAboveCenter) -- (afterDemOrig.center);
 	
-	\node [showStyle] (showBelowBottom) [below=9mm of background] {`r parity1`};
-	\draw [showDrawStyle] (showBelowBottom) -- (afterDemParity1.center);
+	\node [showStyle] (showBelowCenterBottom) [below=9mm of background, text=`r colorParity1`] {`r parity1`};
+	\draw [showDrawStyle] (showBelowCenterBottom) -- (afterDemParity1.center);
 	
-	\node [showStyle] (showBelowCenter) [below=3mm of background] {`r parity2`};
+	\node [showStyle] (showBelowCenter) [below=3mm of background, text=`r colorParity2`] {`r parity2`};
 	\draw [showDrawStyle] (showBelowCenter) -- (afterDemParity2.center);
 }
 

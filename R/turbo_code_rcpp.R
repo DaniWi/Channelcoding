@@ -401,7 +401,6 @@ TurboDecode <-
 #'                the user can change the matrix size.
 #' }
 #'
-#'
 #' @param message.length Length of message which will be encoded.
 #' @param coder.info Coder which will be used for encoding and decoding.
 #' @param type Type of the interleaver, possibilities: RANDOM, PRIMITIVE, CYCLIC, BLOCK
@@ -618,11 +617,11 @@ TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
 #' @param permutation.args Arguments to the \code{\link{TurboGetPermutation}} function.
 #' @param decode.iterations Amount of decoding iterations inside the turbo decoder.
 #' @param msg.length Length of the randomly created message.
-#' @param iterations.per.db Amount of iterations each signal/noise ration step.
 #' @param min.db Start value of the signal/noise ratio.
 #' @param max.db End value of the signal/noise ration.
 #' @param db.interval Interval which will be added to the actual signal/noise ratio after all
 #'                    iterations are applied.
+#' @param iterations.per.db Amount of iterations each signal/noise ration step.
 #' @param punctuation.matrix Punctuation matrix to puncture the output, will be created with \code{\link{TurboGetPunctuationMatrix}}.
 #' @param visualize Flag to decide whether to create a visualization pdf or not.
 #'
@@ -634,18 +633,18 @@ TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
 #'
 #' #without punctuation
 #' coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
-#' TurboSimulation(coder, "RANDOM", NULL, 5, 10, 50, 0.01, 1, 0.05, NULL, TRUE)
+#' TurboSimulation(coder, "RANDOM", NULL, 5, 10, 0.01, 1, 0.05, 50, NULL, TRUE)
 #'
 #' @export
 TurboSimulation <- function(coder = NULL,
                             permutation.type = "PRIMITIVE",
                             permutation.args = list(root=0),
-                            decode.iterations = 10,
+                            decode.iterations = 5,
                             msg.length = 100,
-                            iterations.per.db = 100,
                             min.db = 0.1,
                             max.db = 2.0,
                             db.interval = 0.1,
+                            iterations.per.db = 100,
                             punctuation.matrix = NULL,
                             visualize = FALSE)
 {
@@ -663,6 +662,13 @@ TurboSimulation <- function(coder = NULL,
   perm <- TurboGetPermutation(msg.length, coder, permutation.type, permutation.args)
 
   total.errors <- 0
+
+  total.iterations <- length(v.db) * iterations.per.db
+
+  print("Turbo Simulation")
+  progress.bar <- txtProgressBar(min = 0, max = total.iterations, style = 3)
+
+  progress.counter <- 0
 
   for (db in v.db) {
     for (i in 1 : iterations.per.db) {
@@ -688,11 +694,17 @@ TurboSimulation <- function(coder = NULL,
       decode.errors <- sum(abs(decoded$output.hard - message))
 
       total.errors <- total.errors + decode.errors
+
+      progress.counter <- progress.counter + 1
+
+      setTxtProgressBar(progress.bar, progress.counter)
     }
 
     v.ber <- c(v.ber, total.errors / (msg.length * iterations.per.db))
     total.errors <- 0
   }
+
+  close(progress.bar)
 
   df <- data.frame(db = v.db, ber = v.ber)
 
@@ -731,6 +743,22 @@ TurboSimulation <- function(coder = NULL,
 #' @param encode flag to open the encode pdfs
 #' @param punctured flag to open the decode pdfs
 #' @param simulation flag to open the simulation pdf
+#'
+#' @examples
+#' # open encode without punctuation PDF
+#' TurboOpenPDF()
+#'
+#' # open encode with punctuation PDF
+#' TurboOpenPDF(puctured = FALSE)
+#'
+#' # open decode with punctuation PDF
+#' TurboOpenPDF(encode = FALSE, punctured = TRUE)
+#'
+#' # open decode without punctuation PDF
+#' TurboOpenPDF(encode = FALSE)
+#'
+#' # open simulation PDF
+#' TurboOpenPDF(simulation = TRUE)
 #'
 #' @export
 TurboOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {

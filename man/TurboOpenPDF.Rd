@@ -18,4 +18,21 @@ With this function it is easy to reopen the PDF files which will be created with
 \code{\link{TurboEncode}} and \code{\link{TurboDecode}}. The files are stored in the
 program files of R. (example path: "C:\Program Files\R\R-3.2.4\library\channelcoding\pdf")
 }
+\examples{
+# open encode without punctuation PDF
+TurboOpenPDF()
+
+# open encode with punctuation PDF
+TurboOpenPDF(puctured = FALSE)
+
+# open decode with punctuation PDF
+TurboOpenPDF(encode = FALSE, punctured = TRUE)
+
+# open decode without punctuation PDF
+TurboOpenPDF(encode = FALSE)
+
+# open simulation PDF
+TurboOpenPDF(simulation = TRUE)
+
+}
 

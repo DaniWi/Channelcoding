@@ -14,6 +14,8 @@ ChannelcodingSimulation <- function(msg.length = 100,
                                     min.db = 0.1,
                                     max.db = 2.0,
                                     db.interval = 0.1,
+                                    iterations.per.db = 100,
+                                    turbo.decode.iterations = 5,
                                     visualize = FALSE)
 {
   #block.df <- BlockSimulation()
@@ -21,12 +23,15 @@ ChannelcodingSimulation <- function(msg.length = 100,
   conv.df <- ConvSimulation(msg.length = msg.length,
                             min.db = min.db,
                             max.db = max.db,
-                            db.interval = db.interval)
+                            db.interval = db.interval,
+                            iterations.per.db = iterations.per.db)
 
   turbo.df <- TurboSimulation(msg.length = msg.length,
                               min.db = min.db,
                               max.db = max.db,
-                              db.interval = db.interval)
+                              db.interval = db.interval,
+                              iterations.per.db = iterations.per.db,
+                              decode.iterations = turbo.decode.iterations)
 
   # df <- data.frame(db = block.df$db,
   #                  block.ber = block.df$ber,
@@ -51,6 +56,23 @@ ChannelcodingSimulation <- function(msg.length = 100,
   }
 
   return(df)
+}
+
+#' @export
+PlotSimulationData <- function(...) {
+  arguments <- list(...)
+  if (!all(sapply(arguments, is.data.frame))) {
+    stop("Arguments are not data frames!")
+  }
+  if (any(sapply(arguments, function(x) is.null(x[["ber"]]) || is.null(x[["db"]])))) {
+    stop("The data frame are not correct! (required columns: ber, db)")
+  }
+  min.ber <- min(sapply(arguments, function(x) min(x$ber)))
+  max.ber <- max(sapply(arguments, function(x) max(x$ber)))
+
+  new.df <- Reduce(rbind, arguments)
+  new.df$Arguments <- rep(paste("Argument", 1:length(arguments)), sapply(arguments, nrow))
+  ggplot2::ggplot(new.df,aes(db, ber, color = Arguments)) + geom_line()
 }
 
 PunctureCode <- function(original.code, punctuation.matrix) {

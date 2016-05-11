@@ -325,7 +325,7 @@ for (s in 0:(num.states-1)) {
 \end{scope}
 
 ```{r MultiplexColor, include=FALSE}
-tikz.string <- character()
+multipl.color <- character()
 vec <- head(params$result, node.long)
 for (i in c(0:((length(vec) / 3) - 1))) {
   temp <- paste0(
@@ -336,9 +336,9 @@ for (i in c(0:((length(vec) / 3) - 1))) {
   )
   
   if (i == ((length(vec) / 3) - 1)) {
-    tikz.string <- paste0(tikz.string, temp, collapse = "")
+    multipl.color <- paste0(multipl.color, temp, collapse = "")
   } else {
-    tikz.string <- paste0(tikz.string, temp, ", ", collapse = "")
+    multipl.color <- paste0(multipl.color, temp, ", ", collapse = "")
   }
 }
 ```
@@ -367,4 +367,4 @@ for (i in c(0:((length(vec) / 3) - 1))) {
 \end{tikzpicture}
 \end{center}
 
-- Output : (`r tikz.string``r dots(params$result, node.long)`)
+- Output : (`r multipl.color``r dots(params$result, node.long)`)

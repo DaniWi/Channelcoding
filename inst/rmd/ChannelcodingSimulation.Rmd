@@ -37,13 +37,17 @@ min.ber <- min(df$conv.ber, df$turbo.ber)
 max.ber <- max(df$conv.ber, df$turbo.ber)
 
 ggplot2::ggplot(df,ggplot2::aes(db)) + 
-    # ggplot2::geom_line(ggplot2::aes(y = df$block.ber, colour="block.ber")) +
-    ggplot2::geom_line(ggplot2::aes(y = df$conv.ber, colour="conv.ber")) +
-    ggplot2::geom_line(ggplot2::aes(y = df$turbo.ber, colour="turbo.ber")) +
+    # ggplot2::geom_line(ggplot2::aes(y = df$block.ber, colour="Blockkodierung")) +
+    ggplot2::geom_line(ggplot2::aes(y = df$conv.ber, colour="Faltungskodierung")) +
+    ggplot2::geom_line(ggplot2::aes(y = df$turbo.ber, colour="Turbokodierung")) +
     ggplot2::scale_y_log10(limits = c(min.ber / 2, max.ber * 2)) + 
     ggplot2::xlab("Signal Rausch Verhältnis [dB]") + 
-    ggplot2::ylab("Bitfehlerrate")
-
+    ggplot2::ylab("Bitfehlerrate") +
+    ggplot2::theme(legend.title = ggplot2::element_blank(), 
+                   legend.text = ggplot2::element_text(size=16),
+                   text = ggplot2::element_text(size=16),
+                   axis.title.y = ggplot2::element_text(margin = ggplot2::margin(0,20,0,0)),
+                   axis.title.x = ggplot2::element_text(margin = ggplot2::margin(20,0,0,0)))
 ```
 
 ## Statistik

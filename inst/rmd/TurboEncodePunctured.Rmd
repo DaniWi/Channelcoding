@@ -353,7 +353,7 @@ for (s in 0:(num.states-1)) {
 \end{scope}
 
 ```{r MultiplexColor, include=FALSE}
-tikz.string <- character()
+multipl.color <- character()
 vec <- head(params$multipl, node.short)
 for (i in c(0:((length(vec) / 3) - 1))) {
   temp <- paste0(
@@ -364,9 +364,9 @@ for (i in c(0:((length(vec) / 3) - 1))) {
   )
   
   if (i == ((length(vec) / 3) - 1)) {
-    tikz.string <- paste0(tikz.string, temp, collapse = "")
+    multipl.color <- paste0(multipl.color, temp, collapse = "")
   } else {
-    tikz.string <- paste0(tikz.string, temp, ", ", collapse = "")
+    multipl.color <- paste0(multipl.color, temp, ", ", collapse = "")
   }
 }
 ```
@@ -392,7 +392,7 @@ for (i in c(0:((length(vec) / 3) - 1))) {
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<5>{
-  \node [showStyle] (showBelow) [below=3mm of background] {`r tikz.string``r dots(params$multipl, node.short)`};
+  \node [showStyle] (showBelow) [below=3mm of background] {`r multipl.color``r dots(params$multipl, node.short)`};
   \draw [showDrawStyle] (showBelow) -- (afterMultiplexer.center);
   }
 

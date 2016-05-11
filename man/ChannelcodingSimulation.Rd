@@ -5,7 +5,8 @@
 \title{Channelcoding Simulation}
 \usage{
 ChannelcodingSimulation(msg.length = 100, min.db = 0.1, max.db = 2,
-  db.interval = 0.1, visualize = FALSE)
+  db.interval = 0.1, iterations.per.db = 100, turbo.decode.iterations = 5,
+  visualize = FALSE)
 }
 \arguments{
 \item{msg.length}{Message length of the randomly created messages to be encoded.}
