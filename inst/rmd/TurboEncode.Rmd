@@ -1,5 +1,5 @@
 ---
-title: "Turbo Kodierer"
+title: "Turbokodierung ohne Punktierung"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: beamer_presentation
 params:
@@ -9,7 +9,7 @@ params:
   parity2: !r c(4,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
   result: !r c(5,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
   permutation: !r c(1,2,3,4,5,6,7)
-  encoder: !r list(N=2, M=2, generators=c(1,7), rsc=FALSE, termination=c(0,1,1,0), next.state=matrix(c(0,2,3,1,2,0,1,3), ncol =2), prev.state=matrix(c(0,3,1,2,1,2,0,3,-1,-1,-1,-1), ncol =3), output=matrix(c(0,0,1,1,3,3,2,2), ncol =2))
+  encoder: !r list(N=2, M=2, generators=c(5,7), rsc=TRUE, termination=c(0,1,1,0), next.state=matrix(c(0,2,3,1,2,0,1,3), ncol =2), prev.state=matrix(c(0,3,1,2,1,2,0,3,-1,-1,-1,-1), ncol =3), output=matrix(c(0,0,1,1,3,3,2,2), ncol =2))
 header-includes:
 - \usepackage{tikz}
 - \usepackage{pgfplots}
@@ -22,7 +22,14 @@ header-includes:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r}
+```{r Definition}
+colorOrig <- "gray"
+colorParity1 <- "orange"
+colorParity2 <- "violet"
+
+node.short <- 18
+node.long <- 33
+
 binVector <- function(n, min.length) {
 
   result <- integer()
@@ -85,9 +92,7 @@ ordering <- function(num.states, next.state) {
 }
 ```
 
-```{r, echo=FALSE}
-node.short <- 18
-node.long <- 36
+```{r generatePrintVars, echo=FALSE}
 dots <- function (v, node) if (length(v) > node) ", ..." else ""
 
 if (params$encoder$rsc == TRUE) {
@@ -111,14 +116,14 @@ if (params$encoder$rsc == FALSE) {
 }
 ```
 
-## Kodierer Information
+## Faltungskodierer Informationen
 
 - `r art.coder` Kodierer
 - Anzahl von Ausgängen : $$N=`r params$encoder$N`$$
 - Anzahl von Registern : $$M=`r params$encoder$M`$$
 - Generatoren : $$`r generator.print`$$
 
-## Kodierer Matrix : Nächster Zustand
+## Faltungskodierer Matrix : Nächster Zustand
 
 \begin{center}
 ```{r, results='asis'}
@@ -130,7 +135,7 @@ knitr::kable(next.table, format="latex", align="c")
 ```
 \end{center}
 
-## Kodierer Matrix : Ausgangsbits
+## Faltungskodierer Matrix : Ausgangsbits
 
 \begin{center}
 ```{r, results='asis'}
@@ -143,7 +148,7 @@ knitr::kable(output.table, format="latex", align="c")
 ```
 \end{center}
 
-## Kodierer Matrix : Zustandsdiagramm
+## Faltungskodierer Matrix : Zustandsdiagramm
 
 ```{r}
 num.states <- 2^params$encoder$M
@@ -263,9 +268,30 @@ for (s in 0:(num.states-1)) {
 \vspace*{6mm}
 - Kode-Rate : $$\frac{1}{3}$$
 
-## Turbo-Kodierer
+## Terminierung
 
-- Input : `r head(params$orig, node.short)``r dots(params$orig, node.short)`
+```{r}
+  term.string <- paste0(
+    "- Input ohne Terminierung : (",
+    paste0(head(params$orig, length(params$orig) - params$encoder$M), collapse = ", "),
+    ")",
+    "\\vspace*{6mm}",
+    "\n- Input mit Terminierung : (",
+    paste0(head(params$orig, length(params$orig) - params$encoder$M), collapse = ", "),
+    "\\textcolor{orange}{, ",
+    paste0(tail(params$orig, params$encoder$M), collapse = ", "),
+    "})"
+  )
+
+  if (length(params$orig) > node.long) {
+    term.string <- "Da der Input zu lang ist, kann die Terminierung leider nicht angezeigt werden!"
+  }
+```
+`r term.string`
+
+## Turbokodierung ohne Punktierung
+
+- Input : (`r head(params$orig, node.short)``r dots(params$orig, node.short)`)
 
 \begin{center}
 \begin{tikzpicture}[node distance=8mm, inner sep=2mm, outer sep=0, >=stealth, font=\footnotesize, align=center]
@@ -274,11 +300,11 @@ for (s in 0:(num.states-1)) {
 \tikzstyle{interleaverStyle} = [encoderStyle]
 \tikzstyle{startEndStyle} = [encoderStyle]
 \tikzstyle{multiplexerStyle} = [encoderStyle]
-\tikzstyle{showStyle} = [rectangle, draw, thick, draw=red, text=red, inner sep=1.5mm]
+\tikzstyle{showStyle} = [rectangle, thick, draw=red, text=red, inner sep=1.5mm]
 \tikzstyle{arrowStyle} = [->]
 \tikzstyle{showDrawStyle} = [->, red, thick]
 
-\node [interleaverStyle] (interleaver) {Interleaver};
+\node [interleaverStyle] (interleaver) {Interleaver $I$};
 \node [encoderStyle] (encoder1) [above right=of interleaver] {Kodierer 1};
 \node [encoderStyle] (encoder2) [below right=of interleaver] {Kodierer 2};
 \node [] (multiplexerTemp) [right=of encoder1] {};
@@ -291,7 +317,7 @@ for (s in 0:(num.states-1)) {
 \draw [arrowStyle] (start.east)  -| node[midway] (afterInput) {} (interleaver.north);
 \draw [arrowStyle] (afterInput.center) |- (encoder1.west);
 \draw [arrowStyle] (encoder2.east) -| ++(0.2,0.7) node (afterParity2) {} |- ($(multiplexer.north)+(0,-.5)$);
-\draw [arrowStyle] (afterInput.center) |- ($(multiplexer.north)+(0,.5)$);
+\draw [arrowStyle] (afterInput.center) |- node[near end] (beforeMultiplexerOrig) {} ($(multiplexer.north)+(0,.5)$);
 \draw [arrowStyle] (multiplexer.south) -- node (afterMultiplexer) {} (end.west);
 
 \begin{scope}[on background layer]
@@ -303,9 +329,9 @@ tikz.string <- character()
 vec <- head(params$result, node.long)
 for (i in c(0:((length(vec) / 3) - 1))) {
   temp <- paste0(
-    "\\textcolor{orange}{", vec[i * 3 + 1], "}, ",
-    "\\textcolor{green}{", vec[i * 3 + 2], "}, ",
-    "\\textcolor{blue}{", vec[i * 3 + 3], "}",
+    "\\textcolor{", colorOrig, "}{", vec[i * 3 + 1], "}, ",
+    "\\textcolor{", colorParity1, "}{", vec[i * 3 + 2], "}, ",
+    "\\textcolor{", colorParity2, "}{", vec[i * 3 + 3], "}",
     collapse = ""
   )
   
@@ -318,25 +344,27 @@ for (i in c(0:((length(vec) / 3) - 1))) {
 ```
 
 \visible<2>{
-  \node [showStyle] (showAbove) [above=3mm of background, text=orange] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background, text=`r colorOrig`] {`r head(params$orig, node.short)``r dots(params$orig, node.short)`};
   \draw [showDrawStyle] (showAbove) -- (afterInput.center);
-  \node [showStyle] (showBelow) [below=3mm of background, text=green] {\textbf{`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`}};
+  \draw [showDrawStyle] (showAbove) -- (beforeMultiplexerOrig.center);
+  \node [showStyle] (showBelow) [below=3mm of background, text=`r colorParity1`] {`r head(params$parity1, node.short)``r dots(params$parity1, node.short)`};
   \draw [showDrawStyle] (showBelow) -- (afterParity1.center);
   }
 \visible<3>{
-  \node [showStyle] (showAbove) [above=3mm of background, text=orange] {\textbf{`r head(params$orig, node.short)``r dots(params$orig, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background, text=`r colorOrig`] {`r head(params$orig, node.short)``r dots(params$orig, node.short)`};
   \draw [showDrawStyle] (showAbove) -- (afterInput.center);
-  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
+  \draw [showDrawStyle] (showAbove) -- (beforeMultiplexerOrig.center);
+  \node [showStyle] (showBelow) [below=3mm of background] {`r head(params$interl, node.short)``r dots(params$interl, node.short)`};
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 \visible<4>{
-  \node [showStyle] (showAbove) [above=3mm of background, text=blue] {\textbf{`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`}};
+  \node [showStyle] (showAbove) [above=3mm of background, text=`r colorParity2`] {`r head(params$parity2, node.short)``r dots(params$parity2, node.short)`};
   \draw [showDrawStyle] (showAbove) -- (afterParity2.center);
-  \node [showStyle] (showBelow) [below=3mm of background] {\textbf{`r head(params$interl, node.short)``r dots(params$interl, node.short)`}};
+  \node [showStyle] (showBelow) [below=3mm of background] {`r head(params$interl, node.short)``r dots(params$interl, node.short)`};
   \draw [showDrawStyle] (showBelow) -- (afterInterleaver.center);
   }
 
 \end{tikzpicture}
 \end{center}
 
-- Output : `r tikz.string``r dots(params$result, node.long)`
+- Output : (`r tikz.string``r dots(params$result, node.long)`)
