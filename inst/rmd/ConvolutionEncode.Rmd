@@ -97,6 +97,9 @@ num.states <- 2^M
 
 # add termination bits to message if termination is TRUE
 s <- 0
+for (bit in message) {
+  s <- next.state[s+1, bit+1]
+}
 if (terminate) {
   for (i in 1:M) {
     bit <- if(rsc.flag) termination[s+1] else 0

@@ -196,7 +196,7 @@ List c_generateMatrices_rsc(int N, int M, IntegerVector generator) {
 			nextState(state,input) = (current_state >> 1) & (NUM_STATES-1);
 			
 			if (recursion == 0) {
-				termination(state) = input;
+				termination[state] = input;
 			}
 		}
 	}
@@ -247,7 +247,7 @@ IntegerVector c_convolutionEncode
 	IntegerVector termination,
 	int terminate
 ) {
-	
+		
 	const int inputLen = input.size();
 	
 	const int codeLen = (terminate > 0) ? (inputLen + M) * N : inputLen * N;
@@ -278,7 +278,7 @@ IntegerVector c_convolutionEncode
 			// termination bit is for ...
 			// nsc: 0
 			// rsc: look up in termination vector!
-			int term_bit = (rsc > 0) ? termination(state) : 0;
+			int term_bit = (rsc > 0) ? termination[state]: 0;
 			int out = output(state,term_bit);
 			state = nextState(state,term_bit);
 			for (int j = N-1; j >= 0; j--) {
