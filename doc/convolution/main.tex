@@ -8,6 +8,10 @@
 % [twoside] - double sided
 % [cutmargins] - text body fills complete page
 
+% Extension to BibLaTex (useful for cites in footnotes)
+%\usepackage[backend=bibtex, style=numeric-comp]{biblatex}
+\bibliography{references}
+
 \author{Martin~Nocker}
 \title{R-Paket für Kanalkodierung mit Faltungskodes}
 %\title{R~package for channel~coding with convolutional~codes}
@@ -23,23 +27,21 @@
 \begin{document}
 
 \maketitle
+\begin{abstract}
+
+\end{abstract}
+\begin{otherlanguage}{american}%
+\begin{abstract}
+
+\end{abstract}
+\end{otherlanguage}{american}
 \tableofcontents
 \pagenumbering{arabic}
-
-\chapter*{Abstract}
-\addcontentsline{toc}{chapter}{Abstract}
-\begin{otherlanguage*}{american}
-\end{otherlanguage*}
-
-\chapter*{Kurzfassung}
-\addcontentsline{toc}{chapter}{Kurzfassung}
-%\begin{otherlanguage*}{ngerman}
-%\end{otherlanguage*}
-\acresetall%
 
 \chapter{Einleitung}
 \chapter{Motivation}
 \chapter{Grundlagen}
+Hier werden Grundlagen aufgelistet\cite{huffman2010fundamentals}.\enquote{Das hier steht unter Anführungszeichen.}
 \section{Kanalkodierung}
 \section{Faltungskodierung}
 \chapter{Implementierung in R}
@@ -60,6 +62,5 @@
 \lstlistoflistings
 \clearpage
 
-\bibliographystyle{IEEEtran}
-\bibliography{references}
+\printbibliography
 \end{document}

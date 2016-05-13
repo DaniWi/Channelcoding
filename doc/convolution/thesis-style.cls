@@ -151,7 +151,12 @@
 \RequirePackage[margin=0cm]{subfig}
 
 % Citations
-\RequirePackage{cite}
+%\RequirePackage{cite}
+\RequirePackage[backend=bibtex, style=numeric-comp]{biblatex}
+
+% Quotes
+% German
+\RequirePackage[autostyle]{csquotes}
 
 % The "SI" and "num" commands for typesetting units
 \RequirePackage[range-phrase={\dots\,},per-mode=symbol,detect-all,load-configurations=binary,forbid-literal-units]{siunitx}
@@ -199,7 +204,7 @@
 % }
 
 % Time and date functions
-\RequirePackage{datetime2}
+\RequirePackage[useregional]{datetime2}
 
 % Clever References
 \ifthenelse{\boolean{germanthesis}}{
@@ -226,7 +231,8 @@
 
 % Some more language-dependent commands
 \ifthenelse{\boolean{germanthesis}}{
-	\newcommand{\thedate}{\selectlanguage{ngerman}\today\selectlanguage{american}}
+	%\newcommand{\thedate}{\selectlanguage{ngerman}\today\selectlanguage{american}}
+	\newcommand{\thedate}{\today}
 	\newcommand{\glossarytitlename}{Abkürzungsverzeichnis}
 }{
 	\newcommand{\thedate}{\today}
