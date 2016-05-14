@@ -15,7 +15,9 @@ ApplyNoise(msg, SNR.db = 3)
 Distorted message containing noise.
 }
 \description{
-This function will randomly distort a clean message.
+This function randomly distorts a message simulating the transmission
+over a noisy channel based on the AWGN (additive white Gaussian noise)
+model.
 }
 \author{
 Bene Wimmer

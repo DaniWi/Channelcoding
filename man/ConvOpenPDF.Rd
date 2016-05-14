@@ -7,7 +7,7 @@
 ConvOpenPDF(encode = TRUE, punctured = FALSE, simulation = FALSE)
 }
 \arguments{
-\item{encode}{Flag to open encode PDFs (if true) or decode PDFs (if false).}
+\item{encode}{Flag to open encode PDFs (if TRUE) or decode PDFs (if FALSE).}
 
 \item{punctured}{Flag to open encode or decode PDFs with punctuation.}
 

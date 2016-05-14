@@ -59,7 +59,9 @@ Decode = function(msg, type, params, visualize)
 
 #' Message distortion.
 #'
-#' This function will randomly distort a clean message.
+#' This function randomly distorts a message simulating the transmission
+#' over a noisy channel based on the AWGN (additive white Gaussian noise)
+#' model.
 #' @author Bene Wimmer
 #' @param msg Message to alter.
 #' @param SNR.db Signal-Noise-Ratio in dB simulating the noisy channel.

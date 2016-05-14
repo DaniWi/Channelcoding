@@ -17,6 +17,10 @@ ChannelcodingSimulation(msg.length = 100, min.db = 0.1, max.db = 2,
 
 \item{db.interval}{Step between two SNRs tested.}
 
+\item{iterations.per.db}{Number of encode and decode processes per SNR.}
+
+\item{turbo.decode.iterations}{Number of decoding iterations inside the turbo decoder.}
+
 \item{visualize}{If true a PDF report is generated.}
 }
 \value{

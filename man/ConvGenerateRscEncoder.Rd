@@ -7,17 +7,17 @@
 ConvGenerateRscEncoder(N, M, generators)
 }
 \arguments{
-\item{N}{Numer ob output symbols per input symbol.}
+\item{N}{Numer of output symbols per input symbol.}
 
 \item{M}{Memory length of the encoder.}
 
-\item{generators}{Vector of generator polynoms
+\item{generators}{Vector of octal generator polynoms
 (one for each non-systematic output symbol and one for the recursion).}
 }
 \value{
 A convolutional encoder represented as a list containing:
     N, M, vector of generator polynoms,
-    3 matrices: nextState, previousState and output, rsc (flag),
+    3 matrices: nextState, previousState and output, rsc flag,
     termination vector
 }
 \description{

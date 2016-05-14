@@ -23,30 +23,58 @@
 \thesiscite{Bachelor's thesis}
 \advisors{Dr.~Pascal~Schöttle}
 
+% additional packages
+\usepackage{color, colortbl} % colors (interface table)
+%\usepackage{tabularx} % set table width
+\usepackage{longtable}
+
 \newcommand{\plotwidth}{0.6\textwidth}
 \begin{document}
 
+% Titelseiten und Eidesstattliche Erklärung
 \maketitle
+
+% Zusammenfassung
 \begin{abstract}
 
 \end{abstract}
+% Abstract
 \begin{otherlanguage}{american}%
 \begin{abstract}
 
 \end{abstract}
-\end{otherlanguage}{american}
+\end{otherlanguage}
+
+% Inhaltsverzeichnis
 \tableofcontents
 \pagenumbering{arabic}
 
 \chapter{Einleitung}
-\chapter{Motivation}
-\chapter{Grundlagen}
-Hier werden Grundlagen aufgelistet\cite{huffman2010fundamentals}.\enquote{Das hier steht unter Anführungszeichen.}
-\section{Kanalkodierung}
-\section{Faltungskodierung}
-\chapter{Implementierung in R}
-\section{C Interface}
-\chapter{Zusammenfassung}
+Hier werden Grundlagen aufgelistet \cite{huffman2010fundamentals}.\\
+\enquote{Das hier steht unter Anführungszeichen.}
+\section{Motivation}
+\section{Problem}
+\section{Ziel}
+
+\chapter{Grundlagen und ähnliche Arbeiten}
+
+\chapter{Verwendete Technologien}
+\section{R, RStudio, Pakete}
+\section{C++, Rcpp}
+\section{R Markdown}
+\section{\LaTeX, Ti\textit{k}Z}
+
+\chapter{R Paket Schnittstelle}
+\label{chapter:interface}
+\input{chapters/interface}
+
+\chapter{Visualisierung}
+
+\chapter{Implementierung}
+
+\chapter{Beispiele}
+
+\chapter{Fazit, Ausblick, Erweiterungen}
 
 \cleardoublepage%
 

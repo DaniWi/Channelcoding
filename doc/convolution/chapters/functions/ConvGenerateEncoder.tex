@@ -1,0 +1,33 @@
+% ConvGenerateEncoder
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}ConvGenerateEncoder\\
+\hline
+\\
+\texttt{ConvGenerateEncoder(N, M, generators)}\\
+\\
+Generates a convolutional encoder for nonrecursive convolutional codes.\\
+\\
+\textbf{Arguments:}\\
+\texttt{N} - Numer ob output symbols per input symbol.\\
+\texttt{M} - Memory length of the encoder.\\
+\texttt{generators} - Vector of N octal generator polynoms (one for each output symbol).\\
+\\
+\textbf{Returns:}\\
+A convolutional encoder represented as a list containing:
+\vspace{-4mm}
+\begin{itemize}
+\renewcommand\labelitemi{--}
+\itemsep-.5em % spacing between items
+\item N
+\item M
+\item generator polynoms vector
+\item nextState matrix
+\item previousState matrix
+\item output matrix
+\item rsc flag
+\item termination vector
+\end{itemize}
+\\
+\hline
+\end{longtable}

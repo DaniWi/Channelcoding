@@ -26,13 +26,13 @@
 #'     element). Therefore octal 5 means the output symbol is computed as
 #'     the xor combination of the input symbol and the last memory element's
 #'     output.
-#' @param N Numer ob output symbols per input symbol.
+#' @param N Numer of output symbols per input symbol.
 #' @param M Memory length of the encoder.
 #' @param generators Vector of N octal generator polynoms
 #'     (one for each output symbol).
 #' @return A convolutional encoder represented as a list containing:
 #'     N, M, vector of generator polynoms,
-#'     3 matrices: nextState, previousState and output, rsc (flag),
+#'     3 matrices: nextState, previousState and output, rsc flag,
 #'     termination vector
 #' @examples
 #' # standard convolutional encoder with code-rate = 0.5
@@ -103,13 +103,13 @@ ConvGenerateEncoder <- function(N, M, generators) {
 #'     handle the recursion output(!), not the original input signal. The other
 #'     bits also handle the memory outputs. See 'The art of error correcting
 #'     coding' (p.92f) for a detailed definition and an example.
-#' @param N Numer ob output symbols per input symbol.
+#' @param N Numer of output symbols per input symbol.
 #' @param M Memory length of the encoder.
-#' @param generators Vector of generator polynoms
+#' @param generators Vector of octal generator polynoms
 #'     (one for each non-systematic output symbol and one for the recursion).
 #' @return A convolutional encoder represented as a list containing:
 #'     N, M, vector of generator polynoms,
-#'     3 matrices: nextState, previousState and output, rsc (flag),
+#'     3 matrices: nextState, previousState and output, rsc flag,
 #'     termination vector
 #' @examples
 #' # standard rsc encoder with code-rate = 0.5
@@ -260,11 +260,10 @@ ConvEncode <- function(message,
 
 #' Convolutional decoding of a code (soft decision).
 #'
-#' Decodes a convolutional codeword.
-#' This decoder is a soft-input soft-output decoder.
+#' Decodes a convolutional codeword using soft decision decoding.
 #' @param code The code to be decoded.
 #' @param conv.encoder Convolutional encoder used for encoding.
-#' @param terminate flag If the code was terminated.
+#' @param terminate flag If the code is terminated.
 #' @param punctuation.matrix If not null the code is depunctured prior to the decode algorithm.
 #' @param visualize If TRUE a beamer PDF file is generated showing the decode process.
 #' @return The decoded message, list(softOutput, hardOutput)
@@ -383,8 +382,7 @@ ConvDecodeSoft <- function(code,
 
 #' Convolutional decoding of a code (hard decision).
 #'
-#' Decodes a codeword that was encoded with the given encoder.
-#' This decoder is a hard-decision decoder.
+#' Decodes a convolutional codeword using hard decision decoding.
 #' @inheritParams ConvDecodeSoft
 #' @return The hard-decoded message vector.
 #' @examples
@@ -496,9 +494,10 @@ ConvDecodeHard <- function(code,
 
 #' Convolutional Simulation.
 #'
-#' Simulation of a convolutional encode and decode process over a noisy channel.
+#' Simulation of a convolutional encode and decode process over a noisy channel
+#' at several signal-noise-ratios (SNR).
 #'
-#' @param coder Convolutional coder used for the simulation. Can be created via
+#' @param conv.coder Convolutional coder used for the simulation. Can be created via
 #'     \code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.
 #' @param msg.length Message length of the randomly created messages to be encoded.
 #' @param min.db Minimum SNR to be tested.
@@ -619,7 +618,7 @@ ConvSimulation <- function(conv.coder = NULL,
 #'     \code{\link{ConvDecodeHard}} and \code{\link{ConvSimulation}}.
 #'     The files are stored in the program files of R.
 #'     If the corresponding file does not exist yet an error message is printed.
-#' @param encode Flag to open encode PDFs (if true) or decode PDFs (if false).
+#' @param encode Flag to open encode PDFs (if TRUE) or decode PDFs (if FALSE).
 #' @param punctured Flag to open encode or decode PDFs with punctuation.
 #' @param simulation Flag to open simulation PDFs. This flag has highest precedence
 #'     meaning that if the simulation flag is TRUE the function will look for the

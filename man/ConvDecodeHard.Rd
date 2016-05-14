@@ -12,7 +12,7 @@ ConvDecodeHard(code, conv.encoder = NULL, terminate = TRUE,
 
 \item{conv.encoder}{Convolutional encoder used for encoding.}
 
-\item{terminate}{flag If the code was terminated.}
+\item{terminate}{flag If the code is terminated.}
 
 \item{punctuation.matrix}{If not null the code is depunctured prior to the decode algorithm.}
 
@@ -22,8 +22,7 @@ ConvDecodeHard(code, conv.encoder = NULL, terminate = TRUE,
 The hard-decoded message vector.
 }
 \description{
-Decodes a codeword that was encoded with the given encoder.
-This decoder is a hard-decision decoder.
+Decodes a convolutional codeword using hard decision decoding.
 }
 \examples{
 coder <- ConvGenerateEncoder(2,2,c(7,5))

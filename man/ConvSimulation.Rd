@@ -9,6 +9,9 @@ ConvSimulation(conv.coder = NULL, msg.length = 100, min.db = 0.1,
   punctuation.matrix = NULL, visualize = FALSE)
 }
 \arguments{
+\item{conv.coder}{Convolutional coder used for the simulation. Can be created via
+\code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.}
+
 \item{msg.length}{Message length of the randomly created messages to be encoded.}
 
 \item{min.db}{Minimum SNR to be tested.}
@@ -23,15 +26,13 @@ ConvSimulation(conv.coder = NULL, msg.length = 100, min.db = 0.1,
 be created via \code{\link{ConvGetPunctuationMatrix}}.}
 
 \item{visualize}{If true a PDF report is generated.}
-
-\item{coder}{Convolutional coder used for the simulation. Can be created via
-\code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.}
 }
 \value{
 Dataframe containing the bit-error-rates for each SNR tested.
 }
 \description{
-Simulation of a convolutional encode and decode process over a noisy channel.
+Simulation of a convolutional encode and decode process over a noisy channel
+at several signal-noise-ratios (SNR).
 }
 \examples{
 # use all default parameters

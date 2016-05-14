@@ -6,6 +6,8 @@
 #' @param min.db Minimum SNR to be tested.
 #' @param max.db Maximum SNR to be tested.
 #' @param db.interval Step between two SNRs tested.
+#' @param iterations.per.db Number of encode and decode processes per SNR.
+#' @param turbo.decode.iterations Number of decoding iterations inside the turbo decoder.
 #' @param visualize If true a PDF report is generated.
 #' @return Dataframe containing the bit-error-rates for each coding technique
 #'     and each SNR tested.
@@ -58,6 +60,13 @@ ChannelcodingSimulation <- function(msg.length = 100,
   return(df)
 }
 
+#' Show simulation data in a plot
+#'
+#' Shows passed simulation data (can be created by the functions
+#' \code{\link{ConvSimulation}}, \code{\link{TurboSimulation}}
+#' and <BlockSimulation>) containing the bit-error-rates for several SNRs
+#' in one plot for easy comparison.
+#' @param ... Dataframes created by the simulation functions.
 #' @export
 PlotSimulationData <- function(...) {
   arguments <- list(...)

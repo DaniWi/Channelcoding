@@ -71,9 +71,9 @@
 % -----------------------------------------------------------------------------
 % This class is based on report
 \ifthenelse{\boolean{oneside}}{
-\LoadClass[a4paper,10pt,onecolumn,oneside,openright]{report}
+\LoadClass[a4paper,11pt,onecolumn,oneside,openright]{report}
 }{
-\LoadClass[a4paper,10pt,onecolumn,twoside,openright]{report}
+\LoadClass[a4paper,11pt,onecolumn,twoside,openright]{report}
 }
 \ifthenelse{\boolean{cutmargins}}{
 \RequirePackage[paperwidth=365pt,paperheight=618pt,textwidth=345pt,textheight=598pt,bindingoffset=0cm,marginparwidth=3cm,hmarginratio=1:1,vmarginratio=1:1]{geometry}

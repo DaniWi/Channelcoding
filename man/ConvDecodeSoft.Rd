@@ -12,7 +12,7 @@ ConvDecodeSoft(code, conv.encoder = NULL, terminate = TRUE,
 
 \item{conv.encoder}{Convolutional encoder used for encoding.}
 
-\item{terminate}{flag If the code was terminated.}
+\item{terminate}{flag If the code is terminated.}
 
 \item{punctuation.matrix}{If not null the code is depunctured prior to the decode algorithm.}
 
@@ -22,8 +22,7 @@ ConvDecodeSoft(code, conv.encoder = NULL, terminate = TRUE,
 The decoded message, list(softOutput, hardOutput)
 }
 \description{
-Decodes a convolutional codeword.
-This decoder is a soft-input soft-output decoder.
+Decodes a convolutional codeword using soft decision decoding.
 }
 \examples{
 coder <- ConvGenerateEncoder(2,2,c(7,5))
