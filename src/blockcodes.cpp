@@ -47,19 +47,20 @@ IntegerVector c_bchEncode
 }
 
 // [[Rcpp::export]]
-IntegerVector c_bchDecode
+List c_bchDecode
   (	IntegerVector input,
-    IntegerVector alpha_to,
-    IntegerVector index_of,
     int length,
     int m,
+    int k,
     int t,
-    int k
+    IntegerVector alpha_to,
+    IntegerVector index_of
   ) {
 
   int i, j, u, q, t2, n, mask, count = 0, syn_error = 0;
   int elp[1026][1024], d[1026], l[1026], u_lu[1026], s[1025];
   int root[200], loc[200], err[1024], reg[201];
+  bool failed = false;
 
   n = 1;
   for (i = 0; i <= m; i++)
@@ -192,12 +193,12 @@ IntegerVector c_bchDecode
           for (i = 0; i <= l[u]; i++)
             elp[u][i] = index_of[elp[u][i]];
 
-    printf("sigma(x) = ");
+   /* printf("sigma(x) = ");
     for (i = 0; i <= l[u]; i++)
       printf("%3d ", elp[u][i]);
     printf("\n");
     printf("Roots: ");
-
+*/
     /* Chien search: find roots of the error location polynomial */
     for (i = 1; i <= l[u]; i++)
       reg[i] = elp[u][i];
@@ -214,10 +215,10 @@ IntegerVector c_bchDecode
     root[count] = i;
           loc[count] = n - i;
           count++;
-          printf("%3d ", n - i);
+          //printf("%3d ", n - i);
         }
     }
-    printf("\n");
+    //printf("\n");
     if (count == l[u])
       /* no. roots = degree of elp hence <= t errors */
       for (i = 0; i < l[u]; i++) {
@@ -225,7 +226,8 @@ IntegerVector c_bchDecode
         loc[i] = 0;
       }
       else /* elp has degree >t hence cannot solve */
-      printf("Incomplete decoding: errors detected\n");
+        failed = true;
+      //printf("Incomplete decoding: errors detected\n");
   }
   }
 
@@ -233,7 +235,12 @@ IntegerVector c_bchDecode
   for(i=0;i<k;i++)
     decoded[i] = input[length-k+i];
 
-  return decoded;
+  List ret = List::create(Rcpp::Named("decoded") = decoded,
+                          Rcpp::Named("input.corrected") = input,
+                          Rcpp::Named("failed") = failed);
+  return ret;
+
+
 
 }
 
@@ -409,8 +416,12 @@ List c_getGeneratorPoly
             g[0] = alpha_to[(index_of[g[0]] + zeros[ii]) % n];
         }
 
-        List ret = List::create(Rcpp::Named("genPoly") = g,
-                                Rcpp::Named("k") = k,
+        IntegerVector g_cleaned(length-k+1);
+        for(i=0;i<=length-k;i++)
+          g_cleaned[i] = g[i];
+
+        List ret = List::create(Rcpp::Named("gen.poly") = g_cleaned,
+                                Rcpp::Named("data.length") = k,
                                 Rcpp::Named("alpha_to") = alpha_to,
                                 Rcpp::Named("index_of") = index_of);
         return ret;

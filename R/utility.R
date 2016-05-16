@@ -6,8 +6,6 @@
 #' @param min.db Minimum SNR to be tested.
 #' @param max.db Maximum SNR to be tested.
 #' @param db.interval Step between two SNRs tested.
-#' @param iterations.per.db Number of encode and decode processes per SNR.
-#' @param turbo.decode.iterations Number of decoding iterations inside the turbo decoder.
 #' @param visualize If true a PDF report is generated.
 #' @return Dataframe containing the bit-error-rates for each coding technique
 #'     and each SNR tested.
@@ -20,7 +18,11 @@ ChannelcodingSimulation <- function(msg.length = 100,
                                     turbo.decode.iterations = 5,
                                     visualize = FALSE)
 {
-  #block.df <- BlockSimulation()
+  block.df <- BlockSimulation(msg.length = msg.length,
+                              min.db = min.db,
+                              max.db = max.db,
+                              db.interval = db.interval,
+                              iterations.per.db = iterations.per.db)
 
   conv.df <- ConvSimulation(msg.length = msg.length,
                             min.db = min.db,
@@ -35,13 +37,11 @@ ChannelcodingSimulation <- function(msg.length = 100,
                               iterations.per.db = iterations.per.db,
                               decode.iterations = turbo.decode.iterations)
 
-  # df <- data.frame(db = block.df$db,
-  #                  block.ber = block.df$ber,
-  #                  conv.ber = conv.df$ber,
-  #                  turbo.ber = turbo.df$ber)
-  df <- data.frame(db = conv.df$db,
+  df <- data.frame(db = block.df$db,
+                   block.ber = block.df$ber,
                    conv.ber = conv.df$ber,
                    turbo.ber = turbo.df$ber)
+
 
   if (visualize) {
     rmarkdown::render(system.file("rmd", "ChannelcodingSimulation.Rmd", package = "channelcoding"),

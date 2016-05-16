@@ -20,19 +20,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_bchDecode
-IntegerVector c_bchDecode(IntegerVector input, IntegerVector alpha_to, IntegerVector index_of, int length, int m, int t, int k);
-RcppExport SEXP channelcoding_c_bchDecode(SEXP inputSEXP, SEXP alpha_toSEXP, SEXP index_ofSEXP, SEXP lengthSEXP, SEXP mSEXP, SEXP tSEXP, SEXP kSEXP) {
+List c_bchDecode(IntegerVector input, int length, int m, int k, int t, IntegerVector alpha_to, IntegerVector index_of);
+RcppExport SEXP channelcoding_c_bchDecode(SEXP inputSEXP, SEXP lengthSEXP, SEXP mSEXP, SEXP kSEXP, SEXP tSEXP, SEXP alpha_toSEXP, SEXP index_ofSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< IntegerVector >::type input(inputSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type alpha_to(alpha_toSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type index_of(index_ofSEXP);
     Rcpp::traits::input_parameter< int >::type length(lengthSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< int >::type t(tSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    __result = Rcpp::wrap(c_bchDecode(input, alpha_to, index_of, length, m, t, k));
+    Rcpp::traits::input_parameter< int >::type t(tSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type alpha_to(alpha_toSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type index_of(index_ofSEXP);
+    __result = Rcpp::wrap(c_bchDecode(input, length, m, k, t, alpha_to, index_of));
     return __result;
 END_RCPP
 }

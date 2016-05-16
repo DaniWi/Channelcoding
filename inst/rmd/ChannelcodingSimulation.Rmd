@@ -31,13 +31,13 @@ header-includes:
 
 df <- params$dataframe
 
-# min.ber <- min(df$block.ber, df$conv.ber, df$turbo.ber)
-# max.ber <- max(df$block.ber, df$conv.ber, df$turbo.ber)
-min.ber <- min(df$conv.ber, df$turbo.ber)
-max.ber <- max(df$conv.ber, df$turbo.ber)
+min.ber <- min(df$block.ber, df$conv.ber, df$turbo.ber)
+max.ber <- max(df$block.ber, df$conv.ber, df$turbo.ber)
+# min.ber <- min(df$conv.ber, df$turbo.ber)
+# max.ber <- max(df$conv.ber, df$turbo.ber)
 
 ggplot2::ggplot(df,ggplot2::aes(db)) + 
-    # ggplot2::geom_line(ggplot2::aes(y = df$block.ber, colour="Blockkodierung")) +
+     ggplot2::geom_line(ggplot2::aes(y = df$block.ber, colour="Blockkodierung")) +
     ggplot2::geom_line(ggplot2::aes(y = df$conv.ber, colour="Faltungskodierung")) +
     ggplot2::geom_line(ggplot2::aes(y = df$turbo.ber, colour="Turbokodierung")) +
     ggplot2::scale_y_log10(limits = c(min.ber / 2, max.ber * 2)) + 
@@ -55,7 +55,7 @@ ggplot2::ggplot(df,ggplot2::aes(db)) +
 Bitefehlerrate:
 
 ```{r qplot, echo=FALSE, message=FALSE}
-# df.ber <- data.frame(block = df$block.ber, conv = df$conv.ber, turbo = df$turbo.ber)
-df.ber <- data.frame(conv = df$conv.ber, turbo = df$turbo.ber)
+df.ber <- data.frame(block = df$block.ber, conv = df$conv.ber, turbo = df$turbo.ber)
+#df.ber <- data.frame(conv = df$conv.ber, turbo = df$turbo.ber)
 summary(df.ber)
 ```

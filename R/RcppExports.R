@@ -5,8 +5,8 @@ c_bchEncode <- function(input, genPoly, length, k) {
     .Call('channelcoding_c_bchEncode', PACKAGE = 'channelcoding', input, genPoly, length, k)
 }
 
-c_bchDecode <- function(input, alpha_to, index_of, length, m, t, k) {
-    .Call('channelcoding_c_bchDecode', PACKAGE = 'channelcoding', input, alpha_to, index_of, length, m, t, k)
+c_bchDecode <- function(input, length, m, k, t, alpha_to, index_of) {
+    .Call('channelcoding_c_bchDecode', PACKAGE = 'channelcoding', input, length, m, k, t, alpha_to, index_of)
 }
 
 c_getGeneratorPoly <- function(length, m, t) {
