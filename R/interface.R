@@ -5,7 +5,9 @@
 #' @param msg Message to alter.
 #' @param SNR.db Signal-Noise-Ratio in dB simulating the noisy channel.
 #' @param binary False = Soft Output, True = Hard Output
+#'
 #' @return Distorted message containing noise.
+#'
 #' @export
 ApplyNoise <- function(msg, SNR.db = 3, binary = FALSE)
 {

@@ -4,20 +4,20 @@
 \alias{ApplyNoise}
 \title{Message distortion.}
 \usage{
-ApplyNoise(msg, SNR.db = 3)
+ApplyNoise(msg, SNR.db = 3, binary = FALSE)
 }
 \arguments{
 \item{msg}{Message to alter.}
 
 \item{SNR.db}{Signal-Noise-Ratio in dB simulating the noisy channel.}
+
+\item{binary}{False = Soft Output, True = Hard Output}
 }
 \value{
 Distorted message containing noise.
 }
 \description{
-This function randomly distorts a message simulating the transmission
-over a noisy channel based on the AWGN (additive white Gaussian noise)
-model.
+This function will randomly distort a clean message.
 }
 \author{
 Bene Wimmer

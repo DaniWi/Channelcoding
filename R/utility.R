@@ -2,13 +2,18 @@
 #'
 #' Simulation of channelcoding techniques (blockcodes, convolutional codes
 #'     and turbo codes) and comparison of their bit-error-rates.
+#'
 #' @param msg.length Message length of the randomly created messages to be encoded.
 #' @param min.db Minimum SNR to be tested.
 #' @param max.db Maximum SNR to be tested.
 #' @param db.interval Step between two SNRs tested.
+#' @param iterations.per.db Amount of iterations each signal/noise ration step.
+#' @param turbo.decode.iterations Amount of decoding iterations inside the turbo decoder.
 #' @param visualize If true a PDF report is generated.
+#'
 #' @return Dataframe containing the bit-error-rates for each coding technique
 #'     and each SNR tested.
+#'
 #' @export
 ChannelcodingSimulation <- function(msg.length = 100,
                                     min.db = 0.1,
@@ -66,7 +71,9 @@ ChannelcodingSimulation <- function(msg.length = 100,
 #' \code{\link{ConvSimulation}}, \code{\link{TurboSimulation}}
 #' and <BlockSimulation>) containing the bit-error-rates for several SNRs
 #' in one plot for easy comparison.
+#'
 #' @param ... Dataframes created by the simulation functions.
+#'
 #' @export
 PlotSimulationData <- function(...) {
   arguments <- list(...)
@@ -76,12 +83,12 @@ PlotSimulationData <- function(...) {
   if (any(sapply(arguments, function(x) is.null(x[["ber"]]) || is.null(x[["db"]])))) {
     stop("The data frame are not correct! (required columns: ber, db)")
   }
-  min.ber <- min(sapply(arguments, function(x) min(x$ber)))
-  max.ber <- max(sapply(arguments, function(x) max(x$ber)))
+  min.ber <- min(sapply(arguments, function(x) min(x[["ber"]])))
+  max.ber <- max(sapply(arguments, function(x) max(x[["ber"]])))
 
   new.df <- Reduce(rbind, arguments)
   new.df$Arguments <- rep(paste("Argument", 1:length(arguments)), sapply(arguments, nrow))
-  ggplot2::ggplot(new.df,aes(db, ber, color = Arguments)) + geom_line()
+  ggplot2::ggplot(new.df, ggplot2::aes(db, ber, color = Arguments)) + geom_line()
 }
 
 PunctureCode <- function(original.code, punctuation.matrix) {

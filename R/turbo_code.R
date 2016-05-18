@@ -186,7 +186,7 @@ TurboEncode <-
 #'
 #' @author Witsch Daniel
 #'
-#' @param message Code which will be decoded to the original message.
+#' @param code Code which will be decoded to the original message.
 #' @param permutation.vector Permutation vector which will be created with \code{\link{TurboGetPermutation}}.
 #' @param iterations Amount of decoding iterations.
 #' @param coder.info Coder which will be created with \code{\link{ConvGenerateEncoder}} or \code{\link{ConvGenerateRscEncoder}}.
@@ -380,8 +380,6 @@ TurboDecode <-
 #' Some interleaver need additional informations in the \code{args} argument.
 #'
 #'
-#'
-#'
 #' \itemize{
 #'   \item RANDOM: Creates a random permutation vector. No arguments in \code{args}.
 #'   \item PRIMITIVE: Shift the initial vector (\code{c(1,2,3,...)}) so that the \code{args$root}
@@ -409,6 +407,28 @@ TurboDecode <-
 #' @param visualize Flag to visualize the resulting permutation matrix/vector.
 #'
 #' @return Created permutation vector.
+#'
+#' @examples
+#' input <- c(1,0,1,1,0,1)
+#' coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
+#'
+#' #RANDOM
+#' permutation <- TurboGetPermutation(length(input), coder, "RANDOM")
+#'
+#' #PRIMITIV
+#' permutation <- TurboGetPermutation(length(input), coder, "PRIMITIVE", list(root=2))
+#'
+#' #CYCLIC
+#' permutation <- TurboGetPermutation(length(input), coder, "CYCLIC", list(cols=2, rows=4, distance=2))
+#'
+#' #BLOCK
+#' permutation <- TurboGetPermutation(length(input), coder, "BLOCK", list(cols=2, rows=4))
+#'
+#' #HELICAL
+#' permutation <- TurboGetPermutation(length(input), coder, "HELICAL", list(cols=2, rows=4))
+#'
+#' #DIAGONAL
+#' permutation <- TurboGetPermutation(length(input), coder, "DIAGONAL", list(cols=2, rows=4))
 #'
 #' @export
 TurboGetPermutation <- function(message.length,
@@ -740,9 +760,9 @@ TurboSimulation <- function(coder = NULL,
 #' \code{\link{TurboEncode}} and \code{\link{TurboDecode}}. The files are stored in the
 #' program files of R. (example path: "C:\Program Files\R\R-3.2.4\library\channelcoding\pdf")
 #'
-#' @param encode flag to open the encode pdfs
-#' @param punctured flag to open the decode pdfs
-#' @param simulation flag to open the simulation pdf
+#' @param encode Flag to open the encode pdfs.
+#' @param punctured Flag to open the decode pdfs.
+#' @param simulation Flag to open the simulation pdf.
 #'
 #' @examples
 #' # open encode without punctuation PDF

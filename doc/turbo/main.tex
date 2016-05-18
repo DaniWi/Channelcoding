@@ -1,22 +1,26 @@
 \documentclass[germanthesis]{thesis-style}
-% für Deutsch
-%\selectlanguage{ngerman}
-% zur Verwendung von Anführungszeichen
-\usepackage[style=german]{csquotes}
-%\usepackage[babel,german=guotes]{csquotes}
-% zur Verwendung von Biblatex
-\usepackage[backend=bibtex, style=authortitle-icomp]{biblatex}	
-\bibliography{references} 
-%style=authortitle-icomp
-%\usepackage{tikz}					
-% biblatex Datei hinzufügen
-%\bibliographystyle{IEEEtran}
-%\bibliography{references}
+% options:
+% [germanthesis] - Thesis is written in German
+% [plainunnumbered] - Don't print numbers on plain pages
+% [earlydraft] - Settings for quick draft printouts
+% [watermark] - Print current time/date at bottom of each page
+% [phdthesis] - switch to PhD thesis style
+% [twoside] - double sided
+% [cutmargins] - text body fills complete page
 
-\begin{document}
+% Extension to BibLaTex (useful for cites in footnotes)
+%\usepackage[backend=bibtex, style=numeric-comp]{biblatex}
+\bibliography{references}
+
+% additional packages
+\usepackage{color, colortbl} % colors (interface table)
+%\usepackage{tabularx} % set table width
+\usepackage{longtable}
+
 \author{Daniel~Witsch}
-\title{R~package for channel~coding with turbo~codes}
-\birthday{12. Dezember 1992}
+\title{R-Paket für Kanalkodierung mit Turbokodes}
+%\title{R~package for channel~coding with convolutional~codes}
+\birthday{28. Dezember 1992}
 \birthplace{Zams}
 %\thesisstart{1. Januar 2009}
 \thesistype{Bachelor's thesis}
@@ -25,40 +29,18 @@
 \advisors{Dr.~Pascal~Schöttle}
 \date{\today}
 
+\begin{document}
+
+% Titelseiten und Eidesstattliche Erklärung
 \maketitle
+% Deutsche Zusammenfassung
 \abstract{\input{abstract}}
+% Literaturverzeichnis
 \tableofcontents
+\pagenumbering{arabic}
 
-\chapter*{Abstract}
-\addcontentsline{toc}{chapter}{Abstract}
-\begin{otherlanguage*}{american}
-\end{otherlanguage*}
+\input{content}
 
-\chapter*{Kurzfassung}
-\addcontentsline{toc}{chapter}{Kurzfassung}
-\begin{otherlanguage*}{ngerman}
-aklfdjslkdfjjkfd 
-adjkalfdjjkfs
-aksdjflkasjflkasjf
-kjldfjlkdfj
-\end{otherlanguage*}
-\acresetall%
-
-\chapter{jkasjfdkldsf}
-\chapter{sdfsfd}
-\section{asfdsf}
-\subsection{aksjfdlkasfd}
-\subsubsection{kjsldfjldf}
-\subsubsubsection{jkasldfjljfd}
-\subsubsubsubsection{hdskfjlkfd}
-jkadfjlksdjfkld
-jsdlkfjlkfdj
-asdjflkjdföäüläö
-
-%\input{content}
-asfksaljflkjklajfdlksdjfkls\footcite[22]{Angehrn:Chaos}
-\cite{Angehrn:Chaos}
-\enquote{nur}
 \cleardoublepage%
 
 \listofabbreviations
@@ -70,7 +52,8 @@ asfksaljflkjklajfdlksdjfkls\footcite[22]{Angehrn:Chaos}
 \listoftables
 \clearpage
 
-% Literaturverzeichnis anzeigen
-%\bibliographystyle{IEEEtran}
+\lstlistoflistings
+\clearpage
+
 \printbibliography
 \end{document}
