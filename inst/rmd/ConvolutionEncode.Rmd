@@ -370,7 +370,7 @@ Output : `r alt.output`
 
 ## Output : Kode zu Signal
 
-Kode : (`r ifelse(params$code >= 0, 0, 1)`)
+- Kode : (`r ifelse(params$code >= 0, 0, 1)`)
 \vspace*{10mm}
 \begin{equation*}
   \text{Signal(bit)} =
@@ -380,4 +380,4 @@ Kode : (`r ifelse(params$code >= 0, 0, 1)`)
   \end{cases}
 \end{equation*}
 \vspace*{10mm}
-Signal : (`r params$code`)
+- Signal : (`r params$code`)

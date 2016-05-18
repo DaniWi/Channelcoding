@@ -214,6 +214,12 @@ for (t in 1:(ncol(trellis)-1)) {
           # edge.0 <- paste("\\alt<-",ncol(trellis),"> {",edge.0,"}{};")
           edge.0 <- paste("\\alt<1> {",edge.0,"}{};")
         }
+        else {
+          # survivor path, but not THE correct path
+          # gray when correct path is colored orange
+          color.edge <- paste("\\draw[->, lightgray]",this.node,"--",next.node.0,label.0,";")
+          edge.0 <- paste0("\\alt<",ncol(trellis)+2-t,"-> {",color.edge,"}{",edge.0,"};")
+        }
 
         tikz.trellis <- paste(tikz.trellis, edge.0)
       }
@@ -233,6 +239,12 @@ for (t in 1:(ncol(trellis)-1)) {
           # remove non-survivor paths at the end
           # edge.1 <- paste("\\alt<-",ncol(trellis),"> {",edge.1,"}{};")
           edge.1 <- paste("\\alt<1> {",edge.1,"}{};")
+        }
+        else {
+          # survivor path, but not THE correct path
+          # gray when correct path is colored orange
+          color.edge <- paste("\\draw[->, dashed, lightgray]",this.node,"--",next.node.1,label.1,";")
+          edge.1 <- paste0("\\alt<",ncol(trellis)+2-t,"-> {",color.edge,"}{",edge.1,"};")
         }
 
         tikz.trellis <- paste(tikz.trellis, edge.1)
@@ -321,7 +333,7 @@ depunctured.colored <- paste(ifelse(punct == 0, color.wrap(code.rounded), code.r
 
 ## Input : Signal zu Kode
 
-Signal : (`r round(params$code, digits = 1)`)
+- Signal : (`r round(params$code, digits = 1)`)
 \vspace*{10mm}
 \begin{equation*}
   \text{Kode(signal)} =
@@ -331,7 +343,7 @@ Signal : (`r round(params$code, digits = 1)`)
   \end{cases}
 \end{equation*}
 \vspace*{10mm}
-Kode : (`r ifelse(params$code >= 0, 0, 1)`)
+- Kode : (`r ifelse(params$code >= 0, 0, 1)`)
 
 ## Viterbi-Algorithmus `r if(params$soft.flag) "(soft decision)" else "(hard decision)"`
 

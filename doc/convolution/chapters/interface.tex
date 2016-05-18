@@ -1,33 +1,35 @@
 % R Paket Schnittstelle für Faltungskodierung
 \definecolor{lightblue}{RGB}{150,180,255}
 
-\section{Kodierer erzeugen}
+In diesem Kapitel wird die Schnittstelle für den Benutzer erläutert. Kapitel \ref{chapter:interface_kodierer_erzeugen} listet Funktionen zur Erzeugung von Faltungskodierern auf. Die Kodierungsfunktion wird in Kapitel \ref{chapter:interface_kodieren} beschrieben, gefolgt von den Dekodierungsfunktionen in Kapitel \ref{chapter:interface_dekodieren}. Eine Funktion zur Simulation von Faltungskodes wird in Kapitel \ref{chapter:interface_simulation} erläutert. Kapitel \ref{chapter:interface_hilfsfunktionen} beinhaltet Hilfsfunktionen für Faltungskodes. Schließlich beschreibt Kapitel \ref{chapter:interface_kanalkodierung} weitere nützliche Funktionen der Kanalkodierung.
+
+\subsection{Kodierer erzeugen}
 \label{chapter:interface_kodierer_erzeugen}
 \input{chapters/functions/ConvGenerateEncoder}
 
 \input{chapters/functions/ConvGenerateRscEncoder}
 
-\section{Kodieren}
+\subsection{Kodieren}
 \label{chapter:interface_kodieren}
 \input{chapters/functions/ConvEncode}
 
-\section{Dekodieren}
-\label{chapter:interface_kodieren}
+\subsection{Dekodieren}
+\label{chapter:interface_dekodieren}
 \input{chapters/functions/ConvDecodeSoft}
 
 \input{chapters/functions/ConvDecodeHard}
 
-\section{Simulation}
+\subsection{Simulation}
 \label{chapter:interface_simulation}
 \input{chapters/functions/ConvSimulation}
 
-\section{Hilfsfunktionen}
+\subsection{Hilfsfunktionen}
 \label{chapter:interface_hilfsfunktionen}
 \input{chapters/functions/ConvGetPunctuationMatrix}
 
 \input{chapters/functions/ConvOpenPDF}
 
-\section{Kanalkodierung}
+\subsection{Kanalkodierung}
 \label{chapter:interface_kanalkodierung}
 \input{chapters/functions/ApplyNoise}
 

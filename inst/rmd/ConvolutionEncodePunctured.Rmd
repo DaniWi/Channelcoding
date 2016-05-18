@@ -271,6 +271,7 @@ tikz.diagram <- paste(tikz.diagram, legend.bit.0, legend.bit.1)
 ## ENCODE TABLE
 encode.table <- ""
 alt.output <- ""
+cummulative.output <- ""
 index <- 2
 state <- 0
 for (i in message) {
@@ -391,7 +392,7 @@ Output : `r alt.output`
 
 ## Output : Kode zu Signal
 
-Kode : (`r ifelse(params$code >= 0, 0, 1)`)
+- Kode : (`r ifelse(params$code >= 0, 0, 1)`)
 \vspace*{10mm}
 \begin{equation*}
   \text{Signal(bit)} =
@@ -401,11 +402,11 @@ Kode : (`r ifelse(params$code >= 0, 0, 1)`)
   \end{cases}
 \end{equation*}
 \vspace*{10mm}
-Signal : (`r params$code`)
+- Signal : (`r params$code`)
 
 ## Punktierung
 ```{r, include=FALSE}
-final.code <- params$code[params$code != 0]
+final.code <- params$code[punctuation != 0]
 punctured.code <- params$code
 punctured.code[punctuation == 0] <- "*"
 punctured.code <- paste(punctured.code, collapse = " , ")

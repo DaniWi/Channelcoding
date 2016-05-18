@@ -25,7 +25,6 @@
 
 % additional packages
 \usepackage{color, colortbl} % colors (interface table)
-%\usepackage{tabularx} % set table width
 \usepackage{longtable}
 
 \newcommand{\plotwidth}{0.6\textwidth}
@@ -39,42 +38,49 @@
 
 \end{abstract}
 % Abstract
-\begin{otherlanguage}{american}%
-\begin{abstract}
+%\begin{otherlanguage}{american}%
+%\begin{abstract}
+%
+%\end{abstract}
+%\end{otherlanguage}
 
-\end{abstract}
-\end{otherlanguage}
-
-% Inhaltsverzeichnis
 \tableofcontents
 \pagenumbering{arabic}
 
 \chapter{Einleitung}
-Hier werden Grundlagen aufgelistet \cite{huffman2010fundamentals}.\\
-\enquote{Das hier steht unter Anführungszeichen.}
-\section{Motivation}
-\section{Problem}
-\section{Ziel}
+\label{chapter:einleitung}
+\input{chapters/einleitung}
+%\section{Motivation}
+%\section{Problem}
+%\section{Ziel}
 
 \chapter{Grundlagen und ähnliche Arbeiten}
+\label{chapter:grundlagen}
 
 \chapter{Verwendete Technologien}
+\label{chapter:technologien}
 \section{R, RStudio, Pakete}
 \section{C++, Rcpp}
 \section{R Markdown}
 \section{\LaTeX, Ti\textit{k}Z}
 
-\chapter{R Paket Schnittstelle}
+\chapter{Implementierung}
+\label{chapter:implementierung}
+\input{chapters/implementierung}
+
+\section{R-Paket Schnittstelle}
 \label{chapter:interface}
 \input{chapters/interface}
 
 \chapter{Visualisierung}
-
-\chapter{Implementierung}
+\label{chapter:visualisierung}
+\input{chapters/visualisierung}
 
 \chapter{Beispiele}
+\label{chapter:beispiele}
 
 \chapter{Fazit, Ausblick, Erweiterungen}
+\label{chapter:fazit}
 
 \cleardoublepage%
 

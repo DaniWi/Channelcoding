@@ -9,6 +9,7 @@
 #  - decode (hard decision)
 #  - simulation
 #  - open pdf
+#  - generate punctuation matrix
 
 #' Generate convolutional encoder.
 #'
