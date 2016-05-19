@@ -9,6 +9,8 @@ TurboDecode(code, permutation.vector = NULL, iterations = 1,
   punctuation.matrix = NULL, visualize = FALSE)
 }
 \arguments{
+\item{code}{Code which will be decoded to the original message.}
+
 \item{permutation.vector}{Permutation vector which will be created with \code{\link{TurboGetPermutation}}.}
 
 \item{iterations}{Amount of decoding iterations.}
@@ -21,8 +23,6 @@ Default value is always the last exit of the coder.}
 \item{punctuation.matrix}{Punctuation matrix to puncture the output, will be created with \code{\link{TurboGetPunctuationMatrix}}.}
 
 \item{visualize}{Flag to decide whether to create a visualization pdf or not.}
-
-\item{message}{Code which will be decoded to the original message.}
 }
 \value{
 Decoded message, will be a list (soft and hard values).
@@ -38,7 +38,6 @@ vollzogen wird. Das hei?t, dass beim Eingang der tatsächliche Signalpegel berü
 Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit am Ausgang ist
 }
 \examples{
-
 input <- c(1,0,1,1,0)
 
 #default coder and permutation vector

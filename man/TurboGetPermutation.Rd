@@ -48,7 +48,6 @@ Some interleaver need additional informations in the \code{args} argument.
 }
 }
 \examples{
-
 input <- c(1,0,1,1,0,1)
 coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
 

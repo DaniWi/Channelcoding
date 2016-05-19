@@ -14,8 +14,18 @@
 
 % additional packages
 \usepackage{color, colortbl} % colors (interface table)
-%\usepackage{tabularx} % set table width
+%\usepackage{tabularx} % set table width		
 \usepackage{longtable}
+
+\makeatletter
+\def\ScaleIfNeeded{%
+\ifdim\Gin@nat@width>\linewidth
+\linewidth
+\else
+\Gin@nat@width
+\fi
+}
+\makeatother
 
 \author{Daniel~Witsch}
 \title{R-Paket für Kanalkodierung mit Turbokodes}

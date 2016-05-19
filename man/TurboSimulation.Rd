@@ -44,7 +44,6 @@ is applied to different signal/noise ratios. The result will be printed in a gra
 visualization flag is set to TRUE.
 }
 \examples{
-
 #all default parameters
 TurboSimulation()
 

@@ -36,7 +36,6 @@ aus den Kodierern verknüpft und retour gegeben. Da nur ein Ausgang von einem Ko
 des Ausgangs angegeben werden.
 }
 \examples{
-
 input <- c(1,0,1,1,0)
 
 #default coder and permutation vector

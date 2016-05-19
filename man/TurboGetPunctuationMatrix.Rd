@@ -21,7 +21,6 @@ punctuation matrix should not contain a 0 column because this could cause an err
 decoding.
 }
 \examples{
-
 TurboGetPunctuationMatrix(c(1, 1, 0, 1, 0, 1), TRUE)
 
 }

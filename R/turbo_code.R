@@ -10,16 +10,19 @@
 #  - TurboOpenPDF
 
 
-#' Kodieren einer Nachricht mittels dem Turbo-Code-Verfahren
+#' Encode a message with the turbo-code.
 #'
-#' Kodiert eine Nachricht mittels dem Turbo-Code-Verfahren. Dabei wird die Nachricht in 2 systematische Kodierer
-#' gesteckt, wobei bei einem Kodierer die Nachricht permutiert verarbeitet wird. Der mitgegebene Kodierer muss
-#' mindestens 2 Ausgänge haben und sollte Systematisch sein. Dadurch wird der erste Ausgang automatisch
-#' bei beiden Kodierern durchgeschalten, somit muss die Ausgangsnachricht nur einmal übertragen werden,
-#' dadurch wird die Koderate verbessert. Um den Minimalabstand der Kodierer zu erhöhen, wird die Nachricht
-#' permutiert in den 2ten Kodierer geschickt. Am Ende wird die Ausgangsnachricht mit den beiden kodierten Nachrichten
-#' aus den Kodierern verknüpft und retour gegeben. Da nur ein Ausgang von einem Kodierer verwendet wir, muss der Index
-#' des Ausgangs angegeben werden.
+#' This functions takes a message and encode it with the turbo-code procedure. The message
+#' will be encoded in 2 identical systematic encoder, but before the message will be encoded in the encoder 2
+#' the message will be permutated with an interleaver. To increase the minimal distance between 2 code words
+#' the interleaver is needed. The systematic encoder must have 2 exists and it must be
+#' an systematic encoder which means that the input is redirected directly to the output.
+#' Because of the systematic encoders the original message must be transmitted only once, so
+#' this procedure reduces the code rate of the whole encoder. After the 2 encoders the
+#' resulting encoded messages are interleaved into one stream and transmitted to the exit.
+#' Only one exit of the systematic encoder will be used, so the index of the output can be
+#' determined. The punctuation matrix removes all bits where the matrix is zero, so the
+#' code rate is increased.
 #'
 #' @author Witsch Daniel
 #'
@@ -173,16 +176,18 @@ TurboEncode <-
   }
 
 
-#' Dekodieren einer Nachricht mittels dem Turbo-Code-Verfahren
+#' Decode a code which is encoded with the turbo-code.
 #'
-#' Dekodiert eine Nachricht mittels dem Turbo-Code-Verfahren. Dabei wird die Nachricht in 2 systematische Dekodierer
-#' gesteckt, wobei bei einem Kodierer die Nachricht permutiert verarbeitet wird. Der mitgegebene Kodierer muss
-#' mindestens 2 Ausgänge haben und sollte Systematisch sein. Dadurch wird der erste Ausgang automatisch
-#' bei beiden Deodierern durchgeschalten. Nachdem die Nachricht durche beide Dekodierer durch ist, kann dieser Schritt
-#' mehrmals wiederholt werden. Mit dem Parameter iterations, kann die Anzahl der Durchläufe verändert werden.
-#' Je mehr Durchläufe, desto besser das Ergebnis. Das Prinzip der Turbo-Codes ist, dass die Dekodierung mit Soft-Werten
-#' vollzogen wird. Das hei?t, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
-#' Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit am Ausgang ist
+#' The code will be decoded with the turbo-code procedure. The given coder must be an
+#' systematic coder and should have at least 2 exits. To decide which exit is used, the user
+#' can decide this with the parameter index. The principle of turbo decoding is that
+#' the decoding is a iterative method, so code will be passed through the decoder multiple times.
+#' With the parameter iteration you can decide how often the decoders are passed through.
+#' After each iteration the result should be better and the result of the last iteration will
+#' be used in the next iteration as input values. The exact signal level of the input will be used
+#' as input in the first iteration. When punctuation was used during encoding it is important
+#' that the same punctuation is given in the decoding because all bits which are deleted can now
+#' be inserted again.
 #'
 #' @author Witsch Daniel
 #'

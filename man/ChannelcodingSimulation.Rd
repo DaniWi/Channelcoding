@@ -19,9 +19,9 @@ ChannelcodingSimulation(msg.length = 100, min.db = 0.1, max.db = 2,
 
 \item{iterations.per.db}{Amount of iterations each signal/noise ration step.}
 
-\item{visualize}{If true a PDF report is generated.}
+\item{turbo.decode.iterations}{Amount of decoding iterations inside the turbo decoder.}
 
-\item{turbo.decode.iteartions}{Amount of decoding iterations inside the turbo decoder.}
+\item{visualize}{If true a PDF report is generated.}
 }
 \value{
 Dataframe containing the bit-error-rates for each coding technique
