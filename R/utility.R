@@ -69,11 +69,17 @@ ChannelcodingSimulation <- function(msg.length = 100,
 #'
 #' Shows passed simulation data (can be created by the functions
 #' \code{\link{ConvSimulation}}, \code{\link{TurboSimulation}}
-#' and <BlockSimulation>) containing the bit-error-rates for several SNRs
+#' and \code{\link{BlockSimulation}}) containing the bit-error-rates for several SNRs
 #' in one plot for easy comparison.
-#'
 #' @param ... Dataframes created by the simulation functions.
+#' @examples
+#' # create dataframes from simulation
+#' block <- BlockSimulation()
+#' conv <- ConvSimulation()
+#' turbo <- TurboSimulation()
 #'
+#' # show in plot
+#' PlotSimulationData(block, conv, turbo)
 #' @export
 PlotSimulationData <- function(...) {
   arguments <- list(...)
@@ -88,7 +94,7 @@ PlotSimulationData <- function(...) {
 
   new.df <- Reduce(rbind, arguments)
   new.df$Arguments <- rep(paste("Argument", 1:length(arguments)), sapply(arguments, nrow))
-  ggplot2::ggplot(new.df, ggplot2::aes(db, ber, color = Arguments)) + geom_line()
+  ggplot2::ggplot(new.df, ggplot2::aes(db, ber, color = Arguments)) + ggplot2::geom_line()
 }
 
 PunctureCode <- function(original.code, punctuation.matrix) {
