@@ -9,20 +9,6 @@ using namespace Rcpp;
 double sigma = 1.0;
 double Lc = 2/(sigma * sigma);
 
-/* c_convolutionDecode
- *
- * decodes a code and returns the decoded message (List of soft and hard values)
- * soft decision decoding
- * metric: scalar product (soft value)
- *
- * params
- * code: the code to be decoded (soft values)
- * N: number of output symbols per input symbol
- * M: constraint length, number of memory elements
- * previousState: the previousState-matrix of the convolutional encoder
- * output: the output-matrix of the convolutional encoder
- */
-
 NumericVector c_sova
 (
 	NumericVector x_d,
@@ -272,7 +258,6 @@ List c_turbo_decode
 	NumericVector Le2_ip(msg_len); 	//decoder #2 extrinsic likelihood inverse permuted
 
 
-    //zero apriori information into very first iteration of BCJR
     for(int k = 0; k < msg_len; k++)
 	{
 		Le2_ip[k] = 0;
@@ -341,7 +326,7 @@ List c_turbo_decode
 	NumericVector soft_output(msg_len);
 	IntegerVector hard_output(msg_len);
 
-    //calculate overall likelihoods and then slice'em
+    //calculate overall likelihoods and then calculate hard decisions
     for(int k = 0; k < msg_len; k++)
     {
     	soft_output[k] = Lc * x_noisy[k] + Le1[k] + Le2_ip[k]; 		//soft decision
