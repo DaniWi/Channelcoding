@@ -1,0 +1,24 @@
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}TurboDecode\\
+\hline
+\\
+\texttt{TurboDecode(code, perumtation.vector, iterations, coder.info, parity.index, punctuation.matrix, visualize)}\\
+\\
+Dekodiert einen Nachricht mittels dem Turbo-Kode-Verfahren. Dabei werden zuerst die Punktierungsbits wieder eingefügt, falls Punktierung verwendet wurde. Danach erfolgt die Dekodierung, wobei die Ergebnisse der Dekodierer als Eingang des Nächsten verwendet werden. Dieser Vorgang wird mehrmals iterativ ausgeführt, je nach Anzahl der gewählten Iterationen.\\
+\\
+\textbf{Argumente:}\\
+\texttt{code} - Nachricht die dekodiert wird. Der genaue Signalpegel wird verwendet.\\
+\texttt{permutation.vector} - Permutationsvektor der für den Interleaver verwendet wird. Standard: PRIMITIVE (root=0)\\
+\texttt{iterations} - Anzahl der Dekodierungsiterationen. Standard: 1\\
+\texttt{coder.info} - Faltungskodierer der bei der Kodierung bereits verwendet wurde. Standard: \emph{ConvGenerateRscEncoder(2,2,c(5,7))}\\
+\texttt{parity.index} - Gibt an welcher Ausgang vom mitgegebenen Kodierer verwendet wird. Standard: letzter Ausgang\\
+\texttt{punctuation.matrix} - Die mitgegebene Punktierungsmatrix wird am Anfang des Dekodiervorgangs für das Einfügen der jeweiligen Bits verwendet. Standard: keine Punktierung\\
+\texttt{visualize} - Wenn TRUE wird PDF-Bericht erstellt. Standard: FALSE\\
+\\
+\textbf{Rückgabewert:}\\
+Liste welche die dekodierte Nachricht und die genau berechneten Soft-Werte enthält.\\
+\\
+\hline
+\caption{TurboDecode - Funktionserklärung}
+\end{longtable}

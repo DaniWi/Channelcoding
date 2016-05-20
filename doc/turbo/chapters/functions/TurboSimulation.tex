@@ -1,0 +1,28 @@
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}TurboSimulation\\
+\hline
+\\
+\texttt{TurboSimulation(coder, permutation.type, permutation.args, decode.iterations, msg.length, min.db, max.db, db.interval, iterations.per.db, punctuation.matrix, visualize)}\\
+\\
+Automatische Simulation eines Kodierungs- und Dekodierungsverfahrens von Turbo-Kodes. Nach dem Kodieren wird der resultierende Kode verrauscht und im Anschluss dekodiert. Für das jeweilige SNR wird dieses Verfahren mehrmals (iterations.per.db) wiederholt und am Ende ein Durchschnitt der Bitfehlerrate berechnet.\\
+\\
+\textbf{Argumente:}\\
+\texttt{coder} - Kodierer der für Kodierung und Dekodierung verwendet wird. Kann mittels den Funktionen \emph{ConvGenerateEncoder, ConvGenerateRscEncoder} erzeugt werden. Standard: \emph{ConvGenerateRscEncoder(2,2,c(5,7))}\\
+\texttt{permutation.type} - Typ des Permutationsvektors. Standard: PRIMITIVE\\
+\texttt{permutation.args} - Argumente für die Erzeugung des Permutationsvektors. Standard: \emph{list(root=0)}\\
+\texttt{decode.iterations} - Anzahl von Iterationen bei der Dekodierung. Standard: 5\\
+\texttt{msg.length} - Länge der Nachricht. Standard: 100\\
+\texttt{min.db} - Untergrenze des SNR. Standard: 0.1\\
+\texttt{max.db} - Obergrenze des SNR. Standard: 2.0\\
+\texttt{db.interval} - Schrittweite pro Erhöhung des SNR. Standard: 0.1\\
+\texttt{iterations.per.db} - Iterationen pro SNR zur Durchschnittsbildung. Standard: 100\\
+\texttt{punctuation.matrix} - Verwendete Punktierungsmatrix. Standard: wird nicht punktiert\\
+\texttt{visualize} - Wenn TRUE wird PDF-Bericht erstellt. Standard: FALSE\\
+\\
+\textbf{Rückgabewert:}\\
+Dataframe das für jedes SNR eine Bitfehlerrate beinhaltet.\\
+\\
+\hline
+\caption{TurboSimulation - Funktionserklärung}
+\end{longtable}

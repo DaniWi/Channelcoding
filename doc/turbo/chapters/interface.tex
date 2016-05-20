@@ -1,6 +1,44 @@
-% R Paket Schnittstelle für Faltungskodierung
 \definecolor{lightblue}{RGB}{150,180,255}
 
-\section{Kanalkodierung}
-\label{chapter:interface_kanalkodierung}
+Dieses Kapitel soll als zusätzliche Hilfe bei der Verwendung der R-Funktionen dienen, da hier die genauen Schnittstellen der Funktionen erklärt sind und dadurch die Verwendung erleichtert werden sollte. Nachdem das Paket installiert ist, steht die Hilfe auch im RStudio zur Verfügung, diese ist allerdings auf Englisch und nicht so umfangreich. Falls aus diesem Kapitel die Verwendung noch nicht komplett klar ist, kann im Kapitel \ref{cha:implementation} die genaue Implementierung nachgelesen werden und daraus die weitere Verwendung geschlossen werden.
+\section{Turbo-Kode Funktionen}
+
+\subsection{Kodieren}
+\label{sec:interface_encode}
+\input{chapters/functions/TurboEncode}
+
+\subsection{Dekodieren}
+\label{sec:interface_decode}
+\input{chapters/functions/TurboDecode}
+
+\subsection{Simulation}
+\label{sec:interface_simulation}
+\input{chapters/functions/TurboSimulation}
+
+\section{Hilfsfunktionen}
+
+\subsection{Permutationvektor erzeugen}
+\label{sec:interface_permutation}
+\input{chapters/functions/TurboGetPermutation}
+
+\subsection{Punktierungsmatrix erzeugen}
+\label{sec:interface_punctuation}
+\input{chapters/functions/TurboGetPunctuationMatrix}
+
+\subsection{Erzeugte Visualisierungen öffnen}
+\label{sec:interface_openPDF}
+\input{chapters/functions/TurboOpenPDF}
+
+\section{Kanalkodierungsfunktionen im Paket}
+
+\subsection{Rauschen hinzufügen}
+\label{sec:interface_applyNoise}
 \input{chapters/functions/ApplyNoise}
+
+\subsection{Simulation und Vergleich von Block-, Faltungs- und Turbo-Kodes}
+\label{sec:interface_channelcodingSimulation}
+\input{chapters/functions/ChannelcodingSimulation}
+
+\subsection{Darstellen verschiedener Simulationen}
+\label{sec:interface_plotSimulationData}
+\input{chapters/functions/PlotSimulationData}

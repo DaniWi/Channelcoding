@@ -1,0 +1,24 @@
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}ChannelcodingSimulation\\
+\hline
+\\
+\texttt{ChannelcodingSimulation(msg.length, min.db, max.db, db.interval, iterations.per.db, turbo.decode.iterations, visualize)}\\
+\\
+Simulation von Block-, Faltungs- und Turbo-Kodes und Vergleich der Ergebnisse von verschiedenen SNR. Dabei wird die jeweilige Simulation der einzelnen Kodierungsverfahren aufgerufen.\\
+\\
+\textbf{Argumente:}\\
+\texttt{msg.length} - Länge der Nachricht. Standard: 100\\
+\texttt{min.db} - Untergrenze des SNR. Standard: 0.1\\
+\texttt{max.db} - Obergrenze des SNR. Standard: 2.0\\
+\texttt{db.interval} - Schrittweite pro Erhöhung des SNR. Standard: 0.1\\
+\texttt{iterations.per.db} - Iterationen pro SNR zur Durchschnittsbildung. Standard: 100\\
+\texttt{turbo.decode.iterations} - Anzahl von Iterationen bei der Turbo-Dekodierung. Standard: 5\\
+\texttt{visualize} - Wenn TRUE wird PDF-Bericht erstellt. Standard: FALSE\\
+\\
+\textbf{Rückgabewert:}\\
+Dataframe das alle Simulationsergebnisse der 3 Kodierungsverfahren beinhaltet.\\
+\\
+\hline
+\caption{ChannelcodingSimulation - Funktionserklärung}
+\end{longtable}

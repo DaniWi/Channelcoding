@@ -1,0 +1,39 @@
+\section{Erzeugen von Kodierer, Permutationsvektor und Punktierungsmatrix}
+\label{sec:example_createHelpers}
+
+\begin{lstlisting}[caption=blabla]
+input <- c(1,0,1,1,0)
+
+message.encoded <- TurboEncode(input)
+result <- TurboDecode(message.encoded, 5)
+print(result)
+
+coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
+perm <- TurboGetpermutation(length(input), coder, "RANDOM")
+\end{lstlisting}
+
+\begin{lstlisting}
+input <- c(1,0,1,1,0)
+
+message.encoded <- TurboEncode(input)
+result <- TurboDecode(message.encoded, 5)
+print(result)
+
+coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
+perm <- TurboGetpermutation(length(input), coder, "RANDOM")
+\end{lstlisting}
+
+\section{Kodieren und Dekodieren ohne Punktierung}
+\label{sec:example_withoutPunctuation}
+
+\section{Kodieren und Dekodieren mit Punktierung}
+\label{sec:example_withPunctuation}
+
+\section{Simulationen}
+\label{sec:example_simulations}
+
+\subsection{Turbo-Kode-Simulation}
+
+\subsection{Kanalkodierungs-Simulation}
+
+\subsection{Vergleich mehrerer Simulationen}
