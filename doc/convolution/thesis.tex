@@ -27,6 +27,14 @@
 \usepackage{color, colortbl} % colors (interface table)
 \usepackage{longtable}
 
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+
+\lstset{language=R} 
+
 \newcommand{\plotwidth}{0.6\textwidth}
 \begin{document}
 
@@ -37,50 +45,38 @@
 \begin{abstract}
 
 \end{abstract}
-% Abstract
-%\begin{otherlanguage}{american}%
-%\begin{abstract}
-%
-%\end{abstract}
-%\end{otherlanguage}
 
 \tableofcontents
 \pagenumbering{arabic}
 
 \chapter{Einleitung}
-\label{chapter:einleitung}
-\input{chapters/einleitung}
-%\section{Motivation}
-%\section{Problem}
-%\section{Ziel}
+\label{kapitel:einleitung}
+\input{kapitel/einleitung}
 
 \chapter{Grundlagen und ähnliche Arbeiten}
-\label{chapter:grundlagen}
+\label{kapitel:grundlagen}
 
 \chapter{Verwendete Technologien}
-\label{chapter:technologien}
-\section{R, RStudio, Pakete}
-\section{C++, Rcpp}
-\section{R Markdown}
-\section{\LaTeX, Ti\textit{k}Z}
+\label{kapitel:technologien}
+\input{kapitel/technologien}
 
 \chapter{Implementierung}
-\label{chapter:implementierung}
-\input{chapters/implementierung}
+\label{kapitel:implementierung}
+\input{kapitel/implementierung}
 
 \section{R-Paket Schnittstelle}
-\label{chapter:interface}
-\input{chapters/interface}
+\label{kapitel:interface}
+\input{kapitel/interface}
 
 \chapter{Visualisierung}
-\label{chapter:visualisierung}
-\input{chapters/visualisierung}
+\label{kapitel:visualisierung}
+\input{kapitel/visualisierung}
 
 \chapter{Beispiele}
-\label{chapter:beispiele}
+\label{kapitel:beispiele}
 
 \chapter{Fazit, Ausblick, Erweiterungen}
-\label{chapter:fazit}
+\label{kapitel:fazit}
 
 \cleardoublepage%
 
