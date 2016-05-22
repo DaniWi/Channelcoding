@@ -1,0 +1,22 @@
+% ConvEncode.tex
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}ConvEncode\\
+\hline
+\\
+\texttt{ConvEncode(message, conv.encoder, terminate, punctuation.matrix, visualize)}\\
+\\
+Produces a convolutional code of a message.\\
+\\
+\textbf{Arguments:}\\
+\texttt{message} - The message to be encoded.\\
+\texttt{conv.encoder} - Convolutional encoder used for encoding.\\
+\texttt{terminate} - Flag if the code should be terminated. Default: TRUE\\
+\texttt{punctuation.matrix} - If not NULL the encoded message is punctured with the punctuation matrix. Default: NULL\\
+\texttt{visualize} - If TRUE a beamer PDF file is generated showing the encode process. Default: FALSE\\
+\\
+\textbf{Returns:}\\
+The encoded message with signal values -1,+1 which map to 1,0 respectively.\\
+\\
+\hline
+\end{longtable}

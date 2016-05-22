@@ -1,0 +1,151 @@
+---
+title: "Simulation"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: beamer_presentation
+params:
+  message.length: !r 100
+  iterations.per.db: !r 100
+  min.db: !r 0.1
+  max.db: !r 2.0
+  db.interval: !r 0.1
+  encoder: !r list(type='BCH',
+                          code.length = 15,
+                          code.m = 4,
+                          data.length = 5,
+                          code.t = 3,
+                          gen.poly = c(1,1,1,0,1,1,0,0,1,0,1),
+                          alpha_to = c(1,2,3,8,3,6,12,11,5,10,7,14,15,13,9,0),
+                          index_of = c(-1,0,1,4,2,8,5,10,3,14,9,7,6,13,11,12))
+  dataframe: !r data.frame(ber=seq(from=0.01, to=0.001, length.out = 11), db=seq(from=0.5, to=2, length.out = 11))
+header-includes:
+- \usepackage{tikz}
+- \usepackage{pgfplots}
+- \usepackage{mathtools}
+- \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,positioning,fit,petri,calc}
+---
+
+```{r, include=FALSE}
+binVector <- function(n, min.length) {
+
+  result <- integer()
+  i <- 0
+  while (n != 0) {
+    result <- c(n %% 2, result)
+    n = n %/% 2
+    i <- i + 1
+  }
+
+  zeros <- rep(0, times = min.length)
+
+  result <- c(zeros, result)
+
+  return(paste(tail(result,min.length), collapse = ""))
+}
+
+vecToPoly = function(vec){
+  fun_factory = function(vec){
+    i = length(vec)
+    function(x){
+      i <<- i-1
+      if(x>0 && i>0){
+        paste0("x^{",i, "}")
+      }else if(i == 0 && x>0){
+        "1"
+      }else{
+        ""
+      }
+    }
+  }
+  vec = sapply(vec, fun_factory(vec))
+  return (paste0(vec[vec != ""],collapse=" + "))
+}
+
+decToBin <- function(x) { if (all(x<2)) x else paste(decToBin(x%/%2), x%%2, sep="") }
+
+octalToDec <- function(x) {
+  res <- numeric()
+  for(j in 1:length(x)) {
+  dec <- 0
+  i <- 0
+    while (x[j] > 0) {
+      dec <- dec + (x[j] %% 10) * (8^i)
+      i <- i + 1
+      x[j] <- x[j] %/% 10
+    }
+  res[j] <- dec
+  }
+
+  return(res)
+}
+
+gcd <- function(n, m) {
+  if (n == 0 && m == 0) return(0)
+  
+  n <- abs(n); m <- abs(m)
+  if (m > n) {
+    t <- n; n <- m; m <- t
+  }
+  while (m > 0) {
+    t <- n
+    n <- m
+    m <- t %% m
+  }
+  return(n)
+}
+```
+
+```{r, include=FALSE}
+node.short <- 20
+node.long <- 45
+dots <- function (v, node) if(length(v) > node) ", ..." else ""
+
+if (params$encoder$type == 'BCH') {
+  art.coder <- paste0("BCH (",params$encoder$code.length,",",params$encoder$data.length,",",params$encoder$code.t*2+1,")")
+  gen.poly.print <- vecToPoly(rev(params$encoder$gen.poly))
+  coder.info <- paste0("- Generatorpolynom : $$g(x) =  ", gen.poly.print,"$$\n\n - Verbesserbare Fehler pro Block: $$",params$encoder$code.t,"$$\n\n")
+} else {
+  art.coder <- paste0("Hamming (",params$encoder$code.length,",",params$encoder$data.length,")")
+  gen.matrix <- apply(params$encoder$gen.matrix, 1, function(x) paste0(x, collapse ="&"))
+  gen.matrix <-  paste0(gen.matrix, collapse = "\\\\")
+  gen.matrix <- paste0("\\begin{pmatrix}",gen.matrix, "\\end{pmatrix}", collapse="")
+  coder.info <- paste0("- Generatormatrix : $$G =  ", gen.matrix,"$$\n\n")
+  
+}
+
+```
+
+## Kodierer Information
+
+- `r art.coder` Kodierer
+`r coder.info`
+- Kode-Rate : $$\frac{`r params$encoder$data.length`}{`r params$encoder$code.length`} \approx `r round(params$encoder$data.length/params$encoder$code.length,2)`$$
+
+
+## Simulationsdaten
+
+- Nachrichtenlänge: `r params$message.length`
+- Iterationen pro SNR: `r params$iterations.per.db`
+- SNR Minimum: `r params$min.db`
+- SNR Maximum: `r params$max.db`
+- SNR Intervall: `r params$db.interval`
+
+## Plot
+
+```{r, echo=FALSE}
+
+df <- params$dataframe
+if (max(df$ber) == 0) {
+  ggplot2::ggplot(df,ggplot2::aes(db))+ggplot2::geom_line(ggplot2::aes(y = ber))+ggplot2::xlab("Signal Rausch Verhältnis [dB]")+ggplot2::ylab("Bitfehlerrate")
+} else {
+  ggplot2::ggplot(df,ggplot2::aes(db))+ggplot2::geom_line(ggplot2::aes(y = ber))+ggplot2::scale_y_log10(limits = c(min(df$ber) / 2, max(df$ber) * 2))+ggplot2::xlab("Signal Rausch Verhältnis [dB]")+ggplot2::ylab("Bitfehlerrate")
+}
+
+```
+
+## Statistik
+
+Bitefehlerrate:
+
+```{r qplot, echo=FALSE, message=FALSE}
+summary(df$ber)
+```

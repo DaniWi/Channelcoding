@@ -1,0 +1,25 @@
+% ConvSimulation.tex
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}ConvSimulation\\
+\hline
+\\
+\texttt{ConvSimulation(conv.coder, msg.length, min.db, max.db, db.interval, iterations.per.db, punctuation.matrix, visualize)}\\
+\\
+Simulation of a convolutional encode and decode process over a noisy channel at several signal-noise-ratios (SNR).\\
+\\
+\textbf{Arguments:}\\
+\texttt{conv.coder} - Convolutional coder used for the simulation. Can be created via ConvGenerateEncoder or ConvGenerateRscEncoder.\\
+\texttt{msg.length} - Message length of the randomly created messages to be encoded. Default: 100\\
+\texttt{min.db} - Minimum SNR to be tested. Default: 0.1\\
+\texttt{max.db} - Maximum SNR to be tested. Default: 2.0\\
+\texttt{db.interval} - Step between two SNRs tested. Default: 0.1\\
+\texttt{iterations.per.db} - Number of encode and decode processes per SNR. Default: 100\\
+\texttt{punctuation.matrix} - If not null the process involves the punctuation. Can be created via ConvGetPunctuationMatrix. Default: NULL\\
+\texttt{visualize} - If true a PDF report is generated. Default: FALSE\\
+\\
+\textbf{Returns:}\\
+Dataframe containing the bit-error-rates for each SNR tested.\\
+\\
+\hline
+\end{longtable}

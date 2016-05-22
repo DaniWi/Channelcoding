@@ -1,0 +1,151 @@
+---
+title: "Blockcodes"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  beamer_presentation:
+    keep_tex: true
+fontsize: 8pt
+params:
+  block.encoder: !r list(type='BCH',
+                          code.length = 15,
+                          code.m = 4,
+                          data.length = 5,
+                          code.t = 3,
+                          gen.poly = c(1,1,1,0,1,1,0,0,1,0,1),
+                          alpha_to = c(1,2,3,8,3,6,12,11,5,10,7,14,15,13,9,0),
+                          index_of = c(-1,0,1,4,2,8,5,10,3,14,9,7,6,13,11,12))
+                          
+  enc: !r           c(1,1,0,0,1,0,1,0,0,1,1,0,1,0,1,0,0,1,0,1,0,0,0,0,1,1,1,0,1,1,0,0,1,0,1,0,0,1,0,1,1,1,0,1,1)
+  enc.corrected: !r c(1,1,1,0,0,0,1,0,0,1,1,0,1,0,1,0,0,1,0,1,0,0,0,0,1,1,1,0,1,1,0,0,1,0,1,0,0,0,0,1,1,1,0,1,1)
+  dec: !r c(1,0,1,0,1,1,1,0,1,1,1,1,0,1,1)
+  failed: !r c(TRUE,FALSE,FALSE)
+header-includes:
+- \usepackage{tikz}
+- \usepackage{pgfplots}
+- \usepackage{mathtools}
+- \usepackage{color}
+- \setcounter{MaxMatrixCols}{20}
+---
+
+```{r, include=FALSE}
+
+vecToPoly = function(vec){
+  fun_factory = function(vec){
+    i = length(vec)
+    function(x){
+      i <<- i-1
+      if(x>0 && i>0){
+        paste0("x^{",i, "}")
+      }else if(i == 0 && x>0){
+        "1"
+      }else{
+        ""
+      }
+    }
+  }
+  vec = sapply(vec, fun_factory(vec))
+  return (paste0(vec[vec != ""],collapse=" + "))
+}
+
+toColor = function(x, color){
+  return(paste0("\\textcolor{",color,"}{",x,"}"))
+}
+
+
+
+block.encoder = params$block.encoder
+
+enc <- params$enc
+enc.corrected <- params$enc.corrected
+dec <- params$dec
+failed <- params$failed
+coderate = block.encoder$data.length / block.encoder$code.length
+
+enc.matrix <- matrix(enc, ncol=block.encoder$code.length, byrow = TRUE)
+enc.corrected.matrix <- matrix(enc.corrected, ncol=block.encoder$code.length, byrow = TRUE)
+dec.matrix <- matrix(dec, ncol=block.encoder$data.length, byrow = TRUE)
+
+art.coder <- paste0("BCH (",block.encoder$code.length,",",block.encoder$data.length,",",block.encoder$code.t*2+1,")")
+
+
+gen.poly.print <- vecToPoly(rev(block.encoder$gen.poly))
+
+enc.matrix.print <- apply(enc.matrix, 1, function(x) paste0(x, collapse ="&"))
+enc.matrix.print <-  paste0(enc.matrix.print, collapse = "\\\\")
+enc.matrix.print <- paste0("\\begin{pmatrix}",enc.matrix.print, "\\end{pmatrix}", collapse="")
+
+dec.print <- apply(dec.matrix, 1, function(x) paste0(x, collapse =","))
+# rest.length <- block.encoder$code.length-block.encoder$data.length
+
+encoding <- ""
+corrected.output = c()
+for(i in 1:nrow(enc.matrix)){
+  encoding <- paste0(encoding, "## Dekodieren des ",i,". Blocks \n")
+  
+  corrected.vec = enc.corrected.matrix[i,]
+ if(!failed[i]){
+   error.positions = c()
+  errors = enc.matrix[i,] - enc.corrected.matrix[i,]
+  for(j in 1:length(errors)){
+    if(errors[j] != 0){
+      corrected.vec[j] = toColor(corrected.vec[j],'green')
+      error.positions = c(error.positions,j)
+    }
+  }
+ }else{
+   corrected.vec = sapply(corrected.vec, function(x) toColor(x,'red'))
+ }
+  
+  encoding <- paste0(encoding,"Kodewort: (",paste0(enc.matrix[i,],collapse = ","),") \n\n")
+  if(!failed[i]){
+    encoding <- paste0(encoding,"Anzahl der Fehler: ",length(error.positions)," \n\n")
+    encoding <- paste0(encoding,"Fehlerindizes: ",paste0(error.positions,collapse = " | ")," \n\n")
+    encoding <- paste0(encoding,"Korrigiertes Kodewort: (",paste0(corrected.vec,collapse = ","),") \n\n")
+    corrected.output = c(corrected.output,corrected.vec)
+    if(length(error.positions)>0)
+      dec.print[i] = toColor(dec.print[i],'green')
+    
+  }else{
+    encoding <- paste0(encoding,"Anzahl der Fehler: mehr als ",block.encoder$code.t," \n\n")
+    encoding <- paste0(encoding,"Kodewort kann nicht vollständig korrigiert werden! \n\n")
+    encoding <- paste0(encoding,"Korrigiertes Kodewort: (",paste0(corrected.vec,collapse = ","),") \n\n")
+    corrected.output = c(corrected.output,corrected.vec)
+    dec.print[i] = toColor(dec.print[i],'red')
+  }
+  
+}
+
+enc.corrected.matrix.print <- apply(matrix(corrected.output,ncol=block.encoder$code.length, byrow=T), 1, function(x) paste0(x, collapse ="&"))
+enc.corrected.matrix.print <-  paste0(enc.corrected.matrix.print, collapse = "\\\\")
+enc.corrected.matrix.print <- paste0("\\begin{pmatrix}",enc.corrected.matrix.print, "\\end{pmatrix}", collapse="")
+
+dec.print = paste0(dec.print,collapse = ",")
+
+
+```
+
+
+## Blockcodierer Informationen
+
+- `r art.coder` Kodierer
+- Generatorpolynom : $$G(x) =  `r gen.poly.print`$$
+- Verbesserbare Fehler pro Block: $$`r block.encoder$code.t`$$
+- Kode-Rate : $$\frac{`r block.encoder$data.length`}{`r block.encoder$code.length`} \approx `r round(coderate,2)`$$
+
+## Kodierte Nachricht in Blöcke der Länge `r block.encoder$code.length` aufteilen
+
+- Kode: \begin{center}(`r enc`)\end{center}
+- Kodematrix: $$`r enc.matrix.print`$$
+
+`r encoding`
+
+## Output
+
+- Korrigierte Kodematrix: $$`r enc.corrected.matrix.print`$$
+- Output:(\textcolor{red}{rot = Zu viele Fehler}, \textcolor{green}{grün = Fehler korrigiert}, schwarz = Keine Fehler) \begin{center}(`r dec.print`)\end{center}
+
+
+
+
+
+

@@ -1,0 +1,24 @@
+% ChannelcodingSimulation.tex
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}ChannelcodingSimulation\\
+\hline
+\\
+\texttt{ChannelcodingSimulation(msg.length, min.db, max.db, db.interval, iterations.per.db, turbo.decode.iterations, visualize)}\\
+\\
+Simulation of channelcoding techniques (blockcodes, convolutional codes and turbo codes) and comparison of their bit-error-rates.\\
+\\
+\textbf{Arguments:}\\
+\texttt{msg.length} - Message length of the randomly created messages to be encoded. Default: 100\\
+\texttt{min.db} - Minimum SNR to be tested. Default: 0.1\\
+\texttt{max.db} - Maximum SNR to be tested. Default: 2.0\\
+\texttt{db.interval} - Step between two SNRs tested. Default: 0.1\\
+\texttt{iterations.per.db} - Number of encode and decode processes per SNR. Default: 100\\
+\texttt{turbo.decode.iterations} - Number of decoding iterations inside the turbo decoder. Default: 5\\
+\texttt{visualize} - If true a PDF report is generated. Default: FALSE\\
+\\
+\textbf{Returns:}\\
+Distorted message containing noise.\\
+\\
+\hline
+\end{longtable}

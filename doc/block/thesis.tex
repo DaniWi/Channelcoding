@@ -1,0 +1,95 @@
+% !TeX spellcheck = de_AT
+\documentclass[germanthesis]{thesis-style}
+% options:
+% [germanthesis] - Thesis is written in German
+% [plainunnumbered] - Don't print numbers on plain pages
+% [earlydraft] - Settings for quick draft printouts
+% [watermark] - Print current time/date at bottom of each page
+% [phdthesis] - switch to PhD thesis style
+% [twoside] - double sided
+% [cutmargins] - text body fills complete page
+
+% Extension to BibLaTex (useful for cites in footnotes)
+%\usepackage[backend=bibtex, style=numeric-comp]{biblatex}
+\bibliography{references.bib}
+
+
+\author{Benedikt~Wimmer}
+\title{R-Paket für Kanalkodierung mit Blockkodes}
+%\title{R~package for channel~coding with block~codes}
+\birthday{1. Feber 1994}
+\birthplace{Sonthofen}
+%\thesisstart{1. Januar 2009}
+\thesistype{Bachelor's thesis}
+\thesistypegerman{Bachelorarbeit}
+\thesiscite{Bachelor's thesis}
+\advisors{Dr.~Pascal~Schöttle}
+
+% additional packages
+\usepackage{color, colortbl} % colors (interface table)
+\usepackage{longtable}
+\usepackage[chapter]{algorithm}
+%\usepackage[noend]{algpseudocode}
+
+\newcommand{\plotwidth}{0.6\textwidth}
+\begin{document}
+
+% Titelseiten und Eidesstattliche Erklärung
+\maketitle
+
+% Zusammenfassung
+\begin{abstract}
+Lorem Ipsum BlaBla
+\end{abstract}
+% Abstract
+%\begin{otherlanguage}{american}%
+%\begin{abstract}
+%
+%\end{abstract}
+%\end{otherlanguage}
+
+\tableofcontents
+\pagenumbering{arabic}
+
+\chapter{Einleitung}
+\label{chapter:introduction}
+\input{chapters/einleitung}
+
+
+\chapter{Verwandte Arbeiten}
+\label{chapter:related}
+
+\chapter{Theorie}
+\label{chapter:theory}
+\input{chapters/theory}
+
+\chapter{Implementierung}
+\label{chapter:implementation}
+\input{chapters/implementierung}
+
+\chapter{Visualisierung}
+\label{chapter:visualization}
+\input{chapters/visualisierung}
+
+\chapter{Beispiele für die Verwendung}
+\label{chapter:examples}
+
+\chapter{Fazit}
+\label{chapter:conclusion}
+
+\cleardoublepage%
+
+\listofabbreviations
+\clearpage
+
+\listoffigures
+\clearpage
+
+\listoftables
+\clearpage
+
+\lstlistoflistings
+\clearpage
+
+\printbibliography
+\end{document}
