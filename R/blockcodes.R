@@ -114,7 +114,7 @@ BlockGenerateEncoderBCH = function(code.length = 15, code.t = 3){
 #' BlockEncode(plain, coder)
 #'
 #' # standard encoding with visualization
-#' BlockEncode(plain, coder, visualize = TRUE)
+#' # BlockEncode(plain, coder, visualize = TRUE)
 #'
 #' # use default values
 #' BlockEncode(plain)
@@ -207,12 +207,12 @@ BlockEncode = function(message, block.encoder= NULL, visualize=FALSE){
 #' BlockDecode(coded, coder)
 #'
 #' # with visualization
-#' coded <- BlockEncode(plain, coder)
-#' BlockDecode(coded, coder, visualize = TRUE)
+#' # coded <- BlockEncode(plain, coder)
+#' # BlockDecode(coded, coder, visualize = TRUE)
 #'
 #' # with message distortion
 #' coded <- BlockEncode(plain, coder)
-#' noisy <- ApplyNoise(coded, SNR.db = 3)
+#' noisy <- ApplyNoise(coded, SNR.db = 3, binary = TRUE)
 #' BlockDecode(noisy, coder)
 #' @author Benedikt Wimmer
 #' @export

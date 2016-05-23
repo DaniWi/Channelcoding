@@ -27,7 +27,7 @@ plain <- c(1,0,0,1,1)
 BlockEncode(plain, coder)
 
 # standard encoding with visualization
-BlockEncode(plain, coder, visualize = TRUE)
+# BlockEncode(plain, coder, visualize = TRUE)
 
 # use default values
 BlockEncode(plain)

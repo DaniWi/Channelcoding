@@ -28,12 +28,12 @@ coded <- BlockEncode(plain, coder)
 BlockDecode(coded, coder)
 
 # with visualization
-coded <- BlockEncode(plain, coder)
-BlockDecode(coded, coder, visualize = TRUE)
+# coded <- BlockEncode(plain, coder)
+# BlockDecode(coded, coder, visualize = TRUE)
 
 # with message distortion
 coded <- BlockEncode(plain, coder)
-noisy <- ApplyNoise(coded, SNR.db = 3)
+noisy <- ApplyNoise(coded, SNR.db = 3, binary = TRUE)
 BlockDecode(noisy, coder)
 }
 \author{

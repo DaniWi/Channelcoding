@@ -37,9 +37,9 @@ coded <- ConvEncode(plain, coder, terminate = FALSE)
 ConvDecodeHard(coded, coder, terminate = FALSE)
 
 # with punctuation and visualization
-punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
-coded <- ConvEncode(plain, coder, punctuation.matrix = punctuation)
-ConvDecodeHard(coded, coder, punctuation.matrix = punctuation, visualize = TRUE)
+# punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
+# coded <- ConvEncode(plain, coder, punctuation.matrix = punctuation)
+# ConvDecodeHard(coded, coder, punctuation.matrix = punctuation, visualize = TRUE)
 
 # with message distortion
 coded <- ConvEncode(plain, coder)
