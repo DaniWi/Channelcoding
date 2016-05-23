@@ -49,7 +49,7 @@ TurboSimulation()
 
 #without punctuation
 coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
-TurboSimulation(coder, "RANDOM", NULL, 5, 10, 0.01, 1, 0.05, 50, NULL, TRUE)
+TurboSimulation(coder, "RANDOM", NULL, 5, 10, 0.01, 1, 0.05, 50, NULL, FALSE)
 
 }
 

@@ -12,7 +12,16 @@ PlotSimulationData(...)
 \description{
 Shows passed simulation data (can be created by the functions
 \code{\link{ConvSimulation}}, \code{\link{TurboSimulation}}
-and <BlockSimulation>) containing the bit-error-rates for several SNRs
+and \code{\link{BlockSimulation}}) containing the bit-error-rates for several SNRs
 in one plot for easy comparison.
+}
+\examples{
+# create dataframes from simulation
+block <- BlockSimulation()
+conv <- ConvSimulation()
+turbo <- TurboSimulation()
+
+# show in plot
+PlotSimulationData(block, conv, turbo)
 }
 

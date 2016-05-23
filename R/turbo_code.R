@@ -658,7 +658,7 @@ TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
 #'
 #' #without punctuation
 #' coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
-#' TurboSimulation(coder, "RANDOM", NULL, 5, 10, 0.01, 1, 0.05, 50, NULL, TRUE)
+#' TurboSimulation(coder, "RANDOM", NULL, 5, 10, 0.01, 1, 0.05, 50, NULL, FALSE)
 #'
 #' @export
 TurboSimulation <- function(coder = NULL,
@@ -763,7 +763,7 @@ TurboSimulation <- function(coder = NULL,
 #'
 #' With this function it is easy to reopen the PDF files which will be created with
 #' \code{\link{TurboEncode}} and \code{\link{TurboDecode}}. The files are stored in the
-#' program files of R. (example path: "C:\Program Files\R\R-3.2.4\library\channelcoding\pdf")
+#' program files of R. (example path: "C:/Program Files/R/R-3.2.4/library/channelcoding/pdf")
 #'
 #' @param encode Flag to open the encode pdfs.
 #' @param punctured Flag to open the decode pdfs.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/turbo_code.R
 \name{TurboEncode}
 \alias{TurboEncode}
-\title{Kodieren einer Nachricht mittels dem Turbo-Code-Verfahren}
+\title{Encode a message with the turbo-code.}
 \usage{
 TurboEncode(message, permutation.vector = NULL, coder.info = NULL,
   parity.index = coder.info$N, punctuation.matrix = NULL,
@@ -26,14 +26,17 @@ Default value is always the last exit of the coder.}
 Encoded message, will be a list if the output was punctured (list with original and punctured).
 }
 \description{
-Kodiert eine Nachricht mittels dem Turbo-Code-Verfahren. Dabei wird die Nachricht in 2 systematische Kodierer
-gesteckt, wobei bei einem Kodierer die Nachricht permutiert verarbeitet wird. Der mitgegebene Kodierer muss
-mindestens 2 Ausgänge haben und sollte Systematisch sein. Dadurch wird der erste Ausgang automatisch
-bei beiden Kodierern durchgeschalten, somit muss die Ausgangsnachricht nur einmal übertragen werden,
-dadurch wird die Koderate verbessert. Um den Minimalabstand der Kodierer zu erhöhen, wird die Nachricht
-permutiert in den 2ten Kodierer geschickt. Am Ende wird die Ausgangsnachricht mit den beiden kodierten Nachrichten
-aus den Kodierern verknüpft und retour gegeben. Da nur ein Ausgang von einem Kodierer verwendet wir, muss der Index
-des Ausgangs angegeben werden.
+This functions takes a message and encode it with the turbo-code procedure. The message
+will be encoded in 2 identical systematic encoder, but before the message will be encoded in the encoder 2
+the message will be permutated with an interleaver. To increase the minimal distance between 2 code words
+the interleaver is needed. The systematic encoder must have 2 exists and it must be
+an systematic encoder which means that the input is redirected directly to the output.
+Because of the systematic encoders the original message must be transmitted only once, so
+this procedure reduces the code rate of the whole encoder. After the 2 encoders the
+resulting encoded messages are interleaved into one stream and transmitted to the exit.
+Only one exit of the systematic encoder will be used, so the index of the output can be
+determined. The punctuation matrix removes all bits where the matrix is zero, so the
+code rate is increased.
 }
 \examples{
 input <- c(1,0,1,1,0)
