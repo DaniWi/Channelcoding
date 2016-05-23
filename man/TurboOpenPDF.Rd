@@ -23,7 +23,7 @@ program files of R. (example path: "C:/Program Files/R/R-3.2.4/library/channelco
 TurboOpenPDF()
 
 # open encode with punctuation PDF
-TurboOpenPDF(puctured = FALSE)
+TurboOpenPDF(punctured = FALSE)
 
 # open decode with punctuation PDF
 TurboOpenPDF(encode = FALSE, punctured = TRUE)

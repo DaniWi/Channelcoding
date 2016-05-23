@@ -44,12 +44,12 @@ input <- c(1,0,1,1,0)
 
 #default coder and permutation vector
 message.encoded <- TurboEncode(input)
-result <- TurboDecode(message.encoded, 5)
+result <- TurboDecode(message.encoded, iterations = 5)
 print(result)
 
 #custom coder and permutation vector
 coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
-perm <- TurboGetpermutation(length(input), coder, "RANDOM")
+perm <- TurboGetPermutation(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
 result <- TurboDecode(message.encoded, perm, 5, coder)
 print(result)

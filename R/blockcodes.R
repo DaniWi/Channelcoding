@@ -322,7 +322,7 @@ BlockDecode = function(code, block.encoder = NULL, visualize=FALSE){
 #'
 #' # Custom coder
 #' coder <- BlockGenerateEncoderHamming(15,11)
-#' BlockSimulation(coder, 15, 0.01, 1, 0.05, 50, NULL, FALSE)
+#' BlockSimulation(coder, 15, 0.01, 1, 0.05, 50, FALSE)
 #' @author Martin Nocker
 #' @export
 BlockSimulation <- function(coder = NULL,
@@ -460,7 +460,7 @@ BlockOpenPDF <- function(encode = TRUE, hamming = FALSE, simulation = FALSE) {
   if (path != "") {
     rstudioapi::viewer(path)
   } else {
-    stop("File does not exists!")
+    warning("File does not exists!")
   }
 }
 

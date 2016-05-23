@@ -656,7 +656,7 @@ ConvOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
   if (path != "") {
     rstudioapi::viewer(path)
   } else {
-    stop("File does not exists!")
+    warning("File does not exists!")
   }
 }
 

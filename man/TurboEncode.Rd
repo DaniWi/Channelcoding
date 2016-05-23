@@ -47,7 +47,7 @@ print(message.encoded)
 
 #custom coder and permutation vector
 coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
-perm <- TurboGetpermutation(length(input), coder, "RANDOM")
+perm <- TurboGetPermutation(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
 print(message.encoded)
 
