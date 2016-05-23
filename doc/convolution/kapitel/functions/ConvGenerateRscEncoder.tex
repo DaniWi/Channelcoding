@@ -1,33 +1,36 @@
 % ConvGenerateRscEncoder.tex
 \begin{longtable}{|p{\textwidth}|}
 \hline
-\rowcolor{lightblue}ConvGenerateRscEncoder\\
+\rowcolor{lightblue}
+ConvGenerateRscEncoder
+\\
 \hline
 \\
 \texttt{ConvGenerateRscEncoder(N, M, generators)}\\
 \\
-Generates a recursive systematic convolutional (rsc) encoder.\\
+Erzeugt einen Faltungskodierer für rekursive systematische Faltungskodes (rsc).\\
 \\
-\textbf{Arguments:}\\
-\texttt{N} - Numer ob output symbols per input symbol.\\
-\texttt{M} - Memory length of the encoder.\\
-\texttt{generators} - Vector of octal generator polynoms (one for each non-systematic output symbol and one for the recursion).\\
+\textbf{Argumente:}\\
+\texttt{N} - Anzahl an Ausgangssymbole je Eingangssymbol.\\
+\texttt{M} - Länge des Schieberegisters des Kodierers.\\
+\texttt{generators} - Vektor der oktale Generatorpolynome enthält (ein Polynom je nicht-systematischen Ausgang und ein Polynom für die Rekursion).\\
 \\
-\textbf{Returns:}\\
-A convolutional encoder represented as a list containing:
+\textbf{Rückgabewert:}\\
+Faltungskodierer, abgebildet als Liste mit folgenden Feldern:
 \vspace{-4mm}
 \begin{itemize}
 \renewcommand\labelitemi{--}
 \itemsep-.5em % spacing between items
 \item N
 \item M
-\item generator polynoms vector
-\item nextState matrix
-\item previousState matrix
-\item output matrix
-\item rsc flag
-\item termination vector
+\item Generatorpolynome
+\item nextState Matrix
+\item previousState Matrix
+\item output Matrix
+\item RSC Flag (\texttt{TRUE})
+\item Terminierungsvektor
 \end{itemize}
 \\
 \hline
+\caption{ConvGenerateRscEncoder Funktion}
 \end{longtable}

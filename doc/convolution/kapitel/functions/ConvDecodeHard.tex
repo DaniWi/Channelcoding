@@ -1,22 +1,25 @@
 % ConvDecodeHard.tex
 \begin{longtable}{|p{\textwidth}|}
 \hline
-\rowcolor{lightblue}ConvDecodeHard\\
+\rowcolor{lightblue}
+ConvDecodeHard
+\\
 \hline
 \\
 \texttt{ConvDecodeHard(code, conv.encoder, terminate, punctuation.matrix, visualize)}\\
 \\
-Decodes a convolutional codeword using hard decision decoding.\\
+Dekodiert einen Faltungskode mittels hard decision Dekodierung.\\
 \\
-\textbf{Arguments:}\\
-\texttt{code} - The code to be decoded.\\
-\texttt{conv.encoder} - Convolutional encoder used for encoding.\\
-\texttt{terminate} - Flag if the code is terminated. Default: TRUE\\
-\texttt{punctuation.matrix} - If not NULL the code is depunctured prior to the decode algorithm. Default: NULL\\
-\texttt{visualize} - If TRUE a beamer PDF file is generated showing the decode process. Default: FALSE\\
+\textbf{Argumente:}\\
+\texttt{code} - Faltungskode der dekodiert wird.\\
+\texttt{conv.encoder} - Faltungskodierer der für die Kodierung verwendet wurde.\\
+\texttt{terminate} - Markiert ob der Kode terminiert ist. Standard: \texttt{TRUE}\\
+\texttt{punctuation.matrix} - Wenn ungleich \texttt{NULL} wird der Kode vor der Dekodierung depunktiert. Standard: \texttt{NULL}\\
+\texttt{visualize} - Wenn \texttt{TRUE} wird ein PDF-Bericht der Dekodierung erstellt. Standard: \texttt{FALSE}\\
 \\
-\textbf{Returns:}\\
-The hard-decoded message vector.\\
+\textbf{Rückgabewert:}\\
+Vektor der Dekodierten Nachricht.\\
 \\
 \hline
+\caption{ConvDecodeHard Funktion}
 \end{longtable}

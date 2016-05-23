@@ -1,22 +1,25 @@
 % ConvEncode.tex
 \begin{longtable}{|p{\textwidth}|}
 \hline
-\rowcolor{lightblue}ConvEncode\\
+\rowcolor{lightblue}
+ConvEncode
+\\
 \hline
 \\
 \texttt{ConvEncode(message, conv.encoder, terminate, punctuation.matrix, visualize)}\\
 \\
-Produces a convolutional code of a message.\\
+Erzeugt einen Faltungskode aus einer unkodierten Nachricht.\\
 \\
-\textbf{Arguments:}\\
-\texttt{message} - The message to be encoded.\\
-\texttt{conv.encoder} - Convolutional encoder used for encoding.\\
-\texttt{terminate} - Flag if the code should be terminated. Default: TRUE\\
-\texttt{punctuation.matrix} - If not NULL the encoded message is punctured with the punctuation matrix. Default: NULL\\
-\texttt{visualize} - If TRUE a beamer PDF file is generated showing the encode process. Default: FALSE\\
+\textbf{Argumente:}\\
+\texttt{message} - Nachricht die kodiert wird.\\
+\texttt{conv.encoder} - Faltungskodierer der für die Kodierung verwendet wird.\\
+\texttt{terminate} - Markiert ob der Kode terminiert werden soll. Standard: \texttt{TRUE}\\
+\texttt{punctuation.matrix} - Wenn ungleich \texttt{NULL} wird die kodierte Nachricht mit der Punktierungsmatrix punktiert. Standard: \texttt{NULL}\\
+\texttt{visualize} - Wenn \texttt{TRUE} wird ein PDF-Bericht der Kodierung erstellt. Standard: \texttt{FALSE}\\
 \\
-\textbf{Returns:}\\
-The encoded message with signal values -1,+1 which map to 1,0 respectively.\\
+\textbf{Rückgabewert:}\\
+Die kodierte Nachricht mit den Signalwerten +1 und -1 welche die Bits 0 und 1 darstellen. Falls punktiert wurde Liste mit dem Originalkode (nicht punktiert) und dem punktiertem Kode.\\
 \\
 \hline
+\caption{ConvEncode Funktion}
 \end{longtable}

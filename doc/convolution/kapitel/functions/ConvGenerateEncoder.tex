@@ -1,33 +1,36 @@
 % ConvGenerateEncoder
 \begin{longtable}{|p{\textwidth}|}
 \hline
-\rowcolor{lightblue}ConvGenerateEncoder\\
+\rowcolor{lightblue}
+ConvGenerateEncoder
+\\
 \hline
 \\
 \texttt{ConvGenerateEncoder(N, M, generators)}\\
 \\
-Generates a convolutional encoder for nonrecursive convolutional codes.\\
+Erzeugt einen Faltungskodierer für nichtrekursive Faltungskodes.\\
 \\
-\textbf{Arguments:}\\
-\texttt{N} - Numer ob output symbols per input symbol.\\
-\texttt{M} - Memory length of the encoder.\\
-\texttt{generators} - Vector of N octal generator polynoms (one for each output symbol).\\
+\textbf{Argumente:}\\
+\texttt{N} - Anzahl an Ausgangssymbole je Eingangssymbol.\\
+\texttt{M} - Länge des Schieberegisters des Kodierers.\\
+\texttt{generators} - Vektor der N oktale Generatorpolynome enthält (ein Polynom je Ausgangssymbol).\\
 \\
-\textbf{Returns:}\\
-A convolutional encoder represented as a list containing:
+\textbf{Rückgabewert:}\\
+Faltungskodierer, abgebildet als Liste mit folgenden Feldern:
 \vspace{-4mm}
 \begin{itemize}
 \renewcommand\labelitemi{--}
 \itemsep-.5em % spacing between items
 \item N
 \item M
-\item generator polynoms vector
-\item nextState matrix
-\item previousState matrix
-\item output matrix
-\item rsc flag
-\item termination vector
+\item Generatorpolynome
+\item nextState Matrix
+\item previousState Matrix
+\item output Matrix
+\item RSC Flag (\texttt{FALSE})
+\item Terminierungsvektor
 \end{itemize}
 \\
 \hline
+\caption{ConvGenerateEncoder Funktion}
 \end{longtable}

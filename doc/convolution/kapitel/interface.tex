@@ -4,32 +4,38 @@
 In diesem Kapitel wird die Schnittstelle für den Benutzer erläutert. Kapitel \ref{kapitel:interface_kodierer_erzeugen} listet Funktionen zur Erzeugung von Faltungskodierern auf. Die Kodierungsfunktion wird in Kapitel \ref{kapitel:interface_kodieren} beschrieben, gefolgt von den Dekodierungsfunktionen in Kapitel \ref{kapitel:interface_dekodieren}. Eine Funktion zur Simulation von Faltungskodes wird in Kapitel \ref{kapitel:interface_simulation} erläutert. Kapitel \ref{kapitel:interface_hilfsfunktionen} beinhaltet Hilfsfunktionen für Faltungskodes. Schließlich beschreibt Kapitel \ref{kapitel:interface_kanalkodierung} weitere nützliche Funktionen der Kanalkodierung.
 
 \subsection{Kodierer erzeugen}
+Folgende Funktionen dienen der Erzeugung von sowohl nicht-rekursiven als auch rekursiven systematischen Faltungskodierern.
 \label{kapitel:interface_kodierer_erzeugen}
 \input{kapitel/functions/ConvGenerateEncoder}
 
 \input{kapitel/functions/ConvGenerateRscEncoder}
 
 \subsection{Kodieren}
+Funktion der Faltungskodierung.
 \label{kapitel:interface_kodieren}
 \input{kapitel/functions/ConvEncode}
 
 \subsection{Dekodieren}
+Dieses Kapitel listet die Funktionen der soft decision und hard decision Dekodierung der Faltungskodes.
 \label{kapitel:interface_dekodieren}
 \input{kapitel/functions/ConvDecodeSoft}
 
 \input{kapitel/functions/ConvDecodeHard}
 
 \subsection{Simulation}
+Funktion zur Simulation der Faltungskodierung und -dekodierung.
 \label{kapitel:interface_simulation}
 \input{kapitel/functions/ConvSimulation}
 
 \subsection{Hilfsfunktionen}
+Hilfsfunktionen für Faltungskodes.
 \label{kapitel:interface_hilfsfunktionen}
 \input{kapitel/functions/ConvGetPunctuationMatrix}
 
 \input{kapitel/functions/ConvOpenPDF}
 
 \subsection{Kanalkodierung}
+Allgemeine Kanalkodierungs-Funktionen für Blockkodes, Faltungskodes und Turbokodes.
 \label{kapitel:interface_kanalkodierung}
 \input{kapitel/functions/ApplyNoise}
 

@@ -1,25 +1,28 @@
 % ConvSimulation.tex
 \begin{longtable}{|p{\textwidth}|}
 \hline
-\rowcolor{lightblue}ConvSimulation\\
+\rowcolor{lightblue}
+ConvSimulation
+\\
 \hline
 \\
 \texttt{ConvSimulation(conv.coder, msg.length, min.db, max.db, db.interval, iterations.per.db, punctuation.matrix, visualize)}\\
 \\
-Simulation of a convolutional encode and decode process over a noisy channel at several signal-noise-ratios (SNR).\\
+Simulation einer Faltungskodierung und -dekodierung nach einer Übertragung über einen verrauschten Kanal mit verschiedenen Signal-Rausch-Verhältnissen (SNR).\\
 \\
-\textbf{Arguments:}\\
-\texttt{conv.coder} - Convolutional coder used for the simulation. Can be created via ConvGenerateEncoder or ConvGenerateRscEncoder.\\
-\texttt{msg.length} - Message length of the randomly created messages to be encoded. Default: 100\\
-\texttt{min.db} - Minimum SNR to be tested. Default: 0.1\\
-\texttt{max.db} - Maximum SNR to be tested. Default: 2.0\\
-\texttt{db.interval} - Step between two SNRs tested. Default: 0.1\\
-\texttt{iterations.per.db} - Number of encode and decode processes per SNR. Default: 100\\
-\texttt{punctuation.matrix} - If not null the process involves the punctuation. Can be created via ConvGetPunctuationMatrix. Default: NULL\\
-\texttt{visualize} - If true a PDF report is generated. Default: FALSE\\
+\textbf{Argumente:}\\
+\texttt{conv.coder} - Faltungskodierer der für die Simulation verwendet wird. Kann mittels \texttt{ConvGenerateEncoder} oder \texttt{ConvGenerateRscEncoder} erzeugt werden.\\
+\texttt{msg.length} - Nachrichtenlänge der zufällig generierten Nachrichten. Standard: 100\\
+\texttt{min.db} - Untergrenze der getesteten SNR. Standard: 0.1\\
+\texttt{max.db} - Obergrenze der getesteten SNR. Standard: 2.0\\
+\texttt{db.interval} - Schrittweite zwischen zwei getesteten SNR. Standard: 0.1\\
+\texttt{iterations.per.db} - Anzahl der Iterationen (Kodieren und Dekodieren) je SNR. Standard: 100\\
+\texttt{punctuation.matrix} - Wenn ungleich \texttt{NULL} wird die kodierte Nachricht punktiert. Kann mittels \texttt{ConvGetPunctuationMatrix} erzeugt werden. Standard: \texttt{NULL}\\
+\texttt{visualize} - Markiert ob ein Simulationsbericht erzeugt wird. Standard: \texttt{FALSE}\\
 \\
-\textbf{Returns:}\\
-Dataframe containing the bit-error-rates for each SNR tested.\\
+\textbf{Rückgabewert:}\\
+Dataframe das die Bitfehlerrate für die getesteten Signal-Rausch-Verhältnisse beinhaltet.
 \\
 \hline
+\caption{ConvSimulation Funktion}
 \end{longtable}
