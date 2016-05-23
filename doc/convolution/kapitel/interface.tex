@@ -1,44 +1,53 @@
 % R Paket Schnittstelle für Faltungskodierung
 \definecolor{lightblue}{RGB}{150,180,255}
 
-In diesem Kapitel wird die Schnittstelle für den Benutzer erläutert. Kapitel \ref{kapitel:interface_kodierer_erzeugen} listet Funktionen zur Erzeugung von Faltungskodierern auf. Die Kodierungsfunktion wird in Kapitel \ref{kapitel:interface_kodieren} beschrieben, gefolgt von den Dekodierungsfunktionen in Kapitel \ref{kapitel:interface_dekodieren}. Eine Funktion zur Simulation von Faltungskodes wird in Kapitel \ref{kapitel:interface_simulation} erläutert. Kapitel \ref{kapitel:interface_hilfsfunktionen} beinhaltet Hilfsfunktionen für Faltungskodes. Schließlich beschreibt Kapitel \ref{kapitel:interface_kanalkodierung} weitere nützliche Funktionen der Kanalkodierung.
+%In diesem Kapitel wird die Schnittstelle für den Benutzer erläutert. Kapitel \ref{kapitel:interface_kodierer_erzeugen} listet Funktionen zur Erzeugung von Faltungskodierern auf. Die Kodierungsfunktion wird in Kapitel \ref{kapitel:interface_kodieren} beschrieben, gefolgt von den Dekodierungsfunktionen in Kapitel \ref{kapitel:interface_dekodieren}. Eine Funktion zur Simulation von Faltungskodes wird in Kapitel \ref{kapitel:interface_simulation} erläutert. Kapitel \ref{kapitel:interface_hilfsfunktionen} beinhaltet Hilfsfunktionen für Faltungskodes. Schließlich beschreibt Kapitel \ref{kapitel:interface_kanalkodierung} weitere nützliche Funktionen der Kanalkodierung.
+In diesem Kapitel wird die Schnittstelle für den Benutzer erläutert. Kapitel \ref{kapitel:interface_faltungskodierung} listet Funktionen zur Erzeugung von Faltungskodierern, der Kodierung, Dekodierung und Simulation von Faltungskodes. Kapitel \ref{kapitel:interface_hilfsfunktionen} beinhaltet Hilfsfunktionen für Faltungskodes. Schließlich beschreibt Kapitel \ref{kapitel:interface_kanalkodierung} weitere nützliche Funktionen der Kanalkodierung.
 
-\subsection{Kodierer erzeugen}
-Folgende Funktionen dienen der Erzeugung von sowohl nicht-rekursiven als auch rekursiven systematischen Faltungskodierern.
-\label{kapitel:interface_kodierer_erzeugen}
+% Faltungskodierung Funktionen
+\subsection{Faltungskodierung}
+\label{kapitel:interface_faltungskodierung}
+
+\subsubsection{ConvGenerateEncoder}
 \input{kapitel/functions/ConvGenerateEncoder}
 
+\subsubsection{ConvGenerateRscEncoder}
 \input{kapitel/functions/ConvGenerateRscEncoder}
 
-\subsection{Kodieren}
-Funktion der Faltungskodierung.
-\label{kapitel:interface_kodieren}
+\subsubsection{ConvEncode}
 \input{kapitel/functions/ConvEncode}
 
 \subsection{Dekodieren}
-Dieses Kapitel listet die Funktionen der soft decision und hard decision Dekodierung der Faltungskodes.
 \label{kapitel:interface_dekodieren}
+
+\subsubsection{ConvDecodeSoft}
 \input{kapitel/functions/ConvDecodeSoft}
 
+\subsubsection{ConvDecodeHard}
 \input{kapitel/functions/ConvDecodeHard}
 
-\subsection{Simulation}
-Funktion zur Simulation der Faltungskodierung und -dekodierung.
-\label{kapitel:interface_simulation}
+\subsubsection{ConvSimulation}
 \input{kapitel/functions/ConvSimulation}
 
+% Hilfsfunktionen
 \subsection{Hilfsfunktionen}
-Hilfsfunktionen für Faltungskodes.
 \label{kapitel:interface_hilfsfunktionen}
+
+\subsubsection{ConvGetPunctuationMatrix}
 \input{kapitel/functions/ConvGetPunctuationMatrix}
 
+\subsubsection{ConvOpenPDF}
 \input{kapitel/functions/ConvOpenPDF}
 
+% Kanalkodierung Funktionen
 \subsection{Kanalkodierung}
-Allgemeine Kanalkodierungs-Funktionen für Blockkodes, Faltungskodes und Turbokodes.
 \label{kapitel:interface_kanalkodierung}
+
+\subsubsection{ApplyNoise}
 \input{kapitel/functions/ApplyNoise}
 
+\subsubsection{ChannelcodingSimulation}
 \input{kapitel/functions/ChannelcodingSimulation}
 
+\subsubsection{PlotSimulationData}
 \input{kapitel/functions/PlotSimulationData}

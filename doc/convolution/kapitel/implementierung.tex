@@ -1,10 +1,23 @@
 % implementierung.tex
-Notizen:\\
-- Kodierer Datenstruktur (Darstellung: nextState Matrix etc)\\
-- Überprüfung katastrophaler Kodierer (systematische sind nie katastrophal [IuK])\\
-- Benutzer Input Abfragen\\
+Dieses Kapitel gibt einen Einblick in die Konzepte der Implementierung. Kapitel \ref{kapitel:implementierung_datenstruktur} beinhaltet den Entwurf der Kodierer Datenstruktur. Die Implementierung der Kodierung wird in Kapitel \ref{kapitel:implementierung_kodierung} beschrieben, die der Dekodierung in Kapitel \ref{kapitel:implementierung_dekodierung}. Abschließend wird in Kapitel \ref{kapitel:interface} die R-Paket Schnittstelle angegeben.
 \\
-- C++ Code Erläuterung (Kodieren, Dekodieren = Viterbi). Wie genau beschreiben??\\
-- Parameterübergabe R nach C++\\
-- Parameterübergabe R Markdown\\
-- Generierung Visualisierungs PDF (R Variablen einbauen)\\
+\\
+Aus Performancegründen Kodierung, Dekodierung in C++\\
+Weiters: Depunktierung, Katastrophale Kodierer Prüfung (Polynom GGT mod 2)\\
+Parameterprüfung, Punktierung, ApplyNoise, Aufruf Visualisierung in R\\
+
+\section{Datenstrukturen, (z.B. Kodierer)}
+\label{kapitel:implementierung_datenstruktur}
+
+\section{Kodierung}
+\label{kapitel:implementierung_kodierung}
+
+\section{Dekodierung, Viterbi-Algorithmus}
+\label{kapitel:implementierung_dekodierung}
+
+\section{Visualisierung}
+\label{kapitel:implementierung_visualisierung}
+
+\section{R-Paket Schnittstelle}
+\label{kapitel:interface}
+\input{kapitel/interface}

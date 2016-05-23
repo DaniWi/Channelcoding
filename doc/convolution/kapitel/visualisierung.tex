@@ -1,11 +1,43 @@
 % visualisierung.tex
-LIMITS!\\\\
-%Da das R-Paket für Studenten zu Lernzwecken verwendet werden soll
-Um das Verständnis für Faltungskodes beim Benutzer dieses R-Pakets zu stärken, stehen Visualisierungen der Kodierung und Dekodierung zur Verfügung.
+LIMITS!
 \\
-Wird der \texttt{visualize} Parameter bei der Ausführung einer Funktion zur Kodierung oder Dekodierung auf TRUE~\texttt{TRUE} gesetzt, wird ein R Markdown Skript ausgeführt. Dieses generiert eine Beamer Präsentation mit Informationen und Visualisierungen zur Kodierung bzw. Dekodierung.
-\\\\
-\textcolor{lightgray}{\ref{kapitel:visualisierung}.1 Kodierung}\\
+\\
+Um das Verständnis für Faltungskodes beim Benutzer dieses R-Pakets zu stärken, stehen Visualisierungen der Kodierung, Dekodierung und Simulation mithilfe des \emph{RMarkdown} Pakets, wie in Kapitel \ref{kapitel:rmarkdown} beschrieben, zur Verfügung.
+\\
+Wird der \texttt{visualize} Parameter bei der Ausführung einer Simulation bzw. Funktion zur Kodierung oder Dekodierung auf \texttt{TRUE} gesetzt, wird ein \emph{RMarkdown} Skript ausgeführt. Dieses generiert eine Beamer Präsentation mit Informationen und Visualisierungen.
+
+\section{Kodierung}
+\label{kapitel:visualisierung_kodierung}
+\begin{figure}[!t]
+\begin{itemize}
+\item Nicht-Rekursiver Kodierer
+\item Anzahl von Ausgängen : \[N=2\]
+\item Anzahl von Registern : \[M=2\]
+\item Generatoren : \[(7,5)_8 = \begin{pmatrix}111 \\ 101 \\ \end{pmatrix}\]
+\item Kode-Rate : \[\frac{1}{2}\]
+\end{itemize}
+\caption{Faltungskodierer Informationen}
+\end{figure}
+\begin{figure}[!t]
+\begin{tikzpicture}[scale=.70, >=stealth, font=\tiny]
+\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=6mm, font=\scriptsize]
+\node[state] (state0) at ( 0.0, 2.5) {00};
+\node[state] (state2) at ( 2.5, 0.0) {10};
+\node[state] (state3) at ( 0.0,-2.5) {11};
+\node[state] (state1) at (-2.5, 0.0) {01};
+\draw[->] (state0) to [looseness=8,out=105,in=75] node [sloped, above] {00} (state0);
+\draw[->, dashed] (state0) to  node [sloped, above] {11} (state2);
+\draw[->] (state1) to  node [sloped, above] {11} (state0);
+\draw[->, dashed] (state1) to [bend left=15] node [sloped, above,near start] {00} (state2);
+\draw[->] (state2) to [bend left=15] node [sloped, above,near start] {10} (state1);
+\draw[->, dashed] (state2) to  node [sloped, above] {01} (state3);
+\draw[->] (state3) to  node [sloped, above] {01} (state1);
+\draw[->, dashed] (state3) to [looseness=8,out=285,in=255] node [sloped, below] {10} (state3);
+\draw[->] ($(state3)+(-.5,-2)$) node (bit0) {} -- ++(1,0) node [right] {Bit 0};
+\draw[->, dashed] ($(bit0)+(0,-.5)$) -- ++(1,0) node [right] {Bit 1};
+\end{tikzpicture}
+\caption{Kodierung}
+\end{figure}
 % allg. Informationen
 Bei der Kodierung befinden sich auf den ersten Folien allgemeine Informationen zum verwendeten Faltungskodierer wie die Kode-Rate, Generatorpolynome, Zustandsübergangstabelle etc. 
 % Kodierung
@@ -14,8 +46,9 @@ Daraufhin folgt die Kodierungsvisualisierung. Diese zeigt zunächst die zu kodie
 Da die Kodierungsfunktion nicht die Bitwerte des Kodeworts zurückliefert sondern die Signalwerte (für eine Übertragung über einen Kanal) wird auf einer weiteren Folie dargestellt, wie die Kodebits in Signalwerte überführt werden.\\
 % Punktierung
 Wird eine Punktierungsmatrix bei der Kodierung mitgegeben, wird eine zusätzliche Folie am Ende hinzugefügt. Auf dieser wird die Punktierung des Signals, d.h. das Entfernen von Signalwerten (definiert durch die Punktierungsmatrix) dargestellt. Dabei wird neben dem originalen Signal und der Punktierungsmatrix das punktierte Signal dargestellt, wobei zunächst die punktierten Signalwerte, d.h. die entfernten Werte, durch Asterisk-Symbole ($\ast$) ersetzt werden. Diese Darstellung dient als visueller Zwischenschritt für das danach folgende tatsächlich punktierte Signal, bei dem die punktierten Werte fehlen, was auch dem Rückgabewert der Funktion entspricht.
-\\\\
-\textcolor{lightgray}{\ref{kapitel:visualisierung}.2 Dekodierung}\\
+
+\section{Dekodierung}
+\label{kapitel:visualisierung_dekodierung}
 % allg. Informationen
 Bei der Dekodierung befinden sich ebenfalls, wie bei der Kodierung, allgemeine Informationen des Faltungskodierers auf den ersten Folien.
 % Signal zu Kode
@@ -24,6 +57,7 @@ Als Input erhält die Dekodierung das Kodewort als Signalwerte, die möglicherwe
 Anschließend folgt die Visualisierung des Viterbi-Algorithmus mithilfe des Trellis-Diagramms. Zunächst werden, zur besseren Übersicht bei großen Diagrammen, jene Pfade entfernt, für die es eine bessere Alternative gibt, d.h. die eine größere Metrik bei hard decision Dekodierung bzw. eine kleinere Metrik bei soft decision Dekodierung als ihre Alternative haben. Danach erfolgt Schritt für Schritt mittels Backtracking die Rekonstruktion der Nachricht. Der gewählte Pfad beim Backtracking wird farblich hervorgehoben. Die übrigen Pfade werden ausgegraut. Am Ende befindet sich unter dem Trellis-Diagramm die farblich hervorgehobene dekodierte Nachricht.
 % Punktierung
 Wird eine Punktierungsmatrix bei der Dekodierung mitgegeben, wird eine zusätzliche Folie nach den Kodiererinformationen hinzugefügt. Auf dieser wird die Depunktierung des Signals, d.h. das Einfügen des Signalwerts 0 (definiert durch die Punktierungsmatrix), dargestellt. Die eingefügten 0-Werte sind zur leichteren visuellen Erkennung farblich hervorgehoben.
-\\\\
-\textcolor{lightgray}{\ref{kapitel:visualisierung}.3 Simulation}\\
+
+\section{Simulation}
+\label{kapitel:visualisierung_simulation}
 Weiters können Berichte der Simulation generiert werden, die die resultierenden Daten u.a. in einem Diagramm darstellen.
