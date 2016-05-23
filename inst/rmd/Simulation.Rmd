@@ -149,9 +149,9 @@ if (is.null(params$punctuation)) {
 
 df <- params$dataframe
 if (max(df$ber) == 0) {
-  ggplot2::ggplot(df,ggplot2::aes(db))+ggplot2::geom_line(ggplot2::aes(y = ber))+ggplot2::xlab("Signal Rausch Verhältnis [dB]")+ggplot2::ylab("Bitfehlerrate")
+  ggplot2::ggplot(df,ggplot2::aes(db))+ggplot2::geom_line(ggplot2::aes(y = ber))+ggplot2::xlab("Signal Rausch Verh\u00e4ltnis [dB]")+ggplot2::ylab("Bitfehlerrate")
 } else {
-  ggplot2::ggplot(df,ggplot2::aes(db))+ggplot2::geom_line(ggplot2::aes(y = ber))+ggplot2::scale_y_log10(limits = c(min(df$ber) / 2, max(df$ber) * 2))+ggplot2::xlab("Signal Rausch Verhältnis [dB]")+ggplot2::ylab("Bitfehlerrate")
+  ggplot2::ggplot(df,ggplot2::aes(db))+ggplot2::geom_line(ggplot2::aes(y = ber))+ggplot2::scale_y_log10(limits = c(min(df$ber) / 2, max(df$ber) * 2))+ggplot2::xlab("Signal Rausch Verh\u00e4ltnis [dB]")+ggplot2::ylab("Bitfehlerrate")
 }
 
 ```

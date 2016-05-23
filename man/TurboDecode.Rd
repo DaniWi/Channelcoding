@@ -2,7 +2,7 @@
 % Please edit documentation in R/turbo_code.R
 \name{TurboDecode}
 \alias{TurboDecode}
-\title{Dekodieren einer Nachricht mittels dem Turbo-Code-Verfahren}
+\title{Decode a code which is encoded with the turbo-code.}
 \usage{
 TurboDecode(code, permutation.vector = NULL, iterations = 1,
   coder.info = NULL, parity.index = coder.info$N,
@@ -28,26 +28,28 @@ Default value is always the last exit of the coder.}
 Decoded message, will be a list (soft and hard values).
 }
 \description{
-Dekodiert eine Nachricht mittels dem Turbo-Code-Verfahren. Dabei wird die Nachricht in 2 systematische Dekodierer
-gesteckt, wobei bei einem Kodierer die Nachricht permutiert verarbeitet wird. Der mitgegebene Kodierer muss
-mindestens 2 Ausgänge haben und sollte Systematisch sein. Dadurch wird der erste Ausgang automatisch
-bei beiden Deodierern durchgeschalten. Nachdem die Nachricht durche beide Dekodierer durch ist, kann dieser Schritt
-mehrmals wiederholt werden. Mit dem Parameter iterations, kann die Anzahl der Durchläufe verändert werden.
-Je mehr Durchläufe, desto besser das Ergebnis. Das Prinzip der Turbo-Codes ist, dass die Dekodierung mit Soft-Werten
-vollzogen wird. Das hei?t, dass beim Eingang der tatsächliche Signalpegel berücksichtigt wird und beim Ausgang ein
-Wahrscheinlichkeitswert berechnet wird, der angibt, wie wahrscheinlich ein Bit am Ausgang ist
+The code will be decoded with the turbo-code procedure. The given coder must be an
+systematic coder and should have at least 2 exits. To decide which exit is used, the user
+can decide this with the parameter index. The principle of turbo decoding is that
+the decoding is a iterative method, so code will be passed through the decoder multiple times.
+With the parameter iteration you can decide how often the decoders are passed through.
+After each iteration the result should be better and the result of the last iteration will
+be used in the next iteration as input values. The exact signal level of the input will be used
+as input in the first iteration. When punctuation was used during encoding it is important
+that the same punctuation is given in the decoding because all bits which are deleted can now
+be inserted again.
 }
 \examples{
 input <- c(1,0,1,1,0)
 
 #default coder and permutation vector
 message.encoded <- TurboEncode(input)
-result <- TurboDecode(message.encoded, 5)
+result <- TurboDecode(message.encoded, iterations = 5)
 print(result)
 
 #custom coder and permutation vector
 coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
-perm <- TurboGetpermutation(length(input), coder, "RANDOM")
+perm <- TurboGetPermutation(length(input), coder, "RANDOM")
 message.encoded <- TurboEncode(input, perm, coder)
 result <- TurboDecode(message.encoded, perm, 5, coder)
 print(result)

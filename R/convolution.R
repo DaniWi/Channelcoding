@@ -178,8 +178,8 @@ ConvGenerateRscEncoder <- function(N, M, generators) {
 #' ConvEncode(plain, coder, terminate = FALSE)
 #'
 #' # with punctuation and visualization
-#' punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
-#' ConvEncode(plain, coder, punctuation.matrix = punctuation, visualize = TRUE)
+#' # punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
+#' # ConvEncode(plain, coder, punctuation.matrix = punctuation, visualize = TRUE)
 #'
 #' # use default values
 #' ConvEncode(plain)
@@ -281,9 +281,9 @@ ConvEncode <- function(message,
 #' ConvDecodeSoft(coded, coder, terminate = FALSE)
 #'
 #' # with punctuation and visualization
-#' punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
-#' coded <- ConvEncode(plain, coder, punctuation.matrix = punctuation)
-#' ConvDecodeSoft(coded, coder, punctuation.matrix = punctuation, visualize = TRUE)
+#' # punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
+#' # coded <- ConvEncode(plain, coder, punctuation.matrix = punctuation)
+#' # ConvDecodeSoft(coded, coder, punctuation.matrix = punctuation, visualize = TRUE)
 #'
 #' # with message distortion
 #' coded <- ConvEncode(plain, coder)
@@ -399,9 +399,9 @@ ConvDecodeSoft <- function(code,
 #' ConvDecodeHard(coded, coder, terminate = FALSE)
 #'
 #' # with punctuation and visualization
-#' punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
-#' coded <- ConvEncode(plain, coder, punctuation.matrix = punctuation)
-#' ConvDecodeHard(coded, coder, punctuation.matrix = punctuation, visualize = TRUE)
+#' # punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
+#' # coded <- ConvEncode(plain, coder, punctuation.matrix = punctuation)
+#' # ConvDecodeHard(coded, coder, punctuation.matrix = punctuation, visualize = TRUE)
 #'
 #' # with message distortion
 #' coded <- ConvEncode(plain, coder)
@@ -656,7 +656,7 @@ ConvOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
   if (path != "") {
     rstudioapi::viewer(path)
   } else {
-    stop("File does not exists!")
+    warning("File does not exists!")
   }
 }
 

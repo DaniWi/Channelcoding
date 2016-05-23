@@ -35,8 +35,8 @@ ConvEncode(plain, coder)
 ConvEncode(plain, coder, terminate = FALSE)
 
 # with punctuation and visualization
-punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
-ConvEncode(plain, coder, punctuation.matrix = punctuation, visualize = TRUE)
+# punctuation <- ConvGetPunctuationMatrix(c(1,1,0,1,1,0), coder)
+# ConvEncode(plain, coder, punctuation.matrix = punctuation, visualize = TRUE)
 
 # use default values
 ConvEncode(plain)

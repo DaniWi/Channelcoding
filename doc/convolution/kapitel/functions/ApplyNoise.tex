@@ -1,19 +1,23 @@
 % ApplyNoise.tex
 \begin{longtable}{|p{\textwidth}|}
 \hline
-\rowcolor{lightblue}ApplyNoise\\
-\hline
-\\
-\texttt{ApplyNoise(msg, SNR.db)}\\
-\\
-Distorts a message simulating the transmission over a noisy channel based on the AWGN (additive white Gaussian noise) model.\\
-\\
-\textbf{Arguments:}\\
-\texttt{msg} - Message to alter.\\
-\texttt{SNR.db} - Signal-Noise-Ratio in dB simulating the noisy channel. Default: 3.0\\
-\\
-\textbf{Returns:}\\
-Distorted message containing noise.\\
+\rowcolor{lightblue}
+ApplyNoise
 \\
 \hline
+\\
+\texttt{ApplyNoise(msg, SNR.db, binary)}\\
+\\
+Verrauscht ein Signal basierend auf dem AWGN Modell (Additive White Gaussian Noise), dem Standardmodell für die Simulation eines Übertragungskanals.\\
+\\
+\textbf{Argumente:}\\
+\texttt{msg} - Die zu verrauschende Nachricht\\
+\texttt{SNR.db} - Signal-Rausch-Verhältnis (signal noise ratio) des Übertragungskanals in dB. Standard: 3.0\\
+\texttt{binary} - Blockkode Parameter. Nicht zu verwenden. Standard: \texttt{FALSE}\\
+\\
+\textbf{Rückgabewert:}\\
+Verrauschtes Signal.\\
+\\
+\hline
+\caption{ApplyNoise Funktion}
 \end{longtable}

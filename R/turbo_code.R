@@ -45,7 +45,7 @@
 #'
 #' #custom coder and permutation vector
 #' coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
-#' perm <- TurboGetpermutation(length(input), coder, "RANDOM")
+#' perm <- TurboGetPermutation(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
 #' print(message.encoded)
 #'
@@ -207,12 +207,12 @@ TurboEncode <-
 #'
 #' #default coder and permutation vector
 #' message.encoded <- TurboEncode(input)
-#' result <- TurboDecode(message.encoded, 5)
+#' result <- TurboDecode(message.encoded, iterations = 5)
 #' print(result)
 #'
 #' #custom coder and permutation vector
 #' coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
-#' perm <- TurboGetpermutation(length(input), coder, "RANDOM")
+#' perm <- TurboGetPermutation(length(input), coder, "RANDOM")
 #' message.encoded <- TurboEncode(input, perm, coder)
 #' result <- TurboDecode(message.encoded, perm, 5, coder)
 #' print(result)
@@ -658,7 +658,7 @@ TurboGetPunctuationMatrix <- function(punctuation.vector, visualize = FALSE) {
 #'
 #' #without punctuation
 #' coder <- ConvGenerateRscEncoder(2, 2, c(5, 7))
-#' TurboSimulation(coder, "RANDOM", NULL, 5, 10, 0.01, 1, 0.05, 50, NULL, TRUE)
+#' TurboSimulation(coder, "RANDOM", NULL, 5, 10, 0.01, 1, 0.05, 50, NULL, FALSE)
 #'
 #' @export
 TurboSimulation <- function(coder = NULL,
@@ -763,7 +763,7 @@ TurboSimulation <- function(coder = NULL,
 #'
 #' With this function it is easy to reopen the PDF files which will be created with
 #' \code{\link{TurboEncode}} and \code{\link{TurboDecode}}. The files are stored in the
-#' program files of R. (example path: "C:\Program Files\R\R-3.2.4\library\channelcoding\pdf")
+#' program files of R. (example path: "C:/Program Files/R/R-3.2.4/library/channelcoding/pdf")
 #'
 #' @param encode Flag to open the encode pdfs.
 #' @param punctured Flag to open the decode pdfs.
@@ -774,7 +774,7 @@ TurboSimulation <- function(coder = NULL,
 #' TurboOpenPDF()
 #'
 #' # open encode with punctuation PDF
-#' TurboOpenPDF(puctured = FALSE)
+#' TurboOpenPDF(punctured = FALSE)
 #'
 #' # open decode with punctuation PDF
 #' TurboOpenPDF(encode = FALSE, punctured = TRUE)
@@ -807,6 +807,6 @@ TurboOpenPDF <- function(encode = TRUE, punctured = FALSE, simulation = FALSE) {
   if (path != "") {
     rstudioapi::viewer(path)
   } else {
-    stop("File does not exists!")
+    warning("File does not exists!")
   }
 }

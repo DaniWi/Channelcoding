@@ -26,14 +26,25 @@
 % additional packages
 \usepackage{color, colortbl} % colors (interface table)
 \usepackage{longtable}
-
 \usepackage{algorithmic}
 \usepackage{algorithm}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{caption}
 
+% Listings standardmaessig in R
 \lstset{language=R} 
+
+% Definiert Makro für Grafik Skalierung
+\makeatletter
+\def\ScaleIfNeeded{%
+\ifdim\Gin@nat@width>\linewidth
+\linewidth
+\else
+\Gin@nat@width
+\fi
+}
+\makeatother
 
 \newcommand{\plotwidth}{0.6\textwidth}
 \begin{document}
@@ -47,6 +58,7 @@
 \end{abstract}
 
 \tableofcontents
+\clearpage
 \pagenumbering{arabic}
 
 \chapter{Einleitung}
@@ -76,6 +88,7 @@
 \label{kapitel:beispiele}
 
 \chapter{Fazit, Ausblick, Erweiterungen}
+
 \label{kapitel:fazit}
 
 \cleardoublepage%

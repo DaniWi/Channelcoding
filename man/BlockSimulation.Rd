@@ -36,7 +36,7 @@ BlockSimulation()
 
 # Custom coder
 coder <- BlockGenerateEncoderHamming(15,11)
-BlockSimulation(coder, 15, 0.01, 1, 0.05, 50, NULL, FALSE)
+BlockSimulation(coder, 15, 0.01, 1, 0.05, 50, FALSE)
 }
 \author{
 Martin Nocker

@@ -1,10 +1,10 @@
 Package: channelcoding
 Type: Package
-Title: Channelcoding
+Title: channelcoding
 Version: 0.1
-Date: 2015-11-02
+Date: 2016-05-23
 Author: Benedikt Wimmer, Martin Nocker, Daniel Witsch
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Maintainer: Pascal Schoettle <pascal.schoettle@uibk.ac.at>
 Description: An implementation to perform channelcoding in R. Encoding and Decoding
     of three major types of channelcodes are provided: block codes, convolutional
     codes and turbo codes.

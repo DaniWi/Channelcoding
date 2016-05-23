@@ -1,9 +1,10 @@
 % technologien.tex
+Dieses Kapitel über die verwendeten Technologien bei der Implementierung setzt sich folgendermaßen zusammen: Kapitel \ref{kapitel:R} behandelt die Programmiersprache R und die verwendete Entwicklungsumgebung RStudio. In Kapitel \ref{kapitel:rcpp} werden die Möglichkeiten der Einbindung von C/C++ Code, v.a. mithilfe des Pakets \emph{Rcpp}, beschrieben. Schließlich wird in Kapitel \ref{kapitel:rmarkdown} auf die Erstellung dynamischer Dokumente und Visualisierungen mittels \emph{RMarkdown}, \LaTeX\ und Ti\textit{k}Z.
 \section{R, RStudio, Pakete}
 \label{kapitel:R}
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\textwidth]{abbildungen/rstudio}
+\includegraphics[width=\ScaleIfNeeded]{abbildungen/rstudio}
 \caption{RStudio Standardansicht}
 \label{abb:rstudio}
 \end{figure}
@@ -16,13 +17,11 @@ Der Funktionsumfang der Sprache kann durch sogenannte Pakete erweitert werden. B
 \\
 \\
 % Roxygen TODO! Lesen!
-Ein wichtiges Paket welches im Rahmen dieser [Bachelor]arbeit verwendet wurde ist \emph{roxygen}. Mithilfe dieses Pakets wird, ähnlich wie JavaDoc für Java, durch spezielle Kommentare und Annotations überhalb der Paketfunktionen automatisch die Paketdokumentation erstellt. Die roxygen-Kommentare der Paketfunktionen, die für wartbaren Code ohnehin unabdingbar sind, sind für den Entwickler erheblich angenehmer als die Paketdokumentation von Hand zu schreiben. Roxygen-Kommentare werden durch das Kommentarsymbol #' am Zeilenbeginn eingeleitet. Zu den wichtigsten Annotations gehören jene für die Beschreibung der Parameter (@param) und Rückgabewerte (@return) sowie Beispiele zur Ausführung der Funktion (@examples). Weiters wird über die @export Annotation geregelt welche Funktionen nach Auslieferung des Pakets von außen aufrufbar sind.
+Ein wichtiges Paket welches im Rahmen dieser Arbeit verwendet wird ist \emph{roxygen}. Mithilfe dieses Pakets wird, ähnlich wie JavaDoc für Java, durch spezielle Kommentare und Annotations überhalb der Paketfunktionen automatisch die Paketdokumentation erstellt. Die roxygen-Kommentare der Paketfunktionen, die für wartbaren Code ohnehin unabdingbar sind, sind für den Entwickler erheblich angenehmer als die Paketdokumentation von Hand zu schreiben. Roxygen-Kommentare werden durch das Kommentarsymbol \# ' am Zeilenbeginn eingeleitet. Zu den wichtigsten Annotations gehören jene für die Beschreibung der Parameter (@param) und Rückgabewerte (@return) sowie Beispiele zur Ausführung der Funktion (@examples). Weiters wird über die @export Annotation geregelt welche Funktionen nach Auslieferung des Pakets von außen aufrufbar sind.
 \\
 \\
 % RStudio
-RStudio ist eine freie und open source Entwicklungsumgebung für R. Abbildung \ref{abb:rstudio} zeigt die Version 0.99.893.
-%% Daniel %%
-Die weitverbreiteste Entwicklungsumgebung für die Programmiersprache R ist das RStudio, das in der Abbildung \ref{abb:rstudio} zu sehen ist. Diese Umgebung wurde speziell für den Softwareentwurf mittels R entwickelt und stellt alle wichtigen Funktionen zu Verfügung. Damit ist es besonders einfach selber R-Pakete zu entwickeln, oder andere Programmiersprachen mittels speziellen Schnittstellen mit R zu verbinden. Zur Visualisierung von den Berechnungsergebnissen sind bereits einige Vorlagen in die Entwicklungsumgebung integriert. Zum Beispiel ist es sehr einfach HTML Seiten, PDF Dokumente oder auch interaktive Oberflächen mittels \emph{Shiny} zu erstellen. Um dynamische Dokumente zu erstellen kann auch \emph{RMarkdown} verwendet werden, das wird im Kapitel \ref{kapitel:rmarkdown} näher erklärt.
+RStudio ist eine freie und open source Entwicklungsumgebung für R. RStudio verfügt über alle notwendigen Funktionalitäten für die Softwareentwicklung mit R und bietet darüber hinaus Funktionen für eine vereinfachte Entwicklung von R-Paketen an. Abbildung \ref{abb:rstudio} zeigt die Version 0.99.893. 
 \section{C++, Rcpp}
 \label{kapitel:rcpp}
 Manchmal ist R-Code einfach nicht schnell genug. Typische Flaschenhälse sind Schleifen und rekursive Funktionen. Die Performance kann in solchen Fällen durch Auslagern von Funktionen und Algorithmen in C oder C++ erheblich verbessert werden, da der Code kompiliert und somit optimiert werden kann anstatt nur interpretiert zu werden.\\
@@ -32,7 +31,6 @@ R bietet drei Möglichkeiten C/C++ Code aufzurufen:
 	\item \emph{.Call} Schnittstelle
 	\item \emph{Rcpp} Paket
 \end{itemize}
-%% Daniel %%
 In manchen Situationen ist R nicht schnell genug für die spezielle Anwendung, deswegen kann man auf C oder C++ zurückgreifen. Vorallem die Geschwindigkeit bei Schleifen ist aufgrund der schwachen Typisierung in R relativ schlecht. Darum kann man bei einer intensiven Nutzung von Schleifen auf C oder C++ zurückgreifen und mit einer speziellen Schnittstelle diesen Code von R aufrufen.
 \\
 \\
@@ -42,24 +40,24 @@ Grundsätzlich gibt es 3 Möglichkeiten C/C++-Code von R aufzurufen:
 	\item \emph{.Call} Schnittstelle
 	\item \emph{Rcpp} Paket
 \end{itemize}
-\\
+
 Die \emph{.C} Schnittstelle ist die einfachste Variante C Code auszuführen, jedoch auch jene mit den größten Einschränkungen. Im C Code sind keinerlei R Datentypen oder Funktionen bekannt. Alle Argumente sowie der Rückgabewert müssen als Zeiger in der Parameterliste übergeben werden deren Speicher vor dem Aufruf reserviert werden muss.
 \\
 \\
 Bei der \emph{.Call} Schnittstelle handelt es sich um eine Erweiterung der \emph{.C} Schnittstelle. Die Implementierung ist komplexer, dafür sind R Datentypen verfügbar und es gibt die Möglichkeit eines Rückgabewerts mittels dem return Statements. \cite{wickham2015r}
 \\
 \\
-Bei den ersten beiden Möglichkeiten muss der C Code vor dem Aufruf per Hand kompiliert und in der R Session geladen werden. Das \emph{Rcpp} Paket ermöglicht die Verwendung von C++ Code ohne diesen Aufwand. Im C++ Code stehen R Datentypen wie Vektoren, Matrizen oder Listen ohne kompliziertem Syntax zur Verfügung. Die Funktionsaufrufe sehen, im Gegensatz zu den ersten beiden Ausführungen, aus wie normale R Funktionsaufrufe und macht dadurch den Code erheblich lesbarer. Weiters stehen Vektorfunktionen zur Verfügung, d.h. eine auf einen Vektor angewandte Funktion wird auf jedes Vektorelement ausgeführt und erspart somit beispielsweise eine Schleife. Bei der Entwicklung eines eigenen Pakets ist es bei der Verwendung des \emph{Rcpp} Pakets zusammen mit RStudio sehr einfach C++ Code zu integrieren. Während der Paketerzeugung kompiliert RStudio automatisch alle C++ Dateien und erstellt automatisch Wrapper-Funktionen, die den Zugriff auf die Funktionen erleichtern. Die genaue Verwendung des \emph{Rcpp} Pakets ist in \cite{wickham2015advanced} beschrieben/ nachzulesen.
+Bei den ersten beiden Möglichkeiten muss der C Code vor dem Aufruf per Hand kompiliert und in der R Session geladen werden. Das \emph{Rcpp} Paket ermöglicht die Verwendung von C++ Code ohne diesen Aufwand. Im C++ Code stehen R Datentypen wie Vektoren, Matrizen oder Listen ohne kompliziertem Syntax zur Verfügung. Die Funktionsaufrufe sehen, im Gegensatz zu den ersten beiden Ausführungen, aus wie normale R Funktionsaufrufe und macht dadurch den Code erheblich lesbarer. Weiters stehen Vektorfunktionen zur Verfügung, d.h. eine auf einen Vektor angewandte Funktion wird auf jedes Vektorelement ausgeführt und erspart somit beispielsweise eine Schleife. Bei der Entwicklung eines eigenen Pakets ist es bei der Verwendung des \emph{Rcpp} Pakets zusammen mit RStudio sehr einfach C++ Code zu integrieren. Durch all diese Vorteile ist das \emph{Rcpp} Paket die zu wählende Schnittstelle. Während der Paketerzeugung kompiliert RStudio automatisch alle C++ Dateien und erstellt automatisch Wrapper-Funktionen, die den Zugriff auf die Funktionen erleichtern. Die genaue Verwendung des \emph{Rcpp} Pakets ist in \cite{wickham2015advanced} beschrieben/ nachzulesen.
 \section{RMarkdown, \LaTeX, Ti\textit{k}Z}
 \label{kapitel:rmarkdown}
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\textwidth]{abbildungen/rmarkdown}
+\includegraphics[width=\ScaleIfNeeded]{abbildungen/rmarkdown}
 \caption{RMarkdown Überblick, Quelle: \cite{rmarkdown}}
 \label{abb:rmarkdown}
 \end{figure}
 % R Markdown
-Zur Erstellung von dynamischen Dokumenten kann das Paket \emph{RMarkdown} verwendet werden. Durch die Kombination der Syntax von Markdown, R, \LaTeX\ und HTML ergibt sich ein flexibles und einfaches Werkzeug. Die unterstützen Ausgabeformate beinhalten u.a. HTML, PDF, MS Word und Beamer (Präsentationen).
+Zur Erstellung von dynamischen Dokumenten wird das Paket \emph{RMarkdown} verwendet werden. Durch die Kombination der Syntax von Markdown, R, \LaTeX\ und HTML ergibt sich ein flexibles und einfaches Werkzeug. Die unterstützen Ausgabeformate beinhalten u.a. HTML, PDF, MS Word und Beamer (Präsentationen).
 \\
 \\
 % R Markdown Workflow
@@ -67,3 +65,4 @@ Abbildung \ref{abb:rmarkdown} zeigt den Workflow für die Generierung eines dyna
 \\
 \\
 % LaTeX, TikZ
+Für die Erzeugung dynamischer Grafiken wird die Sprache Ti\textit{k}Z verwendet, die durch \LaTeX\ interpretiert wird. Mithilfe des Dokumenttyps Beamer in \LaTeX\ lassen sich Präsentationen erstellen. Die Grafiken und Inhalte können dadurch dynamisch ein- oder ausgeblendet werden oder farblich hervorgehoben werden. Dies ist insofern wertvoll, da Informationen, die Schritt für Schritt vervollständigt werden, es dem Benutzer leichter machen den Ablauf nachzuvollziehen. Damit zukünftige Studenten die Prinzipien von Faltungskodes besser verstehen werden die Visualisierungen der Kodierung und Dekodierung wie beschrieben sukzessive eingeblendet.

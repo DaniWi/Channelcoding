@@ -94,7 +94,11 @@ PlotSimulationData <- function(...) {
 
   new.df <- Reduce(rbind, arguments)
   new.df$Arguments <- rep(paste("Argument", 1:length(arguments)), sapply(arguments, nrow))
-  ggplot2::ggplot(new.df, ggplot2::aes(db, ber, color = Arguments)) + ggplot2::geom_line()
+  ggplot2::ggplot(new.df, ggplot2::aes(new.df[["db"]], new.df[["ber"]], color = new.df[["Arguments"]])) +
+    ggplot2::geom_line() +
+    ggplot2::xlab("Signal Rausch Verh\u00e4ltnis [dB]") +
+    ggplot2::ylab("Bitfehlerrate") +
+    ggplot2::theme(legend.title = ggplot2::element_blank())
 }
 
 PunctureCode <- function(original.code, punctuation.matrix) {

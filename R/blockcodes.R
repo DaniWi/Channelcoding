@@ -114,7 +114,7 @@ BlockGenerateEncoderBCH = function(code.length = 15, code.t = 3){
 #' BlockEncode(plain, coder)
 #'
 #' # standard encoding with visualization
-#' BlockEncode(plain, coder, visualize = TRUE)
+#' # BlockEncode(plain, coder, visualize = TRUE)
 #'
 #' # use default values
 #' BlockEncode(plain)
@@ -207,12 +207,12 @@ BlockEncode = function(message, block.encoder= NULL, visualize=FALSE){
 #' BlockDecode(coded, coder)
 #'
 #' # with visualization
-#' coded <- BlockEncode(plain, coder)
-#' BlockDecode(coded, coder, visualize = TRUE)
+#' # coded <- BlockEncode(plain, coder)
+#' # BlockDecode(coded, coder, visualize = TRUE)
 #'
 #' # with message distortion
 #' coded <- BlockEncode(plain, coder)
-#' noisy <- ApplyNoise(coded, SNR.db = 3)
+#' noisy <- ApplyNoise(coded, SNR.db = 3, binary = TRUE)
 #' BlockDecode(noisy, coder)
 #' @author Benedikt Wimmer
 #' @export
@@ -322,7 +322,7 @@ BlockDecode = function(code, block.encoder = NULL, visualize=FALSE){
 #'
 #' # Custom coder
 #' coder <- BlockGenerateEncoderHamming(15,11)
-#' BlockSimulation(coder, 15, 0.01, 1, 0.05, 50, NULL, FALSE)
+#' BlockSimulation(coder, 15, 0.01, 1, 0.05, 50, FALSE)
 #' @author Martin Nocker
 #' @export
 BlockSimulation <- function(coder = NULL,
@@ -460,7 +460,7 @@ BlockOpenPDF <- function(encode = TRUE, hamming = FALSE, simulation = FALSE) {
   if (path != "") {
     rstudioapi::viewer(path)
   } else {
-    stop("File does not exists!")
+    warning("File does not exists!")
   }
 }
 

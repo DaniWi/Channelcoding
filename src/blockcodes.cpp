@@ -397,7 +397,7 @@ List c_getGeneratorPoly
           k = length - rdncy;
 
         if (k < 0) {
-          printf("Parameters invalid!\n");
+          Rprintf("Parameters invalid!\n");
         }
 
         //  printf("This is a (%d, %d, %d) binary BCH code\n", length, k, d);
