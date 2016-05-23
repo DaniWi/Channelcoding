@@ -1,0 +1,268 @@
+%theory.tex
+
+
+Um die Funktionsweise der Blockkodes auf mathematischer Ebene zu erklären müssen zunächst einige Definitionen gemacht werden. Diese Eigenschaften haben alle im Folgenden genauer erklärten Kodes gemeinsam.\newline
+\newtheorem{t_def}{Definition}[chapter]
+\begin{t_def}
+Ein {\em Datenwort d} wird durch die Anwendung eines {\em Kodes C} zum {\em Kodewort c}.
+\end{t_def}
+
+Da wir uns auf binäre Kodes beschränken sind alle Kode- und Datenwörter eine Konkatenation aus 0en und 1en, oder mathematisch formuliert:
+
+\begin{t_def}
+Der binäre Körper $\mathbb{F}_{2}$ ist ein endlicher Körper $\mathbb{F}_{q}$ bestehend aus den Elementen \{0,1\}
+\end{t_def}
+
+Obige Definition entspricht auch $\mathbb{Z}_2$, dem Restklassenring $\mathbb{Z}\mod 2$. Eine andere Bezeichnung für einen endlichen Körper ist das Galois-Feld, geschrieben als GF(q) bzw. GF(2) für den binären Körper. Daraus ergibt sich für die Addition und Multiplikation:
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{c|c|c}
++ & 0 & 1 \\
+\hline
+0 & 0 & 1 \\
+\hline
+1 & 1 & 0 \\
+\end{tabular}
+\begin{tabular}{c|c|c}
+$\cdot$ & 0 & 1 \\
+\hline
+0 & 0 & 0 \\
+\hline
+1 & 0 & 1 \\
+\end{tabular}
+\caption{Addition und Multiplikation in $\mathbb{F}_2$}
+\label{table:addmul}
+\end{center}
+\end{table}
+
+Sofern nicht anderst angegeben beziehen sich Rechenoperationen auf Kode- und Datenwörtern immer auf den Körper $\mathbb{F}_2$. Deswegen gibt es semantisch gesehen auch keinen Unterschied zwischen Addition und Subtraktion da $\{-x = x \mid x \in \mathbb{F}_2\}$.\cite[Kap. 1.1]{huffman2010fundamentals}
+
+\begin{t_def}
+$\mathbb{F}_{2}^{n}$ ist der Vektorraum aller {\em n-Tupel} über dem Körper $\mathbb{F}_2$.
+\end{t_def}
+
+\begin{t_def}[Lineare Kodes]
+Ein {\em Kode C} mit Kodewörtern der Länge n ist genau dann {\em linear}, wenn er ein Untervektorraum von $\mathbb{F}_{2}^{n}$ ist.
+\end{t_def}
+
+Alle in dieser Arbeit behandelten Kodes gehören zur Klasse der \textit{linearen Kodes}.\cite[Kap. 1.2]{huffman2010fundamentals} Um nun deren Fehlerkorrektureigenschaften zu betrachten muss noch der Begriff der Hamming-Distanz definiert werden.
+
+\begin{t_def}
+Die {\em Hamming Distanz h} zwischen 2 Kodewörtern $x,y \in \mathbb{F}_{2}^{n}$ ist definiert als die Anzahl der Stellen i für die gilt: $x_i \neq y_j$
+\end{t_def}
+
+Dies bedeutet, wenn die Kodewörter in einem Kode C eine Hamming-Distanz von $h=1$ zueinander haben, dann unterscheiden sich die Kodewörter nur in einer Stelle voneinander. Das heißt sobald 1 Fehler passiert wird direkt ein anderes, gültiges Kodewort getroffen und der Fehler wird nicht erkannt. Auch $h=2$ reicht noch nicht aus um einen Fehler zu korrigieren. Man erhält zwar ein ungültiges Kodewort, kann aber nicht sagen welches es vor dem Fehler war. Um einen 1-Bit-Fehler zu korrigieren benötigt man also einen Kode mit mindestens $h=3$.\cite[Kap. 1.4]{huffman2010fundamentals} Daraus resultiert folgende Definition:
+
+\begin{t_def}
+In einem t-Fehler korrigierenden Kode brauchen alle Kodewörter mindestens eine Hamming-Distanz von $h=2t+1$ zueinander.
+\end{t_def}
+
+
+\section{Hamming-Kodes}
+\label{section:hamming}
+
+Die wohl simpelsten Blockkodes sind die Klasse der Hamming-Kodes. Ein Hamming-(n,k)-Kode erzeugt Kodewörter c der Länge n für die gilt: $c \in \mathbb{F}_{2}^{n}$ aus Datenwörtern d der Länge k für die gilt: $d \in \mathbb{F}_{2}^{k}$. Ein Hamming-Kode hat eine Hamming-Distanz von $h=3$ und kann somit 1-Bit-Fehler korrigieren. Gültige (n,k)-Tupel erfüllen die Gleichungen $r = n - k$ und $n = 2^r - 1$.\cite[Kap. 1.8]{huffman2010fundamentals} Die Kodierung und Dekodierung erfolgt mittels jeweils einer Generator- und Kontrollmatrix.
+
+\begin{t_def}
+Für eine Generatormatrix G eines Kodes C mit Kodewörtern c und Datenwörtern d gilt: $ dG = c$
+\end{t_def}
+
+\begin{t_def}
+Für eine Kontrollmatrix H eines Kodes C gilt: $ Hx^T = 0$ genau dann, wenn $x \in C$.
+\end{t_def}
+
+Obige Definitionen gelten für alle lineare Kodes\cite[Kap. 1.2]{huffman2010fundamentals}, aber anderst als bei den BCH-Kodes werden bei den Hamming-Kodes die Matrizen direkt zur En- und Dekodierung verwendet.
+
+\begin{t_def}
+Ein {\em systematischer} Kode enthält das Datenwort in Reinform.
+\end{t_def}
+
+Alle in dieser Arbeit verwendeten Kodes sind systematisch, da dies die Nachvollziehbarkeit im Rahmen des Lehrzweckes verbessert. Um einen systematischen Hamming-Kode zu erzeugen, müssen die Generatormatrix G und die Kontrollmatrix H folgende Standardform\cite[Kap. 1.1.3]{morelos2006art} haben: 
+
+$$G = \left(I_k \mid A\right)$$
+$$H = \left(A^T \mid I_r\right)$$
+
+Um die Matrizen zu konstruieren muss man H genauer betrachten. Der Spaltenraum von H entspricht den r-Tupeln der Zahlen 1,2,...,n in Binärdarstellung. H kann nun durch Spaltenumformungen in Standardform gebracht werden. 
+Anschließend kann G durch transponieren von A nach obiger Gleichung erzeugt werden.\cite[Kap. 1.8]{huffman2010fundamentals} Hier ein Beispiel für einen Hamming-(7,4)-Kode:
+
+$$r = n-k = 3$$
+$$H' = \begin{pmatrix}
+0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+0 & 1 & 1 & 0 & 0 & 1 & 1 \\
+1 & 0 & 1 & 0 & 1 & 0 & 1 \\
+\end{pmatrix}\text{\qquad{1,2,...,7}}$$
+
+$$H = \begin{pmatrix}
+0 & 1 & 1 & 1 & 1 & 0 & 0 \\
+1 & 0 & 1 & 1 & 0 & 1 & 0 \\
+1 & 1 & 0 & 1 & 0 & 0 & 1 \\
+\end{pmatrix}\qquad{(A^T \mid I_r)}$$
+
+$$G = \begin{pmatrix}
+1 & 0 & 0 & 0 & 0 & 1 & 1 \\
+0 & 1 & 0 & 0 & 1 & 0 & 1 \\
+0 & 0 & 1 & 0 & 1 & 1 & 0 \\
+0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+\end{pmatrix}\qquad{(I_k \mid A)}$$
+
+Semantisch betrachtet beschreibt die Generatormatrix ein Gleichungssystem für die Paritätsbits. Die Spalten der Einheitsmatrix beschreiben die trivialen Gleichungen $d_i = d_i$, die Spalten von A beschreiben jeweils die Gleichung eines Paritätsbits. Für ein Datenwort $d=(a,b,c,d)$ ergeben sich für die Paritätsbits $p=(e,f,g)$ des resultierenden Kodeworts $c=(a,b,c,d,e,f,g)$ nach der Kodierung durch $dG = c$ folgende Gleichungen:
+
+$$ e = b+c+d$$
+$$ f = a+c+d$$
+$$ g = a+b+d$$
+
+Stimmen alle Gleichungen, dann liegt ein gültiges Kodewort vor. Ist nur eine Gleichung falsch, muss es das dazugehörige Paritätsbit sein. Sind alle falsch, muss es d sein. Sind 2 falsch, dann muss das Bit sein welches in beiden Gleichungen vorkommt. Genau diese Informationen Stecken in der Kontrollmatrix H. Ein Vektor des Spaltenraums von H[,i] beschreibt ein "Fehlermuster" in den Gleichungen, seine Position i das verursachende Fehlerbit im Kodewort. Eine allgemeiner Ansatz zum Dekodieren:
+
+\begin{itemize}
+\item Wenn $Hc^T = 0$, dann ist kein Fehler passiert.
+\item Anonsten ist an Position i für $Hc^T = H[ ,i]$ der Fehler passiert.
+\end{itemize}
+
+Daraus resultiert auch, dass ein 2. Fehler nicht erkannt wird, da alle möglichen r-Tupel, die bei einer Multplikation mit H entstehen können, bereits definiert sind. 
+
+
+\section{BCH-Kodes}
+
+Die \textbf{B}ose, Ray-\textbf{C}haudhuri, \textbf{H}ocquenghem bilden eine wichtige Klasse der linearen Kodes. Des weiteren gehören sie zu den polynomiellen und zyklischen Kodes.\cite[Kap. 5.1]{huffman2010fundamentals}
+Ein (n,k,d)-BCH-Kode hat n-Bit lange Kodewörter, k-Bit lange Datenwörter und eine minimale Hamming-Distanz von $d = 2*t+1$.
+Grundsätzlich werden hier die Daten- und Kodewörter als Polynome interpretiert. Da wir uns weiterhin auf binäre Kodes beschränken sind die Koeffizienten der Polynome aus 
+$\mathbb{F}_{2}$, es gelten die in \ref{section:hamming} definierten Eigenschaften. Daraus ergibt sich zum Beispiel $x^3 -x -1 \equiv x^3 + x + 1$. Das Datenwort 1011 wird interpretiert als $x^3 + x^2 + 1$. Es folgen einige nötige Definitionen:
+
+\begin{t_def}
+Sei $n \in \mathbb{N}$ die Länge der Kodewörter und $m \in \mathbb{N}$ die kleinste Zahl für die gilt: $n \leq 2^m -1$, dann ist $\mathbb{F}_{2^m}$ eine Körpererweiterung des endlichen Körpers $\mathbb{F}_{2}$
+\end{t_def}
+
+Diese Körpererweiterung wird auch bezeichnet als $GF(2^m)$. 
+Es existiert ein \textit{primitives Element} $\alpha \in GF(2^m)$ für das gilt: Für jedes $\beta \in GF(2^m)\setminus\{0\}$ gilt: $\beta = \alpha^j$ für $0 \leq j \leq 2^m -2$ und $n = 2^m-1$ ist die kleinste positive Zahl für die gilt: $\alpha^n = 1$. Oder anderst ausgedrückt: $\alpha$ ist die {\em primitive n-te Einheitswurzel}.\cite[Kap. 3.2.1]{morelos2006art}
+Nun existiert ein irreduzibles Polynom p(x) von Grad m für das gilt: $p(\alpha) = 0$, somit ist es ein {\em primitives Polynom}.
+
+\begin{t_def}
+Seien $F(x)$ alle Polynome mit Koeffizienten aus $\mathbb{F}_2$ und $p(x)$ ein primitives Polynom zu $GF(2^m)$, dann sind die Elemente von $GF(2^m)$ die Restklassen von $F(x) \mod p(x)$.  \cite[Kap. 5.2]{bose2008infotheory}
+\end{t_def}
+
+Eine weitere Darstellung der Elemente in $GF(2^m)$ ist die als binärer Vektor der Länge m. Es folgt ein Beispiel zur Veranschaulichung der 3 Darstellungen von $GF(2^m)$, den Potenzen von $\alpha$, den polynomiellen Restklassen und den korrespondierenden Binärdarstellungen. Für $m=3$ und $p(x) = x^3 + x + 1$ erhält man:
+
+
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{c|c|c}
+$\alpha^i$ & Polynom & Vektor \\
+\hline
+- & 0 & 000 \\
+$\alpha^0$ & $1$ & 001 \\
+$\alpha^1$ & $x$ & 010 \\
+$\alpha^2$ & $x^2$ & 100 \\
+$\alpha^3$ & $x+1$ & 011 \\
+$\alpha^4$ & $x^2+x$ & 110 \\
+$\alpha^5$ & $x^2+x+1$ & 111 \\
+$\alpha^6$ & $x^2+1$ & 101 \\
+\end{tabular}
+\caption{$GF(8)$}
+\label{table:gf}
+\end{center}
+\end{table}
+
+
+
+
+Die Vektordarstellung ist hauptsächlich für die Implementierung relevant, da dies das Rechnen mit den Polynomen vereinfacht. Eine Addition von $a+b \mid a,b \in GF(2^m)$ entspricht $v_a \oplus v_b$ für $v_a,v_b$ in Vektordarstellung. Multiplikation entspricht einer Addition der Potenzen von $\alpha \mod 2^m-1$, also zum Beispiel $\alpha^3\alpha^5 = \alpha^8 = \alpha^1$.\cite[Kap. 3.2.1]{morelos2006art}
+
+\begin{t_def}
+Das Minimalpolynom $\phi_i(x)$ eines Elements $\alpha^i$ ist das Polynom kleinsten Grades mit $\phi_i(\alpha^i) = 0$.\cite[Kap 3.2.1]{morelos2006art}
+\end{t_def}
+
+Um die Minimalpolynome für jedes $\alpha^i$ zu bestimmen muss man zunächst die Menge aller Zykel $C_s$ $\mod 2^m-1$ ermitteln. Diese sind für das obere Beispiel folgende:
+
+\begin{center}
+$$C_0 = \{0\}, C_1 = \{1,2,4\}, C_3 = \{3,6,5\}$$
+\end{center}
+
+\begin{t_def}
+Für jeden Zykel s in der Menge aller Zykel ist das Minimalpolynom definiert als: $$\phi_s(x) = \prod_{i_s \in C_s}(x+\alpha^{i_s})$$\cite[Kap. 3.2.1]{morelos2006art}
+\end{t_def}
+
+Aus obiger Definition ergibt sich, dass jeweils die Potenzen von $\alpha$, die Elemente des selben Zykels sind, dasselbe Minimalpolynom besitzen. Dadurch können wir die Tabelle~\ref{table:gf} erweitern:
+
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{c|c|c|c}
+$\alpha^i$ & Polynom & Vektor & Minimalpolynom\\
+\hline
+- & 0 & 000 & - \\
+$\alpha^0$ & $1$ & 001 & - \\
+$\alpha^1$ & $x$ & 010 & $x^3+x+1$ \\
+$\alpha^2$ & $x^2$ & 100  & $x^3+x+1$ \\
+$\alpha^3$ & $x+1$ & 011  & $x^3+x^2+1$ \\
+$\alpha^4$ & $x^2+x$ & 110  & $x^3+x+1$ \\
+$\alpha^5$ & $x^2+x+1$ & 111  & $x^3+x^2+1$ \\
+$\alpha^6$ & $x^2+1$ & 101  & $x^3+x^2+1$  \\
+\end{tabular}
+\caption{$GF(8)$ mit Minimalpolynomen}
+\label{table:minimals}
+\end{center}
+\end{table}
+
+Eine ausführliche Herleitung für Berechnung der Minimalpolynome findet sich in \cite[Kap. 3.2.1]{morelos2006art}.
+
+\begin{t_def}
+Sei t die Anzahl der zu korrigierenden Fehler und LCM das kleinste gemeinsame Vielfache. Dann ist das Generatorpolynom definiert als:
+$$g(x) = LCM(\phi_1(x),\phi_2(x),...,\phi_{2t}(x))$$
+\end{t_def}
+
+So ergibt sich aus Tabelle~\ref{table:minimals} und $t=3$ das Generatorpolynom:
+$$g(x) = LCM(\phi_1(x),\phi_2(x)) = LCM((x^3+x+1)(x^3+x+1)) = x^3+x+1$$
+
+Dies ist ein BCH-(7,4,3)-Kode, es entpsricht der zyklischen Version eines Hamming-(7,4)-Kodes. Ein Generatorpolynom für jeden binären BCH-Kode kann auf diese Weise ermittelt werden.
+
+\begin{t_def}
+Sei d(x) ein Datenpolynom der Länge k und g(x) das Generatorpolynom eines BCH-(n,k,d)-Kodes. Dann ist das resultierende Kodewort definiert als:
+$$k(x) = d(x)x^{n-k} - d(x)x^{n-k} \mod g(x)$$
+\end{t_def}
+
+Für den (7,4,3)-Kode aus Tabelle~\ref{table:minimals} mit Generatorpolynom $x^3+x+1$ ergibt sich also folgende Kodierung für ein Datenwort $d(x)$:
+
+$$d(x) = 1011$$
+$$d(x) = x^3 + x^2 + 1$$
+$$d'(x) = d(x)x^3 = x^6 + x^5 + x^3$$
+$$k(x) = d'(x) - d'(x) \mod g(x)$$
+$$k(x) = d'(x) + 1 = x^6 + x^5 + x^3 + 1$$
+$$k(x) = 1001011$$
+
+Um die Schritte nachzurechnen sollte man stets die Eigenschaften der Koeffizienten aus $\mathbb{F}_2$, definiert in Tabelle~\ref{table:addmul}, berücksichtigen.
+Wie man sieht handelt es sich auch hier um ein systematisches Kodewort, das Datenwort ist darin enthalten.
+\newblock
+\newline
+Das Dekodieren der BCH-Kodes kann auf verschiedene Arten erfolgen und ist sehr detailliert in Robert Morelos-Zaragoza's "The Art of Error Correcting Coding"(Kapitel 3.5) beschrieben.\cite{morelos2006art}
+An dieser Stelle folgt eine kurze Zusammenfassung der relevanten Schritte.
+Die Dekodierung der BCH-Kodes erfolgt im allgemeinen in 4 Stufen:
+
+\begin{enumerate}
+\item Berechnen der Syndrome $S_i = k(\alpha^i) \mid 1 \leq i \leq 2t$
+\item Bestimmem des Fehlerstellenpolynoms $\sigma(x)$.
+\item Ermitteln der Inversen der Nullstellen von $\sigma(x)$, diese entsprechen den Fehlerindizes $\alpha^i$
+\item Korrigieren der Fehler im Kodewort und den Fehlerindizes.
+\end{enumerate}
+
+Die Syndrome sind die Auswertung des erhaltenen Kodeworts $k(x)$ an den Nullstellen $\alpha^{1,...,2t}$. 
+Für das Kodewort $k(x) = 1001011 = x^6 + x^5 + x^3 + 1$, $t=2$ und $GF(8)$ aus Tabelle~\ref{table:gf} ergeben sich folgende Syndrome:
+
+$$S_1 = k(\alpha^1) = \alpha^6 + \alpha^5 + \alpha^3 + 1 = (x^2 +1) + (x^2+x+1)(x+1)+1 = 0$$
+$$S_2 = k(\alpha^2) = \alpha^{12} + \alpha^{10} + \alpha^6 + 1 = \alpha^5 + \alpha^3 + \alpha^6 + 1 = 0 $$
+
+Da unser Kodewort keine Fehler enthielt sind die Syndrome $S_i = 0$. Wenn es nur darum geht Fehler zu erkennen wäre dieser Schritt bereits ausreichend. Für ein Fehlerhaftes Kodewort $k'(x) = 1101011 = x^6 + x^5 + x^3 + x+1$ ergeben sich die Syndrome: 
+$$S_1 = 0 + \alpha^1 = x$$
+$$S_2 = 0 + \alpha^2 = x^2$$
+
+Um nun die Fehlerindizes zu bestimmen muss zunächst das Fehlerstellenpolynom $\sigma(x)$ mit Hilfe des Berlekamp-Massey-Algorithmus ermittelt werden. Dieser ist in \cite[Kap 3.5.2]{morelos2006art} beschrieben. Für das Fehlerhafte Kodewort $k'(x)$ liefert dieser $\sigma(x) = \alpha x +1$. Ist der Grad von $\sigma(x) > t$ sind mehr als t Fehler im Kodewort und es kann nicht vollständig dekodiert werden. In diesem Fall ist $deg(\sigma(x)) = t$, also müssen nun die Inversen der Nullstellen von $\sigma(x)$ bestimmt werden. Das verwendete Verfahren nennt sich Chien's Suche, dabei wird für alle $\beta \in GF(2^m)\setminus\{0\}$ die Bedingung $\sigma(\beta{-1}) = 0$ überprüft.\cite[Kap. 3.5.5]{morelos2006art} Für $\sigma(x) = \alpha x +1$ ergibt sich:
+
+$$\sigma(\alpha^6) = \alpha^1\alpha^6 +1 = \alpha^7 +1 = \alpha^0 + 1 = 1 + 1 = 0$$
+
+Da $\alpha^{-6} = \alpha^1$ ist haben wir den Fehler in $k'(x) = 1101011 = x^6 + x^5 + x^3 + x+1$ an Index 1 indentifiziert.
+
+$$k'(x) - x = x^6 + x^5 + x^3 + x+1 -x = x^6+x^5+x^3+1=k(x)$$
+
+
+
+\subsection{Reed-Solomon-Kodes}
+
+Die Klasse der Reed-Solomon-Kodes, kurz RS-Kodes, findet viele Anwendungen im Bereich der digitalen Datenspeicherung auf CDs und DVDs, sowie in Kommunikationssystemen.\cite[Kap. 4]{morelos2006art} Die hierfür verwendeten Kodes sind allerdings nicht mehr binär und daher für die Simulation in dieser Arbeit nicht verwendbar. Die binären RS-Kodes bilden eine Unterklasse der binären BCH-Kodes mit einer Einschränkung: Die Länge der Kodewörter ist $n = 2^m-1$.\cite[Kap 5.2]{huffman2010fundamentals} Dadurch ist der einzige Unterschied im binären, dass BCH-Kodes flexibler in der Kodelänge sind. Gerade für nicht-binäre RS-Kodes ergeben sich aber Vereinfachungen im bestimmen des Generatorpolynoms und dem Dekodieren, dies ist \cite[Kap. 4]{morelos2006art} und \cite[Kap. 5.2]{huffman2010fundamentals} gut beschrieben.

@@ -1,0 +1,22 @@
+% ConvDecodeHard.tex
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}ConvDecodeHard\\
+\hline
+\\
+\texttt{ConvDecodeHard(code, conv.encoder, terminate, punctuation.matrix, visualize)}\\
+\\
+Decodes a convolutional codeword using hard decision decoding.\\
+\\
+\textbf{Arguments:}\\
+\texttt{code} - The code to be decoded.\\
+\texttt{conv.encoder} - Convolutional encoder used for encoding.\\
+\texttt{terminate} - Flag if the code is terminated. Default: TRUE\\
+\texttt{punctuation.matrix} - If not NULL the code is depunctured prior to the decode algorithm. Default: NULL\\
+\texttt{visualize} - If TRUE a beamer PDF file is generated showing the decode process. Default: FALSE\\
+\\
+\textbf{Returns:}\\
+The hard-decoded message vector.\\
+\\
+\hline
+\end{longtable}

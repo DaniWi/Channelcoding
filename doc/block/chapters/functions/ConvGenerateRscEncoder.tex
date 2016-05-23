@@ -1,0 +1,33 @@
+% ConvGenerateRscEncoder.tex
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}ConvGenerateRscEncoder\\
+\hline
+\\
+\texttt{ConvGenerateRscEncoder(N, M, generators)}\\
+\\
+Generates a recursive systematic convolutional (rsc) encoder.\\
+\\
+\textbf{Arguments:}\\
+\texttt{N} - Numer ob output symbols per input symbol.\\
+\texttt{M} - Memory length of the encoder.\\
+\texttt{generators} - Vector of octal generator polynoms (one for each non-systematic output symbol and one for the recursion).\\
+\\
+\textbf{Returns:}\\
+A convolutional encoder represented as a list containing:
+\vspace{-4mm}
+\begin{itemize}
+\renewcommand\labelitemi{--}
+\itemsep-.5em % spacing between items
+\item N
+\item M
+\item generator polynoms vector
+\item nextState matrix
+\item previousState matrix
+\item output matrix
+\item rsc flag
+\item termination vector
+\end{itemize}
+\\
+\hline
+\end{longtable}

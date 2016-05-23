@@ -1,0 +1,141 @@
+---
+title: "Blockcodes"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  beamer_presentation:
+    keep_tex: true
+fontsize: 8pt
+params:
+  block.encoder: !r list(type='HAMMING',
+                          code.length = 7,
+                          data.length = 4,
+                          gen.matrix = matrix(c(1,0,0,0,0,1,1,0,1,0,0,1,0,1,0,0,1,0,1,1,0,0,0,0,1,1,1,1), nrow=4, byrow=T),
+                          check.matrix = matrix(c(1,0,0,0,0,1,1,0,1,0,0,1,0,1,0,0,1,0,1,1,0,0,0,0,1,1,1,1), nrow=4, byrow=T))
+  message: !r c(1,0,1,1,1,0,1,0,1,0,0,1)
+  code: !r c(1,0,1,1,0,1,0,1,0,1,0,1,0,1,1,0,0,1,1,0,0)
+header-includes:
+- \usepackage{tikz}
+- \usepackage{pgfplots}
+- \usepackage{mathtools}
+- \setcounter{MaxMatrixCols}{20}
+---
+
+```{r, include=FALSE}
+
+vecToPoly = function(vec){
+  fun_factory = function(vec){
+    i = length(vec)
+    function(x){
+      i <<- i-1
+      if(x>0 && i>0){
+        paste0("x^",i, " + ")
+      }else if(i == 0){
+        "1"
+      }else{
+        ""
+      }
+    }
+  }
+  return (paste0(sapply(vec, fun_factory(vec)),collapse=""))
+}
+
+toColor = function(x, color){
+  return(paste0("\\textcolor{",color,"}{",x,"}"))
+}
+
+nextColor = function(x){
+  if(x == 'red')
+    return('green')
+  else if(x == 'green')
+    return('blue')
+  else if(x == 'blue')
+    return('orange')
+  else if(x == 'orange')
+    return('red')
+}
+
+
+block.encoder = params$block.encoder
+
+
+
+message <- params$message
+code <- params$code
+coderate = block.encoder$data.length / block.encoder$code.length
+
+message.matrix <- matrix(message, ncol=block.encoder$data.length, byrow = TRUE)
+code.matrix <- matrix(code, ncol=block.encoder$code.length, byrow = TRUE)
+
+
+art.coder <- paste0("Hamming (",block.encoder$code.length,",",block.encoder$data.length,")")
+
+gen.matrix <- block.encoder$gen.matrix
+color = 'red'
+
+for(i in (block.encoder$data.length+1):block.encoder$code.length){
+  gen.matrix[,i] = sapply(gen.matrix[,i],function(x) toColor(x,color))
+  color = nextColor(color)
+}
+gen.matrix <- apply(gen.matrix, 1, function(x) paste0(x, collapse ="&"))
+gen.matrix <-  paste0(gen.matrix, collapse = "\\\\")
+gen.matrix <- paste0("\\begin{pmatrix}",gen.matrix, "\\end{pmatrix}", collapse="")
+
+message.matrix.print <- apply(message.matrix, 1, function(x) paste0(x, collapse ="&"))
+message.matrix.print <-  paste0(message.matrix.print, collapse = "\\\\")
+message.matrix.print <- paste0("\\begin{pmatrix}",message.matrix.print, "\\end{pmatrix}", collapse="")
+
+code.matrix.print <- apply(code.matrix, 1, function(x) paste0(x, collapse ="&"))
+code.matrix.print <-  paste0(code.matrix.print, collapse = "\\\\")
+code.matrix.print <- paste0("\\begin{pmatrix}",code.matrix.print, "\\end{pmatrix}", collapse="")
+
+encoding <- ""
+
+for(i in 1:nrow(message.matrix)){
+  encoding <- paste0(encoding, "## Kodieren des ",i,". Blocks \n")
+  
+  data.vec <- paste0(message.matrix[i,], collapse="\\\\")
+  data.vec <- paste0("\\begin{pmatrix}",data.vec, "\\\\ \\end{pmatrix}^T", collapse="")
+
+  color <- 'red'
+ 
+  code.vec <- code.matrix[i,]
+  
+  for(j in (block.encoder$data.length+1):block.encoder$code.length){
+    code.vec[j] = toColor(code.vec[j],color)
+    color = nextColor(color)
+  }
+  code.vec <- paste0(code.vec, collapse="\\\\")
+  code.vec <- paste0("\\begin{pmatrix}",code.vec, "\\\\ \\end{pmatrix}^T", collapse="")
+  
+  encoding <- paste0(encoding, "$$",data.vec,". ",gen.matrix," = ",code.vec,"$$\n\n")
+}
+
+```
+
+
+
+## Blockcodierer Informationen
+
+- `r art.coder` Kodierer
+- Generatormatrix : $$G = `r gen.matrix`$$
+- Kode-Rate : $$\frac{`r block.encoder$data.length`}{`r block.encoder$code.length`} \approx `r round(coderate,2)`$$
+
+
+## Nachricht in Blöcke der Länge `r block.encoder$data.length` aufteilen
+
+- Nachricht: \begin{center}(`r message`)\end{center}
+- Nachrichtsmatrix: $$`r message.matrix.print`$$
+
+`r encoding`
+
+## Output
+
+- Kodematrix: $$`r code.matrix.print`$$
+- Kode: \begin{center}(`r code`)\end{center}
+
+
+
+
+
+
+

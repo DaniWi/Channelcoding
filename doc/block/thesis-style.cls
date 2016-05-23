@@ -71,9 +71,9 @@
 % -----------------------------------------------------------------------------
 % This class is based on report
 \ifthenelse{\boolean{oneside}}{
-\LoadClass[a4paper,10pt,onecolumn,oneside,openright]{report}
+\LoadClass[a4paper,11pt,onecolumn,oneside,openright]{report}
 }{
-\LoadClass[a4paper,10pt,onecolumn,twoside,openright]{report}
+\LoadClass[a4paper,11pt,onecolumn,twoside,openright]{report}
 }
 \ifthenelse{\boolean{cutmargins}}{
 \RequirePackage[paperwidth=365pt,paperheight=618pt,textwidth=345pt,textheight=598pt,bindingoffset=0cm,marginparwidth=3cm,hmarginratio=1:1,vmarginratio=1:1]{geometry}
@@ -151,7 +151,12 @@
 \RequirePackage[margin=0cm]{subfig}
 
 % Citations
-\RequirePackage{cite}
+%\RequirePackage{cite}
+\RequirePackage[backend=bibtex, style=numeric-comp]{biblatex}
+
+% Quotes
+% German
+\RequirePackage[autostyle]{csquotes}
 
 % The "SI" and "num" commands for typesetting units
 \RequirePackage[range-phrase={\dots\,},per-mode=symbol,detect-all,load-configurations=binary,forbid-literal-units]{siunitx}
@@ -226,7 +231,8 @@
 
 % Some more language-dependent commands
 \ifthenelse{\boolean{germanthesis}}{
-	\newcommand{\thedate}{\selectlanguage{ngerman}\today\selectlanguage{american}}
+	%\newcommand{\thedate}{\selectlanguage{ngerman}\today\selectlanguage{american}}
+	\newcommand{\thedate}{\today}
 	\newcommand{\glossarytitlename}{Abkürzungsverzeichnis}
 }{
 	\newcommand{\thedate}{\today}
@@ -387,7 +393,6 @@
 \newcommand{\dean}[1]{\gdef\thedean{#1}}
 % -----------------------------------------------------------------------------
 
-
 % -----------------------------------------------------------------------------
 % Listings
 % -----------------------------------------------------------------------------
@@ -530,13 +535,13 @@
 \begin{tikzpicture}[remember picture,overlay] \node[xshift=0cm,yshift=0cm] at (current page.south west) { \begin{tikzpicture}[remember picture, overlay]
 
 	%%% logos
-	\ifthenelse{\boolean{earlydraft}}{
-		% no watermark in [earlydraft] mode
-	}{
-		\pgftext[bottom,right,at={\pgfpoint{25.5cm}{-5.5cm}}] {%
-			\includegraphics[height=20cm]{logos/watermark_uibk}%
-		}
-	}
+%	\ifthenelse{\boolean{earlydraft}}{
+%		% no watermark in [earlydraft] mode
+%	}{
+%		\pgftext[bottom,right,at={\pgfpoint{25.5cm}{-5.5cm}}] {%
+%			\includegraphics[height=20cm]{logos/watermark_uibk}%
+%		}
+%	}
 
 	%%% Kaestchenleisten
 	%\foreach \x in {0,1,...,17,20} {
@@ -575,7 +580,8 @@
 		\bfseries%
 		\@coverpage@subtitlesize%
 		\renewcommand{\baselinestretch}{1.00}%
-		\textcolor{uibk_green}{Faculty of Mathematics, Computer Science and Physics}%
+		\textcolor{uibk_green}{Fakult\"{a}t f\"{u}r Mathematik, Informatik und Physik}%
+		%\textcolor{uibk_green}{Faculty of Mathematics, Computer Science and Physics}%
 	}
 
 	%%% multi-line text
@@ -587,28 +593,35 @@
 			\renewcommand{\baselinestretch}{1.25}%
 			\coverpagetextsmall{\nohyphens{\theauthor}}%
 			\coverpagetextlarge{\nohyphens{\thetitle}}%
-			\coverpagetextsmall{\thethesistype}%
+			\coverpagetextsmall{\thethesistypegerman}%
 			\coverpagetextsmall{\thedate}%
 		}%
 	};
-	\draw[xshift=2.5cm,yshift=5cm] node [above right,text width=15cm, text badly ragged] {%
-		\sffamily%
-		\@coverpage@citeassize%
-		\renewcommand{\baselinestretch}{1.00}%
-		\begin{otherlanguage*}{american}%
-			Please cite as:\\%
-			\nohyphens{\theauthor, ``\thetitle,'' \thethesiscite, University of Innsbruck, Institute of Computer Science, \monthname~\the\year.}%
-		\end{otherlanguage*}
-	};
+%	\draw[xshift=2.5cm,yshift=5cm] node [above right,text width=15cm, text badly ragged] {%
+%		\sffamily%
+%		\@coverpage@citeassize%
+%		\renewcommand{\baselinestretch}{1.00}%
+%%		\begin{otherlanguage*}{ngerman}
+%%			Bitte zitieren als:\\%
+%%			\nohyphens{\theauthor, ``\thetitle,'' \thesistypegerman, Universit\"{a}t Innsbruck, Institut f\"{u}r Informatik, \monthname~\the\year.}%
+%%		\end{otherlanguage*}
+%		\begin{otherlanguage*}{american}%
+%			Please cite as:\\%
+%			\nohyphens{\theauthor, ``\thetitle,'' \thethesiscite, University of Innsbruck, Institute of Computer Science, \monthname~\the\year.}%
+%		\end{otherlanguage*}
+%	};
 	\draw[xshift=19.08cm,yshift=3.5cm] node [below left,text width=12cm, text @coverpage@ badly raggedleft] {%
 		\sffamily%
 		\@coverpage@addressize%
 		\renewcommand{\baselinestretch}{1.00}%
-		University of Innsbruck\\%
-		Institute of Computer Science\\%
+		%University of Innsbruck\\%
+		%Institute of Computer Science\\%
+		Universit\"{a}t Innsbruck\\%
+		Institut f\"{u}r Informatik\\%
 		%Computer and Communication Systems\\%
 		\vspace{0.5em}%
-		Technikerstr. 21a $\cdot$ 6020 Innsbruck $\cdot$ Austria\\%
+		%Technikerstr. 21a $\cdot$ 6020 Innsbruck $\cdot$ Austria\\%
+		Technikerstr. 21a $\cdot$ 6020 Innsbruck $\cdot$ \"{O}sterreich\\%
 		\textbf{\textcolor{uibk_green}{\href{http://informatik.uibk.ac.at/}{http://informatik.uibk.ac.at/}}}\\%
 	};
 \end{tikzpicture} }; \end{tikzpicture}
@@ -731,3 +744,6 @@ Innsbruck, \thedate
 }
 % -----------------------------------------------------------------------------
 
+%
+% Self-defined
+%

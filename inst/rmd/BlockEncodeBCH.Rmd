@@ -1,0 +1,124 @@
+---
+title: "Blockcodes"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  beamer_presentation:
+    keep_tex: true
+fontsize: 8pt
+params:
+  block.encoder: !r list(type='BCH',
+                          code.length = 15,
+                          code.m = 4,
+                          data.length = 5,
+                          code.t = 3,
+                          gen.poly = c(1,1,1,0,1,1,0,0,1,0,1),
+                          alpha_to = c(1,2,3,8,3,6,12,11,5,10,7,14,15,13,9,0),
+                          index_of = c(-1,0,1,4,2,8,5,10,3,14,9,7,6,13,11,12))
+                          
+  message: !r c(1,0,1,0,1,1,1,0,1,1)
+  code: !r c(1,1,1,0,0,0,1,0,0,1,1,0,1,0,1,0,0,1,0,1,0,0,0,0,1,1,1,0,1,1)
+header-includes:
+- \usepackage{tikz}
+- \usepackage{pgfplots}
+- \usepackage{mathtools}
+- \usepackage{color}
+- \setcounter{MaxMatrixCols}{20}
+---
+
+```{r, include=FALSE}
+
+vecToPoly = function(vec){
+  fun_factory = function(vec){
+    i = length(vec)
+    function(x){
+      i <<- i-1
+      if(x>0 && i>0){
+        paste0("x^{",i, "}")
+      }else if(i == 0 && x>0){
+        "1"
+      }else{
+        ""
+      }
+    }
+  }
+  vec = sapply(vec, fun_factory(vec))
+  return (paste0(vec[vec != ""],collapse=" + "))
+}
+
+toColor = function(x, color){
+  return(paste0("\\textcolor{",color,"}{",x,"}"))
+}
+
+
+block.encoder = params$block.encoder
+
+message <- params$message
+code <- params$code
+coderate = block.encoder$data.length / block.encoder$code.length
+
+message.matrix <- matrix(message, ncol=block.encoder$data.length, byrow = TRUE)
+code.matrix <- matrix(code, ncol=block.encoder$code.length, byrow = TRUE)
+
+art.coder <- paste0("BCH (",block.encoder$code.length,",",block.encoder$data.length,",",block.encoder$code.t*2+1,")")
+
+
+gen.poly.print <- vecToPoly(rev(block.encoder$gen.poly))
+
+message.matrix.print <- apply(message.matrix, 1, function(x) paste0(x, collapse ="&"))
+message.matrix.print <-  paste0(message.matrix.print, collapse = "\\\\")
+message.matrix.print <- paste0("\\begin{pmatrix}",message.matrix.print, "\\end{pmatrix}", collapse="")
+
+code.matrix.print <- apply(code.matrix, 1, function(x) paste0(x, collapse ="&"))
+code.matrix.print <-  paste0(code.matrix.print, collapse = "\\\\")
+code.matrix.print <- paste0("\\begin{pmatrix}",code.matrix.print, "\\end{pmatrix}", collapse="")
+
+
+
+rest.length <- block.encoder$code.length-block.encoder$data.length
+
+encoding <- ""
+for(i in 1:nrow(message.matrix)){
+  encoding <- paste0(encoding, "## Kodieren des ",i,". Blocks \n")
+  
+  data.poly <- vecToPoly(message.matrix[i,])
+  datastar.poly <- vecToPoly(c(message.matrix[i,],rep(0,rest.length)))
+  rest.poly <- vecToPoly(code.matrix[i,][1:rest.length])
+  code.poly <- vecToPoly(code.matrix[i,])
+  
+  encoding <- paste0(encoding,"Input: (",toColor(paste0(message.matrix[i,],collapse = ","),'green'),") \n\n")
+  encoding <- paste0(encoding,"Daten Polynom: $$d(x) = ",data.poly,"$$\n")
+  encoding <- paste0(encoding,"Generator Polynom: $$g(x) = ",gen.poly.print,"$$\n")
+  encoding <- paste0(encoding,"$$ d^*(x) = d(x)*x^{",rest.length,"} = ",datastar.poly,"$$\n")
+  encoding <- paste0(encoding,"Rest Polynom: $$r(x) = d^*(x)\\mod g(x) = ",rest.poly,"$$\n")
+  encoding <- paste0(encoding,"Kode Polynom: $$c(x) = c( r(x)|d(x) ) = ",code.poly,"$$\n")
+  encoding <- paste0(encoding,"Output: (\\textcolor{red}{",paste0(code.matrix[i,][1:rest.length],collapse = ","),",}\\textcolor{green}{",paste0(code.matrix[i,][(rest.length+1):block.encoder$code.length],collapse = ","),"})\n\n")
+  encoding <- paste0(encoding," (\\textcolor{red}{Redundanzbits},\\textcolor{green}{Datenbits})\n\n")
+}
+
+```
+
+
+## Blockcodierer Informationen
+
+- `r art.coder` Kodierer
+- Generatorpolynom : $$g(x) =  `r gen.poly.print`$$
+- Verbesserbare Fehler pro Block: $$`r block.encoder$code.t`$$
+- Kode-Rate : $$\frac{`r block.encoder$data.length`}{`r block.encoder$code.length`} \approx `r round(coderate,2)`$$
+
+## Nachricht in Blöcke der Länge `r block.encoder$data.length` aufteilen
+
+- Nachricht: \begin{center}(`r message`)\end{center}
+- Nachrichtsmatrix: $$`r message.matrix.print`$$
+
+`r encoding`
+
+## Output
+
+- Kodematrix: $$`r code.matrix.print`$$
+- Kode: \begin{center}(`r code`)\end{center}
+
+
+
+
+
+
