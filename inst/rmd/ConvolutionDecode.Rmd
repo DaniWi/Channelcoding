@@ -1,7 +1,9 @@
 ---
 title: "Faltungsdekodierung ohne Punktierung"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: beamer_presentation
+output: 
+  beamer_presentation:
+    keep_tex: true
 fontsize: 8pt
 params:
   conv.encoder: !r list(N=2, M=2, generators=c(7,5), rsc=FALSE, termination=logical(0), next.state=matrix(c(0,0,1,1,2,2,3,3), ncol =2), prev.state=matrix(c(0,2,-1,-1,-1,-1,0,2,1,3,1,3), ncol =3), output=matrix(c(0,3,2,1,3,0,1,2), ncol =2))
