@@ -272,8 +272,7 @@ tikz.diagram <- paste(tikz.diagram, legend.bit.0, legend.bit.1)
 
 ## ENCODE TABLE
 encode.table <- ""
-alt.output <- ""
-cummulative.output <- ""
+visible.output <- ""
 index <- 2
 state <- 0
 for (i in message) {
@@ -290,22 +289,21 @@ for (i in message) {
   table.row <- paste(visibility,"{",i,"&",thisState,"&",nextState,"&",code.output,"\\\\",hline,"}")
   encode.table <- paste(encode.table, table.row)
   
-  # step for step output is displayed
+  ## step for step output is displayed
+  # first iteration: "(" else: ","
   first.char <- if(index - 2 == 0) "(" else ", "
   output.bits <- paste(binVector(output[state+1,i+1],N) , collapse = ", ")
-  cummulative.output <- paste0(cummulative.output, first.char, output.bits)
-  if (index - 1 == length(message)) {
-    cummulative.output <- paste0(cummulative.output, ")")
-  }
-  alt.def <- paste0("\\alt<",index,">")
-  alt.part <- paste0(alt.def,"{",cummulative.output,"}{")
+
+  output.bits <- paste0(first.char, output.bits)
   
   if (index - 1 == length(message)) {
-    # last output reached
-    alt.part <- paste0(alt.part, paste(rep("}", index - 1) , collapse = ""))
+    output.bits <- paste0(output.bits, ")")
   }
   
-  alt.output <- paste0(alt.output, alt.part)
+  visible.def <- paste0("\\visible<",index,"->")
+  visible.part <- paste0(visible.def,"{",output.bits,"}")
+  
+  visible.output <- paste0(visible.output, visible.part)
   
   index <- index + 1
   state <- next.state[state+1,i+1]
@@ -379,7 +377,7 @@ Input : (`r message`)
   `r encode.table`
 \end{tabular}
 \end{center}
-Output : `r alt.output`
+Output : `r visible.output`
 \end{minipage}
 \hfill
 \begin{minipage}{.45\textwidth}
