@@ -289,7 +289,8 @@
 
 % The "algorithm" environment
 \RequirePackage{algorithmic}[2009/08/24]
-\RequirePackage[plain,chapter]{algorithm}
+%\RequirePackage[plain,chapter]{algorithm}
+\RequirePackage{algorithm}
 \floatplacement{algorithm}{bp}
 
 % The "syntax" environment

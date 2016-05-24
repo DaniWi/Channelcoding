@@ -31,23 +31,26 @@ R bietet drei Möglichkeiten C/C++ Code aufzurufen:
 	\item \emph{.Call} Schnittstelle
 	\item \emph{Rcpp} Paket
 \end{itemize}
-In manchen Situationen ist R nicht schnell genug für die spezielle Anwendung, deswegen kann man auf C oder C++ zurückgreifen. Vorallem die Geschwindigkeit bei Schleifen ist aufgrund der schwachen Typisierung in R relativ schlecht. Darum kann man bei einer intensiven Nutzung von Schleifen auf C oder C++ zurückgreifen und mit einer speziellen Schnittstelle diesen Code von R aufrufen.
-\\
-\\
-Grundsätzlich gibt es 3 Möglichkeiten C/C++-Code von R aufzurufen:
-\begin{itemize}
-	\item \emph{.C} native Schnittstelle
-	\item \emph{.Call} Schnittstelle
-	\item \emph{Rcpp} Paket
-\end{itemize}
-
 Die \emph{.C} Schnittstelle ist die einfachste Variante C Code auszuführen, jedoch auch jene mit den größten Einschränkungen. Im C Code sind keinerlei R Datentypen oder Funktionen bekannt. Alle Argumente sowie der Rückgabewert müssen als Zeiger in der Parameterliste übergeben werden deren Speicher vor dem Aufruf reserviert werden muss.
 \\
 \\
 Bei der \emph{.Call} Schnittstelle handelt es sich um eine Erweiterung der \emph{.C} Schnittstelle. Die Implementierung ist komplexer, dafür sind R Datentypen verfügbar und es gibt die Möglichkeit eines Rückgabewerts mittels dem return Statements. \cite{wickham2015r}
 \\
 \\
-Bei den ersten beiden Möglichkeiten muss der C Code vor dem Aufruf per Hand kompiliert und in der R Session geladen werden. Das \emph{Rcpp} Paket ermöglicht die Verwendung von C++ Code ohne diesen Aufwand. Im C++ Code stehen R Datentypen wie Vektoren, Matrizen oder Listen ohne kompliziertem Syntax zur Verfügung. Die Funktionsaufrufe sehen, im Gegensatz zu den ersten beiden Ausführungen, aus wie normale R Funktionsaufrufe und macht dadurch den Code erheblich lesbarer. Weiters stehen Vektorfunktionen zur Verfügung, d.h. eine auf einen Vektor angewandte Funktion wird auf jedes Vektorelement ausgeführt und erspart somit beispielsweise eine Schleife. Bei der Entwicklung eines eigenen Pakets ist es bei der Verwendung des \emph{Rcpp} Pakets zusammen mit RStudio sehr einfach C++ Code zu integrieren. Durch all diese Vorteile ist das \emph{Rcpp} Paket die zu wählende Schnittstelle. Während der Paketerzeugung kompiliert RStudio automatisch alle C++ Dateien und erstellt automatisch Wrapper-Funktionen, die den Zugriff auf die Funktionen erleichtern. Die genaue Verwendung des \emph{Rcpp} Pakets ist in \cite{wickham2015advanced} beschrieben/ nachzulesen.
+Bei den ersten beiden Möglichkeiten muss der C Code vor dem Aufruf per Hand kompiliert und in der R Session geladen werden. Das \emph{Rcpp} Paket ermöglicht die Verwendung von C++ Code ohne diesen Aufwand. Im C++ Code stehen R Datentypen wie Vektoren, Matrizen oder Listen ohne kompliziertem Syntax zur Verfügung. Die Funktionsaufrufe sehen, im Gegensatz zu den ersten beiden Ausführungen, aus wie normale R Funktionsaufrufe und macht dadurch den Code erheblich lesbarer. Weiters stehen Vektorfunktionen zur Verfügung, d.h. eine auf einen Vektor angewandte Funktion wird auf jedes Vektorelement ausgeführt und erspart somit beispielsweise eine Schleife. Bei der Entwicklung eines eigenen Pakets ist es bei der Verwendung des \emph{Rcpp} Pakets zusammen mit RStudio sehr einfach C++ Code zu integrieren. Durch all diese Vorteile ist das \emph{Rcpp} Paket die zu wählende Schnittstelle. Während der Paketerzeugung kompiliert RStudio automatisch alle C++ Dateien und erstellt automatisch Wrapper-Funktionen, die den Zugriff auf die Funktionen erleichtern.
+\\
+\\
+Die C++ Datei muss mit folgenden Zeilen starten:
+\lstset{language=C++, numbers=none, basicstyle=\ttfamily}
+\begin{lstlisting}
+#include <Rcpp.h>
+using namespace Rcpp;
+\end{lstlisting}
+Sowie jede Funktion, die in R verfügbar sein soll muss folgenden Präfix erhalten:
+\begin{lstlisting}
+// [[Rcpp::export]]
+\end{lstlisting}
+Die genaue Verwendung des \emph{Rcpp} Pakets ist in \cite{wickham2015advanced} beschrieben/ nachzulesen.
 \section{RMarkdown, \LaTeX, Ti\textit{k}Z}
 \label{kapitel:rmarkdown}
 \begin{figure}[!t]

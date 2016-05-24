@@ -1,23 +1,105 @@
 % implementierung.tex
-Dieses Kapitel gibt einen Einblick in die Konzepte der Implementierung. Kapitel \ref{kapitel:implementierung_datenstruktur} beinhaltet den Entwurf der Kodierer Datenstruktur. Die Implementierung der Kodierung wird in Kapitel \ref{kapitel:implementierung_kodierung} beschrieben, die der Dekodierung in Kapitel \ref{kapitel:implementierung_dekodierung}. Abschließend wird in Kapitel \ref{kapitel:interface} die R-Paket Schnittstelle angegeben.
+Dieses Kapitel gibt einen Einblick in die Konzepte der Implementierung. 
+\\
+\\
+Kapitel \ref{kapitel:implementierung_faltungskodierer} beinhaltet den Entwurf der Faltungskodierer-Datenstruktur. Die Implementierung der Kodierung wird in Kapitel \ref{kapitel:implementierung_kodierung} beschrieben, die der Dekodierung in Kapitel \ref{kapitel:implementierung_dekodierung}.
 \\
 \\
 Aus Performancegründen Kodierung, Dekodierung in C++\\
-Weiters: Depunktierung, Katastrophale Kodierer Prüfung (Polynom GGT mod 2)\\
+Weiters: Kodierer erzeugen, Depunktierung, Katastrophale Kodierer Prüfung (Polynom GGT mod 2)\\
 Parameterprüfung, Punktierung, ApplyNoise, Aufruf Visualisierung in R\\
+Referenzimplementierung
 
-\section{Datenstrukturen, (z.B. Kodierer)}
-\label{kapitel:implementierung_datenstruktur}
+\section{Faltungskodierer}
+\label{kapitel:implementierung_faltungskodierer}
+Ein Faltungskodierer ist gegeben durch 
+\begin{itemize}
+\item $N$: Anzahl an Ausgangsbits je Eingangsbit,
+\item $M$: Länge des Schieberegisters,
+\item $G$: Vektor von Generatorpolynomen.
+\end{itemize}
+Die Angabe von $M$ ist hier redundant, jedoch Teil der Benutzereingabe zur Generierung eines Faltungskodierers, welche durch [AoECC] inspiriert wurde.
+\\
+\\
+Zur leichteren Implementierung der Kodierung und Dekodierung wird die Kodierer-Datenstruktur um folgende Elemente erweitert:
+\begin{itemize}
+\item eine \emph{Zustandsübergangsfunktion}, die angibt, in welchen Zustand der Kodierer bei einem Eingangsbit wechselt,
+\item eine \emph{inverse Zustandsübergangsfunktion}, die angibt, aus welchem Zustand der Kodierer bei einem Eingangsbit kommt,
+\item eine \emph{Outputfunktion}, die angibt, welche Kodebits der Kodierer bei einem Eingangsbit in einem bestimmten Zustand ausgibt,
+\item ein Flag zur Markierung rekursiver systematischer Kodierer (RSC),
+\item ein \emph{Terminierungsvektor} die für rekursiver systematische Kodierer angibt, ob ein Eingangsbit 0 oder 1 in einem bestimmten Zustand für die Terminierung zu verwenden ist.
+\end{itemize}
+Die Zustandsübergangsfunktion, inverse Zustandsübergangsfunktion und Outputfunktion sind als Matrizen implementiert. Diese Art der Implementierung wurde (aus [REF] übernommen) von der Referenzimplementierung übernommen, musste jedoch erweitert werden, um für allgemeine Faltungskodes verwendbar zu sein. Für alle gilt, die Anzahl an Zeilen entspricht der Anzahl an Zuständen $2^{M}$. Der Zeilenindex entspricht dem Zustand. Die \emph{Zustandsübergangsmatrix} sowie die \emph{Outputmatrix} besitzen jeweils zwei Spalten. Je eine Spalte steht für ein Eingangsbit (0 oder 1), wobei der Spaltenindex dem Eingangsbit entspricht. Die \emph{inverse Zustandsübergangsmatrix} benötigt eine dritte Spalte. Für viele Kodierer (v.a. nicht-rekursive) tritt der Fall ein, dass nur durch \emph{ein bestimmtes} Eingangsbit in einen bestimmten Zustand gewechselt werden kann. Sei ein Zustand bspw. nur durch das Eingangsbit 0 erreichbar, so bedeutet das, dass es für diesen Zustand mit dem Bit 0 \emph{zwei} Vorgängerzustände gibt, für ein Eingangsbit 1 jedoch keinen Vorgänger. Diese zweite Möglichkeit wird in der dritten Spalte gespeichert.
+\\
+\\
+Der Terminierungsvektor ist für nicht-rekursive Kodierer nicht notwendig, da ein Kode eines solchen Kodierers immer mit $M$ 0-Bits terminiert wird. Bei einem rekursiven Kodierer ist es nicht trivial zu sagen mit welchem Eingangsbit in einem bestimmten Zustand terminiert wird, um den Kodierer in den Nullzustand zu bringen. Dies hängt von der Definition des Rekursionpolynoms ab. Der Terminierungsvektor wird bei der Erzeugung rekursiver Kodierer berechnet.
+\\
+\\
+\subsection{Katastrophaler Kodierer}
+\label{kapitel:implementierung_katastrophaler_kodierer}
+Bei der Erzeugung von Faltungskodierern ist zu prüfen ob es sich um einen katastrophalen Kodierer handelt. RSC-Kodierer sind, wie in Kapitel \ref{kapitel:systematische_kodierer} beschrieben, nicht zu prüfen.
+
 
 \section{Kodierung}
 \label{kapitel:implementierung_kodierung}
+Bei Faltungskodes stellt die Kodierung den bei Weitem einfacheren Teil dar. Es muss lediglich jedes Bit der zu kodierenden Nachricht zusammen mit dem aktuellen Zustand, der nach jedem Bit mithilfe der Zustandsübergangsmatrix aktualisiert wird, auf die Outputmatrix angewendet werden. Die Terminierung funktioniert analog, einzig das zu kodierende Bit muss ermittelt werden. Für RSC-Kodierer muss im Terminierungsvektor nachgeschaut werden, andernfalls ist das Bit immer 0. Abgeschlossen wird die Kodierung mit dem Abbilden der Kodebits 0 bzw. 1 auf die Signalwerte +1 bzw. -1.
 
-\section{Dekodierung, Viterbi-Algorithmus}
+\begin{algorithm}[H]
+\renewcommand{\algorithmicforall}{\textbf{for each}}
+\caption{Faltungskodierung}
+\label{algorithmus:kodierung}
+\begin{algorithmic}[1]
+\STATE state $=0$, code $=$ result $=$ " "
+\FORALL {bit \textbf{in} message}
+   \STATE output $=$ output.matrix[state][bit]
+	\STATE code $=$ $concat($code, output$)$
+	\STATE state $=$ state.transition.matrix$[$state$][$bit$]$
+\ENDFOR
+\IF{terminate code}
+   \FOR {$i=0$ \TO $M-1$}
+      \STATE termination.bit $=$ rsc-coder $?$ termination.vector$[$state$]$ : $0$
+      \STATE output $=$ output.matrix$[$state$][$termination.bit$]$
+	   \STATE code $=$ $concat($code, output$)$
+	   \STATE state $=$ state.transition.matrix$[$state$][$termination.bit$]$
+   \ENDFOR
+\ENDIF
+\FORALL {bit \textbf{in} code}
+   \STATE signal $=1-2$bit
+   \STATE result $=$ $concat($result,signal$)$
+\ENDFOR
+\RETURN result
+\end{algorithmic}
+\end{algorithm}
+
+\section{Dekodierung}
 \label{kapitel:implementierung_dekodierung}
+Die Dekodierung stellt den wesentlich komplexeren Teil der Faltungskodes dar. 
 
-\section{Visualisierung}
-\label{kapitel:implementierung_visualisierung}
+\begin{algorithm}[H]
+\renewcommand{\algorithmicforall}{\textbf{for each}}
+\caption{Faltungsdekodierung}
+\label{algorithmus:dekodierung}
+\begin{algorithmic}[1]
+\STATE $NUM_STATES=2^{M}$
+\FOR {$t=1$ \TO $length($message$)$}
+   \FOR {$s=0$ \TO $NUM_STATES-1$}
+   	\STATE $m_{1}=$ metric[t-1][prev.state1] + $\delta_{1}$
+   	\STATE $m_{2}=$ metric[t-1][prev.state2] + $\delta_{2}$
+      \STATE metric[t][s] = $min(m_{1},m_{2})$
+      \STATE survivor.bit $=$ $xyz(0,1,min(min(m_{1},m_{2}))$
+	\ENDFOR
+\ENDFOR
+\RETURN result
+\end{algorithmic}
+\end{algorithm}
 
-\section{R-Paket Schnittstelle}
-\label{kapitel:interface}
-\input{kapitel/interface}
+\section{Rauschen}
+\label{kapitel:implementierung_noise}
+Um auch zeigen zu können, dass die Dekodierung auch tatsächlich für verrauschte Signale funktioniert, benötigt es eine Funktion, die die Übertragung einer Nachricht über einen verrauschten Kanal simuliert, d.h. das Signal mit Rauschen überlagert. Zum Signal soll ein additives weißes gaußsches Rauschen (AWGR oder AWGN\footnote{additive white Gaussian noise}) addiert werden um dieses zu verfälschen. [apply noise quelle] stellt eine alternative Implementierung zur eingebauten AWGN-Funktion in Matlab vor. Die Implementierung wurde übernommen bzw. nach R übersetzt. Durch die Möglichkeit das Signal-Rausch-Verhältnis über einen Parameter zu steuern, können verschiedene Übertragungskanäle simuliert und Nachrichten somit verschieden stark verrauscht werden. Der Benutzer kann dadurch herausfinden, ab wann eine Nachricht zu viel Rauschen enthält, um sie korrekt dekodieren zu können. Weiters kann nach mehrfacher Ausführung auf Fehlermuster geschlossen werden, mit denen die Dekodierung gut bzw. schlecht umgehen kann. Durch Versuche mit anderen Kanalkodierungs-Methoden können Vergleiche mit diesen angestellt werden. Die genannten Punkte helfen dem Benutzer sein Verständnis für Faltungskodes noch besser zu stärken.
+
+\section{Punktierung}
+\label{kapitel:implementierung_punktierung}
+Punktierung leicht, jedoch Depunktierung vor der Dekodierung nicht trivial.
+
+%\section{Visualisierung}
+%\label{kapitel:implementierung_visualisierung}
