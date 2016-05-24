@@ -162,16 +162,31 @@ IsOctal <- function(generators) {
   return(TRUE)
 }
 
-IsCatastrophicEncoder <- function(generators) {
+IsCatastrophicEncoder <- function(generators.oct, M) {
   # convert octal generators to decimal
-  generators <- sapply(generators, OctalToDecimal)
+  generators.dec <- sapply(generators.oct, OctalToDecimal)
+
+  # turn bits of generators
+  generators.dec <- sapply(generators.dec, TurnBitsRound, nbits = M)
 
   # get GCD of all generators (C++ function)
-  gcd <- gcd_polynomial(generators)
+  gcd <- gcd_polynomial(generators.dec)
 
   # if gcd is a power of 2 the encoder is not catastrophic
   # this is done by bit checking
   return(!bitwAnd(gcd, gcd - 1) == 0)
+}
+
+TurnBitsRound <- function(number, nbits) {
+  result <- 0
+
+  for (i in 0:(nbits-1)) {
+    bit <- bitwAnd(bitwShiftR(number, i), 1)
+    bit <- bitwShiftL(bit, nbits - i - 1)
+    result <- bitwOr(result, bit)
+  }
+
+  return(result)
 }
 
 CheckCoder <- function(coder) {

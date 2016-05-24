@@ -67,8 +67,8 @@ ConvGenerateEncoder <- function(N, M, generators) {
     # generators = MaskGenerators(generators, max.generator.octal)
   }
 
-  if (IsCatastrophicEncoder(generators)) {
-    warning("The result will be a catastrophic encoder!")
+  if (IsCatastrophicEncoder(generators, M+1)) {
+    warning("The generated encoder is a catastrophic encoder!")
   }
 
   matrix.list <- c_generateMatrices(N,M,generators)

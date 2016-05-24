@@ -41,6 +41,16 @@ int gcd_polynomial(int a, int b) {
 		b = c;
 	}
 
+	int r = polynom_division_remainder_mod2(a,b);
+	while (r != 0) {
+		a = b;
+		b = r;
+		r = polynom_division_remainder_mod2(a,b);
+	}
+	
+	return b;
+	
+	/*
 	while (b > 0) {
 		int t = a;
 		a = b;
@@ -48,6 +58,7 @@ int gcd_polynomial(int a, int b) {
 	}
 	
 	return a;
+	*/
 }
 
 // [[Rcpp::export]]
