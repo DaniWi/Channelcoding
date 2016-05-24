@@ -17,8 +17,13 @@
 %\usepackage{tabularx} % set table width		
 \usepackage{longtable}
 
+% change name of caption by tables
+\usepackage{caption}
+\captionsetup[longtable]{name=Funktion}
+
+
 %set listing language to R
-\lstset{language=R} 
+\lstset{language=R, prebreak={},} 
 
 \makeatletter
 \def\ScaleIfNeeded{%
@@ -31,7 +36,7 @@
 \makeatother
 
 \author{Daniel~Witsch}
-\title{R-Paket für Kanalkodierung mit Turbo-Codes}
+\title{R-Paket für Kanalkodierung mit Turbo-Kodes}
 %\title{R~package for channel~coding with convolutional~codes}
 \birthday{28. Dezember 1992}
 \birthplace{Zams}
@@ -39,7 +44,7 @@
 \thesistype{Bachelor's thesis}
 \thesistypegerman{Bachelorarbeit}
 \thesiscite{Bachelor's thesis}
-\advisors{Dr.~Pascal~Schöttle}
+\advisors{Univ.-Prof.~Dr.~Rainer~Böhme,Dr.~Pascal~Schöttle}
 \date{\today}
 
 \begin{document}
