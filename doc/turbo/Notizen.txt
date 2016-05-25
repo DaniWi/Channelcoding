@@ -1,0 +1,4 @@
+Standard-Werte - Standardwerte?
+Abstand zwischen Listings, Floating?
+zahlen auschreiben? Bit 0,1 Singal -1, +1
+Code listings aussehen?
