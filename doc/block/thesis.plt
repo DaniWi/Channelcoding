@@ -14,8 +14,10 @@
 \ttl@stoptoc {tables@1}
 \ttl@starttoc {Funktionen@1}
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces BlockEncode - Funktionserkl\IeC {\"a}rung}}{14}{table.4.1}
-\contentsline {table}{\numberline {4.2}{\ignorespaces BlockEncode - Funktionserkl\IeC {\"a}rung}}{14}{table.4.2}
+\contentsline {table}{\numberline {4.1}{\ignorespaces BlockEncode}}{14}{table.4.1}
+\contentsline {table}{\numberline {4.2}{\ignorespaces BlockEncode}}{14}{table.4.2}
+\contentsline {table}{\numberline {4.3}{\ignorespaces Simulation}}{15}{table.4.3}
+\contentsline {table}{\numberline {4.4}{\ignorespaces ApplyNoise - Funktionserkl\IeC {\"a}rung}}{16}{table.4.4}
 \ttl@stoptoc {Funktionen@1}
 \addvspace {10\p@ }
 \addvspace {10\p@ }

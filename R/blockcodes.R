@@ -15,7 +15,7 @@
 #'
 #' Generates a block encoder for Hamming block codes.
 #' @details The resulting Hamming Code is obtained by constructing a (code.length - data.length) x code.length Parity-Check-Matrix.
-#' The columns are the binary vectors of the integers 1 to code.length. Column Permutations are then applied to get the 
+#' The columns are the binary vectors of the integers 1 to code.length. Column Permutations are then applied to get the
 #' Form (t(A) | Ir). The resulting Generator Matrix is (In | A).
 #' @param code.length Length of the encoded message
 #' @param data.length Length of the plain message
@@ -70,7 +70,7 @@ BlockGenerateEncoderHamming = function(code.length = 7, data.length = 4){
 #'
 #' Generates a block encoder for BCH block codes.
 #' @details Apart from necessary parameters like data.length, a BCH encoder consists of a Generator Polynomial, which is needed for encoding,
-#' and the polynomial and index representation of the underlying Galois Field GF(code.length+1), which is needed for constructing and solving the 
+#' and the polynomial and index representation of the underlying Galois Field GF(code.length+1), which is needed for constructing and solving the
 #' error location Polynomial.
 #' @param code.length Length of the encoded message
 #' @param code.t Error correcting capability
@@ -84,8 +84,8 @@ BlockGenerateEncoderHamming = function(code.length = 7, data.length = 4){
 #' @author Benedikt Wimmer
 #' @export
 BlockGenerateEncoderBCH = function(code.length = 15, code.t = 3){
-  
-  if(2*t > code.length)
+
+  if(2*code.t > code.length)
     stop("Invalid Parameters for BCH, 2*t must be < code.length")
 
   m = ceiling(log2(code.length))

@@ -1,0 +1,25 @@
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}BlockSimulation\\
+\hline
+\\
+\texttt{BlockSimulation(coder, msg.length, min.db, max.db, db.interval, iterations.per.db, punctuation.matrix, visualize)}\\
+\\
+Automatische Simulation eines Kodierungs- und Dekodierungsverfahrens von Blockkodes. Nach dem Kodieren wird der resultierende Kode mit verrauscht(siehe Funktion~\ref{func:applynoise}) und im Anschluss dekodiert. Für das jeweilige SNR wird dieses Verfahren mehrmals (iterations.per.db) wiederholt und am Ende ein Durchschnitt der Bitfehlerrate berechnet.\\
+\\
+\textbf{Argumente:}\\
+\texttt{coder} - Blockkodierer der mit den Funktionen \emph{BlockGenerateEncoderHamming, BlockGenerateEncoderBCH} erzeugt werden kann. Standard: \emph{BlockGenerateEncoderBCH(15,3)}\\
+\texttt{decode.iterations} - Anzahl von Iterationen bei der Dekodierung. Standard: 5\\
+\texttt{msg.length} - Länge der Nachricht. Standard: 100\\
+\texttt{min.db} - Untergrenze des SNR. Standard: 0.1\\
+\texttt{max.db} - Obergrenze des SNR. Standard: 2.0\\
+\texttt{db.interval} - Schrittweite pro Erhöhung des SNR. Standard: 0.1\\
+\texttt{iterations.per.db} - Iterationen pro SNR zur Durchschnittsbildung. Standard: 100\\
+\texttt{visualize} - Wenn TRUE wird PDF-Bericht erstellt. Standard: FALSE\\
+\\
+\textbf{Rückgabewert:}\\
+Dataframe das für jedes SNR eine Bitfehlerrate beinhaltet.\\
+\\
+\hline
+\caption{Simulation}
+\end{longtable}
