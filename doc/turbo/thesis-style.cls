@@ -85,7 +85,7 @@
 \RequirePackage{setspace}
 \onehalfspacing
 
-% Allow more (and larger) floats on text pages
+% Allow more (and larger) s on text pages
 \renewcommand{\topfraction}{0.9}  % use up to ..% of space on top
 \renewcommand{\bottomfraction}{0.8}  % use up to ..% of space on bottom
 \setcounter{topnumber}{4} % place up to .. on top
@@ -140,6 +140,8 @@
 
 % For hyperref<->algorithm interaction
 \RequirePackage{float}
+
+\RequirePackage{titletoc}
 
 % Cross-references are clickable
 \RequirePackage[pdftex,bookmarks=true,bookmarksnumbered=true,colorlinks=false,pdfdisplaydoctitle=true,breaklinks=true]{hyperref}

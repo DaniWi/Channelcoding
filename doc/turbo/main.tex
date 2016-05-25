@@ -17,7 +17,7 @@
 %\usepackage{tabularx} % set table width		
 \usepackage{longtable}
 
-% change name of caption by tables
+% change name of caption by longtables
 \usepackage{caption}
 \captionsetup[longtable]{name=Funktion}
 
@@ -69,7 +69,10 @@
 \listoffigures
 \clearpage
 
-\listoftables
+%\printlist[tables]{lot}{}{\renewcommand\addvspace[1]{}\chapter*{Tabellenverzeichnis}}
+%\clearpage
+
+\printlist[Funktionen]{lot}{}{\renewcommand\addvspace[1]{}\chapter*{Funktionsverzeichnis}}
 \clearpage
 
 \lstlistoflistings
