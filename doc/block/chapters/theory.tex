@@ -1,8 +1,9 @@
 %theory.tex
 
 
-Um die Funktionsweise der Blockkodes auf mathematischer Ebene zu erklären müssen zunächst einige Definitionen gemacht werden. Diese Eigenschaften haben alle im Folgenden genauer erklärten Kodes gemeinsam.\newline
+Um die Funktionsweise der Blockkodes auf mathematischer Ebene zu erklären müssen zunächst einige Definitionen gemacht werden. Diese Eigenschaften haben alle im Folgenden genauer erklärten Kodes gemeinsam.
 \newtheorem{t_def}{Definition}[chapter]
+
 \begin{t_def}
 Ein {\em Datenwort d} wird durch die Anwendung eines {\em Kodes C} zum {\em Kodewort c}.
 \end{t_def}
@@ -13,7 +14,8 @@ Da wir uns auf binäre Kodes beschränken sind alle Kode- und Datenwörter eine 
 Der binäre Körper $\mathbb{F}_{2}$ ist ein endlicher Körper $\mathbb{F}_{q}$ bestehend aus den Elementen \{0,1\}
 \end{t_def}
 
-Obige Definition entspricht auch $\mathbb{Z}_2$, dem Restklassenring $\mathbb{Z}\mod 2$. Eine andere Bezeichnung für einen endlichen Körper ist das Galois-Feld, geschrieben als GF(q) bzw. GF(2) für den binären Körper. Daraus ergibt sich für die Addition und Multiplikation:
+Obige Definition entspricht auch $\mathbb{Z}_2$, dem Restklassenring $\mathbb{Z}\mod 2$. Eine andere Bezeichnung für einen endlichen Körper ist das Galois-Feld, geschrieben als GF(q) bzw. GF(2) für den binären Körper. Daraus ergibt sich für die Addition und Multiplikation:\newline
+
 \begin{table}[!h]
 \begin{center}
 \begin{tabular}{c|cc}
@@ -41,6 +43,7 @@ Sofern nicht anderst angegeben beziehen sich Rechenoperationen auf Kode- und Dat
 \begin{t_def}
 $\mathbb{F}_{2}^{n}$ ist der Vektorraum aller {\em n-Tupel} über dem Körper $\mathbb{F}_2$.
 \end{t_def}
+
 
 \begin{t_def}[Lineare Kodes]
 Ein {\em Kode C} mit Kodewörtern der Länge n ist genau dann {\em linear}, wenn er ein Untervektorraum von $\mathbb{F}_{2}^{n}$ ist.

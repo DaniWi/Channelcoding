@@ -1,0 +1,20 @@
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}BlockEncode\\
+\hline
+\\
+\texttt{BlockEncode(message, block.encoder, visualize)}\\
+\\
+Kodiert die Nachricht mithilfe des in block.encoder angegebenen Blockkodes. Die zu kodierende Nachricht wird dazu in Blöcke der Datenwortlänge des Kodierers aufgeteilt und ggf. 0en angehängt um alle Blöcke gleich lang zu machen. \\
+\\
+\textbf{Argumente:}\\
+\texttt{message} - Nachricht die kodiert wird, als binärer Vektor.\\
+\texttt{block.encoder} - Blockkodierer der mit den Funktionen \emph{BlockGenerateEncoderHamming, BlockGenerateEncoderBCH} erzeugt werden kann. Standard: \emph{BlockGenerateEncoderBCH(15,3)}\\
+\texttt{visualize} - Wenn TRUE wird ein Visualisierungs-PDF erstellt. Standard: FALSE\\
+\\
+\textbf{Rückgabewert:}\\
+Die kodierte Nachricht als binärer Vektor.\\
+\\
+\hline
+\caption{BlockEncode - Funktionserklärung}
+\end{longtable}

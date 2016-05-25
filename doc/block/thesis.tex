@@ -28,8 +28,31 @@
 % additional packages
 \usepackage{color, colortbl} % colors (interface table)
 \usepackage{longtable}
-\usepackage[chapter]{algorithm}
+
+%\usepackage[chapter]{algorithm}
 %\usepackage[noend]{algpseudocode}
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=\parskip \thm@postskip=0pt
+}
+\makeatother
+
+% change name of caption by tables
+\usepackage{caption}
+\captionsetup[longtable]{name=Funktion}
+
+%set listing language to R
+\lstset{language=R, prebreak={},} 
+
+\makeatletter
+\def\ScaleIfNeeded{%
+\ifdim\Gin@nat@width>\linewidth
+\linewidth
+\else
+\Gin@nat@width
+\fi
+}
+\makeatother
 
 \newcommand{\plotwidth}{0.6\textwidth}
 \begin{document}
@@ -59,13 +82,17 @@ Lorem Ipsum BlaBla
 \chapter{Verwandte Arbeiten}
 \label{chapter:related}
 
+\startlist[tables]{lot}
 \chapter{Theorie}
 \label{chapter:theory}
 \input{chapters/theory}
+\stoplist[tables]{lot}
 
+\startlist[Funktionen]{lot}
 \chapter{Implementierung}
 \label{chapter:implementation}
 \input{chapters/implementierung}
+\stoplist[Funktionen]{lot}
 
 \chapter{Visualisierung}
 \label{chapter:visualization}
@@ -85,7 +112,11 @@ Lorem Ipsum BlaBla
 \listoffigures
 \clearpage
 
-\listoftables
+
+\printlist[tables]{lot}{}{\renewcommand\addvspace[1]{}\chapter*{Tabellenverzeichnis}}
+\clearpage
+
+\printlist[Funktionen]{lot}{}{\renewcommand\addvspace[1]{}\chapter*{Funktionsverzeichnis}}
 \clearpage
 
 \lstlistoflistings

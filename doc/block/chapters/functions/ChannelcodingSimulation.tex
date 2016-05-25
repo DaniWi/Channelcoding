@@ -1,4 +1,3 @@
-% ChannelcodingSimulation.tex
 \begin{longtable}{|p{\textwidth}|}
 \hline
 \rowcolor{lightblue}ChannelcodingSimulation\\
@@ -6,19 +5,20 @@
 \\
 \texttt{ChannelcodingSimulation(msg.length, min.db, max.db, db.interval, iterations.per.db, turbo.decode.iterations, visualize)}\\
 \\
-Simulation of channelcoding techniques (blockcodes, convolutional codes and turbo codes) and comparison of their bit-error-rates.\\
+Simulation von Block-, Faltungs- und Turbo-Kodes und Vergleich der Ergebnisse von verschiedenen SNR. Dabei wird die jeweilige Simulation der einzelnen Kodierungsverfahren aufgerufen.\\
 \\
-\textbf{Arguments:}\\
-\texttt{msg.length} - Message length of the randomly created messages to be encoded. Default: 100\\
-\texttt{min.db} - Minimum SNR to be tested. Default: 0.1\\
-\texttt{max.db} - Maximum SNR to be tested. Default: 2.0\\
-\texttt{db.interval} - Step between two SNRs tested. Default: 0.1\\
-\texttt{iterations.per.db} - Number of encode and decode processes per SNR. Default: 100\\
-\texttt{turbo.decode.iterations} - Number of decoding iterations inside the turbo decoder. Default: 5\\
-\texttt{visualize} - If true a PDF report is generated. Default: FALSE\\
+\textbf{Argumente:}\\
+\texttt{msg.length} - Länge der Nachricht. Standard: 100\\
+\texttt{min.db} - Untergrenze des SNR. Standard: 0.1\\
+\texttt{max.db} - Obergrenze des SNR. Standard: 2.0\\
+\texttt{db.interval} - Schrittweite pro Erhöhung des SNR. Standard: 0.1\\
+\texttt{iterations.per.db} - Iterationen pro SNR zur Durchschnittsbildung. Standard: 100\\
+\texttt{turbo.decode.iterations} - Anzahl von Iterationen bei der Turbo-Dekodierung. Standard: 5\\
+\texttt{visualize} - Wenn TRUE wird PDF-Bericht erstellt. Standard: FALSE\\
 \\
-\textbf{Returns:}\\
-Distorted message containing noise.\\
+\textbf{Rückgabewert:}\\
+Dataframe das alle Simulationsergebnisse der 3 Kodierungsverfahren beinhaltet.\\
 \\
 \hline
+\caption{ChannelcodingSimulation - Funktionserklärung}
 \end{longtable}

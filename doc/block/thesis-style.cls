@@ -141,6 +141,8 @@
 % For hyperref<->algorithm interaction
 \RequirePackage{float}
 
+\RequirePackage{titletoc}
+
 % Cross-references are clickable
 \RequirePackage[pdftex,bookmarks=true,bookmarksnumbered=true,colorlinks=false,pdfdisplaydoctitle=true,breaklinks=true]{hyperref}
 
@@ -197,11 +199,11 @@
 	\RequirePackage[ngerman,american]{babel}
 }
 
-% % Don't indent paragraphs in german theses. Instead, leave blank space between paragraphs.
-% \ifthenelse{\boolean{germanthesis}}{
-% 	\RequirePackage{parskip}
-% }{
-% }
+ % Don't indent paragraphs in german theses. Instead, leave blank space between paragraphs.
+ \ifthenelse{\boolean{germanthesis}}{
+ 	\RequirePackage{parskip}
+ }{
+ }
 
 % Time and date functions
 \RequirePackage{datetime}
@@ -535,13 +537,13 @@
 \begin{tikzpicture}[remember picture,overlay] \node[xshift=0cm,yshift=0cm] at (current page.south west) { \begin{tikzpicture}[remember picture, overlay]
 
 	%%% logos
-%	\ifthenelse{\boolean{earlydraft}}{
-%		% no watermark in [earlydraft] mode
-%	}{
-%		\pgftext[bottom,right,at={\pgfpoint{25.5cm}{-5.5cm}}] {%
-%			\includegraphics[height=20cm]{logos/watermark_uibk}%
-%		}
-%	}
+	\ifthenelse{\boolean{earlydraft}}{
+		% no watermark in [earlydraft] mode
+	}{
+		\pgftext[bottom,right,at={\pgfpoint{25.5cm}{-5.5cm}}] {%
+			\includegraphics[height=20cm]{logos/watermark_uibk}%
+		}
+	}
 
 	%%% Kaestchenleisten
 	%\foreach \x in {0,1,...,17,20} {
