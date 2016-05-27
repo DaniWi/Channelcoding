@@ -321,10 +321,10 @@ if (rsc.flag == TRUE) {
 if (rsc.flag == FALSE) {
   generator.matrix <- paste0(decToBin(octalToDec(generators)), " \\\\ ", collapse = "")
   generator.print <- 
-    paste0("(", paste(generators, collapse=","), ")_8 = \\begin{pmatrix}", generator.matrix, "\\end{pmatrix}")
+    paste0("(", paste(generators, collapse="_8,"), "_8) = \\begin{pmatrix}", generator.matrix, "\\end{pmatrix}")
 
 } else {
-  generator.print <- paste0("\\left(1,", paste0("\\frac{", head(generators, length(generators) - 1), "}{", tail(generators, 1), "}", collapse = ","), "\\right)")
+  generator.print <- paste0("\\left(1,", paste0("\\frac{", head(generators, length(generators) - 1), "_8}{", tail(generators, 1), "_8}", collapse = ","), "\\right)")
 }
 
 punctuation.print <- 

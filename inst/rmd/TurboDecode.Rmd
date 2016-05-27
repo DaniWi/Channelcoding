@@ -130,15 +130,15 @@ if (params$encoder$rsc == TRUE) {
 if (params$encoder$rsc == FALSE) {
   generator.matrix <- 
     paste0(decToBin(octalToDec(params$encoder$generators)), " \\\\ ", collapse = "")
-  generator.print <- paste0("(", paste(params$encoder$generators, collapse=","), 
-                           ")_8 = \\begin{pmatrix}", generator.matrix, "\\end{pmatrix}")
+  generator.print <- paste0("(", paste(params$encoder$generators, collapse="_8,"), 
+                           "_8) = \\begin{pmatrix}", generator.matrix, "\\end{pmatrix}")
 
 } else {
   generator.print <- 
     paste0("\\left(1,", 
            paste0("\\frac{", 
-              head(params$encoder$generators, length(params$encoder$generators) - 1), "}{",
-                        tail(params$encoder$generators, 1), "}", collapse = ","), "\\right)")
+              head(params$encoder$generators, length(params$encoder$generators) - 1), "_8}{",
+                        tail(params$encoder$generators, 1), "_8}", collapse = ","), "\\right)")
 }
 ```
 
