@@ -20,7 +20,9 @@ A block encoder represented as a list containing:
 Generates a block encoder for Hamming block codes.
 }
 \details{
-To come.
+The resulting Hamming Code is obtained by constructing a (code.length - data.length) x code.length Parity-Check-Matrix.
+The columns are the binary vectors of the integers 1 to code.length. Column Permutations are then applied to get the
+Form (t(A) | Ir). The resulting Generator Matrix is (In | A).
 }
 \examples{
 # standard Hamming encoder with code-rate = 0.57

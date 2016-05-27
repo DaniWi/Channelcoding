@@ -21,7 +21,9 @@ A block encoder represented as a list containing:
 Generates a block encoder for BCH block codes.
 }
 \details{
-To come.
+Apart from necessary parameters like data.length, a BCH encoder consists of a Generator Polynomial, which is needed for encoding,
+and the polynomial and index representation of the underlying Galois Field GF(code.length+1), which is needed for constructing and solving the
+error location Polynomial.
 }
 \examples{
 # standard bch encoder with code-rate = 0.33

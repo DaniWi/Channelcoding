@@ -4,7 +4,7 @@ Um dem Benutzer den Einstieg zur Verwendung des Paketes zu erleichtern, sind in 
 \label{sec:example_createHelpers}
 Zuerst werden Hilfsvariablen erzeugt, die für die folgende Kodierungs- und Dekodierungsverfahren benötigt werden. Diese Variablen müssen nicht unbedingt mitgegebenen werden, dann werden die Standard-Werte verwendet. Das bedeutet, dass falls keine Punktierungsmatrix übergeben wird, der Standard-Wert \emph{NULL} ist und darum nicht punktiert wird. Ebenfalls wird nicht permutiert, wenn kein Permutationsvektor als Argument übergeben wird. Es wird zwar ein Permutationsvektor benötigt, damit die Interleaver richtig arbeiten können, jedoch wird ein Vektor vom Typ \emph{PRIMITIVE} verwendet, dieser allerdings ändert die Reihenfolge der Bits nicht (root=0). Beim Kodierer verhält es sich ähnlich, jedoch wird hier ein vordefinierter Standard-Faltungskodierer verwendet (\emph{ConvGenerateRscEncoder(2,2,c(5,7))}), dieser wird in allen Turbo-Kode-Funktionen benützt, falls kein eigener Kodierer übergeben wird.
 
-\begin{lstlisting}[caption=Erzeugung von Kodierer und Punktierungsmatrix, label={lst:createHelpersCoderPunctuation}, float=ht]
+\begin{lstlisting}[caption=Erzeugung von Kodierer und Punktierungsmatrix, label={lst:createHelpersCoderPunctuation}, float=!ht]
 input <- c(1,0,1,1,0)
 
 coder <- ConvGenerateEncoder(2, 2, c(4,5))
@@ -14,7 +14,7 @@ punctuation.matrix <- TurboGetPunctuationMatrix(c(1,1,0))
 
 Wie im Listing \ref{lst:createHelpersCoderPunctuation} zu sehen ist, wird als allererstes eine zu kodierende Nachricht erzeugt, die dann benötigt wird, die dann benötigt wird um eine Punktierungsmatrix zu bekommen. Anschließend wird ein nicht rekursiver Faltungskodierer, mit der Funktion vom Faltungskode-Teil des Packetes \cite{nocker}, erzeugt. Dabei wurde ein Kodierer mit zwei Registern und zwei Ausgängen gewählt. Wichtig ist, dass der erste Ausgang vom Eingang durchgeschalten wird damit es ein systematischer Kodierer ist. Das wird erreicht, indem das erste Generatorpolynom mit $2^M = 2^2 = 4$ deklariert wird. Zum Schluss wird noch eine Punktierungsmatrix erstellt, die aus nur einer Spalte besteht und jedes dritte Bit aus dem Vektor entfernt. Bei einer 1 wird das Bit behalten, bei einer 0 verworfen.
 
-\begin{lstlisting}[caption=Erzeugung von verschiedenen Permutationsvektoren, label={lst:createHelpersPermutation}, float=ht]
+\begin{lstlisting}[caption=Erzeugung von verschiedenen Permutationsvektoren, label={lst:createHelpersPermutation}, float=!ht]
 permutation.vector.random <- TurboGetPermutation(length(input), coder, "RANDOM")
 permutation.vector.primitve <- TurboGetPermutation(length(input), coder, "PRIMITIVE", list(root=3))
 
@@ -31,7 +31,7 @@ Als nächstes benötigt der Benutzer noch einen Permutationsvektor, dieser wird 
 \label{sec:example_withoutPunctuation}
 Nachdem alle benötigten Variablen gesetzt wurden kann nun die Kodierung und Dekodierung vorgenommen werden. Dabei wird zuerst ohne Punktierung gearbeitet, jedoch alle anderen zuvor definierten Variablen verwendet.
 
-\begin{lstlisting}[caption=Kodierung und Dekodierung ohne Punktierung, label={lst:encodeDecodeWithoutPunctuation}, float=ht]
+\begin{lstlisting}[caption=Kodierung und Dekodierung ohne Punktierung, label={lst:encodeDecodeWithoutPunctuation}, float=!ht]
 encoded <- TurboEncode(input, permutation.vector.random, coder, 2)
 encoded
 [1] -1 -1 -1  1  1  1 -1  1  1 -1 -1  1  1 -1 -1  1 -1 -1  1  1  1
@@ -58,7 +58,7 @@ Nachdem das Signal kodiert und übertragen wurde, kann der Empfänger es nun wie
 
 Der gleiche Ablauf kann mit Punktierung wiederholt werden. Dabei wird am Ende des Kodierungsvorgangs die Bits entfernt, bei denen in der Matrix eine 0 steht und die Bits durchgelassen bei denen eine 1 steht. Beim Dekodierungsvorgang wird an den Stellen eine 0 eingefügt, die zuvor entfernt wurden. Da der Signalpegel normalerweise -1 oder 1 ist, wird für die wieder eingefügten Bits eine 0 eingefügt, da unklar ist welche Signalpegel sie tatsächlich haben. Mit einer 0 besteht die gleiche Wahrscheinlichkeit für eine -1 oder 1 an dieser Stelle.
 
-\begin{lstlisting}[caption=Kodierung und Dekodierung mit Punktierung, label={lst:encodeDecodeWithPunctuation}, float=ht]
+\begin{lstlisting}[caption=Kodierung und Dekodierung mit Punktierung, label={lst:encodeDecodeWithPunctuation}, float=!ht]
 encoded.punctured <- TurboEncode(input, permutation.vector.random, coder, 2, punctuation.matrix)
 encoded.punctured
 $original
@@ -83,12 +83,12 @@ Im dargestellten Listing \ref{lst:encodeDecodeWithPunctuation} sieht man nun das
 
 Die nächsten drei Unterkapitel werden sich den verschiedenen Simulationsfunktionen im Paket beschäftigen. Dabei wird zuerst eine reine Simulation des Turbo-Kode-Verfahrens vorgenommen. Im Anschluss werden alle drei Kanalkodierungsverfahren (Block-, Faltungs und Turbo-Kodes) miteinander verglichen und zum Schluss wird noch die Hilfsfunktion zur Darstellung verschiedener Simulationsergebnisse an einem Beispiel erklärt.
 
-\subsection{Turbo-Kode-Simulation}
+\subsection{Turbo-Kode}
 \label{sec:example_simulations_turbo}
 
 Im folgenden Beispiel wird eine Simulation des Turbo-Kode-Verfahren durchgeführt, bei der alle Parameter bestimmt werden können, wie Permutationstyp, Länge der Nachricht, Kodierer, zu testende Signal/Rausch-Verhältnisse, Anzahl von Dekodierungsiterationen und Anzahl der Wiederholungen. Als Ergebnis wird ein Dataframe zurückgegeben, das die Bitfehlerrate für jedes Signal/Rausch-Verhältnis beinhaltet.
 
-\begin{lstlisting}[caption=Turbo-Kode-Simulation, label={lst:turboCodeSimulation}, float=ht]
+\begin{lstlisting}[caption=Turbo-Kode-Simulation, label={lst:turboCodeSimulation}, float=!ht]
 df1 <- TurboSimulation(coder, "DIAGONAL", list(rows=2,cols=501), 3, 1000, 0.01, 0.1, 0.01, 50, punctuation.matrix)
 df1
      db     ber
@@ -106,12 +106,12 @@ df1
 
 In Listing \ref{lst:turboCodeSimulation} wurde eine Nachrichtenlänge von 1000 Bits gewählt, die zwischen 0.01-0.1dB bei drei Dekodierungsiterationen getestet werden. Nach 50 Durchläufen wird der Mittelwert gebildet und in das zurückgegebene Dataframe geschrieben. Dieses kann entweder im Visualisierungsbericht dargestellt werden (\emph{visualize=TRUE}), oder mit der in Kapitel \ref{sec:example_simulations_plot} vorgestellten Funktion.
 
-\subsection{Kanalkodierungs-Simulation}
+\subsection{Kanalkodierung}
 \label{sec:example_simulations_channel}
 
 Damit ein Vergleich der drei Kanalkodierungsverfahren möglich ist, müssen alle drei Verfahren mit den gleichen Parameter getestet werden. Danach kann mittels der Bitfehlerrate ein genauer Vergleich angestellt werden und die Vor- und Nachteile der Verfahren analysiert werden.
 
-\begin{lstlisting}[caption=Kanalkodierungs-Simulation, label={lst:channelCodeSimulation}, float=ht]
+\begin{lstlisting}[caption=Kanalkodierungs-Simulation, label={lst:channelCodeSimulation}, float=!ht]
 ChannelcodingSimulation(50, max.db = 1, turbo.decode.iterations = 3)
     db block.ber   conv.ber  turbo.ber
 1  0.1 0.1911429 0.05800000 0.06085714
@@ -133,7 +133,7 @@ Bei dem Beispiel in Listing \ref{lst:channelCodeSimulation} wurde eine Nachricht
 
 Nachdem die reinen Dataframes als Rückgabewert der Simulation von Kapitel \ref{sec:example_simulations_turbo} nicht wirklich aussagekräftig sein, ermöglicht die folgende Funktion eine Darstellung verschiedener Simulationen in einer Grafik. Dadurch lassen sich diese miteinander besser vergleiche und genaue Analysen sind möglich.
 
-\begin{lstlisting}[caption=Vergleich mehrerer Simulationen, label={lst:plotSimulations}, float=ht]
+\begin{lstlisting}[caption=Vergleich mehrerer Simulationen, label={lst:plotSimulations}, float=!ht]
 df2 <- TurboSimulation(msg.length = 1000, min.db = 0.01, max.db = 0.1, db.interval = 0.01)
 
 PlotSimulationData(df1, df2)
