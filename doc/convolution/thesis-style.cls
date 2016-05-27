@@ -141,6 +141,9 @@
 % For hyperref<->algorithm interaction
 \RequirePackage{float}
 
+% For function listing
+\RequirePackage{titletoc}
+
 % Cross-references are clickable
 \RequirePackage[pdftex,bookmarks=true,bookmarksnumbered=true,colorlinks=false,pdfdisplaydoctitle=true,breaklinks=true]{hyperref}
 
@@ -148,7 +151,7 @@
 \RequirePackage[font=small, labelfont=bf, labelsep=endash, margin=1cm]{caption}
 
 % Subfigures
-\RequirePackage[margin=0cm]{subfig}
+%\RequirePackage[margin=0cm]{subfig}
 
 % Citations
 %\RequirePackage{cite}

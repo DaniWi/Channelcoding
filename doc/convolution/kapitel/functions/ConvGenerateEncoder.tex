@@ -21,16 +21,16 @@ Faltungskodierer, abgebildet als Liste mit folgenden Feldern:
 \begin{itemize}
 \renewcommand\labelitemi{--}
 \itemsep-.5em % spacing between items
-\item N
-\item M
-\item Generatorpolynome
-\item nextState Matrix
-\item previousState Matrix
-\item output Matrix
-\item RSC Flag (\texttt{FALSE})
-\item Terminierungsvektor
+\item \emph{N}: Anzahl an Ausgangssymbole je Eingangssymbol
+\item \emph{M}: Länge des Schieberegisters des Kodierers
+\item \emph{generators}: Generatorpolynomvektor
+\item \emph{next.state}: Zustandsübergangsmatrix
+\item \emph{prev.state}: inverse Zustandsübergangsmatrix
+\item \emph{output}: Outputmatrix
+\item \emph{rsc}: RSC Flag (\texttt{FALSE})
+\item \emph{termination}: Terminierungsvektor (\texttt{logical(0)})
 \end{itemize}
 \\
 \hline
-\caption{ConvGenerateEncoder Funktion}
+\caption{ConvGenerateEncoder}
 \end{longtable}

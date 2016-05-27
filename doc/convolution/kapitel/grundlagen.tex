@@ -1,6 +1,57 @@
 % grundlagen.tex
+In diesem Kapitel werden die theoretischen Grundlagen eingeführt.
 \section{Kanalkodierung}
 \label{kapitel:grundlagen_kanalkodierung}
+\begin{figure}[!t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[>=stealth]
+\def\myinnersep{3mm}
+\tikzstyle{block} = [draw, rectangle, node distance=10mm, inner sep=\myinnersep, align=center, font=\small, minimum height=15mm, minimum width=width("Dekodierer")+2*\myinnersep]
+\node[block] (quelle) {Informations- \\ quelle};
+\node[block] (kodierer) [right=of quelle] {Kodierer};
+\node[block] (kanal) [right=of kodierer] {Kanal};
+\node[block] (dekodierer) [right=of kanal] {Dekodierer};
+\node[block] (senke) [right=of dekodierer] {Empfänger};
+\draw[->] (quelle) -- node [above] {$\mathbf{u}$} (kodierer);
+\draw[->] (kodierer) -- node [above] {$\mathbf{v}$} (kanal);
+\draw[->] (kanal) -- node [above] {$\mathbf{y}$} (dekodierer);
+\draw[->] (dekodierer) -- node [above] {$\mathbf{u'}$} (senke);
+\draw[<-] (kanal.south) -- ++(0,-10mm) node [below] {$\mathbf{e}$};
+\end{tikzpicture}
+}
+\caption{Kommunikationskanal}
+\label{abb:kommunikationskanal}
+\end{figure}
+Eine Kanalkodierung kann als Zuordnung bzw. Abbildung von Quellzeichen (Zeichen die eine Informationsquelle emittiert) zu Kanalzeichen (Zeichen die über den Kanal übertragen werden) angesehen werden.
+\\
+Würde die Information unkodiert über den verrauschten Kanal übertragen werden, kann die verfälschte Nachricht nicht wiederhergestellt werden. Daher fügt der Kanalkodierer den Quellzeichen Redundanz hinzu, sodass empfängerseitig verfälschte Zeichen erkannt und korrigiert werden können. Abbildung \ref{abb:kommunikationskanal} zeigt einen Kommunikationskanal inklusive Kanalkodierung. Eine Nachricht $\mathbf{u}=(u_{1},u_{2},\dots ,u_{k})$ wird in ein Kodewort $\mathbf{v}=(v_{1},v_{2},\dots ,v_{n})$, welches Redundanz enthält, kodiert und über den Kanal gesendet. Dabei wird das Signal durch Rauschen, welches als Fehlervektor $\mathbf{e}=(e_{1},e_{2},\dots ,e_{n})$ dargestellt wird, verfälscht und den Empfangsvektor $\mathbf{y}=\mathbf{v}+\mathbf{e}$ ergibt. Der Empfangsvektor wird vom Dekodierer zur Schätzung $\mathbf{u'}$ der originalen Nachricht dekodiert, wobei hoffentlich $\mathbf{u'}=\mathbf{u}$.
+
+\subsection{Koderate}
+\label{kapitel:grundlagen_koderate}
+Die Koderate eines Kodes beschreibt das Verhältnis der Länge zwischen Quellwort $\mathbf{u}=(u_{1},u_{2},\dots ,u_{k})$ und Kodewort $\mathbf{v}=(v_{1},v_{2},\dots ,v_{n})$.
+\begin{equation}
+R=\frac{k}{n}<1
+\end{equation}
+Bei hoher Redundanz ergibt sich eine niedrige Koderate. Der Kode ist zuverlässiger, da mehr Fehler erkannt und korrigiert werden können. Jedoch dauert die Übertragung ein und derselben Information bei gleicher Übertragungsgeschwindigkeit länger, als bei Kodes mit höherer Koderate.
+
+\subsection{Hamming-Distanz}
+\label{kapitel:grundlagen_hamming_distanz}
+Die Hamming-Distanz $d$ (auch $d_{H}$) zweier Kodewörter $\mathbf{x}=(x_{1},x_{2},\dots ,x_{n})$ und $\mathbf{y}=(y_{1},y_{2},\dots ,y_{n})$ entspricht der Anzahl an Stellen in denen sich die beiden Kodewörter unterscheiden:
+\begin{equation}
+d(x,y)=\vert\lbrace i \in \lbrace 1,2,\dots ,n \rbrace\vert x_{i}\neq y_{i}\rbrace\vert.
+\end{equation}
+Für binäre Kodewörter ergibt sich die Hamming-Distanz aus der binären Addition der Kodewörter:
+\begin{equation}
+d(x,y)=\sum_{i=1}^{n} (x_{i} \oplus y_{i}).
+\end{equation}
+
+\subsection{Hamming-Gewicht}
+\label{kapitel:grundlagen_hamming_gewicht}
+Das Hamming-Gewicht $w$ eines binären Kodeworts $\mathbf{x}=(x_{1},x_{2},\dots ,x_{n})$ entspricht der Anzahl an 1 im Wort:
+\begin{equation}
+w(u)=\sum_{i=1}^{n} x_{i}.
+\end{equation}
 
 \section{Faltungskodierung}
 \label{kapitel:grundlagen_faltungskodierung}
@@ -15,9 +66,103 @@
 
 \subsection{Katastrophale Faltungskodierer}
 \label{kapitel:grundlagen_katastrophale_kodierer}
+Sei $\mathbf{u}$ eine Nachricht, die mit den Generatorpolynomen in $G$ zum Kode $\mathbf{v}$ kodiert wird. Nach der Übertragung erhält der Dekodierer den Kode $\mathbf{y}$, der/die/das aufgrund von Rauschen verändert sein könnte. Der Dekodierer findet ein Kodewort $\mathbf{v'}$ welches $\mathbf{v}$ am nächsten ist. Aus $\mathbf{v'}$ kann die Schätzung $\mathbf{u'}$ berechnet werden, die hoffentlich $\mathbf{u}$ entspricht. Dies ist bei einer fehlerfreien Übertragung, d.h. $\mathbf{v'}=\mathbf{v}$, sicherlich der Fall. Zu untersuchen ist der Fall $\mathbf{v'}\neq\mathbf{v}$:\\
+Zu erwarten wäre, wenn sich $\mathbf{v'}$ und $\mathbf{v}$ in endlich vielen Stellen unterscheiden, dass sich auch $\mathbf{u'}$ und $\mathbf{u}$ in endlich vielen Stellen unterscheiden. Wenn sich $\mathbf{u'}$ und $\mathbf{u}$ in unendlich vielen Stellen unterscheiden wäre das \enquote{katastrophal}. Ein Faltungskodierer wird katastrophal genannt, wenn es eine Nachricht mit unendlichem Hamming-Gewicht gibt, sodass sein Kode endliches Hamming-Gewicht hat. \cite[S. 569]{huffman2010fundamentals}
+\\
+\\
+Zur Überprüfung ob ein Kodierer katastrophal ist hilft das Theorem von Massey-Sain. Zuvor muss jedoch eine alternative Angabe der Generatorpolynome eingeführt werden:
+
+\begin{thm_massey_sain}
+\label{thm:massey}
+Theoreminhalt
+\end{thm_massey_sain}
+(S. 570, S. 569 f.)
+\begin{figure}[!t]
+\captionsetup[subfigure]{justification=centering} % center subcaptions
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering
+\resizebox{0.90\textwidth}{!}{%
+\begin{tikzpicture}[>=stealth]
+\tikzstyle{rect} = [draw, rectangle, minimum width=30mm, inner sep=0mm, minimum height=4mm]
+\tikzstyle{xor} = [draw, circle, semithick, minimum size=3mm, inner sep=0mm]
+
+\node[rect] (rect) {};
+\draw[-] (rect.north) -- (rect.south);
+\draw[<-] (rect.west) -- ++(-10mm,0) node [left] {$u$};
+
+\draw[->] ($(rect.west)+(-4mm,0)$) |- ($(rect.north east)+(4mm,6mm)$) node [right] {$v_{1}$};
+
+\node[xor] (xor1) at ($(rect.south)+(-7.5mm,-6mm)$) {};
+\draw[semithick] (xor1.north) -- (xor1.south);
+\draw[semithick] (xor1.west) -- (xor1.east);
+\draw[->] ($(rect.south)+(-7.5mm,0)$) -- (xor1.north);
+
+\node[xor] (xor2) at ($(rect.south)+(7.5mm,-6mm)$) {};
+\draw[semithick] (xor2.north) -- (xor2.south);
+\draw[semithick] (xor2.west) -- (xor2.east);
+\draw[->] ($(rect.south)+(7.5mm,0)$) -- (xor2.north);
+
+\draw[->] ($(rect.west)+(-4mm,0)$) |- (xor1.west);
+\draw[->] (xor1.east) -- (xor2.west);
+\draw[->] (xor2.east) -- ($(rect.south east)+(4mm,-6mm)$) node [right] {$v_{2}$};
+\draw[black, fill=black] ($(rect.west)+(-4mm,0)$) circle [radius=.5mm];
+
+\node at ($(rect.south)+(0,-16mm)$) {$G=(4_{8},7_{8})$};
+\end{tikzpicture}
+}
+\caption{Systematischer Faltungskodierer}
+\label{abb:systematischer_kodierer}
+\end{subfigure}
+~ % spacing between subfigures
+\begin{subfigure}{0.45\textwidth}
+\centering
+\resizebox{0.99\textwidth}{!}{%
+\begin{tikzpicture}[>=stealth]
+\tikzstyle{rect} = [draw, rectangle, minimum width=30mm, inner sep=0mm, minimum height=4mm]
+\tikzstyle{xor} = [draw, circle, semithick, minimum size=3mm, inner sep=0mm]
+
+\node[rect] (rect) {};
+\draw[-] (rect.north) -- (rect.south);
+
+\node[xor] (rec) at ($(rect.west)+(-6mm,0)$) {};
+\draw[semithick] (rec.north) -- (rec.south);
+\draw[semithick] (rec.west) -- (rec.east);
+\node[xor] (xor1) at ($(rect.north)+(-7.5mm,6mm)$) {};
+\draw[semithick] (xor1.north) -- (xor1.south);
+\draw[semithick] (xor1.west) -- (xor1.east);
+\node[xor] (xor2) at ($(rect.south)+(7.5mm,-6mm)$) {};
+\draw[semithick] (xor2.north) -- (xor2.south);
+\draw[semithick] (xor2.west) -- (xor2.east);
+
+\draw[<-] (rec.west) -- ++(-8mm,0) node [left] {$u$};
+\draw[->] (rec.east) -- (rect.west);
+\draw[->] ($(rect.north)+(-7.5mm,0)$) -- (xor1.south);
+\draw[->] ($(rect.south)+(7.5mm,0)$) -- (xor2.north);
+\draw[->] ($(rect.north)+(7.5mm,0)$) |- (xor1.east);
+\draw[->] (xor1.west) -| (rec.north);
+
+\draw[->] ($(rect.west)+(-2.5mm,0)$) |- (xor2.west);
+\draw[->] (xor2.east) -- ($(rect.south east)+(4mm,-6mm)$) node [right] {$v_{2}$};
+\draw[->] ($(rec.west)+(-4mm,0)$) |- ($(rect.north east)+(4mm,12mm)$) node [right] {$v_{1}$};
+
+\draw[black, fill=black] ($(rect.west)+(-2.5mm,0)$) circle [radius=.5mm];
+\draw[black, fill=black] ($(rec.west)+(-4mm,0)$) circle [radius=.5mm];
+
+\node at ($(rect.south)+(0,-16mm)$) {$G=(1,\frac{5_{8}}{7_{8}})$};
+\end{tikzpicture}
+}
+\caption{Rekursive Systematischer Faltungskodierer}
+\label{abb:rsc_kodierer}
+\end{subfigure}
+\caption{Verschiedene Faltungskodierertypen}
+\label{abb:faltungskodierer_typen}
+\end{figure}
 
 \subsection{Systematische Faltungskodierer}
 \label{kapitel:grundlagen_systematische_kodierer}
+Bei systematischen Faltungskodierern entspricht ein Ausgang dem Eingangssignal. Die Quellinformation ist somit explizit im Kodewort enthalten. Abbildung \ref{abb:systematischer_kodierer} zeigt einen systematischen Faltungskodierer mit der Generatormatrix $G=(4_{8},7_{8})$. Systematische Faltungskodierer sind nie katastrophal, sind jedoch weniger robust wie nichtsystematische Faltungskodierer. \cite[S. 217]{schonfeld2012informations}
 
-\subsection{Rekursive Systematische Faltungskodierer (RSC)}
+\subsection{Rekursiv Systematische Faltungskodierer (RSC)}
 \label{kapitel:grundlagen_rsc}
+Abbildung \ref{abb:systematischer_kodierer} zeigt einen rekursiv systematischen Faltungskodierer.

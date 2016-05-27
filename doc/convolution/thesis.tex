@@ -17,7 +17,7 @@
 %\title{R~package for channel~coding with convolutional~codes}
 \birthday{1. Mai 1993}
 \birthplace{Innsbruck}
-%\thesisstart{1. Januar 2009}
+%\thesisstart{20. Oktober 2015}
 \thesistype{Bachelor's thesis}
 \thesistypegerman{Bachelorarbeit}
 \thesiscite{Bachelor's thesis}
@@ -29,11 +29,19 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{caption}
+\usepackage{subcaption}
 \usepackage{tikz}
-\usetikzlibrary{backgrounds, calc}
+\usetikzlibrary{backgrounds, calc, positioning}
+
+% Caption von longtables ändern (Tabelle -> Funktion)
+\captionsetup[longtable]{name=Funktion}
 
 % Listings standardmaessig in R
-\lstset{language=R} 
+\lstset{language=R}
+
+% Theorems
+\usepackage{amsthm}
+\newtheorem*{thm_massey_sain}{Theorem von Massey-Sain}
 
 % Definiert Makro für Grafik Skalierung
 \makeatletter
@@ -67,6 +75,7 @@
 
 \chapter{Grundlagen und ähnliche Arbeiten}
 \label{kapitel:grundlagen}
+\input{kapitel/grundlagen}
 
 \chapter{Verwendete Technologien}
 \label{kapitel:technologien}
@@ -76,9 +85,11 @@
 \label{kapitel:implementierung}
 \input{kapitel/implementierung}
 
+\startlist[Funktionen]{lot}
 \chapter{R-Paket Schnittstelle}
 \label{kapitel:interface}
 \input{kapitel/interface}
+\stoplist[Funktionen]{lot}
 
 \chapter{Visualisierung}
 \label{kapitel:visualisierung}
@@ -88,7 +99,6 @@
 \label{kapitel:beispiele}
 
 \chapter{Fazit, Ausblick, Erweiterungen}
-
 \label{kapitel:fazit}
 
 \cleardoublepage%
@@ -99,8 +109,11 @@
 \listoffigures
 \clearpage
 
-\listoftables
+\printlist[Funktionen]{lot}{}{\renewcommand\addvspace[1]{}\chapter*{Funktionsverzeichnis}}
 \clearpage
+
+%\listoftables
+%\clearpage
 
 \lstlistoflistings
 \clearpage
