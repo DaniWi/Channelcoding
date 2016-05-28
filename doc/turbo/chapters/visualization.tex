@@ -80,7 +80,7 @@ In Abbildung \ref{pic:TerminationEncode} sieht man die Darstellung der Terminier
 \label{pic:TurboEncode}
 \end{figure}  
 
-Auf der nächsten Folie, die in Abbildung \ref{pic:TurboEncode} dargestellt ist, ist die komplette Schaltung abgebildet, die für die Kodierung nötig ist. Die beiden Kodierer sind die übergebenen Faltungskodierer, die verwendet werden, um einen Teil des resultierenden Signals zu erhalten. Die Bits sind eingefärbt, damit man das Ergebnis nach dem Multiplexer aus den Farben folgern kann. Die drei Einzelbitfolgen werden so ineinander verschachtelt, damit jeweils ein Bit aus Teilfolge eins, zwei und drei hintereinander sind. Das lässt sich am Bestem mit Abbildung \ref{pic:TurboEncodeMultiplexer} zeigen. Dort sieht man sehr leicht, wie der Multiplexer die Bitfolgen ausgibt.
+Auf der nächsten Folie, die in Abbildung \ref{pic:TurboEncode} dargestellt ist, ist die komplette Schaltung abgebildet, die für die Kodierung nötig ist. Die beiden Kodierer sind die übergebenen Faltungskodierer, die verwendet werden, um einen Teil des resultierenden Signals zu erhalten. Die Bits sind eingefärbt, damit man das Ergebnis nach dem Multiplexer, aus den Farben folgern kann. Die drei Einzelbitfolgen werden so ineinander verschachtelt, damit jeweils ein Bit aus Teilfolge eins, zwei und drei hintereinander sind. Das lässt sich am Bestem mit Abbildung \ref{pic:TurboEncodeMultiplexer} zeigen. Dort sieht man sehr leicht, wie der Multiplexer die Bitfolgen ausgibt. Der Interleaver ($I$) permutiert das Signal, damit die Distanz zwischen zwei Kodewörtern erhöht wird.
 
 \begin{figure}[!ht]
 \centering
@@ -92,7 +92,7 @@ Auf der nächsten Folie, die in Abbildung \ref{pic:TurboEncode} dargestellt ist,
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured5}
-\caption{Multiplexer}
+\caption{Punktierung}
 \label{pic:TurboEncodePuncturing}
 \end{figure}  
 
@@ -102,12 +102,97 @@ Bei der Kodierung ohne Punktierung ist der Ablauf exakt der Selbe, nur wird eben
 
 \section{Dekodierung}
 \label{sec:visualization_decode}
+Bei der Dekodierung werden wieder zuerst die Faltungskodierer Informationen angezeigt und im Anschluss noch die Turbo-Dekodierer Informationen. Da dies jedoch in Kapitel \ref{sec:visualization_encode} bereits gezeigt wurde, wird das jetzt nicht noch einmal wiederholt. Nachdem die Visualisierung in diesen Kapiteln alle mit Punktierung vorgestellt werden, muss zuerst bei der Dekodierung die punktierten Bits wieder eingefügt werden.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured1}
+\caption{Depunktierung}
+\label{pic:TurboDecodeDepuncturing}
+\end{figure}
+
+Wie in Abbildung \ref{pic:TurboDecodeDepuncturing} zu sehen ist, wird an den 0er Stellen der Punktierungsmatrix, wieder eine 0 in das Eingangssignal eingefügt. Diese Bits sind in Orange eingefärbt. Da eine 0 weder eine -1 noch eine +1 bevorzugt, also beide Signalpegel gleich wahrscheinlich sind, wird dieses Bit eingefügt. Dieses Vorgehen ist nur mit einem Soft-Dekodierer möglich, da dieser sämtliche Signalpegel auswertet. 
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured2}
+\caption{Turbo-Dekode Schaltung}
+\label{pic:TurboDecode}
+\end{figure}
+
+Auf der nächsten Folie ist, wie in Abbildung \ref{pic:TurboDecode} zu sehen, die Dekodierer Schaltung von Turbo-Kodes zu sehen. Dabei wird das Eingangssignal am Anfang depunktiert und danach in den Demultiplexer geschickt, der das Signal wieder in drei Teile aufspaltet. Dabei sind wieder die Bits farblich markiert, damit leicht zu sehen ist, wie das Demultiplexing funktioniert.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured3}
+\caption{Turbo-Dekode Rückführung}
+\label{pic:TurboDecodeBack}
+\end{figure}
+
+Nachdem die beiden Soft-Dekodierer durchlaufen sind, wird das Ergebnis des zweiten Dekodierers wieder zurückgeführt, auf den Eingang des ersten Dekodierers. Je nach Anzahl von mitgegebenen Iterationen, wird so das Ergebnis mehrmals zurückgeführt. Die Interleaver ($I$)und Deinterleaver ($I^{-1}$) permutieren das Signal mit dem miteglieferten Permutationsvektor, damit in die Dekodierer immer die selbe Bitreihenfolge geschickt wird. Am unteren Rand der Folie ist immer die aktuelle Ausgangsbitfolge zu sehen, die aktuell Zustande kommen würde. Damit ist schön zu sehen, wenn sich durch mehrere Iterationen das Ergebnis ändert.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured4}
+\caption{Berechnung der Ausgangsbitfolge}
+\label{pic:TurboDecodeBack}
+\end{figure}
+
+Nachdem alle Iterationen abgeschlossen sind, wird das Ausgangssignal des zweiten Dekodierers noch einmal permutiert und dann erfolgt die schlussendliche Berechnung, die zur Ausgangsbitfolge führt. Dabei kommt einen Formel zu tragen, die in Kapitel \ref{cha:implementation} nachzulesen ist. Dabei wird die Originalnachricht zusammen mit den beiden Ergebnisse der Dekodierer verwendet. Da bei der Ausgangsbitfolge noch die Terminierungsbits inkludiert sind, werden diese noch in der Abbildung \ref{pic:TurboDecodeTerminate} entfernt. Dabei werden die eingefärbten Bits entfernt und man erhält die dekodierte Ausgangsbitfolge.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured5}
+\caption{Entfernen der Terminierungsbits}
+\label{pic:TurboDecodeTerminate}
+\end{figure}
 
 \section{Simulation}
 \label{sec:visualization_simulation}
+Auch bei den Simulationen stehen Visualisierungsberichte zur Verfügung, die das Resultat der Simulation sehr einfach und verständlich darstellen. Dabei werden am Anfang immer Informationen zum Kodierer gezeigt, die wir jedoch schon aus Kapitel \ref{sec:visualization_encode} kennen und deswegen nicht mehr erklärt wird. Danach folgen Informationen zu den Simulationsparametern und am Ende noch eine Grafik mit den Ergebnissen.
+
+In Kapitel \ref{sec:visualization_simulations_turbo} wird zuerst eine reine Turbo-Kode Simulation gezeigt. Einen Vergleich aller 3 Kanalkodierungsmöglichkeiten wird in Kapitel \ref{sec:visualization_simulations_channelcoding} vorgestellt.
 
 \subsection{Turbo-Kode}
 \label{sec:visualization_simulations_turbo}
+Zuerst wird eine Zusammenfassung aller wichtigen Parameter der Simulation gezeigt. Damit ist es einfach möglich, mehrere Simulationsberichte miteinander zu vergleichen.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{pictures/SimulationTurbo1}
+\caption{Simulationsparameter}
+\label{pic:TurboSimulationParameter}
+\end{figure}
+
+In Abbildung \ref{pic:TurboSimulationParameter} sind die Nachrichtenlänge mit der getestet wurde und die Anzahl der Iterationen pro Signal/Rausch-Verhältnis zu sehen. Darunter sind noch die Ober- und Untergrenzen des Signal/Rausch-Verhältnisses dargestellt und die Schrittweite mit denen simuliert wurde.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{pictures/SimulationTurbo2}
+\caption{Simulationsgrafik}
+\label{pic:TurboSimulationPlot}
+\end{figure}
+
+Auf der nächsten Folie ist dann eine Grafik dargestellt, die in Abbildung \ref{pic:TurboSimulationPlot} zu sehen ist. Dabei ist auf der x-Achse das Signal-Rausch-Verhältnis aufgetragen und auf der y-Achse wird die Bitfehlerrate dargestellt. Dabei sieht man sehr schön, dass mit größer werdenden Verrauschungsgrad die Bitfehlerrate steigt.
 
 \subsection{Kanalkodierung}
 \label{sec:visualization_simulations_channelcoding}
+Damit Block-, Faltungs- und Turbo-Kodes miteinander verglichen werden können, wird die Simulation mit den gleichen Parametern auf alle drei Kodierungsvarianten ausgeführt. Dadurch erhält man ein Ergebnis, das die Leistungsmöglichkeiten der 3 Kodes sehr schön darstellt.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{pictures/ChannelcodingSimulation1}
+\caption{Vergleich der drei Kanalkodierungsvarianten}
+\label{pic:ChannelcodingSimulation}
+\end{figure}
+
+In der Abbildung \ref{pic:ChannelcodingSimulation} werden alle drei Ergebnisse der Simulation miteinander dargestellt. In der Legende sind die Farben der jeweiligen Kodes nachzuschauen. Bei diesem Beispiel ist zu erkennen, dass wie erwartet der Blockkode das schlechteste Ergebnis liefert und der Turbo-Kode die geringste Bitfehlerrate aufweist. In der Mitte liegt erwartungsgemäß der Faltungskode.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{pictures/ChannelcodingSimulation2}
+\caption{Statistische Werte}
+\label{pic:ChannelcodingSimulationStatistic}
+\end{figure}
+
+Auf der letzten Folie des Visualisierungsberichtes sind die statistischen Werte des jeweiligen Kodes angeführt. Daraus lassen sich auf den ersten Blick die maximale und minimale Bitfehlerrate des gewünschten Kodes herauslesen. Mit dem Durchschnittswert kann ein ganz einfacher Vergleich stattfinden, ohne jeden einzelnen Wert der Simulation zu vergleichen.

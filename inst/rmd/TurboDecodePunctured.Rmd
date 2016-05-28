@@ -467,7 +467,7 @@ for (i in c(0:((length(vec) / 3) - 1))) {
 % AfterDepuncture - AfterDemultiplexer
 \visible<3>{
 	\node [showStyle] (showAboveCenterTop) [above=9mm of background] {`r multipl.color``r dots(params$punctured, node.short)`};
-	\draw [showDrawStyle] (showAboveCenterTop) -- (afterInput.center);
+	\draw [showDrawStyle] (showAboveCenterTop) -- (afterDepuncture.center);
 
 	\node [showStyle] (showAboveCenter) [above=3mm of background, text=`r colorOrig`] {`r orig`};
 	\draw [showDrawStyle] (showAboveCenter) -- (afterDemOrig.center);
