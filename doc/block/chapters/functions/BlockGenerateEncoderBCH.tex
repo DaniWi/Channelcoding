@@ -1,0 +1,31 @@
+% BlockGenerateEncoderBCH
+\begin{longtable}{|p{\textwidth}|}
+\hline
+\rowcolor{lightblue}
+BlockGenerateEncoderBCH
+\\
+\hline
+\\
+\texttt{BlockGenerateEncoderBCH(code.length, code.t)}\\
+\\
+Erzeugt einen Blockkodierer für BCH-Kodes.\\
+\\
+\textbf{Argumente:}\\
+\texttt{code.length} - Länge der Kodewörter.\\
+\texttt{code.t} - Anzahl der verbesserbaren Fehler pro Kodewort.\\
+\\
+\textbf{Rückgabewert:}\\
+BCH-Kode, abgebildet als Liste mit folgenden Feldern:
+\vspace{4mm}
+\begin{itemize}
+\renewcommand\labelitemi{--}
+\itemsep-.5em % spacing between items
+\item code.length
+\item data.length
+\item gen.matrix
+\item check.matrix
+\end{itemize}
+\\
+\hline
+\caption{BlockGenerateEncoderHamming}
+\end{longtable}

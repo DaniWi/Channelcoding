@@ -1,5 +1,11 @@
 %theory.tex
 
+\section{Verwandte Arbeiten}
+\label{chapter:related}
+
+Die Basis für theoretischen Grundlagen in dieser Arbeit basieren hauptsächlich auf 2 Werken. Die umfassendste Quelle bildet das Buch "Fundamentals of error-correcting codes" von Cary W. Huffman und Vera Pless.\cite{huffman2010fundamentals} Dort sind sehr umfassend und mathematisch sauber die Eigenschaften der meisten gängigen Kodierungen beschrieben. Im Hinblick auf die Implementierung ist aber vor allem das Buch "The art of error correcting coding" von Robert Morelos-Zaragoza\cite{morelos2006art} die Hauptquelle. Da der Autor begleitend zu diesem Buch einige Implementierungen auf der ECC-Page\cite{eccpage} veröffentlicht hat, sind auch die Grundlagen in diesem Buch etwas praxisbezogener dargestellt. Desweiteren ist Ranjan Bose's "Information Theory, Coding and Cryptography"\cite{bose2008infotheory} eine lohnende Ergänzung um das Verständnis der BCH-Kodes zu verbessern. Gerade die algebraischen Grundlagen sind dort gut erklärt.
+
+\section{Allgemeines}
 
 Um die Funktionsweise der Blockkodes auf mathematischer Ebene zu erklären müssen zunächst einige Definitionen gemacht werden. Diese Eigenschaften haben alle im Folgenden genauer erklärten Kodes gemeinsam.
 \newtheorem{t_def}{Definition}[chapter]
@@ -126,6 +132,7 @@ Daraus resultiert auch, dass ein 2. Fehler nicht erkannt wird, da alle mögliche
 
 
 \section{BCH-Kodes}
+\label{sec:bch}
 
 Die \textbf{B}ose, Ray-\textbf{C}haudhuri, \textbf{H}ocquenghem bilden eine wichtige Klasse der linearen Kodes. Des weiteren gehören sie zu den polynomiellen und zyklischen Kodes.\cite[Kap. 5.1]{huffman2010fundamentals}
 Ein (n,k,d)-BCH-Kode hat n-Bit lange Kodewörter, k-Bit lange Datenwörter und eine minimale Hamming-Distanz von $d = 2*t+1$.
@@ -182,6 +189,7 @@ $$C_0 = \{0\}, C_1 = \{1,2,4\}, C_3 = \{3,6,5\}$$
 \end{center}
 
 \begin{t_def}
+\label{def:minimal}
 Für jeden Zykel s in der Menge aller Zykel ist das Minimalpolynom definiert als: $$\phi_s(x) = \prod_{i_s \in C_s}(x+\alpha^{i_s})$$\cite[Kap. 3.2.1]{morelos2006art}
 \end{t_def}
 
@@ -209,6 +217,7 @@ $\alpha^6$ & $x^2+1$ & 101  & $x^3+x^2+1$  \\
 Eine ausführliche Herleitung für Berechnung der Minimalpolynome findet sich in \cite[Kap. 3.2.1]{morelos2006art}.
 
 \begin{t_def}
+\label{def:genpoly}
 Sei t die Anzahl der zu korrigierenden Fehler und LCM das kleinste gemeinsame Vielfache. Dann ist das Generatorpolynom definiert als:
 $$g(x) = LCM(\phi_1(x),\phi_2(x),...,\phi_{2t}(x))$$
 \end{t_def}
@@ -219,11 +228,12 @@ $$g(x) = LCM(\phi_1(x),\phi_2(x)) = LCM((x^3+x+1)(x^3+x+1)) = x^3+x+1$$
 Dies ist ein BCH-(7,4,3)-Kode, es entpsricht der zyklischen Version eines Hamming-(7,4)-Kodes. Ein Generatorpolynom für jeden binären BCH-Kode kann auf diese Weise ermittelt werden.
 
 \begin{t_def}
+\label{def:encode}
 Sei d(x) ein Datenpolynom der Länge k und g(x) das Generatorpolynom eines BCH-(n,k,d)-Kodes. Dann ist das resultierende Kodewort definiert als:
 $$k(x) = d(x)x^{n-k} - d(x)x^{n-k} \mod g(x)$$
 \end{t_def}
 
-Für den (7,4,3)-Kode aus Tabelle~\ref{table:minimals} mit Generatorpolynom $x^3+x+1$ ergibt sich also folgende Kodierung für ein Datenwort $d(x)$:
+Für den (7,4,3)-Kode aus Tabelle~\ref{table:minimals} mit Generatorpolynom $x^3+x+1$ ergibt sich folgende Kodierung für ein Datenwort $d(x)$:
 
 $$d(x) = 1011$$
 $$d(x) = x^3 + x^2 + 1$$
