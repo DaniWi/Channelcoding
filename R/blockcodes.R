@@ -323,7 +323,7 @@ BlockDecode = function(code, block.encoder = NULL, visualize=FALSE){
 #' # Custom coder
 #' coder <- BlockGenerateEncoderHamming(15,11)
 #' BlockSimulation(coder, 15, 0.01, 1, 0.05, 50, FALSE)
-#' @author Martin Nocker
+#' @author Benedikt Wimmer
 #' @export
 BlockSimulation <- function(coder = NULL,
                            msg.length = 100,

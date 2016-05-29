@@ -18,23 +18,23 @@ Die Programmiersprache R wurde ursprünglich für statistische Zwecke entwickelt
 \label{pic:rstudio}
 \end{figure}
 
-Als Entwicklungsumgebung wurde RStudio verwendet, in Abbildung~\ref{pic:rstudio} sieht man dessen Standardansicht. Vor allem die einfache Installation von R-Paketen und die übersichtliche Darstellung von Daten machen RStudio zu einer angenehmen Entwicklungsumgebung. Zum entwickeln von R-Paketen ist es außerdem noch sinnvoll die Pakete \emph{devtools} und \emph{roxygen2} zu installieren. \emph{Devtools} bietet einige sehr hilfreiche Funktionen zum Erstellen und Kompilieren eines R-Pakets.\cite{devtools} Ähnlich wie \emph{JavaDoc} ermöglicht \emph{Roxygen2} die verwendung von Annotations im Code, welche einerseits die Dokumentation für das Paket erzeugen, andererseits aber auch durch \emph{@examples} Tests definieren und mittels \emph{@export} bestimmt wird, welche Funktionen der Nutzer später zur Verfügung hat und welche nur intern sind.(vgl. \emph{private} und \emph{public})\cite{roxygen}
+Als Entwicklungsumgebung wurde RStudio verwendet, in Abbildung~\ref{pic:rstudio} ist dessen Standardansicht abgebildet. Vor allem die einfache Installation von R-Paketen und die übersichtliche Darstellung von Daten machen RStudio zu einer angenehmen Entwicklungsumgebung. Zum entwickeln von R-Paketen ist es außerdem noch sinnvoll die Pakete \emph{devtools} und \emph{roxygen2} zu installieren. \emph{Devtools} bietet einige sehr hilfreiche Funktionen zum Erstellen und Kompilieren eines R-Pakets.\cite{devtools} Ähnlich wie \emph{JavaDoc} ermöglicht \emph{Roxygen2} die verwendung von Annotations im Code, welche einerseits die Dokumentation für das Paket erzeugen, andererseits aber auch durch \emph{@examples} Tests definieren und mittels \emph{@export} bestimmt wird, welche Funktionen der Nutzer später zur Verfügung hat und welche nur intern sind.(vgl. \emph{private} und \emph{public})\cite{roxygen}
 
 \subsection{C, C++, Rcpp}
 
-Wie in \cite{Rextension} beschrieben sollte man beim Implementieren eines R-Pakets stets die Schwächen von R kennen. Diese sind im Wesentlichen die schwache Typisierung und die schlechte Performance bei iterativen Berechnungen. Deswegen sollte man rechenintensive Codeabschnitte in einer performanteren Programmiersprache wie etwa C oder C++ implementieren. Für deren Integration bietet R zwei Schnittstellen:
+Wie in \cite{Rextension} beschrieben sollten beim Implementieren eines R-Pakets stets die Schwächen von R berücksichtigt werden. Diese sind im Wesentlichen die schwache Typisierung und die schlechte Performance bei iterativen Berechnungen. Deswegen sollten rechenintensive Codeabschnitte in einer performanteren Programmiersprache wie etwa C oder C++ implementiert werden. Für deren Integration bietet R zwei Schnittstellen:
 
 \begin{itemize}
 \item Das \emph{.C() Interface}
 \item Das \emph{.Call() Interface}
 \end{itemize}
 
-Ersteres ist die einfachste Möglichkeit C Code in R auszuführen, es werden keine speziellen Datentypen verwendet. Dadurch müssen die Variablen allerdings kopiert werden und man hat im C Code keinerlei Wissen über R.
-Mit \emph{.Call()} wurden eigene C++ Klassen, die R Datentypen repräsentieren, eingeführt. Dadurch müssen die Variablen nicht mehr kopiert werden und man kann im C/C++ Code vom Wissen über die R Datentypen profitieren.\cite{wickham2015r} Allerdings muss der Entwickler sich erst in die etwas verwirrende Verwendung der Schnittstelle einarbeiten. Abhilfe schafft hier das \emph{Rcpp}-Paket, welches die Integration von C/C++ in R extrem einfach macht. Es werden automatisch Wrapper für die \emph{.Call()} Schnittstelle generiert und es stehen viele hilfreiche Funktionen zur Verfügung. Auch das Kompilieren übernimmt \emph{Rcpp}. Eine ausführliche Beschreibung des Pakets findet man in \cite{wickham2015advanced}.
+Ersteres ist die einfachste Möglichkeit C Code in R auszuführen, es werden keine speziellen Datentypen verwendet. Dadurch müssen die Variablen allerdings kopiert werden und es steht im C Code keinerlei Wissen über R zur Verfügung.
+Mit \emph{.Call()} wurden eigene C++ Klassen, die R Datentypen repräsentieren, eingeführt. Dadurch müssen die Variablen nicht mehr kopiert werden und es kann im C/C++ Code vom Wissen über die R Datentypen profitiert werden.\cite{wickham2015r} Allerdings muss der Entwickler sich erst in die etwas verwirrende Verwendung der Schnittstelle einarbeiten. Abhilfe schafft hier das \emph{Rcpp}-Paket, welches die Integration von C/C++ in R extrem einfach macht. Es werden automatisch Wrapper für die \emph{.Call()} Schnittstelle generiert und es stehen viele hilfreiche Funktionen zur Verfügung. Auch das Kompilieren übernimmt \emph{Rcpp}. Eine ausführliche Beschreibung des Pakets findet sich in \cite{wickham2015advanced}.
 
 \subsection{R Markdown und \LaTeX}
 
-Für die Visualisierung der Kanalkodierung bietet RStudio in Kombination mit dem Paket \emph{RMarkdown} eine hervorragende Möglichkeit. Grundsätzlich wird in .Rmd Dateien \LaTeX mit R Code verwendet, wodurch dynamisch Dokumente erzeugt werden können. In Abbildung~\ref{pic:RMarkdown} sieht man den Ablauf abgebildet. \emph{Knitr} führt zunächst den R Code aus, die entstandene .md Datei wird anschließend mit dem in RStudio integrierten Programm \emph{Pandoc} zum gewünschten Output, in diesem Fall PDF, gerendert.\cite{rmarkdown}
+Für die Visualisierung der Kanalkodierung bietet RStudio in Kombination mit dem Paket \emph{RMarkdown} eine hervorragende Möglichkeit. Grundsätzlich wird in .Rmd Dateien \LaTeX mit R Code verwendet, wodurch dynamisch Dokumente erzeugt werden können. In Abbildung~\ref{pic:RMarkdown} ist der Ablauf abgebildet. \emph{Knitr} führt zunächst den R Code aus, die entstandene .md Datei wird anschließend mit dem in RStudio integrierten Programm \emph{Pandoc} zum gewünschten Output, in diesem Fall PDF, gerendert.\cite{rmarkdown}
 
 \begin{figure}[ht]
 \centering
@@ -127,14 +127,14 @@ Die Kodierung ist lediglich eine Matrixmultiplikation des Datenwortes mit der Ge
 \subsection{BCH}
 
 Im Gegensatz zu der Implementierung der Hamming-Kodes, welche sich gut in R umsetzen ließen, sind die BCH-Kodes in C umgesetzt. Als Basis dient der von Robert Morelos-Zaragoza, dem Autor von \cite{morelos2006art}, bereitgestellte Code. Dieser ist auf der ECC-Page~\cite{eccpage} verfügbar und implementiert die in \ref{sec:bch} beschriebenen Schritte. Um ein Generatorpolynom zu erzeugen, muss zunächst wie in Tabelle~\ref{table:gf} $GF(2^m)$ in Index- und Polynomdarstellung konstruiert werden. Dies geschieht in Listing~\ref{lst:bch_alpha}. In \emph{alpha\_to} sind die Polynome als Integer, welche die binäre Vektordarstellung repräsentieren, gespeichert, in \emph{index\_of} die Elemente als Potenzen von $\alpha$.
-
-\begin{lstlisting}[caption=Konstruieren des $GF(2^m)$, label={lst:bch_alpha}, language=C++]
+\vspace{0.5cm}
+\begin{lstlisting}[caption=Konstruieren des $GF(2^m)$, label={lst:bch_alpha}, language=C]
   mask = 1;
   alpha_to[m] = 0;
   for (i = 0; i < m; i++) {
     alpha_to[i] = mask;
     index_of[alpha_to[i]] = i;
-    if (p[i] != 0)		// p = primitives Polynom
+    if (p[i] != 0)		/* p = primitives Polynom */
       alpha_to[m] ^= mask;
     mask <<= 1;
   }
@@ -223,7 +223,7 @@ for (ii = 2; ii <= rdncy; ii++) {	//rdncy = n - k
 
 
 Als nächstes werden in Listing~\ref{lst:bch_cycle} alle Zykel für $x \mod 2^m-1$ erzeugt. Danach werden in Listing~\ref{lst:bch_roots} die relevanten Nullstellen $\alpha^{1,...,2t}$ in den Zykeln lokalisiert. Schließlich wird in Listing~\ref{lst:bch_genpoly} analog zu den Definitionen \ref{def:minimal} und \ref{def:genpoly} das Generatorpolynom konstruiert. Die Kodierung, wie beschrieben in Definition~\ref{def:encode}, erfolgt in Listing~\ref{lst:bch_encode}.
-
+\vspace{0.5cm}
 \begin{lstlisting}[caption=Konstruieren den Generatorpolynoms, label={lst:bch_encode}, language=C++]
 for (i = 0; i < length - k; i++)
 	bb[i] = 0;

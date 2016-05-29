@@ -1,4 +1,4 @@
-% !TeX spellcheck = <none>
+% !TeX spellcheck = de_DE_igerman98
 \documentclass[germanthesis]{thesis-style}
 % options:
 % [germanthesis] - Thesis is written in German
@@ -12,6 +12,7 @@
 % Extension to BibLaTex (useful for cites in footnotes)
 %\usepackage[backend=bibtex, style=numeric-comp]{biblatex}
 \bibliography{references.bib}
+%\defbibheading{bibliography}[\refname]{\section*{#1}}
 
 
 \author{Benedikt~Wimmer}
@@ -23,11 +24,12 @@
 \thesistype{Bachelor's thesis}
 \thesistypegerman{Bachelorarbeit}
 \thesiscite{Bachelor's thesis}
-\advisors{Dr.~Pascal~Schöttle}
+\advisors{Univ.-Prof.~Dr.~Rainer~Böhme, Dr.~Pascal~Schöttle}
 
 % additional packages
 \usepackage{color, colortbl} % colors (interface table)
 \usepackage{longtable}
+
 
 %\usepackage[chapter]{algorithm}
 %\usepackage[noend]{algpseudocode}
@@ -62,7 +64,7 @@
 
 % Zusammenfassung
 \begin{abstract}
-Lorem Ipsum BlaBla
+Diese Arbeit dokumentiert das R-Paket für Kanalkodierung mit Blockkodes und erläutert die theoretischen Grundlagen und deren Implementierung, sowie die erzeugten Visualisierungen.
 \end{abstract}
 % Abstract
 %\begin{otherlanguage}{american}%
@@ -72,6 +74,7 @@ Lorem Ipsum BlaBla
 %\end{otherlanguage}
 
 \tableofcontents
+\cleardoublepage
 \pagenumbering{arabic}
 
 \chapter{Einleitung}
@@ -99,27 +102,38 @@ Lorem Ipsum BlaBla
 
 \chapter{Beispiele für die Verwendung}
 \label{chapter:examples}
+\input{chapters/examples}
 
-\chapter{Fazit}
+\chapter{Fazit und Ausblick}
 \label{chapter:conclusion}
+\input{chapters/conclusion}
 
-\cleardoublepage%
-
-\listofabbreviations
-\clearpage
-
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\listfigurename}
 \listoffigures
-\clearpage
+\cleardoublepage
 
-
+\phantomsection
+\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
 \printlist[tables]{lot}{}{\renewcommand\addvspace[1]{}\chapter*{Tabellenverzeichnis}}
-\clearpage
+\cleardoublepage
 
+\phantomsection
+\addcontentsline{toc}{chapter}{Funktionsverzeichnis}
 \printlist[Funktionen]{lot}{}{\renewcommand\addvspace[1]{}\chapter*{Funktionsverzeichnis}}
-\clearpage
+\cleardoublepage
 
+\phantomsection
+\addcontentsline{toc}{chapter}{Listingverzeichnis}
 \lstlistoflistings
-\clearpage
+\cleardoublepage
+\phantomsection
 
-\printbibliography
+\defbibheading{myheading}[Literatur]{%
+  \chapter*{#1}}
+\addcontentsline{toc}{chapter}{Literatur}
+\pagestyle{plain}
+\printbibliography[heading=myheading]
+
 \end{document}

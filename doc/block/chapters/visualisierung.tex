@@ -1,4 +1,145 @@
 % visualisierung.tex
+\setcounter{MaxMatrixCols}{20}
+
+In diesem Kapitel werden die durch \emph{visualize = TRUE} erzeugten PDFs erklärt. Am Anfang einer Visualisierung folgt nach einem kurzen Deckblatt zunächst eine Übersicht mit Informationen zum Kodierer. In Abbildung~\ref{fig:blockinfo} sieht man die Daten eines BCH-(15,5,7)-Kodierers. Bei einem Hamming-Kode steht hier statt dem Generatorpolynom die Generatormatrix bzw. die Kontrollmatrix. 
+
+\begin{figure}[!h]
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  BCH (15,5,7) Kodierer
+\item
+  Generatorpolynom :
+  \[g(x) =  x^{10} + x^{8} + x^{5} + x^{4} + x^{2} + x^{1} + 1\]
+\item
+  Verbesserbare Fehler pro Block: \[3\]
+\item
+  Kode-Rate : \[\frac{5}{15} \approx 0.33\]
+\end{itemize}
+\caption{Blockkodierer Informationen}
+\label{fig:blockinfo}
+\end{figure}
+
+\begin{figure}[!h]
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Nachricht:
+
+  \begin{center}(1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0)\end{center}
+\item
+  Nachrichtsmatrix:
+  \[\begin{pmatrix}1&0&1&0&1\\1&1&0&1&1\\0&1&0&1&1\\1&1&1&0&0\end{pmatrix}\]
+\end{itemize}
+\caption{Aufteilen der Nachricht in Blöcke}
+\label{fig:slice}
+\end{figure}
+
+Als nächste Seite folgt eine Aufteilung der Nachricht in Blöcke, entweder der Datenwortlänge beim Kodieren, oder der Kodewortlänge beim Dekodieren. In Abbildung~\ref{fig:slice} ist dies dargestellt.
+
+\vspace{2cm}
+
 \section{Kodieren}
+
+Beim Kodieren und Dekodieren ergeben sich nun Unterschiede zwischen den BCH- und Hamming-Kodes. Die Visualisierung der Kodierung mit einem BCH-(15,5,7)-Kodierer ist in Abbildung~\ref{fig:enc_bch} dargestellt. Es sind die verschiedenen Polynome mit Zwischenschritten dargestellt und es wird ersichtlich gemacht wie daraus ein systematischer Kode entsteht. In Abbildung~\ref{fig:enc_hamming} ist eine Hamming-(7,4)-Kodierung abgebildet, das Datenwort wird mit der Generatormatrix multipliziert. In dieser ist farblich hervorgehoben welche Spalten zu welchen Bits im Kodewort führen.
+
+\begin{figure}
+Input: (\textcolor{green}{1,0,1,0,1})
+
+Daten Polynom: \[d(x) = x^{4} + x^{2} + 1\] Generator Polynom:
+\[g(x) = x^{10} + x^{8} + x^{5} + x^{4} + x^{2} + x^{1} + 1\]
+\[ d^*(x) = d(x)*x^{10} = x^{14} + x^{12} + x^{10}\] Rest Polynom:
+\[r(x) = d^*(x)\mod g(x) = x^{9} + x^{8} + x^{7} + x^{3} + 1\] Kode
+Polynom:
+\[c(x) = c( r(x)|d(x) ) = x^{14} + x^{13} + x^{12} + x^{8} + x^{5} + x^{4} + x^{2} + 1\]
+Output:
+(\textcolor{red}{1,1,1,0,0,0,1,0,0,1,}\textcolor{green}{1,0,1,0,1})
+
+(\textcolor{red}{Redundanzbits},\textcolor{green}{Datenbits})
+
+\caption{Kodierung - BCH-(15,5,7)}
+\label{fig:enc_bch}
+\end{figure}
+
+\begin{figure}[!h]
+\[\begin{pmatrix}1\\0\\1\\0\\ \end{pmatrix}^T. \begin{pmatrix}1&0&0&0&\textcolor{red}{0}&\textcolor{green}{1}&\textcolor{blue}{1}\\0&1&0&0&\textcolor{red}{1}&\textcolor{green}{0}&\textcolor{blue}{1}\\0&0&1&0&\textcolor{red}{1}&\textcolor{green}{1}&\textcolor{blue}{0}\\0&0&0&1&\textcolor{red}{1}&\textcolor{green}{1}&\textcolor{blue}{1}\end{pmatrix} = \begin{pmatrix}1\\0\\1\\0\\\textcolor{red}{1}\\\textcolor{green}{0}\\\textcolor{blue}{1}\\ \end{pmatrix}^T\]
+
+\caption{Kodierung - Hamming-(7,4)}
+\label{fig:enc_hamming}
+\end{figure}
+
+Am Schluss werden die einzelnen Kodewörter zu einem Vektor zusammengefügt. Dies ist in Abbildung~\ref{fig:output_encoded} für den zuvor verwendeten Hamming-(7,4)-Kodierer zu sehen.
+\vspace{1cm}
+\begin{figure}[!h]
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Kodematrix:
+  \[\begin{pmatrix}1&0&1&0&1&0&1\\1&1&1&0&0&0&0\\1&1&0&1&0&0&1\\0&1&1&1&1&0&0\\1&1&0&0&1&1&0\end{pmatrix}\]
+\item
+  Kode:
+
+  \begin{center}(1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0)\end{center}
+\end{itemize}
+\caption{Output - Hamming-(7,4)}
+\label{fig:output_encoded}
+\end{figure}
+
 \section{Dekodieren}
+
+Die Visualisierung der Dekodierung beinhaltet neben den Informationen zum Kodierer, wie in Abbildung~\ref{fig:blockinfo}, auch die Aufteilung in Blöcke und das Zusammensetzen zu einem Output-Vektor wie in \ref{fig:slice} und \ref{fig:output_encoded}. Allerdings sind die Dimensionen entsprechend vertauscht. In Abbildung~\ref{fig:dec_hamming} ist die Dekodierung eines fehlerhaften Kodewortes zu sehen. 
+
+\begin{figure}[!h]
+\[\begin{pmatrix}1\\1\\1\\0\\1\\0\\1\\ \end{pmatrix}^T. \begin{pmatrix}0&\textcolor{red}{1}&1&1&1&0&0\\1&\textcolor{red}{0}&1&1&0&1&0\\1&\textcolor{red}{1}&0&1&0&0&1\end{pmatrix} = \begin{pmatrix}\textcolor{red}{1}\\\textcolor{red}{0}\\\textcolor{red}{1}\\ \end{pmatrix}^T\]
+
+Kodewort: (1,1,1,0,1,0,1) | 
+Fehlerindex: 2 | 
+Korrigiertes Kodewort: (1,\textcolor{green}{0},1,0,1,0,1)
+\caption{Dekodieren - Hamming-(7,4)}
+\label{fig:dec_hamming}
+\end{figure}
+
+Für BCH-Kodes erhält man eine Übersicht wo, welche und wieviele Fehler korrigiert wurden, oder ob zu viele Fehler in einem Kodewort sind. Diese Informationen sieht man auch auf der Output-Seite der BCH-Dekodierung, wie in Abbildung~\ref{fig:output_decoded} dargestellt.
+
+
+
+\begin{figure}[!h]
+\vspace{1.5cm}
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Korrigierte Kodematrix:
+  \[\begin{pmatrix}1&1&1&0&0&0&1&0&0&1&1&0&1&0&\textcolor{green}{1}\\\textcolor{red}{0}&\textcolor{red}{0}&\textcolor{red}{1}&\textcolor{red}{0}&\textcolor{red}{1}&\textcolor{red}{0}&\textcolor{red}{0}&\textcolor{red}{1}&\textcolor{red}{0}&\textcolor{red}{0}&\textcolor{red}{1}&\textcolor{red}{0}&\textcolor{red}{0}&\textcolor{red}{1}&\textcolor{red}{0}\\1&1&0&0&0&1&0&0&\textcolor{green}{1}&1&0&1&0&\textcolor{green}{1}&1\\0&1&0&0&\textcolor{green}{1}&1&0&1&0&1&1&1&1&\textcolor{green}{0}&0\end{pmatrix}\]
+\item
+  Output:(\textcolor{red}{rot = Zu viele Fehler},
+  \textcolor{green}{grün = Fehler korrigiert}, schwarz = Keine Fehler)
+
+  \begin{center}(\textcolor{green}{1,0,1,0,1},\textcolor{red}{1,0,0,1,0},\textcolor{green}{0,1,0,1,1},\textcolor{green}{1,1,1,0,0})\end{center}
+\end{itemize}
+\caption{Output - BCH-(15,5,7)}
+\label{fig:output_decoded}
+\end{figure}
+
 \section{Simulation}
+
+Neben allgemeinen Informationen zum verwendeten Kodierer und den Parametern der Simulation bietet die Visualisierung hier vor allem einen Plot der Bitfehlerrate über das Signal-Rausch-Verhältnis, zu sehen in Abbildung~\ref{fig:simulation}, und eine statistische Auswertung, abgebildet in \ref{fig:stat}. Dies ist der Output für die ChannelcodingSimulation, siehe Funktion~\ref{func:channel_simu}, welche alle 3 im Paket enthaltenen Kodetypen miteinander vergleicht. Man kann aber auch nur einen Typ simulieren, zum Beispiel mit der BlockSimulation aus Funktion~\ref{func:block_simu}.
+
+\begin{figure}
+\includegraphics[width=\ScaleIfNeeded]{pictures/simulation.pdf}
+\caption{ChannelcodingSimulation Plot}
+\label{fig:simulation}
+\end{figure}
+
+\begin{figure}
+\begin{verbatim}
+##      block             conv             turbo        
+##  Min.   :0.1218   Min.   :0.01300   Min.   :0.00390  
+##  1st Qu.:0.1363   1st Qu.:0.02082   1st Qu.:0.01192  
+##  Median :0.1546   Median :0.03850   Median :0.01675  
+##  Mean   :0.1547   Mean   :0.04229   Mean   :0.02123  
+##  3rd Qu.:0.1754   3rd Qu.:0.05572   3rd Qu.:0.03283  
+##  Max.   :0.1895   Max.   :0.09110   Max.   :0.04470
+\end{verbatim}
+\caption{Statistik Bitfehlerrate}
+\label{fig:stat}
+\end{figure}

@@ -85,6 +85,7 @@
 \RequirePackage{setspace}
 \onehalfspacing
 
+
 % Allow more (and larger) floats on text pages
 \renewcommand{\topfraction}{0.9}  % use up to ..% of space on top
 \renewcommand{\bottomfraction}{0.8}  % use up to ..% of space on bottom

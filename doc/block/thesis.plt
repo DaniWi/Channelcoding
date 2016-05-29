@@ -8,8 +8,8 @@
 \ttl@starttoc {tables@1}
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {2.1}{\ignorespaces Addition und Multiplikation in $\mdmathbb {F}_2$\relax }}{4}{table.caption.2}
-\contentsline {table}{\numberline {2.2}{\ignorespaces $GF(8)$\relax }}{8}{table.caption.3}
-\contentsline {table}{\numberline {2.3}{\ignorespaces $GF(8)$ mit Minimalpolynomen\relax }}{9}{table.caption.4}
+\contentsline {table}{\numberline {2.2}{\ignorespaces $GF(2^3)$\relax }}{8}{table.caption.3}
+\contentsline {table}{\numberline {2.3}{\ignorespaces $GF(2^3)$ mit Minimalpolynomen\relax }}{9}{table.caption.4}
 \ttl@stoptoc {tables@1}
 \ttl@starttoc {Funktionen@1}
 \addvspace {10\p@ }
