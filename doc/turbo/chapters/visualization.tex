@@ -1,17 +1,17 @@
-Ein wichtiger Aspekt dieser Bachelorarbeit war den Studenten den Einstieg in die Kanalkodierung mit diesem Paket zu erleichtern. Um das Verständnis über die Verfahren zu erleichtern, wurden Visualisierungen geschaffen, die den Ablauf der Kodierung und Dekodierung genauestens Darstellen. Dadurch kann in zukünftigen Proseminaren, die in der Theorie gelernten Prinzipien der Kanalkodierung, mithilfe des Paketes in der Praxis ausprobiert und besser verstanden werden.
+Ein wichtiger Aspekt dieser Bachelorarbeit ist es, den Studierenden den Einstieg in die Kanalkodierung mit diesem Paket zu erleichtern. Um das Verständnis der Verfahren zu erleichtern, wurden Visualisierungen geschaffen, die den Ablauf der Kodierung und Dekodierung genauestens Darstellen. Dadurch können in zukünftigen Proseminaren, die in der Theorie gelernten Prinzipien der Kanalkodierung, mithilfe des Paketes in der Praxis ausprobiert und besser verstanden werden.
 
-Um die Visualisierungen zu erhalten, gibt es in jeder Funktion einen Parameter (\emph{visualize}) der mit TRUE gesetzt werden muss, um die Visualisierung zu erhalten. Alle Beispiele in den nächsten Kapitel werden mit Punktierung durchgeführt, da sich die Visualisierung ohne Punktierung ein wenig vereinfacht und das nicht nochmals erklärt werden muss. Die erzeugten PDF-Dokumente werden mit \emph{RMarkdown} und dem darin enthaltenen \LaTeX - und Ti\textit{k}Z-Code erzeugt. Deswegen ist es auch notwendig, dass der Benutzer des Paketes \LaTeX und die wichtigsten Pakete dazu installiert hat!
+Um die Visualisierungen zu erhalten, gibt es in jeder Funktion einen Parameter (\texttt{visualize}) der mit \texttt{TRUE} gesetzt werden muss, um die Visualisierung zu erhalten. Alle Beispiele in den nächsten Kapitel werden mit Punktierung durchgeführt, da sich die Visualisierung ohne Punktierung ein wenig vereinfacht und das nicht nochmals erklärt werden muss. Die erzeugten PDF-Dokumente werden mit \emph{RMarkdown} und dem darin enthaltenen \LaTeX - und Ti\textit{k}Z-Code erzeugt. Deswegen ist es auch notwendig, dass der Benutzer des Paketes \LaTeX und die wichtigsten Pakete dazu installiert hat.
 
-Da eine schöne Visualisierung nur Sinn mit sehr kurzen Bitfolgen macht, ist die Darstellung auch beschränkt, da ansonsten die Datenflut für den Nutzer nicht mehr bewältigbar wäre. Nebenbei wäre eine visuell schöne Darstellung auch nicht mehr möglich. Deswegen wird ab einer Nachrichtenlänge die größer als 10 ist, eine Warnung ausgegeben. Tatsächlich wird im erzeugten Dokument ab einer Länge von \textbf{18 Bits} die Nachrichten abgeschnitten.
+Da eine lehrreiche Visualisierung nur Sinn mit sehr kurzen Bitfolgen macht, ist die Darstellung auch beschränkt, da ansonsten die Datenflut für den Nutzer nicht mehr bewältigbar wäre. Nebenbei wäre eine visuell schöne Darstellung auch nicht mehr möglich. Deswegen wird ab einer Nachrichtenlänge die größer als 10 ist, eine Warnung ausgegeben. Tatsächlich wird im erzeugten Dokument ab einer Länge von \textbf{18 Bits} die Nachrichten abgeschnitten.
 
-Die erzeugten PDF-Dokumente werden im Installationsordner des Paketes abgelegt, der im Programmverzeichnis von R liegt. Dort liegen sie im \textbf{\emph{inst\textbackslash pdf}-Ordner}. Mit der Hilfsfunktion \emph{TurboOpenPDF} lassen sich bereits erzeugte Dokumente nochmals öffnen. Möchte man diese weiterverwenden bietet sich an, die geöffneten Dokumente neu in einem gewünschten Ordner abzuspeichern.
+Die erzeugten PDF-Dokumente werden im Installationsordner des Paketes abgelegt, der im Programmverzeichnis von R liegt. Dort liegen sie im \textbf{\emph{inst\textbackslash pdf}-Ordner}. Mit der Hilfsfunktion \texttt{TurboOpenPDF} lassen sich bereits erzeugte Dokumente nochmals öffnen. Möchte man diese weiterverwenden bietet sich an, die geöffneten Dokumente neu in einem gewünschten Ordner abzuspeichern.
 
 Die Dokumente werden aus reinem \LaTeX -Code erzeugt, dieser ist ebenfalls in dem oben erwähnten Ordner zu finden. Dieser Code kann verwendet werden, um die Grafiken oder Tabellen im Visualisierungsbericht selbst in einem Dokument nachzustellen.
 
 Zuerst wird in Kapitel \ref{sec:visualization_punctuationPermutation} die Visualisierung innerhalb vom RStudio von Permutations- und Punktierungsmatrix vorgestellt. Im Anschluss erfolgen in Kapitel \ref{sec:visualization_encode} und \ref{sec:visualization_decode} die Erklärung der erzeugten Berichte von Kodierung und Dekodierung. Am Schluss werden noch alle Darstellungen der Simulationen in Kapitel \ref{sec:visualization_simulation} an einem Beispiel gezeigt. 
 \section{Permutationsmatrix und Punktierungsmatrix}
 \label{sec:visualization_punctuationPermutation}
-Bei der Erzeugung von den beiden Matrizen können diese im RStudio dargestellt werden. Das ist vor allem nützlich bei der Permutationsmatrix, da dort erkennbar ist, wie die Matrix von der Initialisierungsmatrix entsteht und daraus der Permutationsvektor abgeleitet wird. 
+Bei der Erzeugung der beiden Matrizen können diese im RStudio dargestellt werden. Das ist vor allem nützlich bei der Permutationsmatrix, da dort erkennbar ist, wie die Matrix von der Initialisierungsmatrix entsteht und daraus der Permutationsvektor abgeleitet wird. 
 
 \begin{lstlisting}[caption=Visualisierung der Permutationsmatrix, label={lst:visualizePermutation}, float=!ht]
 input2 <- c(1,0,1,1,0,1)
@@ -36,7 +36,7 @@ permutation.vector.helical <- TurboGetPermutation(length(input2), coder, "HELICA
 [1] 0 5 2 7 0 5 2 7
 \end{lstlisting}
 
-In Listing \ref{lst:visualizePermutation} wird zuerst der selbe Eingangsvektor erzeugt, wie in Kapitel \ref{cha:examples} verwendet wurde. Danach wird ein Permutationsvektor vom Typ \emph{CYCLIC} erzeugt. Dabei wird zuerst eine Initialisierungsmatrix erstellt, bei der dann die Bits jeder Zeile, um den Index multipliziert mit der Distanz nach rechts verschoben werden. Der Index fängt bei null an zu zählen, also wird die zweite Zeile um $1*2 = 2$ nach rechts verschoben. Die erste Zeile bleibt immer unverändert. Die daraus resultierende Matrix wird dann von oben nach unten spaltenweise ausgelesen, wie im Beispiel zu sehen.
+In Listing \ref{lst:visualizePermutation} wird zuerst der selbe Eingangsvektor erzeugt, der auch in Kapitel \ref{cha:examples} verwendet wurde. Danach wird ein Permutationsvektor vom Typ \emph{CYCLIC} erzeugt. Dabei wird zuerst eine Initialisierungsmatrix erstellt, bei der dann die Bits jeder Zeile, um den Index multipliziert mit der Distanz nach rechts verschoben werden. Der Index fängt bei null an zu zählen, also wird die zweite Zeile um $1*2 = 2$ nach rechts verschoben. Die erste Zeile bleibt immer unverändert. Die daraus resultierende Matrix wird dann von oben nach unten spaltenweise ausgelesen, wie im Beispiel zu sehen.
 
 Beim zweiten Beispiel wird ein Permutationsvektor vom Typ \emph{HELICAL} kreiert. Dabei wird nicht die Initialisierungsmatrix verändert, sondern nur die Art der Auslesung des Permutationsvektors ist für diesen Typ entscheidend. Das ist ebenfalls beim Typ \emph{BLOCK} und \emph{DIAGONAL} so. Bei diesem Beispiel werden die Bits von links oben nach rechts unten ausgelesen. Wird dabei das Ende der Matrix erreicht, wir das nächste Bit in der nächsten Spalte von der ersten Zeile ausgelesen. Beim Typ \emph{DIAGONAL} wird vergleichsweise das erste Bit in der selben Spalte als nächstes verwendet.
 
@@ -53,11 +53,11 @@ Zur Verwendung einer Punktierung beim Turbo-Kode-Verfahren benötigt es eine Pun
 
 \section{Kodierung}
 \label{sec:visualization_encode}
-Als erstes werden immer Informationen zum Kodierer, der verwendet wurde, dargestellt. Diese Darstellung wird allerdings bereits bei der Bachelorarbeit von Martin Nocker über Faltungskodes erklärt \cite{nocker}.
+Als erstes werden immer Informationen zum verwendeten Kodierer dargestellt. Diese Darstellung wird allerdings bereits bei der Bachelorarbeit von Martin Nocker über Faltungskodes erklärt \cite{nocker}.
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured1}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured1} }
 \caption{Turbo-Kodierer Informationen}
 \label{pic:TurboCoderInformation}
 \end{figure}  
@@ -66,16 +66,16 @@ Die genauen Informationen über die Turbo-Kodierer Parameter finden sich auf der
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured2}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured2} }
 \caption{Terminierung bei der Kodierung}
 \label{pic:TerminationEncode}
 \end{figure}  
 
-In Abbildung \ref{pic:TerminationEncode} sieht man die Darstellung der Terminierung. Da die Faltungskodierer eine Terminierung vorsehen, muss bei der Eingangsbitfolge noch die Terminierungsbits berechnet werden, damit der Kodierer am Ende im Ausgangszustand ist. Diese Bits werden an die Ausgangsnachricht angefügt und in Orange dargestellt. Bei einem nicht rekursiven Faltungskodierer sind es immer 0er, jedoch bei einem rekursiven müssen sie berechnet werden.
+In Abbildung \ref{pic:TerminationEncode} sieht man die Darstellung der Terminierung. Da die Faltungskodierer eine Terminierung vorsehen, müssen bei der Eingangsbitfolge noch die Terminierungsbits berechnet werden, damit der Kodierer am Ende im Ausgangszustand ist. Diese Bits werden an die Ausgangsnachricht angefügt und in Orange dargestellt. Bei einem nicht rekursiven Faltungskodierer sind es immer 0er, jedoch bei einem rekursiven müssen sie berechnet werden.
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured3}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured3} }
 \caption{Turbo-Kode Schaltung}
 \label{pic:TurboEncode}
 \end{figure}  
@@ -84,14 +84,14 @@ Auf der nächsten Folie, die in Abbildung \ref{pic:TurboEncode} dargestellt ist,
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured4}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured4} }
 \caption{Multiplexer}
 \label{pic:TurboEncodeMultiplexer}
 \end{figure}  
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured5}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured5} }
 \caption{Punktierung}
 \label{pic:TurboEncodePuncturing}
 \end{figure}  
@@ -106,7 +106,7 @@ Bei der Dekodierung werden wieder zuerst die Faltungskodierer Informationen ange
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured1}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured1} }
 \caption{Depunktierung}
 \label{pic:TurboDecodeDepuncturing}
 \end{figure}
@@ -115,7 +115,7 @@ Wie in Abbildung \ref{pic:TurboDecodeDepuncturing} zu sehen ist, wird an den 0er
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured2}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured2} }
 \caption{Turbo-Dekode Schaltung}
 \label{pic:TurboDecode}
 \end{figure}
@@ -124,7 +124,7 @@ Auf der nächsten Folie ist, wie in Abbildung \ref{pic:TurboDecode} zu sehen, di
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured3}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured3} }
 \caption{Turbo-Dekode Rückführung}
 \label{pic:TurboDecodeBack}
 \end{figure}
@@ -133,7 +133,7 @@ Nachdem die beiden Soft-Dekodierer durchlaufen sind, wird das Ergebnis des zweit
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured4}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured4} }
 \caption{Berechnung der Ausgangsbitfolge}
 \label{pic:TurboDecodeBack}
 \end{figure}
@@ -142,7 +142,7 @@ Nachdem alle Iterationen abgeschlossen sind, wird das Ausgangssignal des zweiten
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured5}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured5} }
 \caption{Entfernen der Terminierungsbits}
 \label{pic:TurboDecodeTerminate}
 \end{figure}
@@ -159,7 +159,7 @@ Zuerst wird eine Zusammenfassung aller wichtigen Parameter der Simulation gezeig
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/SimulationTurbo1}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/SimulationTurbo1} }
 \caption{Simulationsparameter}
 \label{pic:TurboSimulationParameter}
 \end{figure}
@@ -168,7 +168,7 @@ In Abbildung \ref{pic:TurboSimulationParameter} sind die Nachrichtenlänge mit d
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/SimulationTurbo2}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/SimulationTurbo2} }
 \caption{Simulationsgrafik}
 \label{pic:TurboSimulationPlot}
 \end{figure}
@@ -181,7 +181,7 @@ Damit Block-, Faltungs- und Turbo-Kodes miteinander verglichen werden können, w
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/ChannelcodingSimulation1}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/ChannelcodingSimulation1} }
 \caption{Vergleich der drei Kanalkodierungsvarianten}
 \label{pic:ChannelcodingSimulation}
 \end{figure}
@@ -190,7 +190,7 @@ In der Abbildung \ref{pic:ChannelcodingSimulation} werden alle drei Ergebnisse d
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{pictures/ChannelcodingSimulation2}
+\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/ChannelcodingSimulation2} }
 \caption{Statistische Werte}
 \label{pic:ChannelcodingSimulationStatistic}
 \end{figure}

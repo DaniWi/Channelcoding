@@ -5,22 +5,22 @@
 \\
 \texttt{TurboGetPermutation(message.length, coder.info, type, args, visualize)}\\
 \\
-Erzeugt einen Permutationsvektor für die Interleaver beim Turbo-Kode-Verfahren. Dabei können verschiedene Typen von Permutationen ausgewählt werden (RANDOM, PRIMITIVE, CYCLIC, BLOCK, HELICAL, DIAGONAL). Die genauere Erklärung des jeweiligen Typs findet sich im Kapitel \ref{cha:implementation}. Den jeweiligen Typen müssen spezielle Argumente in einer Liste mitgegebenen werden:
+Erzeugt einen Permutationsvektor für die Interleaver beim Turbo-Kode-Verfahren. Dabei können verschiedene Typen von Permutationen ausgewählt werden (RANDOM, PRIMITIVE, CYCLIC, BLOCK, HELICAL, DIAGONAL). Die genauere Erklärung des jeweiligen Typs findet sich in Kapitel \ref{cha:implementation}. Den jeweiligen Typen müssen spezielle Argumente in einer Liste mitgegebenen werden:
 \begin{itemize}
 \item RANDOM: Benötigt keine Argumente, wird komplett zufällig erstellt.
-\item PRIMITVE: Erzeugt einen Vektor (1,2,3,...) und schiebt diesen um den \emph{root}-Wert.
-\item CYCLIC: Benötigt die Argumente \emph{cols} und \emph{rows} für die Erzeugung der Matrix und \emph{distance} um den Permutationsvektor zu erzeugen.
-\item BLOCK: Benötigt die Argumente \emph{cols} und \emph{rows} für die Erzeugung der Matrix. Matrix wird von links nach rechts befüllt und von oben nach unten ausgelesen.
-\item HELICAL: Benötigt die Argumente \emph{cols} und \emph{rows} für die Erzeugung der Matrix. Matrix wird von links nach rechts befüllt und von links oben nach rechts unten ausgelesen.
-\item DIAGONAL: Benötigt die Argumente \emph{cols} und \emph{rows} für die Erzeugung der Matrix. Matrix wird von links nach rechts befüllt und dann diagonal ausgelesen.
+\item PRIMITVE: Erzeugt einen Vektor (1,2,3,...) und schiebt diesen um den \texttt{root}-Wert.
+\item CYCLIC: Benötigt die Argumente \texttt{cols} und \texttt{rows} für die Erzeugung der Matrix und \texttt{distance} um den Permutationsvektor zu erzeugen.
+\item BLOCK: Benötigt die Argumente \texttt{cols} und \texttt{rows} für die Erzeugung der Matrix. Matrix wird von links nach rechts befüllt und von oben nach unten ausgelesen.
+\item HELICAL: Benötigt die Argumente \texttt{cols} und \texttt{rows} für die Erzeugung der Matrix. Matrix wird von links nach rechts befüllt und von links oben nach rechts unten ausgelesen.
+\item DIAGONAL: Benötigt die Argumente \texttt{cols} und \texttt{rows} für die Erzeugung der Matrix. Matrix wird von links nach rechts befüllt und dann diagonal ausgelesen.
 \end{itemize} \\
 \\
 \textbf{Argumente:}\\
 \texttt{message.length} - Länge der Nachricht die kodiert werden möchte.\\
-\texttt{coder.info} - Faltungskodierer der mit den Funktionen \emph{ConvGenerateEncoder, ConvGenerateRscEncoder} erzeugt werden kann. Standard: \emph{ConvGenerateRscEncoder(2,2,c(5,7))}\\
-\texttt{type} - Typ des erzeugten Permutationsvektors. Standard: RANDOM\\
-\texttt{args} - Argumente für den jeweiligen Typ in einer Liste. Standard: NULL\\
-\texttt{visualize} - Wenn TRUE wird die Permutationsmatrix dargestellt. Standard: FALSE\\
+\texttt{coder.info} - Faltungskodierer der mit den Funktionen \texttt{ConvGenerateEncoder, ConvGenerateRscEncoder} erzeugt werden kann. Standard: \texttt{ConvGenerateRscEncoder(2,2,c(5,7))}\\
+\texttt{type} - Typ des erzeugten Permutationsvektors. Standard: \texttt{RANDOM}\\
+\texttt{args} - Argumente für den jeweiligen Typ in einer Liste. Standard: \texttt{NULL}\\
+\texttt{visualize} - Wenn \texttt{TRUE} wird die Permutationsmatrix dargestellt. Standard: \texttt{FALSE}\\
 \\
 \textbf{Rückgabewert:}\\
 Permutationsvektor mit der richtigen Länge für die mitgegebene Nachricht und Kodierer.\\
