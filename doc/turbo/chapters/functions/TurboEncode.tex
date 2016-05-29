@@ -5,15 +5,15 @@
 \\
 \texttt{TurboEncode(message, permutation.vector, coder.info, parity.index, punctuation.matrix, visualize)}\\
 \\
-Kodiert eine Nachricht mittels dem Turbo-Kode-Verfahren. Dabei wird die Nachricht in 2 systematische Kodierer geschickt und am Ausgang wird das Ergebnis der beiden Kodierer mit der Originalnachricht zusammengesetzt. Dabei wird die Nachricht einmal permutiert in den zweiten Kodierer geschickt, um die minimale Distanz zu erhöhen. Falls eine Punktierungsmatrix mitgegeben wird, erfolgt am Ende die Punktierung und somit die Erhöhung der Kode-Rate.\\
+Kodiert eine Nachricht mittels dem Turbo-Kode-Verfahren. Dabei wird die Nachricht in zwei systematische Kodierer geschickt und am Ausgang wird das Ergebnis der beiden Kodierer mit der Originalnachricht zusammengesetzt. Dabei wird die Nachricht einmal permutiert in den zweiten Kodierer geschickt, um die minimale Distanz zu erhöhen. Falls eine Punktierungsmatrix mitgegeben wird, erfolgt am Ende die Punktierung und somit die Erhöhung der Kode-Rate.\\
 \\
 \textbf{Argumente:}\\
 \texttt{message} - Nachricht die kodiert wird. (0er und 1er)\\
-\texttt{permutation.vector} - Permutationsvektor der für den Interleaver verwendet wird. Standard: PRIMITIVE (root=0)\\
-\texttt{coder.info} - Faltungskodierer der mit den Funktionen \emph{ConvGenerateEncoder, ConvGenerateRscEncoder} erzeugt werden kann. Muss ein systematischer Kodierer sein, also ein RSC oder Ausgang 1 muss durchgeschalten sein. Standard: \emph{ConvGenerateRscEncoder(2,2,c(5,7))}\\
+\texttt{permutation.vector} - Permutationsvektor der für den Interleaver verwendet wird. Standard: \texttt{PRIMITIVE (root=0)}\\
+\texttt{coder.info} - Faltungskodierer der mit den Funktionen \texttt{ConvGenerateEncoder, ConvGenerateRscEncoder} erzeugt werden kann. Muss ein systematischer Kodierer sein, also ein RSC oder Ausgang 1 muss durchgeschalten sein. Standard: \texttt{ConvGenerateRscEncoder(2,2,c(5,7))}\\
 \texttt{parity.index} - Gibt an welcher Ausgang vom mitgegebenen Kodierer verwendet wird. Standard: letzter Ausgang\\
 \texttt{punctuation.matrix} - Die mitgegebene Punktierungsmatrix wird am Ende des Kodiervorgangs für das Verwerfen der jeweiligen Bits (0er in der Matrix) verwendet. Standard: keine Punktierung\\
-\texttt{visualize} - Wenn TRUE wird PDF-Bericht erstellt. Standard: FALSE\\
+\texttt{visualize} - Wenn \texttt{TRUE} wird PDF-Bericht erstellt. Standard: \texttt{FALSE}\\
 \\
 \textbf{Rückgabewert:}\\
 Die kodierte Nachricht mit den Signalwerten -1 und 1, welche die Bits 1 und 0 darstellen. Falls punktiert wurde, wird eine Liste mit dem Originalkode und dem punktierten Kode zurückgegeben.\\
