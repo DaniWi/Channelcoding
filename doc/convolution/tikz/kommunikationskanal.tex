@@ -1,0 +1,15 @@
+% kommunikationskanal.tex
+\begin{tikzpicture}[>=stealth]
+\def\myinnersep{3mm}
+\tikzstyle{block} = [draw, rectangle, node distance=10mm, inner sep=\myinnersep, align=center, font=\small, minimum height=15mm, minimum width=width("Dekodierer")+2*\myinnersep]
+\node[block] (quelle) {Informations- \\ quelle};
+\node[block] (kodierer) [right=of quelle] {Kodierer};
+\node[block] (kanal) [right=of kodierer] {Kanal};
+\node[block] (dekodierer) [right=of kanal] {Dekodierer};
+\node[block] (senke) [right=of dekodierer] {Empfänger};
+\draw[->] (quelle) -- node [above] {$\mathbf{u}$} (kodierer);
+\draw[->] (kodierer) -- node [above] {$\mathbf{v}$} (kanal);
+\draw[->] (kanal) -- node [above] {$\mathbf{y}$} (dekodierer);
+\draw[->] (dekodierer) -- node [above] {$\mathbf{u'}$} (senke);
+\draw[<-] (kanal.south) -- ++(0,-10mm) node [below] {$\mathbf{e}$};
+\end{tikzpicture}

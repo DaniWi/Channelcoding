@@ -1,0 +1,18 @@
+% zustandsdiagramm.tex
+\begin{tikzpicture}[>=stealth, font=\footnotesize, scale=.6]
+\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=6mm, font=\scriptsize]
+\node[state] (state0) at ( 0.0, 2.5) {$00$};
+\node[state] (state2) at ( 2.5, 0.0) {$10$};
+\node[state] (state3) at ( 0.0,-2.5) {$11$};
+\node[state] (state1) at (-2.5, 0.0) {$01$};
+\draw[->] (state0) to [looseness=8,out=105,in=75] node [sloped, above] {$00$} (state0);
+\draw[->, dashed] (state0) to  node [sloped, above] {$11$} (state2);
+\draw[->] (state1) to  node [sloped, above] {$11$} (state0);
+\draw[->, dashed] (state1) to [bend left=15] node [sloped, above,near start] {$00$} (state2);
+\draw[->] (state2) to [bend left=15] node [sloped, above,near start] {$10$} (state1);
+\draw[->, dashed] (state2) to  node [sloped, above] {$01$} (state3);
+\draw[->] (state3) to  node [sloped, above] {$01$} (state1);
+\draw[->, dashed] (state3) to [looseness=8,out=285,in=255] node [sloped, below] {$10$} (state3);
+\draw [->] ($(state3)+(-.5,-3)$) node (bit0) {} -- ++(1,0) node [right] {Bit 0};
+\draw [->, dashed] ($(bit0)+(0,-.5)$) -- ++(1,0) node [right] {Bit 1};
+\end{tikzpicture}

@@ -1,0 +1,84 @@
+% trellis_kodierung.tex
+\begin{tikzpicture}[>=stealth, font=\scriptsize]
+\tikzstyle{freestate} = [circle, teal, fill=teal, minimum size=1mm, inner sep=0mm]
+
+\foreach \y in {0,...,3}
+	\foreach \x in {0,...,6}
+		\node[freestate] (node\y\x) at (1.25*\x,-1.25*\y) {};
+
+\foreach \x in {0,...,6}
+	\node (timelabel\x) [above of=node0\x, yshift=-3mm] {\x};
+		
+\node (statelabel0) [left of=node00, xshift=4mm] {00}; 
+\node (statelabel1) [left of=node10, xshift=4mm] {01}; 
+\node (statelabel2) [left of=node20, xshift=4mm] {10}; 
+\node (statelabel3) [left of=node30, xshift=4mm] {11};
+
+%t=0
+\draw[->] (node00) -- (node01) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->, dashed, orange] (node00) -- (node21) node [sloped, above, very near start, font=\tiny] {11};
+
+%t=1
+\draw[->] (node01) -- (node02) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->, dashed] (node01) -- (node22) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->] (node21) -- (node12) node [sloped, above, near start, font=\tiny] {10};
+\draw[->, dashed, orange] (node21) -- (node32) node [sloped, above, very near start, font=\tiny] {01};
+
+%t=2
+\draw[->] (node02) -- (node03) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->, dashed] (node02) -- (node23) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->] (node12) -- (node03) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->, dashed] (node12) -- (node23) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->] (node22) -- (node13) node [sloped, above, near start, font=\tiny] {10};
+\draw[->, dashed] (node22) -- (node33) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->, orange] (node32) -- (node13) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->, dashed] (node32) -- (node33) node [sloped, above, near start, font=\tiny] {10};
+
+%t=3
+\draw[->] (node03) -- (node04) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->, dashed] (node03) -- (node24) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->] (node13) -- (node04) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->, dashed, orange] (node13) -- (node24) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->] (node23) -- (node14) node [sloped, above, near start, font=\tiny] {10};
+\draw[->, dashed] (node23) -- (node34) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->] (node33) -- (node14) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->, dashed] (node33) -- (node34) node [sloped, above, near start, font=\tiny] {10};
+
+%t=4
+\draw[->] (node04) -- (node05) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->, dashed] (node04) -- (node25) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->] (node14) -- (node05) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->, dashed] (node14) -- (node25) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->,orange] (node24) -- (node15) node [sloped, above, near start, font=\tiny] {10};
+\draw[->, dashed] (node24) -- (node35) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->] (node34) -- (node15) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->, dashed] (node34) -- (node35) node [sloped, above, near start, font=\tiny] {10};
+
+%t=5
+\draw[->] (node05) -- (node06) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->, dashed] (node05) -- (node26) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->,orange] (node15) -- (node06) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->, dashed] (node15) -- (node26) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->] (node25) -- (node16) node [sloped, above, near start, font=\tiny] {10};
+\draw[->, dashed] (node25) -- (node36) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->] (node35) -- (node16) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->, dashed] (node35) -- (node36) node [sloped, above, near start, font=\tiny] {10};
+
+% input & output
+\node (in0) at($(node30)!0.5!(node31)+(0,-.6)$) {1};
+\node (in1) at($(node31)!0.5!(node32)+(0,-.6)$) {1};
+\node (in2) at($(node32)!0.5!(node33)+(0,-.6)$) {0};
+\node (in3) at($(node33)!0.5!(node34)+(0,-.6)$) {1};
+\node (in4) at($(node34)!0.5!(node35)+(0,-.6)$) {0};
+\node (in5) at($(node35)!0.5!(node36)+(0,-.6)$) {0};
+\node (inlabel) at($(node30)+(-.56,-.6)$) {$\mathbf{u}$:};
+
+\node (out0) [below=of in0, yshift=5mm] {11};
+\node (out1) [below=of in1, yshift=5mm] {01};
+\node (out2) [below=of in2, yshift=5mm] {01};
+\node (out3) [below=of in3, yshift=5mm] {00};
+\node (out4) [below=of in4, yshift=5mm] {10};
+\node (out5) [below=of in5, yshift=5mm] {11};
+\node (outlabel) at($(node30)+(-.56,-1.55)$) {$\mathbf{v}$:};
+
+\end{tikzpicture}

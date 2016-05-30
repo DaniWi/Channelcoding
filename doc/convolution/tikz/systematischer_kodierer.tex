@@ -1,0 +1,28 @@
+% systematischer_kodierer.tex
+\begin{tikzpicture}[>=stealth]
+\tikzstyle{rect} = [draw, rectangle, minimum width=30mm, inner sep=0mm, minimum height=4mm]
+\tikzstyle{xor} = [draw, circle, semithick, minimum size=3mm, inner sep=0mm]
+
+\node[rect] (rect) {};
+\draw[-] (rect.north) -- (rect.south);
+\draw[<-] (rect.west) -- ++(-10mm,0) node [left] {$u$};
+
+\draw[->] ($(rect.west)+(-4mm,0)$) |- ($(rect.north east)+(4mm,6mm)$) node [right] {$v_{1}$};
+
+\node[xor] (xor1) at ($(rect.south)+(-7.5mm,-6mm)$) {};
+\draw[semithick] (xor1.north) -- (xor1.south);
+\draw[semithick] (xor1.west) -- (xor1.east);
+\draw[->] ($(rect.south)+(-7.5mm,0)$) -- (xor1.north);
+
+\node[xor] (xor2) at ($(rect.south)+(7.5mm,-6mm)$) {};
+\draw[semithick] (xor2.north) -- (xor2.south);
+\draw[semithick] (xor2.west) -- (xor2.east);
+\draw[->] ($(rect.south)+(7.5mm,0)$) -- (xor2.north);
+
+\draw[->] ($(rect.west)+(-4mm,0)$) |- (xor1.west);
+\draw[->] (xor1.east) -- (xor2.west);
+\draw[->] (xor2.east) -- ($(rect.south east)+(4mm,-6mm)$) node [right] {$v_{2}$};
+\draw[black, fill=black] ($(rect.west)+(-4mm,0)$) circle [radius=.5mm];
+
+\node at ($(rect.south)+(0,-16mm)$) {$G=\left( 4_{8},7_{8}\right)$};
+\end{tikzpicture}

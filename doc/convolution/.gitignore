@@ -26,6 +26,7 @@
 *.fls
 *.out
 *.toc
+*.plt
 ## Intermediate documents:
 *.dvi
 *-converted-to.*

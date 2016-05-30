@@ -36,12 +36,16 @@
 % Caption von longtables ändern (Tabelle -> Funktion)
 \captionsetup[longtable]{name=Funktion}
 
+% zentrieren der subcaptions
+\captionsetup[subfigure]{justification=centering}
+
 % Listings standardmaessig in R
 \lstset{language=R}
 
 % Theorems
 \usepackage{amsthm}
-\newtheorem*{thm_massey_sain}{Theorem von Massey-Sain}
+\newtheorem{mytheorem}{Theorem}
+\newtheorem{beispiel}{Beispiel}
 
 % Definiert Makro für Grafik Skalierung
 \makeatletter
@@ -73,7 +77,7 @@
 \label{kapitel:einleitung}
 \input{kapitel/einleitung}
 
-\chapter{Grundlagen und ähnliche Arbeiten}
+\chapter{Grundlagen}
 \label{kapitel:grundlagen}
 \input{kapitel/grundlagen}
 

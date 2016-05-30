@@ -1,168 +1,261 @@
 % grundlagen.tex
-In diesem Kapitel werden die theoretischen Grundlagen eingeführt.
+In diesem Kapitel werden die theoretischen Grundlagen eingeführt. In Kapitel~\ref{kapitel:grundlagen_kanalkodierung} werden Prinzipien und Eigenschaften der Kanalkodierung beschrieben. Kapitel~\ref{kapitel:grundlagen_faltungskodierung} geht auf Faltungskodes ein, eine Art der Kanalkodierung auf die sich diese Arbeit konzentriert.
 \section{Kanalkodierung}
 \label{kapitel:grundlagen_kanalkodierung}
 \begin{figure}[!t]
 \centering
 \resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[>=stealth]
-\def\myinnersep{3mm}
-\tikzstyle{block} = [draw, rectangle, node distance=10mm, inner sep=\myinnersep, align=center, font=\small, minimum height=15mm, minimum width=width("Dekodierer")+2*\myinnersep]
-\node[block] (quelle) {Informations- \\ quelle};
-\node[block] (kodierer) [right=of quelle] {Kodierer};
-\node[block] (kanal) [right=of kodierer] {Kanal};
-\node[block] (dekodierer) [right=of kanal] {Dekodierer};
-\node[block] (senke) [right=of dekodierer] {Empfänger};
-\draw[->] (quelle) -- node [above] {$\mathbf{u}$} (kodierer);
-\draw[->] (kodierer) -- node [above] {$\mathbf{v}$} (kanal);
-\draw[->] (kanal) -- node [above] {$\mathbf{y}$} (dekodierer);
-\draw[->] (dekodierer) -- node [above] {$\mathbf{u'}$} (senke);
-\draw[<-] (kanal.south) -- ++(0,-10mm) node [below] {$\mathbf{e}$};
-\end{tikzpicture}
+	\input{tikz/kommunikationskanal}
 }
 \caption{Kommunikationskanal}
 \label{abb:kommunikationskanal}
 \end{figure}
-Eine Kanalkodierung kann als Zuordnung bzw. Abbildung von Quellzeichen (Zeichen die eine Informationsquelle emittiert) zu Kanalzeichen (Zeichen die über den Kanal übertragen werden) angesehen werden.
-\\
-Würde die Information unkodiert über den verrauschten Kanal übertragen werden, kann die verfälschte Nachricht nicht wiederhergestellt werden. Daher fügt der Kanalkodierer den Quellzeichen Redundanz hinzu, sodass empfängerseitig verfälschte Zeichen erkannt und korrigiert werden können. Abbildung \ref{abb:kommunikationskanal} zeigt einen Kommunikationskanal inklusive Kanalkodierung. Eine Nachricht $\mathbf{u}=(u_{1},u_{2},\dots ,u_{k})$ wird in ein Kodewort $\mathbf{v}=(v_{1},v_{2},\dots ,v_{n})$, welches Redundanz enthält, kodiert und über den Kanal gesendet. Dabei wird das Signal durch Rauschen, welches als Fehlervektor $\mathbf{e}=(e_{1},e_{2},\dots ,e_{n})$ dargestellt wird, verfälscht und den Empfangsvektor $\mathbf{y}=\mathbf{v}+\mathbf{e}$ ergibt. Der Empfangsvektor wird vom Dekodierer zur Schätzung $\mathbf{u'}$ der originalen Nachricht dekodiert, wobei hoffentlich $\mathbf{u'}=\mathbf{u}$.
+Kanalkodierung kann als Zuordnung bzw. Abbildung von Quellzeichen (Zeichen die eine Informationsquelle emittiert) zu Kanalzeichen (Zeichen die über den Kommunikationskanal übertragen werden) angesehen werden. Der Kanal enthält ein Rauschen, d.h. Informationen die von der Quelle emittiert werden, können verändert beim Empfänger ankommen. Daher wird der Kanal auch als \emph{verrauschter} Kanal bezeichnet. Würde eine Information unkodiert über den verrauschten Kanal übertragen werden, kann die verfälschte Nachricht nicht wiederhergestellt werden. Daher fügt der Kanalkodierer den Quellzeichen Redundanz hinzu, sodass empfängerseitig verfälschte Zeichen erkannt und korrigiert werden können. Abbildung~\ref{abb:kommunikationskanal} zeigt einen Kommunikationskanal inklusive Kanalkodierung. Eine Nachricht $\mathbf{u}=\left( u_{1},u_{2},\dots ,u_{k}\right)$ wird in ein Kodewort $\mathbf{v}=\left( v_{1},v_{2},\dots ,v_{n}\right)$, das Redundanz enthält, kodiert und über den Kanal gesendet. Dabei wird das Signal durch Rauschen, welches als Fehlervektor $\mathbf{e}=\left( e_{1},e_{2},\dots ,e_{n}\right)$ dargestellt wird, verfälscht. Der Empfangsvektor$\mathbf{y}$ ergibt sich aus der Überlagerung von $\mathbf{v}$ und $\mathbf{e}$. Der Empfangsvektor wird vom Dekodierer zur Schätzung $\mathbf{u'}$ der originalen Nachricht dekodiert. Ziel der Kanalkodierung ist es die Wahrscheinlichkeit, dass $\mathbf{u'}=\mathbf{u}$ ist, zu maximieren.
 
 \subsection{Koderate}
 \label{kapitel:grundlagen_koderate}
-Die Koderate eines Kodes beschreibt das Verhältnis der Länge zwischen Quellwort $\mathbf{u}=(u_{1},u_{2},\dots ,u_{k})$ und Kodewort $\mathbf{v}=(v_{1},v_{2},\dots ,v_{n})$.
+Die Koderate $R$ eines Kodes beschreibt das Verhältnis der Länge zwischen Quellwort $\mathbf{u}=\left( u_{1},u_{2},\dots ,u_{k}\right)$ und Kodewort $\mathbf{v}=\left( v_{1},v_{2},\dots ,v_{n}\right)$.
 \begin{equation}
 R=\frac{k}{n}<1
 \end{equation}
-Bei hoher Redundanz ergibt sich eine niedrige Koderate. Der Kode ist zuverlässiger, da mehr Fehler erkannt und korrigiert werden können. Jedoch dauert die Übertragung ein und derselben Information bei gleicher Übertragungsgeschwindigkeit länger, als bei Kodes mit höherer Koderate.
+In anderen Worten beschreibt die Koderate das Verhältnis zwischen Information und Redundanz im übertragenen Kodewort. Bei hoher Redundanz ergibt sich eine niedrige Koderate. Die Übertragung ein und derselben Information bei gleicher Übertragungsgeschwindigkeit dauert bei Kodes mit niedriger Koderate länger, als bei Kodes mit höherer Koderate.
 
 \subsection{Hamming-Distanz}
 \label{kapitel:grundlagen_hamming_distanz}
-Die Hamming-Distanz $d$ (auch $d_{H}$) zweier Kodewörter $\mathbf{x}=(x_{1},x_{2},\dots ,x_{n})$ und $\mathbf{y}=(y_{1},y_{2},\dots ,y_{n})$ entspricht der Anzahl an Stellen in denen sich die beiden Kodewörter unterscheiden:
+Die Hamming-Distanz $d$ (auch $d_{H}$) zweier Kodewörter $\mathbf{a}=\left( a_{1},a_{2},\dots ,a_{n}\right)$ und $\mathbf{b}=\left( b_{1},b_{2},\dots ,b_{n}\right)$ entspricht der Anzahl an Stellen in denen sich die beiden Kodewörter unterscheiden:
 \begin{equation}
-d(x,y)=\vert\lbrace i \in \lbrace 1,2,\dots ,n \rbrace\vert x_{i}\neq y_{i}\rbrace\vert.
+d(a,b)=\vert\left\lbrace i \in \left\lbrace 1,2,\dots ,n \right\rbrace\vert a_{i}\neq b_{i}\right\rbrace\vert.
 \end{equation}
 Für binäre Kodewörter ergibt sich die Hamming-Distanz aus der binären Addition der Kodewörter:
 \begin{equation}
-d(x,y)=\sum_{i=1}^{n} (x_{i} \oplus y_{i}).
+d(a,b)=\sum_{i=1}^{n} \left( a_{i} \oplus b_{i}\right).
 \end{equation}
 
 \subsection{Hamming-Gewicht}
 \label{kapitel:grundlagen_hamming_gewicht}
-Das Hamming-Gewicht $w$ eines binären Kodeworts $\mathbf{x}=(x_{1},x_{2},\dots ,x_{n})$ entspricht der Anzahl an 1 im Wort:
+Das Hamming-Gewicht $w$ eines binären Kodeworts $\mathbf{a}=\left( a_{1},a_{2},\dots ,a_{n}\right)$ entspricht der Anzahl an 1 im Wort:
 \begin{equation}
-w(u)=\sum_{i=1}^{n} x_{i}.
+w(a)=\sum_{i=1}^{n} a_{i}.
 \end{equation}
 
 \section{Faltungskodierung}
 \label{kapitel:grundlagen_faltungskodierung}
+Faltungskodes sind blockfreie Kodes, d.h. Quellzeichen werden nicht in Blöcke fester Länge unterteilt, sondern es wird ein Informationsstrom kodiert, sodass ein einziges Kodewort resultiert. Ein weiterer Unterschied zu Blockkodes besteht darin, dass Kodebits nicht nur vom aktuellen Eingangsbit abhängen, sondern auch von vorherigen Eingangsbits. Die Redundanz wird bei Faltungskodes kontinuierlich in das Kodewort eingefügt. Im Allgemeinen können Faltungskodierer beliebig viele Eingänge haben. Trotz besserer Koderate bei Kodierern mit mehreren Eingängen sind nur Kodierer mit einem Eingang von praktischer Relevanz. Im Folgenden werden nur noch Faltungskodierer mit einem Eingang betrachtet.
+
+\subsection{Kodiererdarstellung und Kodierung}
+\label{kapitel:grundlagen_darstellung}
+Faltungskodierer lassen sich einfach durch ein Schieberegister und mehrere logische XOR-Gatter darstellen. Bei einem Faltungskodierer mit $N$ Ausgängen und einem Schieberegister der Länge $M$ wird ein Eingangsbit $u \in \left\lbrace 0,1 \right\rbrace$ in eine Kodesequenz $\mathbf{v}$ der Länge $N$ ($\mathbf{v} \in {\left\lbrace 0,1\right\rbrace }^{N}$) kodiert. Es ergibt sich somit eine Koderate von $R=\frac{1}{N}$. Ein Ausgang wird durch ein sogenanntes \emph{Generatorpolynom} definiert. Dieses stellt eine Linearkombination der $M$ Elemente des Schieberegisters und dem Eingangssignal dar und werden durch die XOR-Gatter abgebildet. Alle Generatorpolynome werden in einer \emph{Generatormatrix}
+\begin{equation}
+G=\left( g_{1}, g_{2},\dots , g_{N} \right) 
+\end{equation}
+angegeben, wobei das Generatorpolynom $g_{i}$ Ausgang $i$ definiert. Zur Definition eines Faltungskodierers im späteren Programm müssen die oktalen Generatorpolynome angegeben werden.
+\\
+Ein weiterer wichtiger Parameter von Faltungskodes ist die \emph{Einflusslänge} (constraint length) die angibt wie oft sich ein Eingangsbit auf die Kodierung auswirkt und wird durch die Länge des Schieberegisters bestimmt. Ein Eingangsbit beeinflusst $M+1$ mal die Kodierung.
+\\
+\\
+Die Verhaltensweise eines Faltungskodierers kann weiters durch seinen \emph{Zustandsgraphen} beschrieben werden. Ein Zustand entspricht einer bestimmten Bitbelegung des Schieberegisters. Faltungskodierer starten, falls nicht explizit angegeben, im Nullzustand, d.h. die Elemente des Schieberegisters sind mit 0 initialisiert.
+\begin{figure}[!t]
+	\centering
+	\begin{subfigure}{0.65\textwidth}
+		\centering
+		\resizebox{0.99\textwidth}{!}{%
+			\input{tikz/standardkodierer}
+		}
+		\caption{Schaltbild}
+	\end{subfigure}
+	~ % spacing between subfigures
+	\begin{subfigure}{0.3\textwidth}
+		\centering
+		\resizebox{0.99\textwidth}{!}{%
+			\input{tikz/zustandsdiagramm}
+		}
+		\caption{Zustandsdiagramm}
+	\end{subfigure}
+	\label{abb:standardkodierer}
+	\caption{Beispiel für Faltungskodierer}
+\end{figure}
+\begin{beispiel} Ein Faltungskodierer ist gegeben durch das Schaltbild bzw. Zustandsdiagramm in Abbildung~\ref{abb:standardkodierer}. Der Faltungskodierer besitzt die Generatormatrix 
+\begin{equation*}
+G=\left(7_{8},5_{8}\right) = \begin{pmatrix}
+111 \\
+101 \\
+\end{pmatrix} = \left(1+D+D^{2}, 1+D^{2} \right)
+\end{equation*}
+\label{bsp:B1}
+\end{beispiel}
+Beispiel~\ref{bsp:B1} zeigt die verschiedenen Notationen für die Generatormatrix. Die am häufigsten verwendete Schreibweise ist die Darstellung der Generatorpolynome in oktaler Form. Dabei werden die Polynome in binärer Schreibweise konzise zu oktalen Zahlen zusammengefasst. Bei der binären Schreibweise entspricht die Bitposition des Polynoms dem Element im Schaltbild, d.h. das MSB\footnote{Most Significant Bit} des Polynoms steht für das Eingangssignal, das LSB\footnote{Least Significant Bit} des Polynoms steht für den Inhalt des letzten (am weitesten rechts liegende) Element des Schieberegisters. In die Linearkombination zur Definition des Ausgangssignals werden jene Elemente miteinbezogen, an deren Stelle im binären Polynom eine 1 steht. \cite{huffman2010fundamentals} führt als Notation die binären Polynome über der Variable $D$ (\enquote{delay}) ein. Das Eingangssignal und die Schieberegisterelemente entsprechen einer Potenz von $D$, wobei das Eingangssignal $D^{0}$ und das letzte Schieberegisterelement $D^{M}$ entspricht. Das Generatorpolynom entspricht der Summe aller Potenzen deren Elemente Teil der Linearkombination sind.
+\\
+Weiters wird das Zustandsdiagramm abgebildet. Die Knoten stellen die Zustände des Kodierer, d.h. die Belegungen des Schieberegisters, dar. Die gerichteten Kanten entsprechen einem Übergang bei einem Eingangsbit, wobei eine durchgezogene Kante einer 0 als Eingangsbit entspricht, eine gestrichelte Kante einer 1. Die Kantenbewertungen entsprechen den Ausgangsbits.
+
+\begin{beispiel} Gegeben sei der Faltungskodierer aus Beispiel~\ref{bsp:B1}. Eine Nachricht $\mathbf{u}=\left( 110100\right)$ wird in den Kode $\mathbf{v}=\left( 11~01~01~00~10~11\right)$ kodiert.
+\label{bsp:B2}
+\end{beispiel}
 
 \subsection{Dekodierung}
 \label{kapitel:grundlagen_dekodierung}
+\begin{figure}[!t]
+	\centering
+	%\resizebox{\textwidth}{!}{%
+		\input{tikz/trellis_kodierung}
+	%}
+\caption{Trellis für die Kodierung aus Beispiel~\ref{bsp:B2}.}
+\label{abb:trellis_kodierung}
+\end{figure}
+Zur Dekodierung von Faltungskodes wird der \emph{Viterbi-Algorithmus} angewendet. Der Algorithmus verwendet zur Dekodierung einer Kodesequenz das \emph{Trellis-Diagramm} (kurz: Trellis). Abbildung~\ref{abb:trellis_kodierung} zeigt das Trellis zur Kodierung der Nachricht aus Beispiel~\ref{bsp:B2}.
+\\
+Das Trellis ist ein Erweiterung des Zustandsdiagramms um eine Zeitachse (x-Achse). Die Zustände sind auf der y-Achse aufgetragen. Das Diagramm startet wie die Kodierung im Nullzustand. Ein durchgezogener Pfeil entspricht einer 1 als Eingangsbit, ein gestrichelter Pfeil einer 0 als Eingangsbit. Die Pfeile sind wiederum mit den entsprechenden Ausgangsbits, die das Kodewort ergeben, bewertet.
+\\
+\\
+Der Viterbi-Algorithmus verwendet das Trellis zur Dekodierung eines empfangenen Kodes. Dabei wird für den empfangenen Kode im Trellis jener Pfad gesucht der eine bestimmte Metrik minimiert bzw. maximiert. Die Metrik hängt von der Art der Dekodierung ab. Es wird zwischen der \emph{hard~decision} Dekodierung und \emph{soft~decision} Dekodierung unterschieden werden.
 
 \subsubsection{hard decision}
 \label{kapitel:grundlagen_hard_decision}
+Die hard decision Dekodierung sucht den Pfad mit der geringsten Anzahl an Bitfehlern im Trellis. Der Algorithmus startet im Nullzustand und geht von links nach rechts durch das Trellis. Es werden die Metriken der Kanten berechnet. Für eine Kante die einen Zustand $s$ zum Zeitpunkt $t$ mit einem Zustand $s'$ zum Zeitpunkt $t+1$ verbindet, ist die Metrik die Hamming-Distanz zwischen der Bewertung der Kante zwischen $s$ und $s'$ und dem zum Zeitpunkt $t$ empfangenen Teil des Kodes. Die Metrik eines Pfads im Trellis ist die Summe der Kantenmetriken des Pfads. Daher wird der Pfad mit der minimalen Metrik gesucht. Zu jedem Zeitpunkt wird in allen Zuständen die Pfadmetrik zu diesem Zustand berechnet. Treffen zwei Pfade aufeinander, wird der Pfad mit der größeren Hamming-Distanz verworfen. Am Ende erhält man durch \emph{Backtracking} die dekodierte Nachricht. Beginnend bei der niedrigsten Metrik am Ende des Trellis wird der Pfad zum Nullzustand rückwärts durchgelaufen. Als Ergebnis resultiert die Nachricht, dessen Kode die geringste Hamming-Distanz zum empfangenen Kode hat.
+\\
+\\
+\begin{beispiel}
+Gegeben sei der Faltungskodierer aus Beispiel~\ref{bsp:B1} und ein empfangenes Kodewort $\mathbf{y}=\left( 11~00~01~01~10~11\right)$ welches durch Rauschen verfälscht wurde und dekodiert werden soll. Abbildung~\ref{abb:trellis_dekodierung_hard} zeigt die Dekodierung im Trellis. Abbildung~\ref{abb:trellis_dek_hard_a} zeigt die Metriken aller Pfade. Die verworfenen Pfade sind grau dargestellt. Beispielsweise ergibt sich die Metrik zum Zeitpunkt 1 im Zustand 00 durch $0+d(00,11)=2$, im Zustand 10 durch $0+d(11,11)=0$. Der erste Summand entspricht der Hamming-Distanz des vorigen Zustands. In Abbildung~ \ref{abb:trellis_dek_hard_b} werden die verworfenen Pfade nicht mehr angezeigt. Durch Backtracking erhält man die dekodierte Nachricht $\mathbf{u'}=\left( 110100\right)$. Der resultierende Pfad ist orange hervorgehoben. Man erkennt aus der Metrik am Ende der Trellis, dass der empfangene Kode zwei Bitfehler enthielt.
+\label{bsp:B3}
+\end{beispiel}
+
+\begin{figure}[!t]
+	\centering
+	\resizebox{\textwidth}{!}{%
+		\begin{subfigure}[t]{0.42\textwidth}
+			\centering
+			\resizebox{0.99\textwidth}{!}{%
+				\input{tikz/trellis_dekodierung_hard1}
+			}
+			\caption{}
+			\label{abb:trellis_dek_hard_a}
+		\end{subfigure}
+		\begin{subfigure}[t]{0.42\textwidth}
+			\centering
+			\resizebox{0.99\textwidth}{!}{%
+				\input{tikz/trellis_dekodierung_hard2}
+			}
+			\caption{}
+			\label{abb:trellis_dek_hard_b}
+		\end{subfigure}
+	}
+	\label{abb:trellis_dekodierung_hard}
+	\caption{Trellis der hard decision Dekodierung aus Beispiel~\ref{bsp:B3}.}
+\end{figure}
+
 \subsubsection{soft decision}
 \label{kapitel:grundlagen_soft_decision}
+Vor der Übertragung eines Kodeworts werden die Kodebits 0 bzw. 1 auf die Signalzustände +1 bzw. -1 abgebildet. Bei der hard decision Dekodierung wird vor der Dekodierung das Signal, welches aufgrund von Rauschen verändert worden ist, wieder zu einem Bitvektor zurück umgewandelt. Die soft decision Dekodierung lässt diese Rücktransformation aus und verwendet die exakten empfangenen Signalpegel. Dadurch erzielt die soft decision Dekodierung eine noch bessere Fehlerkorrektur. Die Metrik für eine Kante, die einen Zustand $s$ zum Zeitpunkt $t$ mit einem Zustand $s'$ zum Zeitpunkt $t+1$ verbindet, entspricht dem Skalarprodukt der Signalzustände der Bewertung der Kante zwischen $s$ und $s'$ und dem zum Zeitpunkt $t$ empfangenen Teil des Signals. Der Viterbi-Algorithmus funktioniert analog zur soft decision Dekodierung, jedoch wird der Pfad mit der maximal Metrix gesucht. Treffen zwei Pfade aufeinander, wird der Pfad mit der kleineren Metrik verworfen. Das Backtracking beginnt hier bei der größten Metrik. Als Ergebnis resultiert die Nachricht, dessen Signal das größte Skalarprodukt mit dem empfangenen Signal hat. Diese wird als \emph{soft~output} und als \emph{hard~output} angegeben. Die soft outputs geben neben der dekodierten Nachricht die Zuverlässigkeitswerte für die Bits an, d.h. mit welcher Wahrscheinlichkeit das Bit dem tatsächlich gesendeten Bit der Quellnachricht übereinstimmt. Ein negativer Wert entspricht einem 1-Bit, ein positiver Wert einem 0-Bit. Je höher der Betrag des soft outputs, desto zuverlässiger das dekodierte Bit. Die hard outputs spiegeln die dekodierte Nachricht der soft outputs mit den Bitwerten 0 bzw. 1 wieder. Der Viterbi-Algorithmus mit soft outputs wird SOVA (soft output viterbi algorithm) genannt. Die Berechnung der soft outputs ist in \cite[S. 228 ff.]{schonfeld2012informations} beschrieben.
+
+\begin{beispiel}
+Gegeben sei der Faltungskodierer aus Beispiel~\ref{bsp:B1} und ein empfangenes Signal $\mathbf{y}=\left( -1~-1~~0.5~-1~~0.9~-0.9~~1~-0.2~~-0.8~-0.1~-1~-1\right)$ welches durch Rauschen verfälscht wurde und dekodiert werden soll. Abbildung~ \ref{abb:trellis_dekodierung_soft} zeigt die Dekodierung im Trellis. Abbildung~\ref{abb:trellis_dek_soft_a} zeigt die Metriken aller Pfade. Die verworfenen Pfade sind grau dargestellt. Beispielsweise ergibt sich die Metrik zum Zeitpunkt 1 im Zustand 00 durch $0+\left( 1\cdot\left( -1\right) + 1\cdot\left( -1\right)\right) =0-2=-2$, im Zustand 10 durch $0+\left( \left( -1\right)\cdot\left( -1\right) + \left( -1\right)\cdot\left( -1\right)\right) =0+2=2$. Der erste Summand entspricht der Metrik des vorigen Zustands. Die Bits der Kantenbewertung im Trellis müssen für die Berechnung des Skalarprodukts auf die Signalzustände +1 bzw. -1 abgebildet werden. In Abbildung~\ref{abb:trellis_dek_soft_b} werden die verworfenen Pfade nicht mehr angezeigt. Durch Backtracking erhält man die dekodierte Nachricht $\mathbf{u'}=\left( 110100\right)$. Der resultierende Pfad ist orange hervorgehoben.
+\label{bsp:B4}
+\end{beispiel}
+
+\begin{figure}[!t]
+	\centering
+	\resizebox{\textwidth}{!}{%
+		\begin{subfigure}[t]{0.42\textwidth}
+			\centering
+			\resizebox{0.99\textwidth}{!}{%
+				\input{tikz/trellis_dekodierung_soft1}
+			}
+			\caption{}
+			\label{abb:trellis_dek_soft_a}
+		\end{subfigure}
+		\begin{subfigure}[t]{0.42\textwidth}
+			\centering
+			\resizebox{0.99\textwidth}{!}{%
+				\input{tikz/trellis_dekodierung_soft2}
+			}
+			\caption{}
+			\label{abb:trellis_dek_soft_b}
+		\end{subfigure}
+	}
+	\label{abb:trellis_dekodierung_soft}
+\caption{Trellis der soft decision Dekodierung aus Beispiel~\ref{bsp:B4}.}
+\end{figure}
 
 \subsection{Katastrophale Faltungskodierer}
 \label{kapitel:grundlagen_katastrophale_kodierer}
-Sei $\mathbf{u}$ eine Nachricht, die mit den Generatorpolynomen in $G$ zum Kode $\mathbf{v}$ kodiert wird. Nach der Übertragung erhält der Dekodierer den Kode $\mathbf{y}$, der/die/das aufgrund von Rauschen verändert sein könnte. Der Dekodierer findet ein Kodewort $\mathbf{v'}$ welches $\mathbf{v}$ am nächsten ist. Aus $\mathbf{v'}$ kann die Schätzung $\mathbf{u'}$ berechnet werden, die hoffentlich $\mathbf{u}$ entspricht. Dies ist bei einer fehlerfreien Übertragung, d.h. $\mathbf{v'}=\mathbf{v}$, sicherlich der Fall. Zu untersuchen ist der Fall $\mathbf{v'}\neq\mathbf{v}$:\\
-Zu erwarten wäre, wenn sich $\mathbf{v'}$ und $\mathbf{v}$ in endlich vielen Stellen unterscheiden, dass sich auch $\mathbf{u'}$ und $\mathbf{u}$ in endlich vielen Stellen unterscheiden. Wenn sich $\mathbf{u'}$ und $\mathbf{u}$ in unendlich vielen Stellen unterscheiden wäre das \enquote{katastrophal}. Ein Faltungskodierer wird katastrophal genannt, wenn es eine Nachricht mit unendlichem Hamming-Gewicht gibt, sodass sein Kode endliches Hamming-Gewicht hat. \cite[S. 569]{huffman2010fundamentals}
+Sei $\mathbf{u}$ eine Nachricht, die mit den Generatorpolynomen in $G$ zum Kode $\mathbf{v}$ kodiert wird. Nach der Übertragung erhält der Dekodierer den Kode $\mathbf{y}$, der aufgrund von Rauschen verändert sein könnte. Der Dekodierer findet ein Kodewort $\mathbf{v'}$ welches $\mathbf{v}$ am nächsten ist. Aus $\mathbf{v'}$ kann die Schätzung $\mathbf{u'}$ berechnet werden, die möglichst $\mathbf{u}$ entspricht. Dies ist bei einer fehlerfreien Übertragung, d.h. $\mathbf{v'}=\mathbf{v}$, sicherlich der Fall. Zu untersuchen ist der Fall $\mathbf{v'}\neq\mathbf{v}$:\\
+Zu erwarten wäre, wenn sich $\mathbf{v'}$ und $\mathbf{v}$ in endlich vielen Stellen unterscheiden, dass sich auch $\mathbf{u'}$ und $\mathbf{u}$ in endlich vielen Stellen unterscheiden. Wenn sich $\mathbf{u'}$ und $\mathbf{u}$ in unendlich vielen Stellen unterscheiden wäre das \enquote{katastrophal}. Ein Faltungskodierer wird katastrophal genannt, wenn es eine Nachricht mit unendlichem Hamming-Gewicht gibt, sodass sein Kode endliches Hamming-Gewicht hat. Katastrophale Kodierer sind zu vermeiden, da eine endliche Anzahl an Übertragungsfehler zu einer unendlichen Anzahl an Dekodierfehler führen kann. \cite[S. 569]{huffman2010fundamentals}
 \\
 \\
-Zur Überprüfung ob ein Kodierer katastrophal ist hilft das Theorem von Massey-Sain. Zuvor muss jedoch eine alternative Angabe der Generatorpolynome eingeführt werden:
-
-\begin{thm_massey_sain}
-\label{thm:massey}
-Theoreminhalt
-\end{thm_massey_sain}
-(S. 570, S. 569 f.)
+Zur Überprüfung, ob ein Kodierer katastrophal ist, hilft das Theorem von Massey-Sain~\cite[S. 570]{huffman2010fundamentals}. Gegeben ein Faltungskodierer mit einem Eingang und der Generatormatrix $G$ als Polynome über $D$, so ist der Faltungskodierer nicht katastrophal genau dann, wenn der größte gemeinsame Teiler der Generatorpolynome eine Potenz von $D$ ist.
 \begin{figure}[!t]
-\captionsetup[subfigure]{justification=centering} % center subcaptions
-\centering
-\begin{subfigure}{0.45\textwidth}
-\centering
-\resizebox{0.90\textwidth}{!}{%
-\begin{tikzpicture}[>=stealth]
-\tikzstyle{rect} = [draw, rectangle, minimum width=30mm, inner sep=0mm, minimum height=4mm]
-\tikzstyle{xor} = [draw, circle, semithick, minimum size=3mm, inner sep=0mm]
-
-\node[rect] (rect) {};
-\draw[-] (rect.north) -- (rect.south);
-\draw[<-] (rect.west) -- ++(-10mm,0) node [left] {$u$};
-
-\draw[->] ($(rect.west)+(-4mm,0)$) |- ($(rect.north east)+(4mm,6mm)$) node [right] {$v_{1}$};
-
-\node[xor] (xor1) at ($(rect.south)+(-7.5mm,-6mm)$) {};
-\draw[semithick] (xor1.north) -- (xor1.south);
-\draw[semithick] (xor1.west) -- (xor1.east);
-\draw[->] ($(rect.south)+(-7.5mm,0)$) -- (xor1.north);
-
-\node[xor] (xor2) at ($(rect.south)+(7.5mm,-6mm)$) {};
-\draw[semithick] (xor2.north) -- (xor2.south);
-\draw[semithick] (xor2.west) -- (xor2.east);
-\draw[->] ($(rect.south)+(7.5mm,0)$) -- (xor2.north);
-
-\draw[->] ($(rect.west)+(-4mm,0)$) |- (xor1.west);
-\draw[->] (xor1.east) -- (xor2.west);
-\draw[->] (xor2.east) -- ($(rect.south east)+(4mm,-6mm)$) node [right] {$v_{2}$};
-\draw[black, fill=black] ($(rect.west)+(-4mm,0)$) circle [radius=.5mm];
-
-\node at ($(rect.south)+(0,-16mm)$) {$G=(4_{8},7_{8})$};
-\end{tikzpicture}
-}
-\caption{Systematischer Faltungskodierer}
-\label{abb:systematischer_kodierer}
-\end{subfigure}
-~ % spacing between subfigures
-\begin{subfigure}{0.45\textwidth}
-\centering
-\resizebox{0.99\textwidth}{!}{%
-\begin{tikzpicture}[>=stealth]
-\tikzstyle{rect} = [draw, rectangle, minimum width=30mm, inner sep=0mm, minimum height=4mm]
-\tikzstyle{xor} = [draw, circle, semithick, minimum size=3mm, inner sep=0mm]
-
-\node[rect] (rect) {};
-\draw[-] (rect.north) -- (rect.south);
-
-\node[xor] (rec) at ($(rect.west)+(-6mm,0)$) {};
-\draw[semithick] (rec.north) -- (rec.south);
-\draw[semithick] (rec.west) -- (rec.east);
-\node[xor] (xor1) at ($(rect.north)+(-7.5mm,6mm)$) {};
-\draw[semithick] (xor1.north) -- (xor1.south);
-\draw[semithick] (xor1.west) -- (xor1.east);
-\node[xor] (xor2) at ($(rect.south)+(7.5mm,-6mm)$) {};
-\draw[semithick] (xor2.north) -- (xor2.south);
-\draw[semithick] (xor2.west) -- (xor2.east);
-
-\draw[<-] (rec.west) -- ++(-8mm,0) node [left] {$u$};
-\draw[->] (rec.east) -- (rect.west);
-\draw[->] ($(rect.north)+(-7.5mm,0)$) -- (xor1.south);
-\draw[->] ($(rect.south)+(7.5mm,0)$) -- (xor2.north);
-\draw[->] ($(rect.north)+(7.5mm,0)$) |- (xor1.east);
-\draw[->] (xor1.west) -| (rec.north);
-
-\draw[->] ($(rect.west)+(-2.5mm,0)$) |- (xor2.west);
-\draw[->] (xor2.east) -- ($(rect.south east)+(4mm,-6mm)$) node [right] {$v_{2}$};
-\draw[->] ($(rec.west)+(-4mm,0)$) |- ($(rect.north east)+(4mm,12mm)$) node [right] {$v_{1}$};
-
-\draw[black, fill=black] ($(rect.west)+(-2.5mm,0)$) circle [radius=.5mm];
-\draw[black, fill=black] ($(rec.west)+(-4mm,0)$) circle [radius=.5mm];
-
-\node at ($(rect.south)+(0,-16mm)$) {$G=(1,\frac{5_{8}}{7_{8}})$};
-\end{tikzpicture}
-}
-\caption{Rekursive Systematischer Faltungskodierer}
-\label{abb:rsc_kodierer}
-\end{subfigure}
+	\centering
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\resizebox{0.90\textwidth}{!}{%
+			\input{tikz/systematischer_kodierer}
+		}
+		\caption{Systematischer Faltungskodierer}
+		\label{abb:systematischer_kodierer}
+	\end{subfigure}
+	~ % spacing between subfigures
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\resizebox{0.99\textwidth}{!}{%
+			\input{tikz/rsc}
+		}
+		\caption{Rekursiv Systematischer Faltungskodierer}
+		\label{abb:rsc_kodierer}
+	\end{subfigure}
 \caption{Verschiedene Faltungskodierertypen}
 \label{abb:faltungskodierer_typen}
 \end{figure}
 
 \subsection{Systematische Faltungskodierer}
 \label{kapitel:grundlagen_systematische_kodierer}
-Bei systematischen Faltungskodierern entspricht ein Ausgang dem Eingangssignal. Die Quellinformation ist somit explizit im Kodewort enthalten. Abbildung \ref{abb:systematischer_kodierer} zeigt einen systematischen Faltungskodierer mit der Generatormatrix $G=(4_{8},7_{8})$. Systematische Faltungskodierer sind nie katastrophal, sind jedoch weniger robust wie nichtsystematische Faltungskodierer. \cite[S. 217]{schonfeld2012informations}
+Bei systematischen Faltungskodierern entspricht ein Ausgang dem Eingangssignal. Die Quellinformation ist somit explizit im Kodewort enthalten. Abbildung \ref{abb:systematischer_kodierer} zeigt einen systematischen Faltungskodierer mit der Generatormatrix $G=\left( 4_{8},7_{8}\right)$. Systematische Faltungskodierer sind nie katastrophal, sind jedoch weniger robust wie nichtsystematische Faltungskodierer. \cite[S. 217]{schonfeld2012informations}
 
-\subsection{Rekursiv Systematische Faltungskodierer (RSC)}
+\subsection{Rekursiv systematische Faltungskodierer}
 \label{kapitel:grundlagen_rsc}
-Abbildung \ref{abb:systematischer_kodierer} zeigt einen rekursiv systematischen Faltungskodierer.
+Rekursiv systematische Faltungskodierer (RSC-Kodierer\footnote{Recursive Systematic Convolutional Coder}) weisen sowohl einen systematischen Ausgang als auch eine Rückkopplung des Schieberegisters zum Eingang vor. Aus Letzterem ergibt sich eine unendliche Einflusslänge. Das Eingangssignal ist wie bei allen systematischen Kodierern explizit im Kodewort enthalten. RSC-Kodierer sind aufgrund ihrer Verwendung in Turbo-Kodes von großer Bedeutung.
+\\
+Die Generatormatrix eines RSC-Kodierers mit einem Eingang wird folgendermaßen angegeben:
+\begin{equation}
+G=\left( 1, \frac{g_{1}}{g_{0}},\dots , \frac{g_{N-1}}{g_{0}} \right)
+\end{equation}
+Zumeist befindet sich an erster Stelle eine 1 und notiert den systematischen Ausgang. Das Polynom $g_{0}$ definiert die Rückkopplung des Kodierers. Die Polynome $g_{1}$ bis $g_{N-1}$ stellen die Polynome der nichtsystematischen Ausgänge dar \cite{morelos2006art}. Zur Definition eines RSC-Kodierers im späteren Programm müssen die oktalen Generatorpolynome der nichtsystematischen Ausgänge sowie der Rekursion angegeben werden. Das Polynom des systematischen Ausgangs muss nicht angegeben werden. Abbildung \ref{abb:rsc_kodierer} zeigt einen rekursiv systematischen Faltungskodierer für die Generatormatrix $G=\left( 1,\frac{5_{8}}{7_{8}}\right)$.
+
+\subsection{Terminierung}
+\label{kapitel:grundlageen_terminierung}
+Die Terminierung bezeichnet nach der vollständigen Kodierung einer Nachricht das Zurückkehren des Kodierers in den Nullzustand. Dazu wird das Schieberegister mit $M$ 0-Bits befüllt. Die Terminierung wirkt sich positiv auf die Fehlerkorrekturfähigkeit bei der Dekodierung aus, da der Endzustand im Trellis bekannt ist. Jedoch geschieht dies auf Kosten der Koderate $R$, die durch die Terminierung sinkt. Die Koderate des terminierten Kodes $R_{t}$ berechnet sich für eine nicht terminierte Nachricht $\mathbf{u}=\left( u_{1},u_{2},\dots ,u_{k}\right)$ wie folgt:
+\begin{equation}
+R_{t}=\frac{k}{M+k}R
+\end{equation}
+Für lange Nachrichten ist $R_{t}\approx R$ und kann daher vernachlässigt werden.
+\begin{figure}[!t]
+\input{tikz/trellis_terminiert}
+\label{abb:trellis_terminiert}
+\caption{Trellis für die terminierte Kodierung aus Beispiel~\ref{bsp:B5}.}
+\end{figure}
+\begin{beispiel}
+Gegeben sei die Nachricht $\mathbf{u}=\left( 110100\right)$ aus Beispiel~\ref{bsp:B2}. Die Kodierung der terminierten Nachricht ist in Abbildung~\ref{abb:trellis_terminiert} zu sehen und ergibt das Kodewort $\mathbf{v}=\left( 11~01~01~00~10~11~00~00\right)$.
+\label{bsp:B5}
+\end{beispiel}
+
+\subsection{Punktierung}
+\label{kapitel:grundlagen_punktierung}
+Zur Erhöhung der Koderate $R$ eines Kodes gibt es die Möglichkeit der Punktierung. Dabei werden bestimmte Bits vor der Übertragung anhand der sogenannten \emph{Punktierungsmatrix} $P \in {\left\lbrace 0,1 \right\rbrace}^{N\times \frac{p}{N}}$ gestrichen, wobei $p$ als Periode der Punktierungsmatrix bezeichnet wird und $P$ spaltenweise durchlaufen wird. Das Gewicht der Matrix $w(P)$ entspricht der Anzahl nicht punktierter Kodebits je Periode, d.h. der Anzahl an 1 in $P$.~\cite[S. 218]{schonfeld2012informations}
+\\
+\\
+Die Koderate des punktierten Kodes $R_{p}$ berechnet sich wie folgt:
+\begin{equation}
+R_{p}=\frac{p}{w(P)}R
+\end{equation}
+Vor der Dekodierung erfolgt die Depunktierung, d.h. die punktierten Kodebits werden wieder eingefügt. Bei der soft decision Dekodierung wird der Signalwert 0, also genau zwischen den eigentlichen Signalwerten +1 und -1, an den zuvor punktierten Stellen eingefügt. Bei der hard decision Dekodierung wird das Bit 0 eingefügt.
+
+\begin{beispiel}
+Gegeben sei das Kodewort $\mathbf{v}=\left( 11~01~01~00~10~11\right)$ aus Beispiel~\ref{bsp:B2} und die Punktierungsmatrix
+\begin{equation*}
+P=
+\begin{pmatrix}
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\end{pmatrix}.
+\end{equation*}
+Nach der Punktierung ergibt sich das Kodewort $\mathbf{v_{p}}=\left( 11\ast 10\ast 00\ast 01\ast\right) = \left( 11100001\right)$. Die Koderate des punktierten Kodes beträgt $R_{p}=\frac{6}{4}\cdot\frac{1}{2}=\frac{3}{4}$.
+\label{bsp:B6}
+\end{beispiel}

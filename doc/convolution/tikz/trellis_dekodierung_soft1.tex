@@ -1,0 +1,128 @@
+% trellis_dekodierung_soft1.tex
+\begin{tikzpicture}[>=stealth, font=\scriptsize]
+\tikzstyle{state} = [draw, circle, teal, thick, text=black, minimum size=5.9mm, inner sep=0mm, font=\tiny, align=center]
+\tikzstyle{freestate} = [circle, teal, fill=teal, minimum size=1mm, inner sep=0mm]
+
+\node[state] (node00) at (0,0) {0} ; 
+\node[freestate] (node10) at (0,-1.25) {} ; 
+\node[freestate] (node20) at (0,-2.5) {} ; 
+\node[freestate] (node30) at (0,-3.75) {} ; 
+
+\node[state] (node01) at (1,0) {-2} ; 
+\node[freestate] (node11) at (1,-1.25) {} ; 
+\node[state] (node21) at (1,-2.5) {2} ; 
+\node[freestate] (node31) at (1,-3.75) {} ; 
+
+\node[state] (node02) at (2,0) {-2.5} ; 
+\node[state] (node12) at (2,-1.25) {0.5} ; 
+\node[state] (node22) at (2,-2.5) {-1.5} ; 
+\node[state] (node32) at (2,-3.75) {3.5} ; 
+
+\node[state] (node03) at (3,0) {\textcolor{lightgray}{-2.5}\\ \textcolor{black}{0.5}} ; 
+\node[state] (node13) at (3,-1.25) {\textcolor{lightgray}{-3.3}\\ \textcolor{black}{5.3}} ; 
+\node[state] (node23) at (3,-2.5) {\textcolor{lightgray}{-2.5}\\ \textcolor{black}{0.5}} ; 
+\node[state] (node33) at (3,-3.75) {\textcolor{lightgray}{0.3}\\ \textcolor{black}{1.7}} ; 
+
+\node[state] (node04) at (4,0) {\textcolor{lightgray}{1.3}\\ \textcolor{black}{4.5}} ; 
+\node[state] (node14) at (4,-1.25) {\textcolor{lightgray}{-0.7}\\ \textcolor{black}{2.9}} ; 
+\node[state] (node24) at (4,-2.5) {\textcolor{lightgray}{-0.3}\\ \textcolor{black}{6.1}} ; 
+\node[state] (node34) at (4,-3.75) {1.7\\ \textcolor{lightgray}{0.5}} ; 
+
+\node[state] (node05) at (5,0) {\textcolor{lightgray}{3.6}\\ \textcolor{black}{3.8}} ; 
+\node[state] (node15) at (5,-1.25) {6.8\\ \textcolor{lightgray}{1}} ; 
+\node[state] (node25) at (5,-2.5) {5.4\\ \textcolor{lightgray}{2}} ; 
+\node[state] (node35) at (5,-3.75) {5.4\\ \textcolor{lightgray}{2.4}} ; 
+
+\node[state] (node06) at (6,0) {\textcolor{lightgray}{1.8}\\ \textcolor{black}{8.8}} ; 
+\node[state] (node16) at (6,-1.25) {5.4\\ \textcolor{lightgray}{5.4}} ; 
+\node[state] (node26) at (6,-2.5) {5.8\\ \textcolor{lightgray}{4.8}} ; 
+\node[state] (node36) at (6,-3.75) {5.4\\ \textcolor{lightgray}{5.4}} ; 
+\node (statelabel0) [left of=node00, xshift=4mm] {00}; 
+\node (statelabel1) [left of=node10, xshift=4mm] {01}; 
+\node (statelabel2) [left of=node20, xshift=4mm] {10}; 
+\node (statelabel3) [left of=node30, xshift=4mm] {11};
+
+\foreach \x in {0,...,6}
+	\node (timelabel\x) [above of=node0\x, yshift=-3mm] {\x};
+		
+\node (statelabel0) [left of=node00, xshift=4mm] {00}; 
+\node (statelabel1) [left of=node10, xshift=4mm] {01}; 
+\node (statelabel2) [left of=node20, xshift=4mm] {10}; 
+\node (statelabel3) [left of=node30, xshift=4mm] {11};
+
+%t=0
+\draw[->] (node00) -- (node01) node [sloped, above, near start, font=\tiny] {00};
+\draw[->, dashed] (node00) -- (node21) node [sloped, above, very near start, font=\tiny] {11};
+
+%t=1
+\draw[->] (node01) -- (node02) node [sloped, above, near start, font=\tiny] {00};
+\draw[->, dashed] (node01) -- (node22) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->] (node21) -- (node12) node [sloped, above, near start, font=\tiny] {10};
+\draw[->, dashed] (node21) -- (node32) node [sloped, above, very near start, font=\tiny] {01};
+
+%t=2
+\draw[->, lightgray] (node02) -- (node03) node [sloped, above, near start, font=\tiny] {00};
+\draw[->, dashed, lightgray] (node02) -- (node23) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->] (node12) -- (node03) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->, dashed] (node12) -- (node23) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->, lightgray] (node22) -- (node13) node [sloped, above, near start, font=\tiny] {10};
+\draw[->, dashed, lightgray] (node22) -- (node33) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->] (node32) -- (node13) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->, dashed] (node32) -- (node33) node [sloped, above, near start, font=\tiny] {10};
+
+%t=3
+\draw[->, lightgray] (node03) -- (node04) node [sloped, above, near start, font=\tiny] {00};
+\draw[->, dashed, lightgray] (node03) -- (node24) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->] (node13) -- (node04) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->, dashed] (node13) -- (node24) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->, lightgray] (node23) -- (node14) node [sloped, above, near start, font=\tiny] {10};
+\draw[->, dashed] (node23) -- (node34) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->] (node33) -- (node14) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->, dashed, lightgray] (node33) -- (node34) node [sloped, above, near start, font=\tiny] {10};
+
+%t=4
+\draw[->, lightgray] (node04) -- (node05) node [sloped, above, near start, font=\tiny] {00};
+\draw[->, dashed] (node04) -- (node25) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->] (node14) -- (node05) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->, dashed, lightgray] (node14) -- (node25) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->] (node24) -- (node15) node [sloped, above, near start, font=\tiny] {10};
+\draw[->, dashed] (node24) -- (node35) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->, lightgray] (node34) -- (node15) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->, dashed, lightgray] (node34) -- (node35) node [sloped, above, near start, font=\tiny] {10};
+
+%t=5
+\draw[->, lightgray] (node05) -- (node06) node [sloped, above, near start, font=\tiny] {00};
+\draw[->, dashed] (node05) -- (node26) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->] (node15) -- (node06) node [sloped, above, very near start, font=\tiny] {11};
+\draw[->, dashed, lightgray] (node15) -- (node26) node [sloped, above, very near start, font=\tiny] {00};
+\draw[->] (node25) -- (node16) node [sloped, above, near start, font=\tiny] {10};
+\draw[->, dashed] (node25) -- (node36) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->, lightgray] (node35) -- (node16) node [sloped, above, very near start, font=\tiny] {01};
+\draw[->, dashed, lightgray] (node35) -- (node36) node [sloped, above, near start, font=\tiny] {10};
+
+% input & output
+\node[font=\tiny] (in0) at($(node30)!0.5!(node31)+(0,-.6)$) {-1~-1};
+\node[font=\tiny] (in1) at($(node31)!0.5!(node32)+(0,-.6)$) {0.5~-1};
+\node[font=\tiny] (in2) at($(node32)!0.5!(node33)+(0,-.6)$) {0.9~-0.9};
+\node[font=\tiny] (in3) at($(node33)!0.5!(node34)+(0,-.6)$) {1~-0.2};
+\node[font=\tiny] (in4) at($(node34)!0.5!(node35)+(0,-.6)$) {-0.8~-0.1};
+\node[font=\tiny] (in5) at($(node35)!0.5!(node36)+(0,-.6)$) {-1~-1};
+\node[font=\tiny] (inlabel) at($(node30)+(-.56,-.64)$) {$\mathbf{y}$:};
+
+\node[font=\tiny] (out0) [below=of in0, yshift=5mm] {\textcolor{white}{-4.3}};
+\node[font=\tiny] (out1) [below=of in1, yshift=5mm] {\textcolor{white}{-2.9}};
+\node[font=\tiny] (out2) [below=of in2, yshift=5mm] {\textcolor{white}{2.9}};
+\node[font=\tiny] (out3) [below=of in3, yshift=5mm] {\textcolor{white}{-2.9}};
+\node[font=\tiny] (out4) [below=of in4, yshift=5mm] {\textcolor{white}{2.9}};
+\node[font=\tiny] (out5) [below=of in5, yshift=5mm] {\textcolor{white}{3.5}};
+\node[font=\tiny] (outlabel) at($(node30)+(-.65,-1.53)$) {\textcolor{white}{$\mathbf{u'_{s}}$:}};
+
+\node[font=\tiny] [below=of out0, yshift=5mm] {\textcolor{white}{1}};
+\node[font=\tiny] [below=of out1, yshift=5mm] {\textcolor{white}{1}};
+\node[font=\tiny] [below=of out2, yshift=5mm] {\textcolor{white}{0}};
+\node[font=\tiny] [below=of out3, yshift=5mm] {\textcolor{white}{1}};
+\node[font=\tiny] [below=of out4, yshift=5mm] {\textcolor{white}{0}};
+\node[font=\tiny] [below=of out5, yshift=5mm] {\textcolor{white}{0}};
+\node[font=\tiny] at($(node30)+(-.65,-2.43)$) {\textcolor{white}{$\mathbf{u'_{h}}$:}};
+
+\end{tikzpicture}
