@@ -125,7 +125,7 @@ for (t in 1:ncol(trellis)) {
     }
     else {
       nodetype <- "state"
-      value <- trellis[s,t]
+      value <- round(trellis[s,t],1)
     }
     definition <- paste0("\\node[",nodetype,"]")
     nodename <- paste0("(node",s-1,t-1,")")
@@ -307,7 +307,7 @@ knitr::kable(output.table, format="latex", align="c")
 Input : (`r ifelse(params$code >= 0, 0, 1)`)
 \vfill
 \begin{tikzpicture}[>=stealth, font=\tiny]
-\tikzstyle{state} = [draw, circle, teal, thick, text=black, minimum size=3.5mm, inner sep=0mm]
+\tikzstyle{state} = [draw, circle, teal, thick, text=black, minimum size=4mm, inner sep=0mm]
 \tikzstyle{freestate} = [circle, teal, fill=teal, minimum size=1mm, inner sep=0mm]
 
 `r tikz.trellis`

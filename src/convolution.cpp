@@ -14,12 +14,12 @@ int octalToDecimal(int octal) {
 	int decimal = 0;
 	int i = 0;
 	while (octal != 0) {
-		
+
 		decimal += octal % 10 * pow(8,i);
 		octal /= 10;
 		i++;
 	}
-	
+
 	return decimal;
 }
 
@@ -73,35 +73,35 @@ int turnBitsRound(int num, int nbits) {
 List c_generateMatrices(int N, int M, IntegerVector generator) {
 
 	const int NUM_STATES = pow(2,M);			// number of states: 2^M
-	
+
 	IntegerMatrix nextState(NUM_STATES,2);
 	IntegerMatrix output(NUM_STATES,2);
 	IntegerMatrix previousState(NUM_STATES,3);
-	
+
 	// to get correct bit representation of generator polynoms convertion to decimal
 	for (int i = 0; i < generator.size(); i++) {
 		generator[i] = octalToDecimal(generator[i]);
 	}
-	
+
 	// initialization of previousState matrix
 	for (int i = 0; i < NUM_STATES; i++) {
 		for (int j = 0; j < 3; j++) {
 			previousState(i,j) = -1;
 		}
 	}
-	
+
 	for (int state = 0; state < NUM_STATES; state++) {
 		for (int input = 0; input < 2; input++) {
 			// current_state represents the encoder state plus the input symbol as MSB! (encoder diagram view)
 			int current_state = (input << M) | state;
-	
+
 			/* NEW GENERATOR POLYNOM IMPLEMENTATION --> NO TURNING OF STATE OR POLYNOM!
 			 *
 			// LSB of generator polynoms handles input symbol, therefore current_state is turned round!
 			// maximum number of bits for current_state and the generator polynoms are M+1 (M state bits + 1 input bit)
 			int turned_state = turnBitsRound(current_state, M+1);
 			*/
-			
+
 			// calculate output for given state and input
 			int out = 0;
 			for (int i = 0; i < N; i++) {
@@ -111,12 +111,12 @@ List c_generateMatrices(int N, int M, IntegerVector generator) {
 	    		out = (out << 1) | temp;
 	  		}
 			output(state, input) = out;
-		
+
 			// calculate new state
 			nextState(state, input) = current_state >> 1;
 		}
 	}
-	
+
 	// filling of previousState matrix
 	for (int state = 0; state < NUM_STATES; state++) {
 		for (int input = 0; input < 2; input++) {
@@ -131,7 +131,7 @@ List c_generateMatrices(int N, int M, IntegerVector generator) {
 			}
 		}
 	}
-	
+
 	List matrices = List::create(Rcpp::Named("next.state") = nextState,
 								 Rcpp::Named("prev.state") = previousState,
 								 Rcpp::Named("output") = output);
@@ -152,55 +152,55 @@ List c_generateMatrices(int N, int M, IntegerVector generator) {
  */
 // [[Rcpp::export]]
 List c_generateMatrices_rsc(int N, int M, IntegerVector generator) {
-	
+
 	const int NUM_STATES = pow(2,M);
-	
+
 	IntegerMatrix nextState(NUM_STATES,2);
 	IntegerMatrix output(NUM_STATES,2);
 	IntegerMatrix previousState(NUM_STATES,3);
 	IntegerVector termination(NUM_STATES);
-	
+
 	for (int i = 0; i < NUM_STATES; i++) {
 		for (int j = 0; j < 3; j++) {
 			previousState(i,j) = -1;
 		}
 	}
-	
+
 	// to get correct bit representation of generator polynoms convertion to decimal
 	for (int i = 0; i < generator.size(); i++) {
 		generator[i] = octalToDecimal(generator[i]);
 	}
-	
+
 	// nextState, termination and output matrix
 	for (int state = 0; state < NUM_STATES; state++) {
 		for (int input = 0; input < 2; input++) {
-			
+
 			int recursion = sumDigits(((input << M) | state) & generator[N-1], 2) % 2;
-			
+
 			int current_state = (input << (M+1)) | (recursion << M) | state;
-			
+
 			/* NEW GENERATOR POLYNOM IMPLEMENTATION --> NO TURNING OF STATE OR POLYNOM!
 			 *
 			int turned_state = turnBitsRound(current_state, M+2);
 			*/
-			
+
 			// out is initialized with input because the first output signal is a systematic output
 			int out = input;
 			for (int i = 0; i < N-1; i++) {
 				int temp = sumDigits(current_state & generator[i], 2) % 2;
 				out = (out << 1) | temp;
 			}
-			
+
 			output(state,input) = out;
-			
+
 			nextState(state,input) = (current_state >> 1) & (NUM_STATES-1);
-			
+
 			if (recursion == 0) {
 				termination[state] = input;
 			}
 		}
 	}
-	
+
 	// previous matrix
 	for (int state = 0; state < NUM_STATES; state++) {
 		for (int input = 0; input < 2; input++) {
@@ -213,12 +213,12 @@ List c_generateMatrices_rsc(int N, int M, IntegerVector generator) {
 			}
 		}
 	}
-	
+
 	List matrices = List::create(Rcpp::Named("next.state") = nextState,
 								 Rcpp::Named("prev.state") = previousState,
 								 Rcpp::Named("output") = output,
 								 Rcpp::Named("termination") = termination);
-	
+
 	return matrices;
 }
 
@@ -239,31 +239,31 @@ List c_generateMatrices_rsc(int N, int M, IntegerVector generator) {
 // [[Rcpp::export]]
 IntegerVector c_convolutionEncode
 (	IntegerVector input,
-	int N, 
-	int M, 
-	IntegerMatrix nextState, 
+	int N,
+	int M,
+	IntegerMatrix nextState,
 	IntegerMatrix output,
 	int rsc,
 	IntegerVector termination,
 	int terminate
 ) {
-		
+
 	const int inputLen = input.size();
-	
+
 	const int codeLen = (terminate > 0) ? (inputLen + M) * N : inputLen * N;
-	
+
 	IntegerVector code(codeLen);
-	
+
 	int state = 0;
 	int index = 0;
 	for (int i = 0; i < inputLen; i++) {
-		
+
 		int out = output(state, input[i]);
-		
+
 		#if DEBUG == 1
 		Rprintf("state %i, input %i, output %i%i, new state %i\n",state,input[i],(out>>1)&1,out&1,nextState(state, input[i]));
 		#endif
-		
+
 		state = nextState(state, input[i]);
 		// output consists of N bits per coded symbol
 		for (int j = N-1; j >= 0; j--) {
@@ -271,7 +271,7 @@ IntegerVector c_convolutionEncode
 			index++;
 		}
 	}
-	
+
 	if (terminate > 0) {
 		// termination: input of M termination bits
 		for (int i = 0; i < M; i++) {
@@ -287,12 +287,12 @@ IntegerVector c_convolutionEncode
 			}
 		}
 	}
-	
+
 	// bits are mapped: {0,1} --> {+1,-1}
 	for (int i = 0; i < codeLen; i++) {
 		code[i] = 1 - 2 * code[i];
 	}
-	
+
 	#if DEBUG == 1
 	// print coded message
 	for (int i = 0; i < codeLen; i++) {
@@ -300,7 +300,7 @@ IntegerVector c_convolutionEncode
 	}
 	Rprintf("\n");
 	#endif
-	
+
 	return code;
 }
 
@@ -319,11 +319,11 @@ IntegerVector c_convolutionEncode
  */
 // [[Rcpp::export]]
 List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output, int IsTerminated) {
-	
+
 	const int codeLen = code.size();
 	const int msgLen = (codeLen / N);		// includes termination bits (M termination bits)
 	const int NUM_STATES = pow(2,M);
-	
+
 	double deltamin;
 	double delta[msgLen+1][NUM_STATES];
 	double metric[msgLen+1][NUM_STATES];
@@ -334,10 +334,10 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 	//		 so delta from symbol at t=msgLen+M-1 to t=msgLen+M (+M because of termination) is stored in
 	//		 delta[msgLen+M][state] -> therefore delta[msgLen+M+1][NUM_STATES]
 	//		 index 0 is not used!
-	
+
 	// visualization (in R markdown) helper matrix
 	IntegerMatrix previousSurvivorStates(NUM_STATES,msgLen+1);
-	
+
 	// initialization
 	metric[0][0] = 0;
 	for (int i = 1; i < NUM_STATES; i++) {
@@ -348,19 +348,19 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 			previousMatrixColumn[i][j] = -1;
 		}
 	}
-	
-	int Lc = 1;	// ACHTUNG!!!!!!
+
+	double Lc = 1;	// ACHTUNG!!!!!!
 	int index = 0;	// index to select correct code bit
-	
+
 	// loop: time t
 	for (int t = 1; t < msgLen+1; t++) {
 		// loop: state s
 		for (int s = 0; s < NUM_STATES; s++) {
 			double Max[2];
-			
+
 			if (previousState(s,0) == -1 || previousState(s,1) == -1) {
-				// Max[0] erhält die Metrik für previous State aus Spalte 0 bzw 1
-				// Max[1] erhält die Metrik für previous State aus Spalte 2
+				// Max[0] erh?lt die Metrik f?r previous State aus Spalte 0 bzw 1
+				// Max[1] erh?lt die Metrik f?r previous State aus Spalte 2
 				if (previousState(s,0) == -1) {
 					// no previous for input bit 0
 					survivorBit[t][s] = 1;
@@ -376,14 +376,14 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 					Max[0] += (1 - 2 * ((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> sr) & 0x01)) * Lc * code[index+n];
 					Max[1] += (1 - 2 * ((output(previousState(s,2),survivorBit[t][s]) >> sr) & 0x01)) * Lc * code[index+n];
 				}
-				
+
 				previousMatrixColumn[t][s] = (Max[0] > Max[1]) ? survivorBit[t][s] : 2;
 				previousSurvivorStates(s,t) = previousState(s,previousMatrixColumn[t][s]);
 			}
 			else {
 				// there are previous states for input bits 0 and 1
-				// Max[0] erhält die Metrik für previous State mittels previous bit 0
-				// Max[1] erhält die Metrik für previous State mittels previous bit 1
+				// Max[0] erh?lt die Metrik f?r previous State mittels previous bit 0
+				// Max[1] erh?lt die Metrik f?r previous State mittels previous bit 1
 				for (int i = 0; i < 2; i++) {
 					Max[i] = metric[t-1][previousState(s,i)];
 					for (int n = 0; n < N; n++) {
@@ -391,12 +391,11 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 						Max[i] += (1 - 2 * ((output(previousState(s,i),i) >> sr) & 0x01)) * Lc * code[index+n];
 					}
 				}
-				
+
 				survivorBit[t][s] = (Max[0] > Max[1]) ? 0 : 1;
 				previousSurvivorStates(s,t) = previousState(s,survivorBit[t][s]);
 			}
-			
-			
+
 			if (Max[0] > Max[1]) {
 				metric[t][s] = Max[0];
 				delta[t][s] = (Max[0] - Max[1]) / 2;
@@ -405,30 +404,30 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 				metric[t][s] = Max[1];
 				delta[t][s] = (Max[1] - Max[0]) / 2;
 			}
-			
+
 			#if DEBUG == 1
 			Rprintf("\ndelta[%d][%d]=%f\t M0=%.2f \tM1=%.2f \tmax=%f",t,s,delta[t][s], Max[0],Max[1], metric[t][s]);
 			#endif
 		}
-		
+
 		index += N;
 	}
-	
+
 	// Trellis Metric Matrix for visualization
-	IntegerMatrix trellisMetrics(NUM_STATES,msgLen+1);
+	NumericMatrix trellisMetrics(NUM_STATES,msgLen+1);
 	for (int t = 0; t < msgLen + 1; t++) {
 		for (int s = 0; s < NUM_STATES; s++) {
-			trellisMetrics(s,t) = (metric[t][s] <= -800 * msgLen) ? NA_INTEGER : (int) metric[t][s];
+			trellisMetrics(s,t) = (metric[t][s] <= -800 * msgLen) ? NA_REAL : metric[t][s];
 		}
 	}
-	
+
 	if (IsTerminated > 0) {
 		survivorStates[msgLen] = 0;
-		
+
 		// update trellisMetrics at termination (for visualization)
 		for (int i = 0; i < M; i++) {
 			for (int j = NUM_STATES - 1; j >= NUM_STATES/pow(2,i+1); j--) {
-				trellisMetrics(j,msgLen+1-M+i) = NA_INTEGER;	
+				trellisMetrics(j,msgLen+1-M+i) = NA_REAL;
 			}
 		}
 	}
@@ -442,7 +441,7 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 			}
 		}
 	}
-	
+
 	// reconstruction of survivor states, from right to left
 	// survivor state at index msgLen is known, start loop at 2nd but last index (= msgLen-1)
 	for (int t = msgLen-1; t >= 0; t--) {
@@ -453,19 +452,19 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 			survivorStates[t] = previousState(survivorStates[t+1], previousMatrixColumn[t+1][survivorStates[t+1]]);
 		}
 	}
-	
+
 	int s;
 	for (int t = M+1; t < msgLen+1; t++) {
 		deltamin = delta[t][survivorStates[t]];
-		// s ... state aus dem man in den survivor state kommen hätte können (2. Möglichkeit)
-		
+		// s ... state aus dem man in den survivor state kommen h?tte k?nnen (2. M?glichkeit)
+
 		if (previousMatrixColumn[t][survivorStates[t]] == -1) {
 			// wenn keine Entscheidung getroffen wurde muss Bit flippen
 			s = previousState(survivorStates[t], survivorBit[t][survivorStates[t]] * (-1) + 1);
 		}
 		else {
 			// falls Entscheidung getroffen wird muss Spalte wechseln
-			// 2 Fälle:	a) 0 <--> 2
+			// 2 F?lle:	a) 0 <--> 2
 			//			b) 1 <--> 2
 			// ob 0 oder 1 steht im survivorBit
 			int column;
@@ -477,7 +476,7 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 			}
 			s = previousState(survivorStates[t], column);
 		}
-		
+
 		for (int i = t-1; i > 0; i--) {
 			//sucht das kleinste delta auf dem survivor state
 			if (delta[i][survivorStates[i]] < deltamin) {
@@ -489,11 +488,11 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 				Rprintf("\nupdate k=%d i=%d, delta=%f",t,i,delta[i][survivorStates[i]]);
 				#endif
 			}
-			
+
 			if (previousMatrixColumn[i][s] == -1) {
 				//wenn keine Entscheidung getroffen wurde muss Bit flippen
 				s = previousState(s, survivorBit[i][s]);
-			} 
+			}
 			else {
 				//falls Entscheidung getroffen wird muss Spalte wechseln
 				s = previousState(s, previousMatrixColumn[i][s]);
@@ -504,12 +503,12 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 
 	NumericVector softOutput(msgLen);
 	IntegerVector hardOutput(msgLen);
-	
+
 	for(int t = 1; t < msgLen+1; t++) {
 		softOutput[t-1] = delta[t][survivorStates[t]] * (1 - 2 * survivorBit[t][survivorStates[t]]);
 		hardOutput[t-1] = (softOutput[t-1] >= 0) ? 0 : 1;
 	}
-	
+
 	#if DEBUG == 1
 	Rprintf("\n");
 	for (int i = 0; i < msgLen; i++) {
@@ -519,7 +518,7 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 		Rprintf("%i",hardOutput[i]);
 	}
 	#endif
-	
+
 	// for visualization survivorBit is needed
 	// matrix in list has to be R IntegerMatrix
 	// copy int matrix
@@ -529,12 +528,12 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
 			r_survivorBit(i,j) = survivorBit[i][j];
 		}
 	}
-	
+
 	List result = List::create(Rcpp::Named("output.soft") = softOutput,
 							   Rcpp::Named("output.hard") = hardOutput,
 							   Rcpp::Named("trellis") = trellisMetrics,
 							   Rcpp::Named("survivor.states") = previousSurvivorStates);
-	
+
 	return result;
 }
 
@@ -553,11 +552,11 @@ List c_convolutionDecode(NumericVector code, int N, int M, IntegerMatrix previou
  */
 // [[Rcpp::export]]
 List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix previousState, IntegerMatrix output, int IsTerminated) {
-	
+
 	const int codeLen = code.size();
 	const int msgLen = (codeLen / N);		// includes termination bits (M termination bits)
 	const int NUM_STATES = pow(2,M);
-	
+
 	int metric[msgLen+1][NUM_STATES];
 	int survivorBit[msgLen+1][NUM_STATES];
 	int survivorStates[msgLen+1];
@@ -566,10 +565,10 @@ List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix pr
 	//		 so delta from symbol at t=msgLen-1 to t=msgLen is stored in
 	//		 delta[msgLen][state] -> therefore delta[msgLen+1][NUM_STATES]
 	//		 index 0 is not used!
-	
+
 	// visualization (in R markdown) helper matrix
 	IntegerMatrix previousSurvivorStates(NUM_STATES,msgLen+1);
-	
+
 	// initialization
 	metric[0][0] = 0;
 	for (int i = 1; i < NUM_STATES; i++) {
@@ -580,14 +579,14 @@ List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix pr
 			previousMatrixColumn[i][j] = -1;
 		}
 	}
-	
+
 	// reverse mapping for hard decision decoding {-1,+1} --> {1,0}
 	IntegerVector code_int(codeLen);
 	for (int i = 0; i < codeLen; i++) {
 		// code[i] = (1 - code[i]) / 2;
 		code_int[i] = (code[i] >= 0) ? 0 : 1;
 	}
-	
+
 	int index = 0;	// index to select correct code bit
 	// metric calculation
 	// loop: time t
@@ -595,7 +594,7 @@ List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix pr
 		// loop: state s
 		for (int s = 0; s < NUM_STATES; s++) {
 			int Min[2];
-			
+
 			if (previousState(s,0) == -1 || previousState(s,1) == -1) {
 				if (previousState(s,0) == -1) {
 					// no previous for input bit 0
@@ -605,7 +604,7 @@ List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix pr
 					// no previous for input bit 1
 					survivorBit[t][s] = 0;
 				}
-				
+
 				Min[0] = metric[t-1][previousState(s,survivorBit[t][s])];
 				Min[1] = metric[t-1][previousState(s,2)];
 				for (int n = 0; n < N; n++) {
@@ -613,7 +612,7 @@ List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix pr
 					Min[0] += ((output(previousState(s,survivorBit[t][s]),survivorBit[t][s]) >> sr) & 0x01) ^ code_int[index+n];
 					Min[1] += ((output(previousState(s,2),survivorBit[t][s]) >> sr) & 0x01) ^ code_int[index+n];
 				}
-				
+
 				previousMatrixColumn[t][s] = (Min[0] < Min[1]) ? survivorBit[t][s] : 2;
 				previousSurvivorStates(s,t) = previousState(s,previousMatrixColumn[t][s]);
 			}
@@ -626,23 +625,23 @@ List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix pr
 						Min[i] += ((output(previousState(s,i),i) >> sr) & 0x01) ^ code_int[index+n];
 					}
 				}
-				
+
 				survivorBit[t][s] = (Min[0] < Min[1]) ? 0 : 1;
 				previousSurvivorStates(s,t) = previousState(s,survivorBit[t][s]);
 			}
-			
+
 			metric[t][s] = (Min[0] < Min[1]) ? Min[0] : Min[1];
-			
+
 			#if DEBUG == 1
 			Rprintf("metric[%d][%d]=%d\t M0=%d \tM1=%d\n",t,s,metric[t][s], Min[0],Min[1]);
 			#endif
-			
-			
+
+
 		}
-		
+
 		index += N;
 	}
-	
+
 	#if DEBUG == 1
 	for (int j = 0; j < NUM_STATES; j++) {
 		for (int i = 0; i < msgLen + 1; i++) {
@@ -651,7 +650,7 @@ List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix pr
 		Rprintf("\n");
 	}
 	#endif
-	
+
 	// Trellis Metric Matrix for visualization
 	IntegerMatrix trellisMetrics(NUM_STATES,msgLen+1);
 	for (int t = 0; t < msgLen + 1; t++) {
@@ -659,14 +658,14 @@ List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix pr
 			trellisMetrics(s,t) = (metric[t][s] >= codeLen) ? NA_INTEGER : metric[t][s];
 		}
 	}
-	
+
 	if (IsTerminated > 0) {
 		survivorStates[msgLen] = 0;
-		
+
 		// update trellisMetrics at termination (for visualization)
 		for (int i = 0; i < M; i++) {
 			for (int j = NUM_STATES - 1; j >= NUM_STATES/pow(2,i+1); j--) {
-				trellisMetrics(j,msgLen+1-M+i) = NA_INTEGER;	
+				trellisMetrics(j,msgLen+1-M+i) = NA_INTEGER;
 			}
 		}
 	}
@@ -680,7 +679,7 @@ List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix pr
 			}
 		}
 	}
-	
+
 	// reconstruction of survivor states, from right to left
 	// survivor state at index msgLen is known, start loop at 2nd but last index (= msgLen-1)
 	for (int t = msgLen-1; t >= 0; t--) {
@@ -691,22 +690,22 @@ List c_convolutionDecode_hard(NumericVector code, int N, int M, IntegerMatrix pr
 			survivorStates[t] = previousState(survivorStates[t+1], previousMatrixColumn[t+1][survivorStates[t+1]]);
 		}
 	}
-	
+
 	IntegerVector hardOutput(msgLen);
-	
+
 	for(int t = 1; t < msgLen+1; t++) {
 		hardOutput[t-1] = survivorBit[t][survivorStates[t]];
 	}
-	
+
 	#if DEBUG == 1
 	for (int i = 0; i < msgLen; i++) {
 		Rprintf("%i",hardOutput[i]);
 	}
 	#endif
-	
+
 	List result = List::create(Rcpp::Named("output.hard") = hardOutput,
 							   Rcpp::Named("trellis") = trellisMetrics,
 							   Rcpp::Named("survivor.states") = previousSurvivorStates);
-	
+
 	return result;
 }
