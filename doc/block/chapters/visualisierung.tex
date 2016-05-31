@@ -49,13 +49,14 @@ Input: (\textcolor{green}{1,0,1,0,1})
 Daten Polynom: \[d(x) = x^{4} + x^{2} + 1\] Generator Polynom:
 \[g(x) = x^{10} + x^{8} + x^{5} + x^{4} + x^{2} + x^{1} + 1\]
 \[ d^*(x) = d(x)*x^{10} = x^{14} + x^{12} + x^{10}\] Rest Polynom:
-\[r(x) = d^*(x)\mod g(x) = x^{9} + x^{8} + x^{7} + x^{3} + 1\] Kode
+\[r(x) = d^*(x)\mod g(x) = x^{9} + x^{6} + x^{2} + x^{1} + 1\] Kode
 Polynom:
-\[c(x) = c( r(x)|d(x) ) = x^{14} + x^{13} + x^{12} + x^{8} + x^{5} + x^{4} + x^{2} + 1\]
+\[c(x) = c( r(x)|d(x) ) = x^{14} + x^{12} + x^{10} + x^{9} + x^{6} + x^{2} + x^{1} + 1\]
 Output:
 (\textcolor{red}{1,1,1,0,0,0,1,0,0,1,}\textcolor{green}{1,0,1,0,1})
 
 (\textcolor{red}{Redundanzbits},\textcolor{green}{Datenbits})
+
 
 \caption{Kodierung - BCH-(15,5,7)}
 \label{fig:enc_bch}

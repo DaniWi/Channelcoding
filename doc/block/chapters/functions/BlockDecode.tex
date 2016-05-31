@@ -5,7 +5,7 @@
 \\
 \texttt{BlockDecode(code, block.encoder, visualize)}\\
 \\
-Dekodiert die Nachricht mithilfe des in block.encoder angegebenen Blockkodes. Die zu dekodierende Nachricht wird dazu in Blöcke der Kodewortlänge des Kodierers aufgeteilt und ggf. 0en angehängt um alle Blöcke gleich lang zu machen. \\
+Dekodiert die Nachricht mithilfe des in \texttt{block.encoder} angegebenen Blockkodierers. Die zu dekodierende Nachricht wird dazu in Blöcke der Kodewortlänge des Kodierers aufgeteilt und ggf. 0en angehängt um alle Blöcke gleich lang zu machen. \\
 \\
 \textbf{Argumente:}\\
 \texttt{code} - Der zu dekodierende Blockkode, als binärer Vektor.\\
@@ -16,5 +16,5 @@ Dekodiert die Nachricht mithilfe des in block.encoder angegebenen Blockkodes. Di
 Die dekodierte Nachricht als binärer Vektor, Fehler sind soweit möglich korrigiert.\\
 \\
 \hline
-\caption{BlockEncode}
+\caption{BlockDecode}
 \end{longtable}

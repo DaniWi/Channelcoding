@@ -12,7 +12,7 @@ Erzeugt einen Blockkodierer für BCH-Kodes.\\
 \\
 \textbf{Argumente:}\\
 \texttt{code.length} - Länge der Kodewörter.\\
-\texttt{code.t} - Anzahl der verbesserbaren Fehler pro Kodewort.\\
+\texttt{code.t} - Anzahl der verbesserbaren Fehler pro Kodewort, siehe Definition~\ref{def:t}.\\
 \\
 \textbf{Rückgabewert:}\\
 BCH-Kode, abgebildet als Liste mit folgenden Feldern:
@@ -20,12 +20,15 @@ BCH-Kode, abgebildet als Liste mit folgenden Feldern:
 \begin{itemize}
 \renewcommand\labelitemi{--}
 \itemsep-.5em % spacing between items
+\item type
 \item code.length
+\item code.m (siehe Def.~\ref{def:m})
 \item data.length
-\item gen.matrix
-\item check.matrix
+\item gen.poly
+\item alpha\_to (Vektordarstellung von $GF(2^m)$)
+\item index\_of	(Indexdarstellung von $GF(2^m)$)
 \end{itemize}
 \\
 \hline
-\caption{BlockGenerateEncoderHamming}
+\caption{BlockGenerateEncoderBCH}
 \end{longtable}

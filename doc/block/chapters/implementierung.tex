@@ -18,7 +18,7 @@ Die Programmiersprache R wurde ursprünglich für statistische Zwecke entwickelt
 \label{pic:rstudio}
 \end{figure}
 
-Als Entwicklungsumgebung wurde RStudio verwendet, in Abbildung~\ref{pic:rstudio} ist dessen Standardansicht abgebildet. Vor allem die einfache Installation von R-Paketen und die übersichtliche Darstellung von Daten machen RStudio zu einer angenehmen Entwicklungsumgebung. Zum entwickeln von R-Paketen ist es außerdem noch sinnvoll die Pakete \emph{devtools} und \emph{roxygen2} zu installieren. \emph{Devtools} bietet einige sehr hilfreiche Funktionen zum Erstellen und Kompilieren eines R-Pakets.\cite{devtools} Ähnlich wie \emph{JavaDoc} ermöglicht \emph{Roxygen2} die verwendung von Annotations im Code, welche einerseits die Dokumentation für das Paket erzeugen, andererseits aber auch durch \emph{@examples} Tests definieren und mittels \emph{@export} bestimmt wird, welche Funktionen der Nutzer später zur Verfügung hat und welche nur intern sind.(vgl. \emph{private} und \emph{public})\cite{roxygen}
+Als Entwicklungsumgebung wurde RStudio verwendet, in Abbildung~\ref{pic:rstudio} ist dessen Standardansicht abgebildet. Vor allem die einfache Installation von R-Paketen und die übersichtliche Darstellung von Daten machen RStudio zu einer angenehmen Entwicklungsumgebung. Zum entwickeln von R-Paketen ist es außerdem noch sinnvoll die Pakete \emph{devtools} und \emph{roxygen2} zu installieren. \emph{Devtools} bietet einige sehr hilfreiche Funktionen zum Erstellen und Kompilieren eines R-Pakets.\cite{devtools} Ähnlich wie \emph{JavaDoc} ermöglicht \emph{roxygen2} die verwendung von Annotations im Code, welche einerseits die Dokumentation für das Paket erzeugen, andererseits aber auch durch \emph{@examples} Tests definieren und mittels \emph{@export} bestimmt wird, welche Funktionen der Nutzer später zur Verfügung hat und welche nur intern sind.(vgl. \emph{private} und \emph{public})\cite{roxygen}
 
 \subsection{C, C++, Rcpp}
 
@@ -34,7 +34,7 @@ Mit \emph{.Call()} wurden eigene C++ Klassen, die R Datentypen repräsentieren, 
 
 \subsection{R Markdown und \LaTeX}
 
-Für die Visualisierung der Kanalkodierung bietet RStudio in Kombination mit dem Paket \emph{RMarkdown} eine hervorragende Möglichkeit. Grundsätzlich wird in .Rmd Dateien \LaTeX mit R Code verwendet, wodurch dynamisch Dokumente erzeugt werden können. In Abbildung~\ref{pic:RMarkdown} ist der Ablauf abgebildet. \emph{Knitr} führt zunächst den R Code aus, die entstandene .md Datei wird anschließend mit dem in RStudio integrierten Programm \emph{Pandoc} zum gewünschten Output, in diesem Fall PDF, gerendert.\cite{rmarkdown}
+Für die Visualisierung der Kanalkodierung bietet RStudio in Kombination mit dem Paket \emph{RMarkdown} eine hervorragende Möglichkeit. Grundsätzlich wird in .Rmd Dateien \LaTeX~Code  mit R~Code verwendet, wodurch dynamisch Dokumente erzeugt werden können. In Abbildung~\ref{pic:RMarkdown} ist der Ablauf abgebildet. \emph{Knitr} führt zunächst den R Code aus, die entstandene .md Datei wird anschließend mit dem in RStudio integrierten Programm \emph{Pandoc} zum gewünschten Output, in diesem Fall PDF, gerendert.\cite{rmarkdown}
 
 \begin{figure}[ht]
 \centering
@@ -49,7 +49,7 @@ Für die Visualisierung der Kanalkodierung bietet RStudio in Kombination mit dem
 \section{R-Paket Schnittstelle}
 \label{section:interface}
 
-In diesem Abschnitt werden alle Funktionen, die dem Nutzer zur Verfügung stehen, beschrieben.
+In diesem Abschnitt werden alle Funktionen, die dem Nutzer im R-Paket zur Verfügung stehen, beschrieben.
 
 \subsection{Kodierung}
 
@@ -59,6 +59,7 @@ In diesem Abschnitt werden alle Funktionen, die dem Nutzer zur Verfügung stehen
 \label{sec:interface_genBCH}
 \input{chapters/functions/BlockGenerateEncoderBCH}
 
+\clearpage
 \label{sec:interface_encode}
 \input{chapters/functions/BlockEncode}
 
@@ -89,7 +90,7 @@ In diesem Abschnitt wird beschrieben, wie die Theorie aus Kapitel~\ref{chapter:t
 
 \subsection{Hamming}
 
-\begin{lstlisting}[caption=Erzeugung der Generator- und Kontrollmatrix, label={lst:genHamming}, float=t]
+\begin{lstlisting}[caption=Erzeugung der Generator- und Kontrollmatrix, label={lst:genHamming}, float=ht]
 r = code.length - data.length
 p = 1:code.length
 p = p[(log2(p)%%1)!=0 ]
@@ -100,7 +101,7 @@ check.matrix = cbind(p,diag(r))
 gen.matrix = cbind(diag(data.length),t(p))
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Dekodierung eines Hamming-Kodes, label={lst:decHamming}, float=t]
+\begin{lstlisting}[caption=Dekodierung eines Hamming-Kodes, label={lst:decHamming}, float=ht]
 result = as.vector((block.encoder$check.matrix %*% message) %% 2)
 
 FindErrors = function(){
@@ -118,15 +119,15 @@ apply(block.encoder$check.matrix, 2, FindErrors())
 
 \end{lstlisting}
 
-Die Erzeugung eines Hammingkodierers erfolgt mit dem R-Code in Listing~\ref{lst:genHamming}, der Ablauf entspricht dem in \ref{section:hamming}. Zunächst werden die Zahlen 1 bis \emph{code.length} als binäre Vektoren in \emph{p} spaltenweise geschrieben, danach die 2er Potenzen wieder entfernt. Die \emph{check.matrix} ist dann $(p \mid I_r)$, die \emph{gen.matrix} entspricht $(p \mid I_{data.length})$.
+Die Erzeugung eines Hammingkodierers erfolgt mit dem R-Code in Listing~\ref{lst:genHamming}, der Ablauf entspricht dem in Kapitel~\ref{section:hamming}. Zunächst werden die Zahlen 1 bis \emph{code.length} als binäre Vektoren in \emph{p} spaltenweise geschrieben, danach die 2er Potenzen wieder entfernt. Die \emph{check.matrix} ist dann $(p \mid I_r)$, die \emph{gen.matrix} entspricht $(p \mid I_{data.length})$.
 \newblock
-Die Kodierung ist lediglich eine Matrixmultiplikation des Datenwortes mit der Generatormatrix des Hamming-Kodes. Für die Dekodierung wird der R-Code in \ref{lst:decHamming} verwendet. Das Kodewort wird mit der Kontrollmatrix multipliziert und das Ergebnis in \emph{result} gespeichert. Die Hilfsfunktion \emph{FindErrors()} sucht nun nach \emph{result} in den Spalten der Kontrollmatrix, bei einem Treffer wird die entsprechende Stelle im Kodewort korrigiert.
+Die Kodierung ist lediglich eine Matrixmultiplikation des Datenwortes mit der Generatormatrix des Hamming-Kodes. Für die Dekodierung wird der R-Code in \ref{lst:decHamming} verwendet. Das Kodewort wird mit der Kontrollmatrix multipliziert und das Ergebnis in \emph{result} gespeichert. Die Hilfsfunktion \emph{FindErrors()} sucht nun nach dem Vektor \emph{result} in den Spalten der Kontrollmatrix, bei einem Treffer wird die entsprechende Stelle im Kodewort korrigiert.
 
 
 
 \subsection{BCH}
 
-Im Gegensatz zu der Implementierung der Hamming-Kodes, welche sich gut in R umsetzen ließen, sind die BCH-Kodes in C umgesetzt. Als Basis dient der von Robert Morelos-Zaragoza, dem Autor von \cite{morelos2006art}, bereitgestellte Code. Dieser ist auf der ECC-Page~\cite{eccpage} verfügbar und implementiert die in \ref{sec:bch} beschriebenen Schritte. Um ein Generatorpolynom zu erzeugen, muss zunächst wie in Tabelle~\ref{table:gf} $GF(2^m)$ in Index- und Polynomdarstellung konstruiert werden. Dies geschieht in Listing~\ref{lst:bch_alpha}. In \emph{alpha\_to} sind die Polynome als Integer, welche die binäre Vektordarstellung repräsentieren, gespeichert, in \emph{index\_of} die Elemente als Potenzen von $\alpha$.
+Im Gegensatz zu der Implementierung der Hamming-Kodes, welche sich gut in R umsetzen ließen, sind die BCH-Kodes in C umgesetzt. Als Basis dient der von Robert Morelos-Zaragoza, dem Autor von \cite{morelos2006art}, bereitgestellte Code. Dieser ist auf der ECC-Page~\cite{eccpage} verfügbar und implementiert die in Kapitel~\ref{sec:bch} beschriebenen Schritte. Um ein Generatorpolynom zu erzeugen, muss zunächst wie in Tabelle~\ref{table:gf} $GF(2^m)$ in Index- und Polynomdarstellung konstruiert werden. Dies geschieht in Listing~\ref{lst:bch_alpha}. In \emph{alpha\_to} sind die Polynome als Integer, welche die binäre Vektordarstellung repräsentieren, gespeichert. In \emph{index\_of} stehen die Indizes der Elemente, es gilt: \texttt{index\_of[alpha\_to[i]] = i}.
 \vspace{0.5cm}
 \begin{lstlisting}[caption=Konstruieren des $GF(2^m)$, label={lst:bch_alpha}, language=C]
   mask = 1;
@@ -149,10 +150,9 @@ Im Gegensatz zu der Implementierung der Hamming-Kodes, welche sich gut in R umse
   }
   index_of[0] = -1;
 \end{lstlisting}
-
+\clearpage
 \begin{lstlisting}[caption=Finden aller Zykel $\mod 2^m-1$, label={lst:bch_cycle}, language=C++]
   do {
-    /* Generate the jj-th cycle set */
     ii = 0;
     do {
       ii++;
@@ -160,13 +160,11 @@ Im Gegensatz zu der Implementierung der Hamming-Kodes, welche sich gut in R umse
       size[jj]++;
       aux = (cycle[jj][ii] * 2) % n;
     } while (aux != cycle[jj][0]);
-    /* Next cycle set representative */
     ll = 0;
     do {
       ll++;
       test = 0;
       for (ii = 1; ((ii <= jj) && (!test)); ii++)
-        /* Examine previous cycle sets */
         for (kaux = 0; ((kaux < size[ii]) && (!test)); kaux++)
           if (ll == cycle[ii][kaux])
             test = 1;
@@ -206,7 +204,7 @@ for (jj = 0; jj < size[min[ii]]; jj++) {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Konstruieren den Generatorpolynoms, label={lst:bch_genpoly}, language=C++]
+\begin{lstlisting}[caption=Konstruieren des Generatorpolynoms, label={lst:bch_genpoly}, language=C++]
 g[0] = alpha_to[zeros[1]];
 g[1] = 1;
 for (ii = 2; ii <= rdncy; ii++) {	//rdncy = n - k
@@ -224,7 +222,7 @@ for (ii = 2; ii <= rdncy; ii++) {	//rdncy = n - k
 
 Als nächstes werden in Listing~\ref{lst:bch_cycle} alle Zykel für $x \mod 2^m-1$ erzeugt. Danach werden in Listing~\ref{lst:bch_roots} die relevanten Nullstellen $\alpha^{1,...,2t}$ in den Zykeln lokalisiert. Schließlich wird in Listing~\ref{lst:bch_genpoly} analog zu den Definitionen \ref{def:minimal} und \ref{def:genpoly} das Generatorpolynom konstruiert. Die Kodierung, wie beschrieben in Definition~\ref{def:encode}, erfolgt in Listing~\ref{lst:bch_encode}.
 \vspace{0.5cm}
-\begin{lstlisting}[caption=Konstruieren den Generatorpolynoms, label={lst:bch_encode}, language=C++]
+\begin{lstlisting}[caption=Kodierung mit dem Generatorpolynom, label={lst:bch_encode}, language=C++]
 for (i = 0; i < length - k; i++)
 	bb[i] = 0;
 for (i = k - 1; i >= 0; i--) {

@@ -80,10 +80,10 @@ encoding <- ""
 for(i in 1:nrow(message.matrix)){
   encoding <- paste0(encoding, "## Kodieren des ",i,". Blocks \n")
   
-  data.poly <- vecToPoly(message.matrix[i,])
-  datastar.poly <- vecToPoly(c(message.matrix[i,],rep(0,rest.length)))
-  rest.poly <- vecToPoly(code.matrix[i,][1:rest.length])
-  code.poly <- vecToPoly(code.matrix[i,])
+  data.poly <- vecToPoly(rev(message.matrix[i,]))
+  datastar.poly <- vecToPoly(c(rev(message.matrix[i,]),rep(0,rest.length)))
+  rest.poly <- vecToPoly(rev(code.matrix[i,][1:rest.length]))
+  code.poly <- vecToPoly(rev(code.matrix[i,]))
   
   encoding <- paste0(encoding,"Input: (",toColor(paste0(message.matrix[i,],collapse = ","),'green'),") \n\n")
   encoding <- paste0(encoding,"Daten Polynom: $$d(x) = ",data.poly,"$$\n")
