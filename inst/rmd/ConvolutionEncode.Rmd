@@ -317,9 +317,9 @@ if (rsc.flag == FALSE) {
 
 - `r art.coder` Kodierer
 - Anzahl von Ausgängen : $$N=`r N`$$
-- Anzahl von Registern : $$M=`r M`$$
+- Länge des Schieberegisters : $$M=`r M`$$
 - Generatoren : $$`r generator.print`$$
-- Kode-Rate : $$\frac{1}{`r N`}$$
+- Koderate : $$\frac{1}{`r N`}$$
 
 ## Faltungskodierer Matrix : Nächster Zustand
 \begin{center}
@@ -375,8 +375,8 @@ Output : `r visible.output`
 \begin{equation*}
   \text{Signal(bit)} =
   \begin{cases}
-    -1  & \quad \text{wenn bit} = 0\\
-    +1  & \quad \text{wenn bit} = 1\\
+    +1  & \quad \text{wenn bit} = 0\\
+    -1  & \quad \text{wenn bit} = 1\\
   \end{cases}
 \end{equation*}
 \vspace*{10mm}

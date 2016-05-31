@@ -336,7 +336,7 @@ ConvDecodeSoft <- function(code,
     if (conv.encoder$M > 3) {
       warning("Coder has more than 8 states (M > 3) and thus can't be visualized! No PDF was created!")
     } else if (length(result$output.hard) > 14) {
-      warning("Code is too long for a proper visualization! No PDF was created! Maximum length is 14 (including termination)")
+      warning("Decoded message is too long for a proper visualization! No PDF was created! Maximum length is 14 (including termination)")
     } else if (is.null(punctuation.matrix)) {
       rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
                         output_dir = system.file("pdf", package = "channelcoding"),
@@ -456,7 +456,7 @@ ConvDecodeHard <- function(code,
     if (conv.encoder$M > 3) {
       warning("Coder has more than 8 states (M > 3) and thus can't be visualized! No PDF was created!")
     } else if (length(result$output.hard) > 14) {
-      warning("Code is too long for a proper visualization! No PDF was created! Maximum length is 14 (including termination)")
+      warning("Decoded message is too long for a proper visualization! No PDF was created! Maximum length is 14 (including termination)")
     } else if (is.null(punctuation.matrix)) {
       rmarkdown::render(system.file("rmd", "ConvolutionDecode.Rmd", package = "channelcoding"),
                         output_dir = system.file("pdf", package = "channelcoding"),

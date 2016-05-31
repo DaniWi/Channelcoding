@@ -108,7 +108,7 @@ punctuation.print <- if(!is.null(params$punctuation)) paste0(apply(params$punctu
 
 - `r art.coder` Kodierer
 - Anzahl von Ausgängen : $$N=`r params$encoder$N`$$
-- Anzahl von Registern : $$M=`r params$encoder$M`$$
+- Länge des Schieberegisters : $$M=`r params$encoder$M`$$
 - Generatoren : $$`r generator.print`$$
 `r if(params$turbo) paste0("- Turbo-Dekodierungsiterationen : ", params$decode.iterations)`
 
@@ -133,7 +133,7 @@ if (is.null(params$punctuation)) {
 }
 ```
 
-- Kode-Rate : `r code.rate`
+- Koderate : `r code.rate`
 `r if(params$turbo) paste0("- Interleaver : (", paste(head(params$permutation, node.long), collapse = ", "), dots(params$permutation, node.long), ")") `
 `r if(!is.null(params$punctuation)) paste0("- Punktierungs-Matrix : $$\\begin{pmatrix} ",punctuation.print," \\end{pmatrix}$$")`
 

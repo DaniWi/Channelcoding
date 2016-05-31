@@ -203,7 +203,7 @@ resultSoft <- paste0(
 
 - `r art.coder` Kodierer
 - Anzahl von Ausgängen : $$N=`r params$encoder$N`$$
-- Anzahl von Registern : $$M=`r params$encoder$M`$$
+- Länge des Schieberegisters : $$M=`r params$encoder$M`$$
 - Generatoren : $$`r generator.print`$$
 
 ## Faltungskodierer Matrix : Nächster Zustand
@@ -351,7 +351,7 @@ for (s in 0:(num.states-1)) {
   gcd.value <- gcd(length(params$punctuation), sum(params$punctuation) * 3)
 ```
 \vspace*{6mm}
-- Kode-Rate : $$\frac{`r length(params$punctuation) / gcd.value`}{`r sum(params$punctuation) * 3 / gcd.value`}$$
+- Koderate : $$\frac{`r length(params$punctuation) / gcd.value`}{`r sum(params$punctuation) * 3 / gcd.value`}$$
 \vspace*{6mm}
 - Dekodierungsiterationen : `r params$iterations`
 \vspace*{6mm}

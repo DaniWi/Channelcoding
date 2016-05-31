@@ -335,13 +335,13 @@ punctuation.print <-
 
 - `r art.coder` Kodierer
 - Anzahl von Ausgängen : $$N=`r N`$$
-- Anzahl von Registern : $$M=`r M`$$
+- Länge des Schieberegisters : $$M=`r M`$$
 - Generatoren : $$`r generator.print`$$
 - Punktierungs-Matrix : $$\begin{pmatrix}  `r punctuation.print`  \end{pmatrix}$$
 ```{r, include=FALSE}
   gcd.value <- gcd(length(params$punctuation), sum(params$punctuation) * N)
 ```
-- Kode-Rate : $$\frac{`r length(params$punctuation) / gcd.value`}{`r sum(params$punctuation) * N / gcd.value`}$$
+- Koderate : $$\frac{`r length(params$punctuation) / gcd.value`}{`r sum(params$punctuation) * N / gcd.value`}$$
 
 ## Faltungskodierer Matrix : Nächster Zustand
 \begin{center}
@@ -397,8 +397,8 @@ Output : `r visible.output`
 \begin{equation*}
   \text{Signal(bit)} =
   \begin{cases}
-    -1  & \quad \text{wenn bit} = 0\\
-    +1  & \quad \text{wenn bit} = 1\\
+    +1  & \quad \text{wenn bit} = 0\\
+    -1  & \quad \text{wenn bit} = 1\\
   \end{cases}
 \end{equation*}
 \vspace*{10mm}
