@@ -1,0 +1,218 @@
+Bei den Implementierungen der Funktionen wird am Anfang immer überprüft, ob die Parameter richtig gesetzt wurden und alle mitgegebene Daten korrekt sind. Diese Überprüfungen werden bei der Erklärung nicht näher ausgeführt, nur wenn sie speziell für diese Funktion von Bedeutung sind. 
+
+Wenn nicht alle Parameter verwendet wurden, werden immer bestimmte Standartwerte gesetzt. Diese können in Kapitel~\ref{cha:interface} nachgelesen werden, die Erzeugung dieser wird hier jedoch nicht vorgestellt.
+
+
+
+\section{Erstellung eines Paketes in RStudio}
+\label{sec:implementation_package}
+Pakete sind die Basis bei der Erzeugung wiederverwendbaren R-Codes. Dabei beinhalten Pakete Funktionen, Dokumentation zu den Funktionen und Beispieldaten. Die Erstellung eines eigenen Paketes ist mit der Entwicklungsumgebung RStudio sehr einfach und benötigt nicht viel Einarbeitungszeit.
+
+Pakete werden mittels den CRAN-Servern\footnote{The Comprehensive R Archive Network: \url{https://cran.r-project.org/}} geteilt, somit gibt es eine Quelle, von denen alle Entwickler die Pakete beziehen. Zur Installation eines Paketes kann RStudio oder der erste Befel im Listing~\ref{lst:install} verwendet werden. Zur Entwicklung eines Paketes sind einige Hilfspakete nützlich, die bereits in Kapitel~\ref{cha:technologies} eingeführt wurden. 
+
+\begin{lstlisting}[caption=Installation eines Paketes und dessen Abhängigkeiten, label={lst:install}, float=!th]
+install.package()
+install_deps(dependencies = TRUE)
+\end{lstlisting}
+
+Sollten C/C++-Code verwendet werden, muss natürlicherweise ein Compiler und weitere Tools (in Windows RTools) am Entwicklungsrechner installiert sein. Genaue Informationen finden sich im Buch von Hadley Wickham \cite[18 ff.]{wickham2015r}.
+
+Ein Paket wird mittels dem Wizard von RStudio (\emph{File$\rightarrow$New Project$\rightarrow$New Directory$\rightarrow$R Package}) erstellt. Dabei wird dann ein Ordner für das Paket erstellt, das eine DESCRIPTION- und eine NAMESPACE-Datei beinhaltet. Zusätzlich wird noch ein R-Ordner erstellt, der sämtliche R-Skripte (Funktionen) enthalten wird. Sollte C/C++-Code verwendet werden, muss dieser in den src-Ordner abgelegt werden. Alle Dateien im inst-Ordner werden automatisch bei der Installation kopiert, sind also vom R-Code aus erreichbar \cite[196 ff.]{wickham2015r}. Noch dazu sind viele weitere Ordner in der Paketstruktur möglich, die allerdings nicht gebraucht wurden. \cite[28 ff.]{wickham2015r}
+
+In der DESCRIPTION-Datei werden alle wichtigen Informationen für das Paket gespeichert. Das sind Entwicklerdaten, eine Kurzbeschreibung, Lizenzierung und Versionierung. Dort können auch benötigte Pakete angegeben werden, die bei der Installation vom CRAN-Server automatisch installiert werden. Bei einer lokalen Installation müssen diese Pakete selbständig nachinstalliert werden. Dies lässt sich einfach mit dem zweiten Befehl des Listings~\ref{lst:install} erledigen. Diese Funktion ist im Paket \emph{devtools} enthalten. \cite[67-82]{wickham2015r}
+
+Der Code wird mittels \emph{roxygen}-Kommentare dokumentiert. Dabei werden Kommentare in den Code eingefügt, die beim Erstellen des Paketes automatisch in eine Paket-Dokumentation umgewandelt werden. Die wichtigsten Annotationen wurden bereits in Kapitel~\ref{sec:R} vorgestellt. \cite[83-110]{wickham2015r}
+
+Die NAMESPACE-Datei verwaltet das Exportieren und Importieren von Funktionen in den Paketnamensraum. Diese Datei muss nicht verändert werden, da beim Erstellen des Paketes diese Datei automatisch erstellt wird. Dabei werden die \texttt{@export}-Statements ausgewertet und diese Funktionen nach außen hin zugänglich gemacht. Bei der Verwendung vom \emph{Rcpp}-Paket und C++-Code müssen die 2 Zeilen vom Listing~\ref{lst:rcppNamespace}, in ein R-Skript geschrieben werden. \cite[144-160]{wickham2015r}
+
+\begin{lstlisting}[caption=Nötige \emph{roxygen}-Kommentare bei der Verwendung von C++-Code, label={lst:rcppNamespace}, float=!th]
+#' @useDynLib channelcoding
+#' @importFrom Rcpp sourceCpp
+\end{lstlisting}
+
+Damit die \emph{roxygen}-Kommentare ausgewertet werden, muss im RStudio (\emph{Build$\rightarrow$Configure Build Tools...}) die Einstellungen des Projektes geändert werden. Dabei muss ausgewählt werden, dass \emph{devtools} und \emph{roxygen} bei der Erstellung des Paketes verwendet wird.
+
+Danach ist alles bereit, um das Paket zu erstellen, dabei wird einfach im R-Studio am rechten oberen Rand der Reiter \emph{Build} ausgewählt und dort auf \emph{Build\&Reload} geklickt. Nun werden alle C++-Dateien kompiliert und R-Wrapper-Funktionen erstellt, die den Zugriff auf diese erleichtern. Nachdem der Prozess abgeschlossen ist, wird das Paket lokal installiert und ist zur Verwendung bereit. Möchte man das Paket auf einem anderen Computer installieren, dann muss das Paket zu einem Archiv gepackt werden. Dazu muss auf \emph{More$\rightarrow$Build Binary Package} geklickt werden, dann wird ein Archiv gebildet, das auf allen PCs mit den selben Betriebssystem installiert werden kann. Das bedeutet, dass das Paket für jedes Betriebssystem extra kompiliert werden muss. Darum sind 3 Versionen des Paketes für Windows, Linux und Mac OS nötig. Bei einem binären Paket kann der Benutzer den Code nicht einsehen, wird jedoch \emph{Build Source Package} ausgewählt, ist der der Code für den späteren Anwender einsehbar.   
+
+\section{Erzeugun des Permutationsvektors}
+\label{sec:implementation_permutation}
+Die Interleaver beim Kodieren und Dekodieren benötigen einen Permutationsvektor, der die Vertauschungsreihenfolge der Nachricht beinhaltet. Diese Reihenfolge kann ganz unterschiedlich bestimmt werden. Um die Erzeugung dieses Vektors zu erleichtern wurde eine Hilfsfunktion geschaffen, die dem Benutzer viele verschiedene Permutationstypen anbietet. Diese wurden aus dem Buch von Morelos-Zaragoza \cite{morelos2006art} entnommen und nachimplementiert. Die Länge des Permutationsvektors muss immer der Länge der Nachricht, plus der Anzahl der Registern des Kodierers entsprechen. Bei vielen Typen wird eine Matrix zur Erzeugung verwendet, deswegen müssen die Argumente \texttt{cols} und \texttt{rows}, die in einer Liste eingebettet sind, genau der Länge des Permutationsvektors entsprechen.
+
+\begin{lstlisting}[caption=Implementierung von \texttt{TurboGetPermutation}, label={lst:implemenation_TurboGetPermutation}, float=!th]
+RANDOM = {
+  interleaver <- sample(c(0:(message.length + coder.info$M - 1)))
+},
+PRIMITIVE = {
+  init <- c(0:N)
+  interleaver <- (init - args$root) %% (N + 1)
+},
+CYCLIC = {
+  interleaver <-
+     t(apply(init, 1,
+       function(x) {
+         temp <- Shift(x, args$distance * (i))
+         i <<- i + 1
+         return(temp)
+         }
+      ))
+ },
+BLOCK = {
+  init <- matrix(c(0:(N - 1)), nrow = rows, byrow = TRUE)
+  return(as.vector((init)))
+ },
+HELICAL = {
+  interleaver <-
+    sapply(init, function(x) {
+      x <- (((i %% cols) + (i * cols)) %% N)
+      i <<- i + 1
+      return(x)
+    })
+},
+DIAGONAL = {
+  interleaver <-
+    sapply(init, function(x) {
+      x <- (i * cols) %% N + (i %/% rows + i %% rows) %% cols
+      i <<- i + 1
+      return(x)
+    })
+}
+\end{lstlisting}
+
+Die verschiedene Typen sind in Listing~\ref{lst:implemenation_TurboGetPermutation} in R-Code abgebildet:
+
+\begin{itemize}
+\item \texttt{RANDOM} - Dort wird einfach eine zufällige Reihenfolge erzeugt.
+\item \texttt{PRIMITIVE} - Dabei wird eine Vektor von 0 bis N, um den mitgegebenen Parameter nach rechts oder links verschoben.
+\item \texttt{CYCLIC} - Hier wird jeden Zeile der Initialisierungsmatrix (\texttt{init}), um den Index multipliziert mit \texttt{distance} verschoben. Danach wird die Matrix von oben nach unten als Vektor ausgegeben.
+\item \texttt{BLOCK} - Bei diesem Typ wird ein Vektor von 0 bis N zeilenweise in eine Matrix eingelesen und spaltenweisen wieder ausgegeben.
+\item \texttt{HELICAL} - Dabei wird wieder eine Initialisierungsmatrix erzeugt, die dann diagonal von links oben nach rechts unten ausgelesen wird. Sobald die letzte Zeile erreicht ist, wird in die erste Zeile gesprungen und von der nächsten Spalte aus weiter gemacht.
+\item \texttt{DIAGONAL} - Im Unterschied zum vorigen Typ wird hierbei beim Erreichen der letzten Zeile, auch in die erste Zeile gesprungen, jedoch nicht in die nächste Spalte. Sondern zum ersten Bit in der ersten Spalte, das noch nicht gelesen wurde.
+\end{itemize}
+
+Alle diese Typen lassen sich am bestem verstehen, wenn man sie anwendet und die Matrizen ausgeben lässt (\texttt{visualize = TRUE}. Beispiele finden sich in Kapitel~\ref{sec:example_createHelpers}.
+
+\FloatBarrier
+\section{Erzeugung der Punktierungsmatrix}
+\label{sec:implementation_puncturing}
+Die Implementierung der Funktion zur Erstellung der Punktierungsmatrix sieht sehr einfach aus. Dort wird einfach der mitgegebene Vektor in eine Matrix mit 3 Zeilen verpackt. 
+
+\begin{lstlisting}[caption=Implementierung von \texttt{TurboGetPunctuationMatrix}, label={lst:implemenation_TurboGetPunctuationMatrix}, float=!th]
+if (length(punctuation.vector) %% 3 != 0) {
+  stop("Wrong length of punctuation vector! Must be a multiple of 3!")
+}
+
+mat <- matrix(punctuation.vector, nrow = 3)
+
+if (any(colSums(mat) == 0)) {
+  stop("Punctuation matrix should not have a 0 column!")
+}
+\end{lstlisting}
+
+In Listing~\ref{lst:implemenation_TurboGetPunctuationMatrix} sieht man zuerst die Überprüfung auf die Länge des mitgegeben Vektors, da dieser ein Vielfaches von drei sein muss. Danach wird die Matrix aus dem Vektor erzeugt und im Anschluss geprüft, ob eine Nullspalte existiert. Das darf nicht vorkommen, da sonst ein eindeutiges Einfügen der Bits nicht mehr möglich.
+
+\FloatBarrier
+\section{Kodierung}
+\label{sec:implementation_encode}
+Die Kodierung erfolgt laut der in den Grundlagen, in Kapitel \ref{sec:turboCodes}, besprochenen Schaltung. Dabei werden die Kodierungsfunktionen von der Faltungskodierung von Martin Nocker \cite{nocker} verwendet.
+
+\begin{lstlisting}[caption=Implementierung von \texttt{TurboEncode}, label={lst:implemenation_TurboEncode}, float=!th]
+parity.1 <- ConvEncode(message, coder.info, TRUE)
+
+temp.index <- c(rep(FALSE, 0), TRUE, rep(FALSE, coder.info$N - 1))
+code.orig <- parity.1[temp.index]
+
+code.perm <- as.numeric(code.orig[permutation.vector + 1] < 0)
+
+parity.2 <- ConvEncode(code.perm, coder.info, FALSE)
+
+temp.index <- c(rep(FALSE, parity.index - 1), TRUE, rep(FALSE, coder.info$N - parity.index))
+parity.1 <- parity.1[temp.index]
+parity.2 <- parity.2[temp.index]
+
+code.result <- Interleave(code.orig, parity.1, parity.2)
+
+if (!is.null(punctuation.matrix)) {
+  code.punct <- PunctureCode(code.result, punctuation.matrix)
+}
+if (!is.null(punctuation.matrix)) {
+  return(list(original = code.result, punctured = code.punct))
+} else {
+  return(code.result)
+}
+\end{lstlisting}
+
+Das abgebildete Listing~\ref{lst:implemenation_TurboEncode} spiegelt genau diese Schaltung in R-Code wieder. Dabei wird in \texttt{parity.1} und \texttt{parity.2} die Ergebnisse der beiden Kodierer abgespeichert. Vor dem zweitem Kodierer wird die Originalnachricht permutiert und in \texttt{code.perm} gesichert. Die \texttt{temp.index}-Variablen dienen zum Extrahieren der einzelnen Nachrichten eines Ausganges des Faltungskodierer. Da der Turbo-Kodierer nur einen Ausgang nutzt, ist diese Vorgehen nötig, diesen herauszufiltern.
+
+Nachdem alle drei Teile erzeugt wurden, können diese in die Variable \texttt{code.result} zusammengefasst werden. Wenn Punktierung verwendet wird, werden noch die nötigen Bits mit der \texttt{PunctureCode}-Funktion herausgestrichen. 
+
+Der Rückgabewert der Funktion ist die kodierte Nachricht, oder bei verwendeter Punktierung wird eine Liste mit punktierter und nicht punktierter Nachricht zurückgegeben. Somit hat der Benutzer die Möglichkeit beide Varianten für die Dekodierung zu verwenden.  
+
+\FloatBarrier
+\section{Dekodierung}
+\label{sec:implementation_decode}
+
+\FloatBarrier
+\section{Rauschen erzeugen}
+\label{sec:implementation_applyNoise}
+Das Umsetzen des bereits in Kapitel~\ref{sec:channels} erklärten Kanalmodells, orientiert sich an den Formeln der Theorie. Diese werden einfach in R-Code verpackt und das berechnete Rauschen dem Signal hinzugefügt.  
+
+\begin{lstlisting}[caption=Implementierung von \texttt{ApplyNoise}, label={lst:implemenation_ApplyNoise}, float=!th]
+msg.len <- length(msg);
+SNR.linear <- 10^(SNR.db/10);
+power <- sum(msg^2)/(msg.len); 
+
+noise <- sqrt(power / SNR.linear) * rnorm(msg.len,0,1)
+msg.out <- msg + noise;
+\end{lstlisting}
+
+Zur Berechnung des Rauschens ist die Leistung pro Bit erforderlich, das wird in den ersten drei Code-Zeilen von Listing~\ref{implemenation_ApplyNoise} errechnet. Danach wird eine Zufallszahl zwischen 0 und 1 erzeugt die mit dem Ergebnis der Wurzel multipliziert wird. Dieser Vektor wird dann mit dem Originalsignal überlagert.
+
+\FloatBarrier
+\section{Simulationen}
+\label{sec:implementation_simulation}
+Bei einer Simulation wird ein Kodierungsverfahren mehrmals mit einer festgelegten Nachrichtenlänge für verschiedene Signal/Rausch-Verhältnis getestet, um am Ende die Anzahl der Fehler pro Bit zu errechnen. Sämtliche Parameter der Simulation können mittels den Parametern beeinflusst werden.
+
+\subsection{Turbo-Kode}
+\label{sec:implementation_turbo}
+Bei der reinen Simulation vom Turbo-Kode-Verfahren wird eine zufällige Nachricht erzeugt die dann kodiert, verrauscht und wieder dekodiert wird. Dabei wird die Anzahl der nicht korrigierten Fehlerbits gezählt, um am Ende ein Dataframe zu erzeugen, das pro Signal/Rausch-Verhältnis eine Bitfehlerrate beinhaltet.
+
+\begin{lstlisting}[caption=Implementierung von \texttt{TurboSimulation}, label={lst:implemenation_TurboSimulation}, float=!th]
+v.db <- seq(from = min.db, to = max.db, by = db.interval)
+
+for (db in v.db) {
+  for (i in 1 : iterations.per.db) {
+    message <- sample(c(0,1), msg.length, replace = TRUE)
+    
+    coded <- TurboEncode(message, perm, coder, punctuation.matrix = punctuation.matrix)
+    noisy <- ApplyNoise(coded, db)
+    decoded <- TurboDecode(noisy, perm, decode.iterations, coder,
+                             punctuation.matrix = punctuation.matrix)
+                             
+    decode.errors <- sum(abs(decoded$output.hard - message))
+    total.errors <- total.errors + decode.errors
+  }
+
+  v.ber <- c(v.ber, total.errors / (msg.length * iterations.per.db))
+  total.errors <- 0
+}
+
+df <- data.frame(db = v.db, ber = v.ber)
+\end{lstlisting}
+
+Die Implementierung wird in Listing~\ref{lst:implemenation_TurboSimulation} dargestellt. Dabei wird in der ersten Zeile ein Vektor (\texttt{v.db}) erzeugt, der alle Signal/Rausch-Verhältnisse beinhaltet, die getestet werden. Im Anschluss wird über diese Schleife iteriert, in dieser das gesamte Verfahren abgearbeitet wird. Nach Kodierung, Verrauschung und Dekodierung wird gezählt, wieviele Bits (\texttt{decode.errors}) nicht der Originalnachricht entsprechen. Um die Genauigkeit der Simulation zu erhöhen wird der Vorgang mehrmals (\texttt{iterations.per.db}) ausgeführt und am Ende der Durchschnitt (\texttt{v.ber}) berechnet. In den letzten Zeilen wird die Bitfehlerrate dem Dataframe hinzugefügt.
+
+\FloatBarrier
+\subsection{Kanalkodierung}
+\label{sec:implementation_channelcoding}
+Bei dieser Funktion werden einfach die mitegebenen Simulationsparameter auf alle drei Kanalkodierungsverfahren ausgeführt und danach die Dataframes zusammengefasst. Somit ist diese Funktion einfach eine Erleichterung, wenn man Block-, Faltungs- und Turbo-Kodes miteinander vergleichen möchte.
+
+\FloatBarrier
+\section{Visualisierung}
+\label{sec:implementation_visualization}
+
+\FloatBarrier
+\subsection{Vergleich mehrere Simulationen}
+\label{sec:implementation_plotSimulation}
+Um die erhaltenen Dataframes aus den vorigen Kapiteln in einer Grafik darzustellen 
+
+

@@ -754,8 +754,6 @@ TurboSimulation <- function(coder = NULL,
     rstudioapi::viewer(system.file("pdf", "SimulationTurbo.pdf", package = "channelcoding"))
   }
 
-  df <- data.frame(db = v.db, ber = v.ber)
-
   return(df)
 }
 

@@ -19,7 +19,7 @@ ApplyNoise <- function(msg, SNR.db = 3, binary = FALSE)
   # normal distributed values with mean 0 and standard-deviation 1
   noise <- sqrt(power / SNR.linear) * rnorm(msg.len,0,1)
 
-  msg.out <- msg + noise;
+  msg.out <- msg + noise
 
   if(binary){
     msg.out <- ifelse(msg.out <= 0.5, 0, 1)
