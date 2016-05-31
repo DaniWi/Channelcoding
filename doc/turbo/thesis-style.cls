@@ -150,8 +150,8 @@
 \RequirePackage[font=small, labelfont=bf, labelsep=endash, margin=1cm]{caption}
 
 % Subfigures
-\RequirePackage[margin=0cm]{subfig}
-
+%\RequirePackage[margin=0cm]{subfig} depracted
+\RequirePackage{subcaption}
 % Citations
 %\RequirePackage{cite}
 \RequirePackage[backend=bibtex, style=numeric-comp]{biblatex}

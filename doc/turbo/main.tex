@@ -17,6 +17,11 @@
 %\usepackage{tabularx} % set table width		
 \usepackage{longtable}
 
+\newtheorem{t_def}{Definition}[chapter]
+\newtheorem{e_exa}{Beispiel}[chapter]
+
+\usepackage{placeins}
+
 % change name of caption by longtables
 \usepackage{caption}
 \captionsetup[longtable]{name=Funktion}
@@ -78,5 +83,7 @@
 \lstlistoflistings
 \clearpage
 
-\printbibliography
+\defbibheading{myheading}[Literatur]{\chapter*{#1}}
+\pagestyle{plain}
+\printbibliography[heading=myheading]
 \end{document}
