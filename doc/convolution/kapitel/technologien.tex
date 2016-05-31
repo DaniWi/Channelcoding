@@ -1,8 +1,8 @@
 % technologien.tex
-Dieses Kapitel setzt sich folgendermaßen zusammen: Kapitel~\ref{kapitel:R} behandelt die Programmiersprache R und die verwendete Entwicklungsumgebung RStudio. In Kapitel~\ref{kapitel:rcpp} werden die Möglichkeiten der Einbindung von C/C++-Code, v.a. mithilfe des Pakets \texttt{Rcpp}, beschrieben. Schließlich wird in Kapitel~\ref{kapitel:rmarkdown} auf die Erstellung dynamischer Dokumente und Visualisierungen mittels \texttt{RMarkdown}, \LaTeX\ und Ti\textit{k}Z.
+Dieses Kapitel setzt sich folgendermaßen zusammen: Kapitel~\ref{kapitel:R} behandelt die Programmiersprache R und die verwendete Entwicklungsumgebung RStudio. In Kapitel~\ref{kapitel:rcpp} werden die Möglichkeiten der Einbindung von C/C++-Code, v.a. mithilfe des Pakets \texttt{Rcpp}, beschrieben. Schließlich wird in Kapitel~\ref{kapitel:rmarkdown} auf die Erstellung dynamischer Dokumente und Visualisierungen mittels \texttt{RMarkdown}, \LaTeX\ und Ti\textit{k}Z eingegangen.
 \section{R, RStudio, Pakete}
 \label{kapitel:R}
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\ScaleIfNeeded]{abbildungen/rstudio}
 \caption{RStudio Standardansicht}
@@ -17,11 +17,11 @@ Der Funktionsumfang der Sprache kann durch sogenannte Pakete erweitert werden. B
 \\
 \\
 % Roxygen
-Ein wichtiges Paket welches im Rahmen dieser Arbeit verwendet wurde ist \texttt{roxygen}. Mithilfe dieses Pakets wird, ähnlich wie JavaDoc für Java, durch spezielle Kommentare und Annotations überhalb der Paketfunktionen automatisch die Paketdokumentation erstellt. Die \texttt{roxygen}-Kommentare der Paketfunktionen, die für wartbaren Code ohnehin unabdingbar sind, sind für den Entwickler erheblich angenehmer als die Paketdokumentation von Hand zu schreiben. Roxygen-Kommentare werden durch das Kommentarsymbol \mbox{\texttt{\# '}} am Zeilenbeginn eingeleitet. Zu den wichtigsten Annotations gehören jene für die Beschreibung der Parameter (\texttt{@param}) und Rückgabewerte (\texttt{@return}) sowie Beispiele zur Ausführung der Funktion (\texttt{@examples}). Weiters wird über die \texttt{@export} Annotation geregelt welche Funktionen nach Auslieferung des Pakets von außen aufrufbar sind.
+Ein wichtiges Paket welches im Rahmen dieser Arbeit verwendet wurde ist \texttt{roxygen}. Mithilfe dieses Pakets wird, ähnlich wie JavaDoc für Java, durch spezielle Kommentare und Annotations überhalb der Paketfunktionen automatisch die Paketdokumentation erstellt. Die \texttt{roxygen}-Kommentare der Paketfunktionen, die für wartbaren Code ohnehin unabdingbar sind, sind für den Entwickler erheblich angenehmer als die Paketdokumentation von Hand zu schreiben. Roxygen-Kommentare werden durch das Kommentarsymbol \mbox{\texttt{\#'}} am Zeilenbeginn eingeleitet. Zu den wichtigsten Annotations gehören jene für die Beschreibung der Parameter (\texttt{@param}) und Rückgabewerte (\texttt{@return}) sowie Beispiele zur Ausführung der Funktion (\texttt{@examples}). Weiters wird über die \texttt{@export} Annotation geregelt welche Funktionen nach Auslieferung des Pakets von außen aufrufbar sind.
 \\
 \\
 % devtools
-Ein weiteres hilfreiches Paket ist das \texttt{devtools}-Paket. Das Paket stellt hilfreiche Funktionen für die Erstellung (Build) von Paketen zur Verfügung und beschleunigt so den Build-Workflow für den Entwickler.
+Ein weiteres hilfreiches Paket ist das \texttt{devtools}-Paket. Das Paket stellt Funktionen für die Erstellung (Build) von Paketen zur Verfügung und beschleunigt so den Build-Workflow für den Entwickler.
 \\
 \\
 % RStudio
@@ -41,30 +41,29 @@ Die \texttt{.C}-Schnittstelle ist die einfachste Variante C-Code auszuführen, j
 Bei der \texttt{.Call}-Schnittstelle handelt es sich um eine Erweiterung der \texttt{.C}-Schnittstelle. Die Implementierung ist komplexer, dafür sind R-Datentypen verfügbar und es gibt die Möglichkeit eines Rückgabewerts mittels \texttt{return} Statement. \cite{wickham2015r}
 \\
 \\
-Sowohl bei der \texttt{.C}-Schnittstelle als auch bei der \texttt{.Call}-Schnittstelle muss der C-Code vor dem Aufruf per Hand kompiliert und in der R Session geladen werden. Das \texttt{Rcpp}-Paket ermöglicht die Verwendung von C++-Code ohne diesen Aufwand. Im C++-Code stehen R-Datentypen wie Vektoren, Matrizen oder Listen ohne komplizierte Syntax zur Verfügung. Die Funktionsaufrufe sehen, im Gegensatz zu den ersten beiden Ausführungen, aus wie normale R-Funktionsaufrufe und machen dadurch den Code erheblich lesbarer. Weiters stehen Vektorfunktionen zur Verfügung, d.h. eine auf einen Vektor angewandte Funktion wird auf jedes Vektorelement ausgeführt und erspart somit beispielsweise eine Schleife. Bei der Entwicklung eines eigenen Pakets ist es bei der Verwendung des \texttt{Rcpp}-Pakets zusammen mit RStudio sehr einfach C++-Code zu integrieren. Durch all diese Vorteile ist das \texttt{Rcpp}-Paket die zu wählende Schnittstelle. Während der Paketerzeugung kompiliert RStudio automatisch alle C++-Dateien und erstellt automatisch Wrapper-Funktionen, die den Zugriff auf die Funktionen erleichtern.
+Sowohl bei der \texttt{.C}-Schnittstelle als auch bei der \texttt{.Call}-Schnittstelle muss der C-Code vor dem Aufruf per Hand kompiliert und in der R Session geladen werden. Das \texttt{Rcpp}-Paket ermöglicht die Verwendung von C++-Code ohne diesen Aufwand. Im C++-Code stehen R-Datentypen wie Vektoren, Matrizen oder Listen ohne komplizierte Syntax zur Verfügung. Die Funktionsaufrufe sehen, im Gegensatz zu den C-Schnittstellen, aus wie normale R-Funktionsaufrufe und machen dadurch den Code erheblich lesbarer. Weiters stehen Vektorfunktionen zur Verfügung, d.h. eine auf einen Vektor angewandte Funktion wird auf jedes Vektorelement ausgeführt und erspart somit beispielsweise eine Schleife. Bei der Entwicklung eines eigenen Pakets ist es bei der Verwendung des \texttt{Rcpp}-Pakets zusammen mit RStudio sehr einfach C++-Code zu integrieren. Durch all diese Vorteile ist das \texttt{Rcpp}-Paket die zu wählende Schnittstelle. Während der Paketerzeugung kompiliert RStudio automatisch alle C++-Dateien und erstellt automatisch Wrapper-Funktionen, die den Zugriff auf die Funktionen erleichtern.
 \\
 \\
-Die C++ Datei muss mit folgenden Zeilen starten:
-\lstset{language=C++, numbers=none, basicstyle=\ttfamily}
-\begin{lstlisting}
+Die C++-Datei muss mit folgenden Zeilen starten:
+\begin{lstlisting}[language=C++, numbers=none, basicstyle=\ttfamily]
 #include <Rcpp.h>
 using namespace Rcpp;
 \end{lstlisting}
 Sowie jede Funktion, die in R verfügbar sein soll muss folgenden Präfix erhalten:
-\begin{lstlisting}
+\begin{lstlisting}[language=C++, numbers=none, basicstyle=\ttfamily]
 // [[Rcpp::export]]
 \end{lstlisting}
 Die genaue Verwendung des \texttt{Rcpp}-Pakets ist in \cite{wickham2015advanced} beschrieben.
 \section{RMarkdown, \LaTeX, Ti\textit{k}Z}
 \label{kapitel:rmarkdown}
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\ScaleIfNeeded]{abbildungen/rmarkdown}
-\caption[RMarkdown Überblick, Quelle: \cite{rmarkdown}]{RMarkdown Überblick}
+\caption[RMarkdown Überblick]{RMarkdown Überblick, Quelle: \cite{rmarkdown}}
 \label{abb:rmarkdown}
 \end{figure}
 % R Markdown
-Zur Erstellung von dynamischen Dokumenten wird das Paket \texttt{RMarkdown} verwendet. Durch die Kombination der Syntax von Markdown, R, \LaTeX\ und HTML ergibt sich ein flexibles und einfaches Werkzeug. Die unterstützen Ausgabeformate beinhalten u.a. HTML, PDF, MS Word und Beamer (Präsentationen).
+Zur Erstellung von dynamischen Dokumenten wird das Paket \texttt{RMarkdown} verwendet. Durch die Kombination der Syntax von Markdown, R, und \LaTeX\ ergibt sich ein flexibles und einfaches Werkzeug. Die unterstützen Ausgabeformate beinhalten u.a. HTML, PDF, MS Word und Beamer (Präsentationen).
 \\
 \\
 % R Markdown Workflow
@@ -72,4 +71,4 @@ Abbildung~\ref{abb:rmarkdown} zeigt den Workflow für die Generierung eines dyna
 \\
 \\
 % LaTeX, TikZ
-Für die Erzeugung dynamischer Grafiken wird das \LaTeX -Sprachpaket Ti\textit{k}Z verwendet. Mithilfe des Dokumenttyps Beamer in \LaTeX\ lassen sich Präsentationen erstellen. Die Grafiken und Inhalte können dadurch dynamisch ein- oder ausgeblendet werden oder farblich hervorgehoben werden. Dies ist insofern wertvoll, da Informationen, die Schritt für Schritt vervollständigt werden, es dem Benutzer leichter machen den Ablauf nachzuvollziehen. Damit zukünftige Studenten die Prinzipien von Faltungskodes besser verstehen können, werden die Visualisierungen der Kodierung und Dekodierung sukzessive eingeblendet.
+Für die Erzeugung dynamischer Grafiken wird das \LaTeX -Sprachpaket Ti\textit{k}Z verwendet. Mithilfe des Dokumenttyps Beamer in \LaTeX\ lassen sich Präsentationen erstellen. Die Grafiken und Inhalte können dadurch dynamisch ein- oder ausgeblendet werden oder farblich hervorgehoben werden. Dies ist insofern wertvoll, da Informationen, die Schritt für Schritt vervollständigt werden, es dem Benutzer leichter machen den Ablauf nachzuvollziehen. Damit Benutzer des R-Pakets dieser Arbeit die Prinzipien von Faltungskodes besser verstehen können, werden die Visualisierungen der Kodierung und Dekodierung sukzessive eingeblendet.

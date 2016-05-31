@@ -2,7 +2,7 @@
 In diesem Kapitel werden die theoretischen Grundlagen eingeführt. In Kapitel~\ref{kapitel:grundlagen_kanalkodierung} werden Prinzipien und Eigenschaften der Kanalkodierung beschrieben. Kapitel~\ref{kapitel:grundlagen_faltungskodierung} geht auf Faltungskodes ein, eine Art der Kanalkodierung auf die sich diese Arbeit konzentriert.
 \section{Kanalkodierung}
 \label{kapitel:grundlagen_kanalkodierung}
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \resizebox{\textwidth}{!}{%
 	\input{tikz/kommunikationskanal}
@@ -10,7 +10,27 @@ In diesem Kapitel werden die theoretischen Grundlagen eingeführt. In Kapitel~\r
 \caption{Kommunikationskanal}
 \label{abb:kommunikationskanal}
 \end{figure}
-Kanalkodierung kann als Zuordnung bzw. Abbildung von Quellzeichen (Zeichen die eine Informationsquelle emittiert) zu Kanalzeichen (Zeichen die über den Kommunikationskanal übertragen werden) angesehen werden. Der Kanal enthält ein Rauschen, d.h. Informationen die von der Quelle emittiert werden, können verändert beim Empfänger ankommen. Daher wird der Kanal auch als \emph{verrauschter} Kanal bezeichnet. Würde eine Information unkodiert über den verrauschten Kanal übertragen werden, kann die verfälschte Nachricht nicht wiederhergestellt werden. Daher fügt der Kanalkodierer den Quellzeichen Redundanz hinzu, sodass empfängerseitig verfälschte Zeichen erkannt und korrigiert werden können. Abbildung~\ref{abb:kommunikationskanal} zeigt einen Kommunikationskanal inklusive Kanalkodierung. Eine Nachricht $\mathbf{u}=\left( u_{1},u_{2},\dots ,u_{k}\right)$ wird in ein Kodewort $\mathbf{v}=\left( v_{1},v_{2},\dots ,v_{n}\right)$, das Redundanz enthält, kodiert und über den Kanal gesendet. Dabei wird das Signal durch Rauschen, welches als Fehlervektor $\mathbf{e}=\left( e_{1},e_{2},\dots ,e_{n}\right)$ dargestellt wird, verfälscht. Der Empfangsvektor$\mathbf{y}$ ergibt sich aus der Überlagerung von $\mathbf{v}$ und $\mathbf{e}$. Der Empfangsvektor wird vom Dekodierer zur Schätzung $\mathbf{u'}$ der originalen Nachricht dekodiert. Ziel der Kanalkodierung ist es die Wahrscheinlichkeit, dass $\mathbf{u'}=\mathbf{u}$ ist, zu maximieren.
+Kanalkodierung kann als Zuordnung bzw. Abbildung von Quellzeichen (Zeichen die eine Informationsquelle emittiert) zu Kanalzeichen (Zeichen die über den Kommunikationskanal übertragen werden) angesehen werden. Der Kanal enthält ein Rauschen, d.h. Informationen die von der Quelle emittiert werden, können verändert beim Empfänger ankommen. Daher wird der Kanal auch als \emph{verrauschter} Kanal bezeichnet. Würde eine Information unkodiert über den verrauschten Kanal übertragen werden, kann die verfälschte Nachricht nicht wiederhergestellt werden. Daher fügt der Kanalkodierer den Quellzeichen Redundanz hinzu, sodass empfängerseitig verfälschte Zeichen erkannt und korrigiert werden können. Abbildung~\ref{abb:kommunikationskanal} zeigt einen Kommunikationskanal inklusive Kanalkodierung. 
+
+Eine Nachricht $\mathbf{u}=\left( u_{1},u_{2},\dots ,u_{k}\right)$ wird in ein Kodewort $\mathbf{v}=\left( v_{1},v_{2},\dots ,v_{n}\right)$, das Redundanz enthält, kodiert. Vor der Übertragung über den Kanal werden die Bits auf die Signalpegel +1 bzw. -1 folgendermaßen abgebildet:
+\begin{equation}
+\text{Signal(Bit)} =
+\begin{cases}
+  +1  & \quad \text{wenn Bit} = 0\\
+  -1  & \quad \text{wenn Bit} = 1\\
+\end{cases}
+\label{eq:bit_zu_signal_abbildung}
+\end{equation}
+Bei der Übertragung wird das Signal durch Rauschen, welches als Fehlervektor $\mathbf{e}=\left( e_{1},e_{2},\dots ,e_{n}\right)$ dargestellt wird, verfälscht. Der Empfangsvektor$\mathbf{y}$ ergibt sich aus der Überlagerung von $\mathbf{v}$ und $\mathbf{e}$. Der Empfangsvektor wird vor der Dekodierung von den Signalpegel zurück auf die Bit-Werte 0 bzw. 1 abgebildet.
+\begin{equation}
+\text{Kode(Signal)} =
+\begin{cases}
+  0  & \quad \text{wenn Signal } \geq 0\\
+  1  & \quad \text{sonst}\\
+\end{cases}
+\label{eq:signal_zu_bit_abbildung}
+\end{equation}
+Das daraus resultierende Kodewort wird vom Dekodierer zur Schätzung $\mathbf{u'}$ der originalen Nachricht dekodiert. Ziel der Kanalkodierung ist es die Wahrscheinlichkeit, dass $\mathbf{u'}=\mathbf{u}$ ist, zu maximieren.
 
 \subsection{Koderate}
 \label{kapitel:grundlagen_koderate}
@@ -44,7 +64,7 @@ Faltungskodes sind blockfreie Kodes, d.h. Quellzeichen werden nicht in Blöcke f
 
 \subsection{Kodiererdarstellung und Kodierung}
 \label{kapitel:grundlagen_darstellung}
-Faltungskodierer lassen sich einfach durch ein Schieberegister und mehrere logische XOR-Gatter darstellen. Bei einem Faltungskodierer mit $N$ Ausgängen und einem Schieberegister der Länge $M$ wird ein Eingangsbit $u \in \left\lbrace 0,1 \right\rbrace$ in eine Kodesequenz $\mathbf{v}$ der Länge $N$ ($\mathbf{v} \in {\left\lbrace 0,1\right\rbrace }^{N}$) kodiert. Es ergibt sich somit eine Koderate von $R=\frac{1}{N}$. Ein Ausgang wird durch ein sogenanntes \emph{Generatorpolynom} definiert. Dieses stellt eine Linearkombination der $M$ Elemente des Schieberegisters und dem Eingangssignal dar und werden durch die XOR-Gatter abgebildet. Alle Generatorpolynome werden in einer \emph{Generatormatrix}
+Faltungskodierer lassen sich einfach durch ein Schieberegister und mehrere logische XOR-Gatter darstellen. Bei einem Faltungskodierer mit $N$ Ausgängen und einem Schieberegister der Länge $M$ wird ein Eingangsbit $u \in \left\lbrace 0,1 \right\rbrace$ in eine Kodesequenz $\mathbf{v}$ der Länge $N$ $\left( \mathbf{v} \in {\left\lbrace 0,1\right\rbrace }^{N}\right)$ kodiert. Es ergibt sich somit eine Koderate von $R=\frac{1}{N}$. Ein Ausgang wird durch ein sogenanntes \emph{Generatorpolynom} definiert. Dieses stellt eine Linearkombination der $M$ Elemente des Schieberegisters und dem Eingangssignal dar und werden durch die XOR-Gatter abgebildet. Alle Generatorpolynome werden in einer \emph{Generatormatrix}
 \begin{equation}
 G=\left( g_{1}, g_{2},\dots , g_{N} \right) 
 \end{equation}
@@ -53,8 +73,8 @@ angegeben, wobei das Generatorpolynom $g_{i}$ Ausgang $i$ definiert. Zur Definit
 Ein weiterer wichtiger Parameter von Faltungskodes ist die \emph{Einflusslänge} (constraint length) die angibt wie oft sich ein Eingangsbit auf die Kodierung auswirkt und wird durch die Länge des Schieberegisters bestimmt. Ein Eingangsbit beeinflusst $M+1$ mal die Kodierung.
 \\
 \\
-Die Verhaltensweise eines Faltungskodierers kann weiters durch seinen \emph{Zustandsgraphen} beschrieben werden. Ein Zustand entspricht einer bestimmten Bitbelegung des Schieberegisters. Faltungskodierer starten, falls nicht explizit angegeben, im Nullzustand, d.h. die Elemente des Schieberegisters sind mit 0 initialisiert.
-\begin{figure}[!t]
+Die Verhaltensweise eines Faltungskodierers kann weiters durch seinen \emph{Zustandsgraphen} beschrieben werden. Ein Zustand entspricht einer bestimmten Bitbelegung des Schieberegisters. Für einen Faltungskodierer mit einem Schieberegister der Länge $M$ ergeben sich $2^{M}$ Zustände. Faltungskodierer starten, falls nicht explizit angegeben, im Nullzustand, d.h. die Elemente des Schieberegisters sind mit 0 initialisiert.
+\begin{figure}[t]
 	\centering
 	\begin{subfigure}{0.65\textwidth}
 		\centering
@@ -71,8 +91,8 @@ Die Verhaltensweise eines Faltungskodierers kann weiters durch seinen \emph{Zust
 		}
 		\caption{Zustandsdiagramm}
 	\end{subfigure}
-	\label{abb:standardkodierer}
 	\caption{Beispiel für Faltungskodierer}
+	\label{abb:standardkodierer}
 \end{figure}
 \begin{beispiel} Ein Faltungskodierer ist gegeben durch das Schaltbild bzw. Zustandsdiagramm in Abbildung~\ref{abb:standardkodierer}. Der Faltungskodierer besitzt die Generatormatrix 
 \begin{equation*}
@@ -93,7 +113,7 @@ Weiters wird das Zustandsdiagramm abgebildet. Die Knoten stellen die Zustände d
 
 \subsection{Dekodierung}
 \label{kapitel:grundlagen_dekodierung}
-\begin{figure}[!t]
+\begin{figure}[t]
 	\centering
 	%\resizebox{\textwidth}{!}{%
 		\input{tikz/trellis_kodierung}
@@ -103,7 +123,7 @@ Weiters wird das Zustandsdiagramm abgebildet. Die Knoten stellen die Zustände d
 \end{figure}
 Zur Dekodierung von Faltungskodes wird der \emph{Viterbi-Algorithmus} angewendet. Der Algorithmus verwendet zur Dekodierung einer Kodesequenz das \emph{Trellis-Diagramm} (kurz: Trellis). Abbildung~\ref{abb:trellis_kodierung} zeigt das Trellis zur Kodierung der Nachricht aus Beispiel~\ref{bsp:B2}.
 \\
-Das Trellis ist ein Erweiterung des Zustandsdiagramms um eine Zeitachse (x-Achse). Die Zustände sind auf der y-Achse aufgetragen. Das Diagramm startet wie die Kodierung im Nullzustand. Ein durchgezogener Pfeil entspricht einer 1 als Eingangsbit, ein gestrichelter Pfeil einer 0 als Eingangsbit. Die Pfeile sind wiederum mit den entsprechenden Ausgangsbits, die das Kodewort ergeben, bewertet.
+Das Trellis ist eine Erweiterung des Zustandsdiagramms um eine Zeitachse (x-Achse). Die Zustände sind auf der y-Achse aufgetragen. Das Diagramm startet wie die Kodierung im Nullzustand. Ein durchgezogener Pfeil entspricht einer 1 als Eingangsbit, ein gestrichelter Pfeil einer 0 als Eingangsbit. Die Pfeile sind wiederum mit den entsprechenden Ausgangsbits, die das Kodewort ergeben, bewertet.
 \\
 \\
 Der Viterbi-Algorithmus verwendet das Trellis zur Dekodierung eines empfangenen Kodes. Dabei wird für den empfangenen Kode im Trellis jener Pfad gesucht der eine bestimmte Metrik minimiert bzw. maximiert. Die Metrik hängt von der Art der Dekodierung ab. Es wird zwischen der \emph{hard~decision} Dekodierung und \emph{soft~decision} Dekodierung unterschieden werden.
@@ -111,14 +131,12 @@ Der Viterbi-Algorithmus verwendet das Trellis zur Dekodierung eines empfangenen 
 \subsubsection{hard decision}
 \label{kapitel:grundlagen_hard_decision}
 Die hard decision Dekodierung sucht den Pfad mit der geringsten Anzahl an Bitfehlern im Trellis. Der Algorithmus startet im Nullzustand und geht von links nach rechts durch das Trellis. Es werden die Metriken der Kanten berechnet. Für eine Kante die einen Zustand $s$ zum Zeitpunkt $t$ mit einem Zustand $s'$ zum Zeitpunkt $t+1$ verbindet, ist die Metrik die Hamming-Distanz zwischen der Bewertung der Kante zwischen $s$ und $s'$ und dem zum Zeitpunkt $t$ empfangenen Teil des Kodes. Die Metrik eines Pfads im Trellis ist die Summe der Kantenmetriken des Pfads. Daher wird der Pfad mit der minimalen Metrik gesucht. Zu jedem Zeitpunkt wird in allen Zuständen die Pfadmetrik zu diesem Zustand berechnet. Treffen zwei Pfade aufeinander, wird der Pfad mit der größeren Hamming-Distanz verworfen. Am Ende erhält man durch \emph{Backtracking} die dekodierte Nachricht. Beginnend bei der niedrigsten Metrik am Ende des Trellis wird der Pfad zum Nullzustand rückwärts durchgelaufen. Als Ergebnis resultiert die Nachricht, dessen Kode die geringste Hamming-Distanz zum empfangenen Kode hat.
-\\
-\\
 \begin{beispiel}
 Gegeben sei der Faltungskodierer aus Beispiel~\ref{bsp:B1} und ein empfangenes Kodewort $\mathbf{y}=\left( 11~00~01~01~10~11\right)$ welches durch Rauschen verfälscht wurde und dekodiert werden soll. Abbildung~\ref{abb:trellis_dekodierung_hard} zeigt die Dekodierung im Trellis. Abbildung~\ref{abb:trellis_dek_hard_a} zeigt die Metriken aller Pfade. Die verworfenen Pfade sind grau dargestellt. Beispielsweise ergibt sich die Metrik zum Zeitpunkt 1 im Zustand 00 durch $0+d(00,11)=2$, im Zustand 10 durch $0+d(11,11)=0$. Der erste Summand entspricht der Hamming-Distanz des vorigen Zustands. In Abbildung~ \ref{abb:trellis_dek_hard_b} werden die verworfenen Pfade nicht mehr angezeigt. Durch Backtracking erhält man die dekodierte Nachricht $\mathbf{u'}=\left( 110100\right)$. Der resultierende Pfad ist orange hervorgehoben. Man erkennt aus der Metrik am Ende der Trellis, dass der empfangene Kode zwei Bitfehler enthielt.
 \label{bsp:B3}
 \end{beispiel}
 
-\begin{figure}[!t]
+\begin{figure}[t]
 	\centering
 	\resizebox{\textwidth}{!}{%
 		\begin{subfigure}[t]{0.42\textwidth}
@@ -138,20 +156,23 @@ Gegeben sei der Faltungskodierer aus Beispiel~\ref{bsp:B1} und ein empfangenes K
 			\label{abb:trellis_dek_hard_b}
 		\end{subfigure}
 	}
-	\label{abb:trellis_dekodierung_hard}
 	\caption{Trellis der hard decision Dekodierung aus Beispiel~\ref{bsp:B3}.}
+	\label{abb:trellis_dekodierung_hard}
 \end{figure}
 
 \subsubsection{soft decision}
 \label{kapitel:grundlagen_soft_decision}
-Vor der Übertragung eines Kodeworts werden die Kodebits 0 bzw. 1 auf die Signalzustände +1 bzw. -1 abgebildet. Bei der hard decision Dekodierung wird vor der Dekodierung das Signal, welches aufgrund von Rauschen verändert worden ist, wieder zu einem Bitvektor zurück umgewandelt. Die soft decision Dekodierung lässt diese Rücktransformation aus und verwendet die exakten empfangenen Signalpegel. Dadurch erzielt die soft decision Dekodierung eine noch bessere Fehlerkorrektur. Die Metrik für eine Kante, die einen Zustand $s$ zum Zeitpunkt $t$ mit einem Zustand $s'$ zum Zeitpunkt $t+1$ verbindet, entspricht dem Skalarprodukt der Signalzustände der Bewertung der Kante zwischen $s$ und $s'$ und dem zum Zeitpunkt $t$ empfangenen Teil des Signals. Der Viterbi-Algorithmus funktioniert analog zur soft decision Dekodierung, jedoch wird der Pfad mit der maximal Metrix gesucht. Treffen zwei Pfade aufeinander, wird der Pfad mit der kleineren Metrik verworfen. Das Backtracking beginnt hier bei der größten Metrik. Als Ergebnis resultiert die Nachricht, dessen Signal das größte Skalarprodukt mit dem empfangenen Signal hat. Diese wird als \emph{soft~output} und als \emph{hard~output} angegeben. Die soft outputs geben neben der dekodierten Nachricht die Zuverlässigkeitswerte für die Bits an, d.h. mit welcher Wahrscheinlichkeit das Bit dem tatsächlich gesendeten Bit der Quellnachricht übereinstimmt. Ein negativer Wert entspricht einem 1-Bit, ein positiver Wert einem 0-Bit. Je höher der Betrag des soft outputs, desto zuverlässiger das dekodierte Bit. Die hard outputs spiegeln die dekodierte Nachricht der soft outputs mit den Bitwerten 0 bzw. 1 wieder. Der Viterbi-Algorithmus mit soft outputs wird SOVA (soft output viterbi algorithm) genannt. Die Berechnung der soft outputs ist in \cite[S. 228 ff.]{schonfeld2012informations} beschrieben.
+Vor der Übertragung eines Kodeworts werden die Kodebits 0 bzw. 1 nach Gleichung~\eqref{eq:bit_zu_signal_abbildung} auf die Signalzustände +1 bzw. -1 abgebildet. Bei der hard decision Dekodierung wird vor der Dekodierung das Signal nach Gleichung~\eqref{eq:signal_zu_bit_abbildung} wieder zu einem Bitvektor zurück umgewandelt. Die soft decision Dekodierung lässt diese Rücktransformation aus und verwendet die exakten Signalpegel. Dadurch erzielt die soft decision Dekodierung eine noch bessere Fehlerkorrektur. Die Metrik für eine Kante, die einen Zustand $s$ zum Zeitpunkt $t$ mit einem Zustand $s'$ zum Zeitpunkt $t+1$ verbindet, entspricht dem Skalarprodukt der Signalzustände der Bewertung der Kante zwischen $s$ und $s'$ und dem zum Zeitpunkt $t$ empfangenen Teil des Signals. Der Viterbi-Algorithmus funktioniert analog zur soft decision Dekodierung, jedoch wird der Pfad mit der maximal Metrix gesucht. Treffen zwei Pfade aufeinander, wird der Pfad mit der kleineren Metrik verworfen. Das Backtracking beginnt hier bei der größten Metrik. Als Ergebnis resultiert die Nachricht, dessen Signal das größte Skalarprodukt mit dem empfangenen Signal hat.
+\\
+\\
+Die Nachricht wird mittels \emph{Soft-Werten} und \emph{Hard-Werten} angegeben. Die Soft-Werte geben neben der dekodierten Nachricht die Zuverlässigkeitswerte für die Bits an, d.h. mit welcher Wahrscheinlichkeit das Bit mit dem tatsächlich gesendeten Bit der Quellnachricht übereinstimmt. Positive Soft-Werte werden auf eine 0, negative auf eine 1 abgebildet. Der Betrag des Soft-Wertes gibt die Zuverlässigkeit an, wobei gilt, je höher der Betrag, desto zuverlässiger das dekodierte Bit. Die Hard-Werte entsprechen der Abbildung der Soft-Werte auf die Bit-Werte 0 bzw. 1. Der Viterbi-Algorithmus mit Soft-Werten wird auch SOVA (Soft Output Viterbi Algorithm) genannt. Die Berechnung der Soft-Werte ist in \cite[S. 228 ff.]{schonfeld2012informations} beschrieben.
 
 \begin{beispiel}
 Gegeben sei der Faltungskodierer aus Beispiel~\ref{bsp:B1} und ein empfangenes Signal $\mathbf{y}=\left( -1~-1~~0.5~-1~~0.9~-0.9~~1~-0.2~~-0.8~-0.1~-1~-1\right)$ welches durch Rauschen verfälscht wurde und dekodiert werden soll. Abbildung~ \ref{abb:trellis_dekodierung_soft} zeigt die Dekodierung im Trellis. Abbildung~\ref{abb:trellis_dek_soft_a} zeigt die Metriken aller Pfade. Die verworfenen Pfade sind grau dargestellt. Beispielsweise ergibt sich die Metrik zum Zeitpunkt 1 im Zustand 00 durch $0+\left( 1\cdot\left( -1\right) + 1\cdot\left( -1\right)\right) =0-2=-2$, im Zustand 10 durch $0+\left( \left( -1\right)\cdot\left( -1\right) + \left( -1\right)\cdot\left( -1\right)\right) =0+2=2$. Der erste Summand entspricht der Metrik des vorigen Zustands. Die Bits der Kantenbewertung im Trellis müssen für die Berechnung des Skalarprodukts auf die Signalzustände +1 bzw. -1 abgebildet werden. In Abbildung~\ref{abb:trellis_dek_soft_b} werden die verworfenen Pfade nicht mehr angezeigt. Durch Backtracking erhält man die dekodierte Nachricht $\mathbf{u'}=\left( 110100\right)$. Der resultierende Pfad ist orange hervorgehoben.
 \label{bsp:B4}
 \end{beispiel}
 
-\begin{figure}[!t]
+\begin{figure}[t]
 	\centering
 	\resizebox{\textwidth}{!}{%
 		\begin{subfigure}[t]{0.42\textwidth}
@@ -171,8 +192,8 @@ Gegeben sei der Faltungskodierer aus Beispiel~\ref{bsp:B1} und ein empfangenes S
 			\label{abb:trellis_dek_soft_b}
 		\end{subfigure}
 	}
+	\caption{Trellis der soft decision Dekodierung aus Beispiel~\ref{bsp:B4}.}
 	\label{abb:trellis_dekodierung_soft}
-\caption{Trellis der soft decision Dekodierung aus Beispiel~\ref{bsp:B4}.}
 \end{figure}
 
 \subsection{Katastrophale Faltungskodierer}
@@ -182,7 +203,7 @@ Zu erwarten wäre, wenn sich $\mathbf{v'}$ und $\mathbf{v}$ in endlich vielen St
 \\
 \\
 Zur Überprüfung, ob ein Kodierer katastrophal ist, hilft das Theorem von Massey-Sain~\cite[S. 570]{huffman2010fundamentals}. Gegeben ein Faltungskodierer mit einem Eingang und der Generatormatrix $G$ als Polynome über $D$, so ist der Faltungskodierer nicht katastrophal genau dann, wenn der größte gemeinsame Teiler der Generatorpolynome eine Potenz von $D$ ist.
-\begin{figure}[!t]
+\begin{figure}[t]
 	\centering
 	\begin{subfigure}{0.45\textwidth}
 		\centering
@@ -226,10 +247,10 @@ Die Terminierung bezeichnet nach der vollständigen Kodierung einer Nachricht da
 R_{t}=\frac{k}{M+k}R
 \end{equation}
 Für lange Nachrichten ist $R_{t}\approx R$ und kann daher vernachlässigt werden.
-\begin{figure}[!t]
+\begin{figure}[t]
 \input{tikz/trellis_terminiert}
-\label{abb:trellis_terminiert}
 \caption{Trellis für die terminierte Kodierung aus Beispiel~\ref{bsp:B5}.}
+\label{abb:trellis_terminiert}
 \end{figure}
 \begin{beispiel}
 Gegeben sei die Nachricht $\mathbf{u}=\left( 110100\right)$ aus Beispiel~\ref{bsp:B2}. Die Kodierung der terminierten Nachricht ist in Abbildung~\ref{abb:trellis_terminiert} zu sehen und ergibt das Kodewort $\mathbf{v}=\left( 11~01~01~00~10~11~00~00\right)$.

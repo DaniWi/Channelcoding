@@ -8,12 +8,12 @@ ConvGenerateRscEncoder
 \\
 \texttt{ConvGenerateRscEncoder(N, M, generators)}\\
 \\
-Erzeugt einen Faltungskodierer für rekursive systematische Faltungskodes (rsc).\\
+Erzeugt einen Faltungskodierer für rekursiv systematische Faltungskodes (RSC-Kodierer).\\
 \\
 \textbf{Argumente:}\\
 \texttt{N} - Anzahl an Ausgangssymbole je Eingangssymbol.\\
 \texttt{M} - Länge des Schieberegisters des Kodierers.\\
-\texttt{generators} - Vektor der oktale Generatorpolynome enthält (ein Polynom je nicht-systematischen Ausgang und ein Polynom für die Rekursion).\\
+\texttt{generators} - Vektor der oktale Generatorpolynome enthält (ein Polynom je nicht-systematischen Ausgang und ein Polynom für die Rekursion, siehe Kapitel~\ref{kapitel:grundlagen_rsc}).\\
 \\
 \textbf{Rückgabewert:}\\
 Faltungskodierer, abgebildet als Liste mit folgenden Feldern:
@@ -26,8 +26,8 @@ Faltungskodierer, abgebildet als Liste mit folgenden Feldern:
 \item \emph{generators}: Generatorpolynomvektor
 \item \emph{next.state}: Zustandsübergangsmatrix
 \item \emph{prev.state}: inverse Zustandsübergangsmatrix
-\item \emph{output}: Outputmatrix
-\item \emph{rsc}: RSC Flag (\texttt{TRUE})
+\item \emph{output}: Ausgabematrix
+\item \emph{rsc}: RSC-Flag (\texttt{TRUE})
 \item \emph{termination}: Terminierungsvektor
 \end{itemize}
 \\

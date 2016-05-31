@@ -13,7 +13,7 @@ Erzeugt einen Faltungskodierer für nichtrekursive Faltungskodes.\\
 \textbf{Argumente:}\\
 \texttt{N} - Anzahl an Ausgangssymbole je Eingangssymbol.\\
 \texttt{M} - Länge des Schieberegisters des Kodierers.\\
-\texttt{generators} - Vektor der N oktale Generatorpolynome enthält (ein Polynom je Ausgangssymbol).\\
+\texttt{generators} - Vektor der N oktale Generatorpolynome enthält (ein Polynom je Ausgangssymbol, siehe Kapitel~\ref{kapitel:grundlagen_darstellung}).\\
 \\
 \textbf{Rückgabewert:}\\
 Faltungskodierer, abgebildet als Liste mit folgenden Feldern:
@@ -26,8 +26,8 @@ Faltungskodierer, abgebildet als Liste mit folgenden Feldern:
 \item \emph{generators}: Generatorpolynomvektor
 \item \emph{next.state}: Zustandsübergangsmatrix
 \item \emph{prev.state}: inverse Zustandsübergangsmatrix
-\item \emph{output}: Outputmatrix
-\item \emph{rsc}: RSC Flag (\texttt{FALSE})
+\item \emph{output}: Ausgabematrix
+\item \emph{rsc}: RSC-Flag (\texttt{FALSE})
 \item \emph{termination}: Terminierungsvektor (\texttt{logical(0)})
 \end{itemize}
 \\

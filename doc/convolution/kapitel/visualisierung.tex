@@ -1,62 +1,144 @@
 % visualisierung.tex
-LIMITS!
+Wird der \texttt{visualize} Parameter bei der Ausführung einer R-Paket Funktion auf \texttt{TRUE} gesetzt, wird ein \texttt{RMarkdown}-Skript ausgeführt. Dieses generiert eine  Präsentation vom \LaTeX -Dokumenttyp Beamer mit Informationen und Visualisierungen zur ausgeführten Funktion.
+\\
+Die erzeugten Präsentationen liegen innerhalb des Programmverzeichnisses von R im Installationsordner des Pakets. Dort gibt es den \emph{pdf} Order in dem sich die Dokumente befinden. Möchte man die Dokumente vom RStudio aus öffnen, anstatt die Dokumente in der Verzeichnisstruktur suchen zu müssen, kann die \texttt{ConvOpenPDF}-Funktion (siehe Kapitel~\ref{kapitel:interface_ConvOpenPDF}) verwendet werden. Möchte man die Dokumente zu einem späteren Zeitpunkt erneut einsehen wird empfohlen eine Kopie der Datei abzuspeichern, da bei einer erneuten Ausführung der gleichen Funktion inklusive Visualisierung das zuvor erzeugte Dokument im \emph{pdf} Ordner überschrieben wird. Die vom \texttt{RMarkdown}-Skript erzeugten \LaTeX -Dateien aus denen die Beamer Präsentationen generiert werden liegen ebenfalls im selben Verzeichnis.
+\\
+Bei den folgenden Beispielen der Visualisierungen wurde stets punktiert, da ohne Punktierung die Informationen in den Präsentationen dazu fehlen und somit auch nicht erläutert werden können.
 \\
 \\
-Um das Verständnis für Faltungskodes beim Benutzer dieses R-Pakets zu stärken, stehen Visualisierungen der Kodierung, Dekodierung und Simulation mithilfe des \emph{RMarkdown} Pakets, wie in Kapitel \ref{kapitel:rmarkdown} beschrieben, zur Verfügung.
-\\
-Wird der \texttt{visualize} Parameter bei der Ausführung einer Simulation bzw. Funktion zur Kodierung oder Dekodierung auf \texttt{TRUE} gesetzt, wird ein \emph{RMarkdown} Skript ausgeführt. Dieses generiert eine Beamer Präsentation mit Informationen und Visualisierungen.
-
+Der weitere Kapitelinhalt setzt sich folgendermaßen zusammen: [TODO]
 \section{Kodierung}
 \label{kapitel:visualisierung_kodierung}
-\begin{figure}[!t]
-\begin{itemize}
-\item Nicht-Rekursiver Kodierer
-\item Anzahl von Ausgängen : \[N=2\]
-\item Anzahl von Registern : \[M=2\]
-\item Generatoren : \[(7,5)_8 = \begin{pmatrix}111 \\ 101 \\ \end{pmatrix}\]
-\item Kode-Rate : \[\frac{1}{2}\]
-\end{itemize}
-\caption{Faltungskodierer Informationen}
-\end{figure}
-\begin{figure}[!t]
-\begin{tikzpicture}[scale=.70, >=stealth, font=\tiny]
-\tikzstyle{state} = [draw, circle, inner sep=1mm, minimum size=6mm, font=\scriptsize]
-\node[state] (state0) at ( 0.0, 2.5) {00};
-\node[state] (state2) at ( 2.5, 0.0) {10};
-\node[state] (state3) at ( 0.0,-2.5) {11};
-\node[state] (state1) at (-2.5, 0.0) {01};
-\draw[->] (state0) to [looseness=8,out=105,in=75] node [sloped, above] {00} (state0);
-\draw[->, dashed] (state0) to  node [sloped, above] {11} (state2);
-\draw[->] (state1) to  node [sloped, above] {11} (state0);
-\draw[->, dashed] (state1) to [bend left=15] node [sloped, above,near start] {00} (state2);
-\draw[->] (state2) to [bend left=15] node [sloped, above,near start] {10} (state1);
-\draw[->, dashed] (state2) to  node [sloped, above] {01} (state3);
-\draw[->] (state3) to  node [sloped, above] {01} (state1);
-\draw[->, dashed] (state3) to [looseness=8,out=285,in=255] node [sloped, below] {10} (state3);
-\draw[->] ($(state3)+(-.5,-2)$) node (bit0) {} -- ++(1,0) node [right] {Bit 0};
-\draw[->, dashed] ($(bit0)+(0,-.5)$) -- ++(1,0) node [right] {Bit 1};
-\end{tikzpicture}
-\caption{Kodierung}
-\end{figure}
 % allg. Informationen
-Bei der Kodierung befinden sich auf den ersten Folien allgemeine Informationen zum verwendeten Faltungskodierer wie die Kode-Rate, Generatorpolynome, Zustandsübergangstabelle etc. 
+\begin{figure}[t]
+	\centering
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\fbox{\includegraphics[width=0.99\textwidth]{abbildungen/folie_kodierung_info}}
+		\caption{Folie mit Kodierer-Kennwerten}
+		\label{abb:folie_kodierer_kennwerte}
+	\end{subfigure}
+	\quad % spacing between subfigures
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\fbox{\includegraphics[width=0.99\textwidth]{abbildungen/folie_kodierung_matrix_zustand}}
+		\caption{Folie mit Zustandsübergangsmatrix}
+		\label{abb:folie_zustandsübergangsmatrix}
+	\end{subfigure}
+	\caption{Folien mit allgemeinen Informationen zum Faltungskodierer}
+	\label{abb:folie_allg_info_kodierer}
+\end{figure}
+Bei der Kodierung befinden sich auf den ersten Folien allgemeine Informationen zum verwendeten Faltungskodierer. Abbildung~\ref{abb:folie_kodierer_kennwerte} zeigt die Folie mit den Kennwerten des Faltungskodierers: Anzahl an Ausgänge $N$, Länge des Schieberegisters $M$, Generatorpolynome, Punktierungsmatrix und Koderate. Auf den nächsten beiden Folien werden die Zustandsübergangsmatrix und die Ausgabematrix abgebildet. In Abbildung~\ref{abb:folie_zustandsübergangsmatrix} ist die Folie der Zustandsübergangsmatrix zu sehen. Analog dazu wird die Ausgabematrix auf der nächsten Folie veranschaulicht. Diese wird aus Platzgründen hier nicht abgebildet.
+\\
+\\
 % Kodierung
-Daraufhin folgt die Kodierungsvisualisierung. Diese zeigt zunächst die zu kodierende Nachricht (Input), das Zustandsübergangsdiagramm sowie eine noch nicht befüllte Kodierungstabelle. Um für einen noch besseren Lerneffekt zu sorgen wird Schritt für Schritt mittels Overlays ein Bit des Inputs, der aktuelle Zustand, Folgezustand sowie der resultierende Output in eine neue Zeile der Kodierungstabelle geschrieben. Der aktuelle Zustand sowie der entsprechende Übergang werden im Diagramm farblich hervorgehoben. Die kodierte Nachricht wächst mit jedem Schritt bis schlussendlich die gesamte Nachricht kodiert wurde.
+\begin{figure}[t]
+	\centering
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\fbox{\includegraphics[width=0.99\textwidth]{abbildungen/folie_kodierung_1}}
+		\caption{}
+		\label{abb:folie_kodierung_1}
+	\end{subfigure}
+	\quad % spacing between subfigures
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\fbox{\includegraphics[width=0.99\textwidth]{abbildungen/folie_kodierung_2}}
+		\caption{}
+		\label{abb:folie_kodierung_2}
+	\end{subfigure}
+	
+	\begin{subfigure}{0.65\textwidth}
+		\centering
+		\fbox{\includegraphics[width=0.99\textwidth]{abbildungen/folie_kodierung_3}}
+		\caption{}
+		\label{abb:folie_kodierung_3}
+	\end{subfigure}
+	\caption{Folien der Kodierung}
+	\label{abb:folie_kodierung}
+\end{figure}
+Daraufhin folgt die Visualisierung der Kodierung. Dabei wird die zu kodierende Nachricht Bit für Bit auf einer eigenen Folie verarbeitet. Abbildung~\ref{abb:folie_kodierung} zeigt die ersten beiden Schritte sowie den letzten Schritt der Kodierung. In Abbildung~\ref{abb:folie_kodierung_1} ist die Folie vor der Kodierung des ersten Bits zu sehen. Zunächst ist die zu kodierende Nachricht (Input), das Zustandsübergangsdiagramm sowie eine noch nicht befüllte Kodierungstabelle zu sehen. Das Kodewort wird auf den folgenden Folien Schritt für Schritt erarbeitet. Durch diese Herangehensweise ist die Kodierung für den Benutzer einfach nachzuvollziehen. Abbildung~\ref{abb:folie_kodierung_2} zeigt den nächsten Schritt der Kodierung. Das erste Bit des Inputs, der aktuelle Zustand, Folgezustand sowie der resultierende Output wird in eine neue Zeile der Kodierungstabelle geschrieben. Der aktuelle Zustand sowie der entsprechende Übergang werden im Diagramm farblich hervorgehoben, um die Kodierung auch im Zustandsdiagramm verfolgen zu können. Der Output wird auch unterhalb der Tabelle eingetragen und wächst mit jedem Schritt bis schlussendlich die gesamte Nachricht kodiert wurde. Die Visualisierung am Ende der Kodierung ist in Abbildung~\ref{abb:folie_kodierung_3} zu sehen. Die Bits unterhalb der horizontalen Trennlinie stellen die Terminierungsbits dar.
+\\
+\\
 % Kode zu Signal
-Da die Kodierungsfunktion nicht die Bitwerte des Kodeworts zurückliefert sondern die Signalwerte (für eine Übertragung über einen Kanal) wird auf einer weiteren Folie dargestellt, wie die Kodebits in Signalwerte überführt werden.\\
+\begin{figure}[t]
+	\centering
+	\fbox{\includegraphics[width=0.65\textwidth]{abbildungen/folie_kodierung_bit_zu_signal}}
+	\caption{Folie mit der Bit zu Signal Abbildung}
+	\label{abb:folie_bit_zu_signal_abbildung}
+\end{figure}
+Da die Kodierungsfunktion nicht die Bitwerte des Kodeworts zurückliefert sondern die Signalwerte (für eine Übertragung über einen Kanal) wird auf einer weiteren Folie, wie in Abbildung~\ref{abb:folie_bit_zu_signal_abbildung} zu sehen, die Abbildung der Kodebits zu den Signalpegeln (nach Gleichung~\ref{eq:bit_zu_signal_abbildung}) dargestellt.
+\\
+\\
 % Punktierung
-Wird eine Punktierungsmatrix bei der Kodierung mitgegeben, wird eine zusätzliche Folie am Ende hinzugefügt. Auf dieser wird die Punktierung des Signals, d.h. das Entfernen von Signalwerten (definiert durch die Punktierungsmatrix) dargestellt. Dabei wird neben dem originalen Signal und der Punktierungsmatrix das punktierte Signal dargestellt, wobei zunächst die punktierten Signalwerte, d.h. die entfernten Werte, durch Asterisk-Symbole ($\ast$) ersetzt werden. Diese Darstellung dient als visueller Zwischenschritt für das danach folgende tatsächlich punktierte Signal, bei dem die punktierten Werte fehlen, was auch dem Rückgabewert der Funktion entspricht.
+\begin{figure}[t]
+	\centering
+	\fbox{\includegraphics[width=0.65\textwidth]{abbildungen/folie_kodierung_punktierung}}
+	\caption{Folie mit Punktierung}
+	\label{abb:folie_punktierung}
+\end{figure}
+Abbildung~\ref{abb:folie_punktierung} zeigt die Folie der Punktierung. Auf dieser wird die Punktierung des Signals, d.h. das Entfernen von Signalwerten (definiert durch die Punktierungsmatrix) dargestellt. Dabei wird neben dem originalen Signal und der Punktierungsmatrix das punktierte Signal dargestellt, wobei zunächst die punktierten Signalwerte, d.h. die entfernten Werte, durch Asterisk-Symbole ($\ast$) ersetzt werden. Diese Darstellung dient als visueller Zwischenschritt für das danach folgende tatsächlich punktierte Signal, bei dem die punktierten Werte fehlen, was auch dem Rückgabewert der Funktion entspricht.
 
 \section{Dekodierung}
 \label{kapitel:visualisierung_dekodierung}
 % allg. Informationen
 Bei der Dekodierung befinden sich ebenfalls, wie bei der Kodierung, allgemeine Informationen des Faltungskodierers auf den ersten Folien.
+\\
+\\
+% Depunktierung
+\begin{figure}[th]
+	\centering
+	\fbox{\includegraphics[width=0.65\textwidth]{abbildungen/folie_dekodierung_depunktierung}}
+	\caption{Folie mit Depunktierung}
+	\label{abb:folie_depunktierung}
+\end{figure}
+Abbildung~\ref{abb:folie_depunktierung} zeigt die Folie der Depunktierung. Auf dieser wird die Depunktierung des Signals, d.h. das Einfügen des Signalwerts 0 (definiert durch die Punktierungsmatrix), dargestellt. Die eingefügten 0-Werte sind zur leichteren visuellen Erkennung farblich hervorgehoben.
+\\
+\\
 % Signal zu Kode
-Als Input erhält die Dekodierung das Kodewort als Signalwerte, die möglicherweise durch Anwendung der \texttt{ApplyNoise} Funktion verfälscht worden sind. Die soft decision Dekodierung verwendet zur Dekodierung zwar kontinuierliche Signalwerte, da aber sowohl die hard decision Dekodierung Bitwerde zur Dekodierung verwendet und Trellis-Diagramme mit Bitwerten beschriftet werden, wird auf einer Folie die Überführung der Signalwerte zu Bits dargestellt. Dieser transformierte Input wird auch als Input für die Visualisierung des Viterbi-Algorithmus verwendet.
+\begin{figure}[th]
+	\centering
+	\fbox{\includegraphics[width=0.65\textwidth]{abbildungen/folie_dekodierung_signal_zu_bit}}
+	\caption{Folie mit der Signal zu Bit Abbildung}
+	\label{abb:folie_signal_zu_bit_abbildung}
+\end{figure}
+Als Input erhält die Dekodierung das Kodewort als kontinuierliche Signalwerte, die möglicherweise durch Anwendung der \texttt{ApplyNoise} Funktion verfälscht worden sind. Die soft decision Dekodierung verwendet zur Dekodierung zwar direkt diese Signalwerte, da aber sowohl die hard decision Dekodierung Bitwerte zur Dekodierung verwendet und die Kanten des Trellis mit Bitwerten beschriftet sind, wird der Input, um konsistent zu bleiben, auf Bitwerte abgebildet. Die Folie der Abbildung der Signalwerte auf Bitwerte (nach Gleichung~\ref{eq:signal_zu_bit_abbildung}) ist in Abbildung~\ref{abb:folie_signal_zu_bit_abbildung} zu sehen.
+\\
+\\
 % Viterbi-Algorithmus
-Anschließend folgt die Visualisierung des Viterbi-Algorithmus mithilfe des Trellis-Diagramms. Zunächst werden, zur besseren Übersicht bei großen Diagrammen, jene Pfade entfernt, für die es eine bessere Alternative gibt, d.h. die eine größere Metrik bei hard decision Dekodierung bzw. eine kleinere Metrik bei soft decision Dekodierung als ihre Alternative haben. Danach erfolgt Schritt für Schritt mittels Backtracking die Rekonstruktion der Nachricht. Der gewählte Pfad beim Backtracking wird farblich hervorgehoben. Die übrigen Pfade werden ausgegraut. Am Ende befindet sich unter dem Trellis-Diagramm die farblich hervorgehobene dekodierte Nachricht.
-% Punktierung
-Wird eine Punktierungsmatrix bei der Dekodierung mitgegeben, wird eine zusätzliche Folie nach den Kodiererinformationen hinzugefügt. Auf dieser wird die Depunktierung des Signals, d.h. das Einfügen des Signalwerts 0 (definiert durch die Punktierungsmatrix), dargestellt. Die eingefügten 0-Werte sind zur leichteren visuellen Erkennung farblich hervorgehoben.
+\begin{figure}[th]
+	\centering
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\fbox{\includegraphics[width=0.99\textwidth]{abbildungen/folie_dekodierung_1}}
+		\caption{}
+		\label{abb:folie_dekodierung_1}
+	\end{subfigure}
+	\quad % spacing between subfigures
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\fbox{\includegraphics[width=0.99\textwidth]{abbildungen/folie_dekodierung_2}}
+		\caption{}
+		\label{abb:folie_dekodierung_2}
+	\end{subfigure}
+	
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\fbox{\includegraphics[width=0.99\textwidth]{abbildungen/folie_dekodierung_3}}
+		\caption{}
+		\label{abb:folie_dekodierung_3}
+	\end{subfigure}
+	\quad % spacing between subfigures
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\fbox{\includegraphics[width=0.99\textwidth]{abbildungen/folie_dekodierung_4}}
+		\caption{}
+		\label{abb:folie_dekodierung_4}
+	\end{subfigure}
+	\caption{Folien mit der soft decision Dekodierung}
+	\label{abb:folie_dekodierung}
+\end{figure}
+Anschließend folgt die Visualisierung des Viterbi-Algorithmus mithilfe des Trellis-Diagramms. In den farbigen Kreisen befinden sich die Metriken der Pfade die zum jeweiligen Zustand führen. Zunächst werden, zur besseren Übersicht bei großen Diagrammen, jene Pfade entfernt, für die es eine bessere Alternative gibt. D.h. es werden jene Pfade entfernt die bei der soft decision Dekodierung eine niedrigere Metrik bzw. bei der hard decision Dekodierung eine höhere Metrik besitzen. Dieser Schritt ist zwischen den Abbildungen~\ref{abb:folie_dekodierung_1} und \ref{abb:folie_dekodierung_2} zu sehen. Danach erfolgt Schritt für Schritt mittels Backtracking die Rekonstruktion der Nachricht. Der gewählte Pfad beim Backtracking wird farblich hervorgehoben. Die übrigen Pfade werden ausgegraut. Eine Folie während des Backtrackings wird in Abbildung~\ref{abb:folie_dekodierung_3} veranschaulicht. Am Ende befindet sich unter dem Trellis-Diagramm die farblich hervorgehobene dekodierte Nachricht, wie in Abbildung~\ref{abb:folie_dekodierung_4} zu sehen ist. Die einzelnen Zwischenschritte vermitteln dem Benutzer wie der Algorithmus funktioniert und wie sich die dekodierte Nachricht ergibt.
 
 \section{Simulation}
 \label{kapitel:visualisierung_simulation}
