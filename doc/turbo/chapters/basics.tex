@@ -66,7 +66,7 @@ Ein Wort $a \in \{0,1\}^n$ wird als Kanalkodewort der Länge $n$ bezeichnet.
 Durch das hinzufügen von Redundanz ergeben sich $k = n - l$ redundante Stellen. Diese werden zur Fehlererkennung und Fehlerkorrektur bei der Dekodierung verwendet.
 
 \begin{e_exa}
-Gegeben sei eine Nachricht vom Quellkodierer der Länge $l=2$, $a^*_{1}=(00),a^*_{2}=(01),a^*_{3}=(10),a^*_{4}=(11)$. Danach fügt der Kanalkodierer eine redundante Stelle hinzu $k=1$, also haben die Nachrichten dann eine Länge von $n=3$. Sie könnten folgenderweise aussehen, $a_{1}=(001),a_{2}=(010),a_{3}=(100),a_{4}=(110)$.
+Gegeben sei eine Nachricht vom Quellenkodierer der Länge $l=2$, $a^*_{1}=(00),a^*_{2}=(01),a^*_{3}=(10),a^*_{4}=(11)$. Danach fügt der Kanalkodierer eine redundante Stelle hinzu $k=1$, also haben die Nachrichten dann eine Länge von $n=3$. Sie könnten folgenderweise aussehen, $a_{1}=(001),a_{2}=(010),a_{3}=(100),a_{4}=(110)$.
 \end{e_exa}
 
 \subsection{Kenngrößen von Kanalkodes}
@@ -94,7 +94,7 @@ Ein Kode der alle Verfälschungen $\leq f_e$ erkennen kann, muss eine \emph{mini
 d_{min} = f_e + 1
 \end{equation}
 
-besitzen. Mit $f_e$ lässt sich der Grad der Fehlererkennung beschreibenf. Die Anzahl der korrigierbaren Fehler $f_k$ lässt sich folgenderweise berechnen:
+besitzen. Mit $f_e$ lässt sich der Grad der Fehlererkennung beschreiben. Die Anzahl der korrigierbaren Fehler $f_k$ lässt sich folgenderweise berechnen:
 
 \begin{equation}
 f_k = \frac{d_{min}-1}{2}
@@ -118,7 +118,7 @@ w(a) = \sum^n_{j=1} a_j
 \end{equation} 
 \end{t_def} 
 
-Zur Berechung dieses Gewichtes kann die Formel~\ref{eq:hammingWeight} verwendet werden. Solange 
+Zur Berechnung dieses Gewichtes kann die Formel~\ref{eq:hammingWeight} verwendet werden. Solange 
 
 \begin{equation}
 d(a_i,b)=w(a_i \oplus b) = w(e) \leq f_k
@@ -140,7 +140,7 @@ Eine hohe Koderate zeigt, dass wenig Redundanz hinzugefügt wurde und weniger Fe
 
 \subsection{Modell von einem Übertragungskanal}
 \label{sec:channels}
-Um Nachrichten an den gewünschten Empfänger zu transportieren, können verschiedene Übertragungsmediums verwendet werden, wie zum Beispiel Kupferkabel oder Funkwellen. Jedes dieser hat spezielle Eigenschaften und Charakteristiken. Damit diese mit einem Computerprogramm simuliert werden können, muss ein Modell geschaffen werden, das einen solchen Übertragungskanal bestmöglich abbildet. Dieses Modell bildet alle Störungen und Dämpfungen ab, die während der Übertragung passieren können. Als ein gut geeignetes Modell stellte sich das Überlagern des Signals mit dem \emph{Additiv Weißes Gaußsches Rauschen} (AWGR) heraus \cite[81]{schoenfeld2012informations}. Dieses Rauschen wird folgenderweiße berechnet:
+Um Nachrichten an den gewünschten Empfänger zu transportieren, können verschiedene Übertragungsmediums verwendet werden, wie zum Beispiel Kupferkabel oder Funkwellen. Jedes dieser hat spezielle Eigenschaften und Charakteristiken. Damit diese mit einem Computerprogramm simuliert werden können, muss ein Modell geschaffen werden, das einen solchen Übertragungskanal bestmöglich abbildet. Dieses Modell bildet alle Störungen und Dämpfungen ab, die während der Übertragung passieren können. Als ein gut geeignetes Modell stellte sich das Überlagern des Signals mit dem \emph{Additiv Weißes Gaußsches Rauschen} (AWGR) heraus \cite[81]{schoenfeld2012informations}. Dieses Rauschen wird folgenderweise berechnet:
 
 \begin{equation}
 E_s = \frac{1}{L} \displaystyle\sum_{i=0}^{L-1} |x[i]|^2; \quad L = length(x)
@@ -170,7 +170,7 @@ Mit der Einführung von Mobilfunk und Satellitenkommunikation wurden neue Kodes 
 
 Die ersten Versuche wurden mit der seriellen Verkettung versucht, die auch heute noch in der Anwendung sind. Jedoch beim klassischen Turbo-Kode werden parallel verkettete Faltungskodes verwendet, die iterativ dekodiert werden. Diese Art der Turbo-Kodes wurden auch in dieser Bachelorarbeit verwendet, deswegen wird auch nur diese Art genauer erklärt in Kapitel~\ref{sec:parallelConvCodes}.
 
-\subsection{Parallel verkettete Faltungskodes mit iterativer Dekodierung} 
+\subsection{Parallel verkettete Faltungskodes} 
 \label{sec:parallelConvCodes}
 Bei der parallelen Verkettung von Faltungskodes werden meistens systematische (ein Ausgang wird durchgeschalten) rekursive Faltungskodierer verwendet die nur wenige Register besitzen.
 
@@ -201,7 +201,7 @@ Die Rückwandlung in 0er und 1er erfolgt erst nach der Dekodierung, da der Soft-
 \begin{figure}[th]
 \centering
 \includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecoderSchema}
-\caption{Aufbau der Dekodiererschaltung, Quelle: \cite[262]{schoenfeld2012informations}}
+\caption{Aufbau der Dekodierschaltung, Quelle: \cite[262]{schoenfeld2012informations}}
 \label{pic:decoderSchema}
 \end{figure}
 
@@ -236,7 +236,7 @@ Deswegen sind Turbo-Kodes aus der heutigen Zeit nicht mehr wegzudenken, da sie i
 \label{pic:comparisonTurbo}
 \end{figure}
 
-Die Abbildung~\ref{pic:comparisonTurbo} zeigt eine Grafik, bei der auf der Ordinate die Bitfehlerrate und auf der Abszisse das Signal/Rausch-Verhältnis  aufgetragen sind. Aufgetragen sind verschiedene Turbo-Kodes mit verschiedenen Parametern. Es ist zu erkennen, dass eine längere Nachricht zu einer Verbesserung des Ergebnisses führt. Bei steigender Iterationszahl sinkt die Bitfehlerrate, jedoch steigt die Verzögerungszeit für das Dekodieren. Umso mehr Iterationen durchgeführt werden, umso näher kommt man der SHANNON-Grenze.
+Die Abbildung~\ref{pic:comparisonTurbo} zeigt eine Grafik, bei der auf der Ordinate die Bitfehlerrate und auf der Abszisse das Signal/Rausch-Verhältnis  aufgetragen sind. Aufgetragen sind verschiedene Turbo-Kodes mit verschiedenen Parametern. Es ist zu erkennen, dass eine längere Nachricht zu einer Verbesserung des Ergebnisses führt. Bei steigender Iterationsanzahl sinkt die Bitfehlerrate, jedoch steigt die Verzögerungszeit für das Dekodieren. Umso mehr Iterationen durchgeführt werden, umso näher kommt man der SHANNON-Grenze.
 
 \FloatBarrier
 \subsection{Punktierung}

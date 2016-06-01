@@ -38,7 +38,7 @@ permutation.vector.helical <- TurboGetPermutation(length(input2), coder, "HELICA
 
 In Listing~\ref{lst:visualizePermutation} wird zuerst der selbe Eingangsvektor erzeugt, der auch in Kapitel~\ref{cha:examples} verwendet wurde. Danach wird ein Permutationsvektor vom Typ \texttt{CYCLIC} erzeugt. Dabei wird zuerst eine Initialisierungsmatrix erstellt, bei der dann die Bits jeder Zeile, um den Index multipliziert mit der Distanz nach rechts verschoben werden. Der Index fängt bei null an zu zählen, also wird die zweite Zeile um $1*2 = 2$ nach rechts verschoben. Die erste Zeile bleibt immer unverändert. Die daraus resultierende Matrix wird dann von oben nach unten spaltenweise ausgelesen, wie im Beispiel zu sehen.
 
-Beim zweiten Beispiel wird ein Permutationsvektor vom Typ texttt{HELICAL} kreiert. Dabei wird nicht die Initialisierungsmatrix verändert, sondern nur die Art der Auslesung des Permutationsvektors ist für diesen Typ entscheidend. Das ist ebenfalls beim Typ texttt{BLOCK} und texttt{DIAGONAL} so. Bei diesem Beispiel werden die Bits von links oben nach rechts unten ausgelesen. Wird dabei das Ende der Matrix erreicht, wir das nächste Bit in der nächsten Spalte von der ersten Zeile ausgelesen. Beim Typ texttt{DIAGONAL} wird vergleichsweise das erste Bit in der selben Spalte als nächstes verwendet.
+Beim zweiten Beispiel wird ein Permutationsvektor vom Typ \texttt{HELICAL} kreiert. Dabei wird nicht die Initialisierungsmatrix verändert, sondern nur die Art der Auslesung des Permutationsvektors ist für diesen Typ entscheidend. Das ist ebenfalls beim Typ textet{BLOCK} und textet{DIAGONAL} so. Bei diesem Beispiel werden die Bits von links oben nach rechts unten ausgelesen. Wird dabei das Ende der Matrix erreicht, wir das nächste Bit in der nächsten Spalte von der ersten Zeile ausgelesen. Beim Typ textet{DIAGONAL} wird vergleichsweise das erste Bit in der selben Spalte als nächstes verwendet.
 
 \begin{lstlisting}[caption=Visualisierung der Punktierungssmatrix, label={lst:visualizePunctuationMatrix}, float=th]
 punctuation.matrix <- TurboGetPunctuationMatrix(c(1,1,0,0,1,1), TRUE)
@@ -123,7 +123,7 @@ Wie in Abbildung~\ref{pic:TurboDecodeDepuncturing} zu sehen ist, wird an den 0er
 \begin{figure}[th]
 \centering
 \fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured2} }
-\caption{Folie der Turbo-Dekode Schaltung}
+\caption{Folie der Turbo-Dekodierungs Schaltung}
 \label{pic:TurboDecode}
 \end{figure}
 
@@ -132,11 +132,11 @@ Auf der nächsten Folie ist, wie in Abbildung~\ref{pic:TurboDecode} zu sehen, di
 \begin{figure}[th]
 \centering
 \fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboDecodePunctured3} }
-\caption{Folie zur Darstellung der Turbo-Dekode Rückführung}
+\caption{Folie zur Darstellung der Turbo-Rückführung}
 \label{pic:TurboDecodeBack}
 \end{figure}
 
-Nachdem die beiden Soft-Dekodierer durchlaufen sind, wird das Ergebnis des zweiten Dekodierers wieder zurückgeführt, auf den Eingang des ersten Dekodierers, wie in Abbildung~\ref{pic:TurboDecodeBack}. Je nach Anzahl von mitgegebenen Iterationen, wird so das Ergebnis mehrmals zurückgeführt. Die Interleaver ($I$) und Deinterleaver ($I^{-1}$) permutieren das Signal mit dem miteglieferten Permutationsvektor, damit in die Dekodierer immer die selbe Bitreihenfolge geschickt wird. Am unteren Rand der Folie ist immer die aktuelle Ausgangsbitfolge zu sehen, die aktuell Zustande kommen würde. Damit ist gut zu sehen, wenn sich durch mehrere Iterationen das Ergebnis ändert.
+Nachdem die beiden Soft-Dekodierer durchlaufen sind, wird das Ergebnis des zweiten Dekodierers wieder zurückgeführt, auf den Eingang des ersten Dekodierers, wie in Abbildung~\ref{pic:TurboDecodeBack}. Je nach Anzahl von mitgegebenen Iterationen, wird so das Ergebnis mehrmals zurückgeführt. Die Interleaver ($I$) und Deinterleaver ($I^{-1}$) permutieren das Signal mit dem mitgelieferten Permutationsvektor, damit in die Dekodierer immer die selbe Bitreihenfolge geschickt wird. Am unteren Rand der Folie ist immer die aktuelle Ausgangsbitfolge zu sehen, die aktuell Zustande kommen würde. Damit ist gut zu sehen, wenn sich durch mehrere Iterationen das Ergebnis ändert.
 
 \begin{figure}[th]
 \centering

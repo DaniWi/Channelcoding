@@ -1,8 +1,8 @@
 Um dem Benutzer den Einstieg zur Verwendung des Paketes zu erleichtern, sind in den folgenden Kapiteln Beispiele und genaue Erklärungen zu allen wichtigen Funktionen. Dabei werden in Kapitel~\ref{sec:example_createHelpers} alle wichtigen Variablen erstellt, die dann in den Kapiteln~\ref{sec:example_withoutPunctuation} und \ref{sec:example_withPunctuation} beim Kodieren und Dekodieren verwendet werden. Zum Schluss werden in Kapitel~\ref{sec:example_simulations} die verschiedenen Möglichkeiten der Ausführung von Simulationen erläutert.
 
-\section{Erzeugen von Kodierer, Permutationsvektor und Punktierungsmatrix}
+\section{Erzeugung von Kodierer, Permutation und Punktierungsmatrix}
 \label{sec:example_createHelpers}
-Zuerst werden Hilfsvariablen erzeugt, die für die folgende Kodierungs- und Dekodierungsverfahren benötigt werden. Diese Variablen müssen nicht unbedingt mitgegebenen werden, dann werden die Standard-Werte verwendet. Das bedeutet, dass falls keine Punktierungsmatrix übergeben wird, der Standard-Wert \texttt{NULL} ist und darum nicht punktiert wird. Ebenfalls wird nicht permutiert, wenn kein Permutationsvektor als Argument übergeben wird. Es wird zwar ein Permutationsvektor benötigt, damit die Interleaver richtig arbeiten können, jedoch wird ein Vektor vom Typ \texttt{PRIMITIVE} verwendet, dieser allerdings ändert die Reihenfolge der Bits nicht (root=0). Beim Kodierer verhält es sich ähnlich, jedoch wird hier ein vordefinierter Standard-Faltungskodierer verwendet (\texttt{ConvGenerateRscEncoder(2,2,c(5,7))}), dieser wird in allen Turbo-Kode-Funktionen benützt, falls kein eigener Kodierer übergeben wird.
+Zuerst werden Hilfsvariablen erzeugt, die für die folgende Kodierungs- und Dekodierungsverfahren benötigt werden. Diese Variablen müssen nicht unbedingt mitgegebenen werden, denn dann werden die Standard-Werte verwendet. Das bedeutet, dass falls keine Punktierungsmatrix übergeben wird, der Standard-Wert \texttt{NULL} ist und darum nicht punktiert wird. Ebenfalls wird nicht permutiert, wenn kein Permutationsvektor als Argument übergeben wird. Es wird zwar ein Permutationsvektor benötigt, damit die Interleaver richtig arbeiten können, jedoch wird ein Vektor vom Typ \texttt{PRIMITIVE} verwendet, dieser allerdings ändert die Reihenfolge der Bits nicht (root=0). Beim Kodierer verhält es sich ähnlich, jedoch wird hier ein vordefinierter Standard-Faltungskodierer verwendet (\texttt{ConvGenerateRscEncoder(2,2,c(5,7))}), dieser wird in allen Turbo-Kode-Funktionen benützt, falls kein eigener Kodierer übergeben wird.
 
 \begin{lstlisting}[caption=Erzeugung von Kodierer und Punktierungsmatrix, label={lst:createHelpersCoderPunctuation}, float=!th]
 input <- c(1,0,1,1,0)
@@ -16,7 +16,7 @@ Wie im Listing~\ref{lst:createHelpersCoderPunctuation} zu sehen ist, wird als al
 
 \begin{lstlisting}[caption=Erzeugung von verschiedenen Permutationsvektoren, label={lst:createHelpersPermutation}, float=!th]
 permutation.vector.random <- TurboGetPermutation(length(input), coder, "RANDOM")
-permutation.vector.primitve <- TurboGetPermutation(length(input), coder, "PRIMITIVE", list(root=3))
+permutation.vector.primitive <- TurboGetPermutation(length(input), coder, "PRIMITIVE", list(root=3))
 
 input2 <- c(1,0,1,1,0,1)
 permutation.vector.cyclic <- TurboGetPermutation(length(input2), coder, "CYCLIC", list(cols=4, rows=2, distance=2))
@@ -85,7 +85,7 @@ Im dargestellten Listing~\ref{lst:encodeDecodeWithPunctuation} sieht man nun das
 \section{Simulationen}
 \label{sec:example_simulations}
 
-Die nächsten drei Unterkapitel werden sich mit den verschiedenen Simulationsfunktionen im Paket beschäftigen. Dabei wird zuerst eine reine Simulation des Turbo-Kode-Verfahrens vorgenommen. Im Anschluss werden alle drei Kanalkodierungsverfahren (Block-, Faltungs und Turbo-Kodes) miteinander verglichen und zum Schluss wird noch die Hilfsfunktion zur Darstellung verschiedener Simulationsergebnisse an einem Beispiel erklärt.
+Die nächsten drei Unterkapitel werden sich mit den verschiedenen Simulationsfunktionen im Paket beschäftigen. Dabei wird zuerst in Kapitel~\ref{sec:example_simulations_turbo} eine reine Simulation des Turbo-Kode-Verfahrens vorgenommen. Im Anschluss werden alle drei Kanalkodierungsverfahren (Block-, Faltungs und Turbo-Kodes) in Kapitel~\ref{sec:example_simulations_channel} miteinander verglichen und zum Schluss wird noch die Hilfsfunktion zur Darstellung verschiedener Simulationsergebnisse an einem Beispiel in Kapitel~\ref{sec:example_simulations_plot} erklärt.
 
 \subsection{Turbo-Kode}
 \label{sec:example_simulations_turbo}
