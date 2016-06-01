@@ -32,6 +32,8 @@
 \usepackage{subcaption}
 \usepackage{tikz}
 \usetikzlibrary{backgrounds, calc, positioning}
+% für \FloatBarrier Befehl
+\usepackage{placeins}
 
 % Caption von longtables ändern (Tabelle -> Funktion)
 \captionsetup[longtable]{name=Funktion}
@@ -103,8 +105,9 @@
 \label{kapitel:beispiele}
 \input{kapitel/beispiele}
 
-\chapter{Fazit, Ausblick, Erweiterungen}
+\chapter{Zusammenfassung und Ausblick}
 \label{kapitel:fazit}
+\input{kapitel/fazit}
 
 \cleardoublepage%
 
@@ -123,5 +126,7 @@
 \lstlistoflistings
 \clearpage
 
-\printbibliography
+\defbibheading{myheading}[Literatur]{\chapter*{#1}}
+\pagestyle{plain}
+\printbibliography[heading=myheading]
 \end{document}
