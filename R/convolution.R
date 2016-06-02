@@ -691,7 +691,7 @@ ConvGetPunctuationMatrix <- function(punctuation.vector, conv.coder) {
   }
 
   if (length(punctuation.vector) %% conv.coder$N != 0) {
-    stop("Wrong length of punctuation vector! Must be a multiple of N (amount of exits)!")
+    stop("Wrong length of punctuation vector! Must be a multiple of N (amount of coder outputs per input)!")
   }
 
   mat <- matrix(punctuation.vector, nrow = conv.coder$N)

@@ -17,7 +17,7 @@ Der Funktionsumfang der Sprache kann durch sogenannte Pakete erweitert werden. B
 \\
 \\
 % Roxygen
-Ein wichtiges Paket, welches im Rahmen dieser Arbeit verwendet wurde, ist \texttt{roxygen}. Mithilfe dieses Pakets wird, ähnlich wie JavaDoc für Java, durch spezielle Kommentare und Annotations überhalb der Paketfunktionen automatisch die Paketdokumentation erstellt. Die \texttt{roxygen}-Kommentare der Paketfunktionen, die für wartbaren Code ohnehin unabdingbar sind, sind für den Entwickler erheblich angenehmer, als die Paketdokumentation von Hand zu schreiben. Roxygen-Kommentare werden durch das Kommentarsymbol \mbox{\texttt{\#'}} am Zeilenbeginn eingeleitet. Zu den wichtigsten Annotations gehören jene für die Beschreibung der Parameter (\texttt{@param}) und Rückgabewerte (\texttt{@return}) sowie Beispiele zur Ausführung der Funktion (\texttt{@examples}). Weiters wird über die \texttt{@export} Annotation geregelt, welche Funktionen nach Auslieferung des Pakets von außen aufrufbar sind.
+Ein wichtiges Paket, welches im Rahmen dieser Arbeit verwendet wurde, ist \texttt{roxygen2}. Mithilfe dieses Pakets wird, ähnlich wie JavaDoc für Java, durch spezielle Kommentare und Annotations überhalb der Paketfunktionen automatisch die Paketdokumentation erstellt. Die \texttt{roxygen}-Kommentare der Paketfunktionen, die für wartbaren Code ohnehin unabdingbar sind, sind für den Entwickler erheblich angenehmer, als die Paketdokumentation von Hand zu schreiben. Diese werden durch das Kommentarsymbol \mbox{\texttt{\#'}} am Zeilenbeginn eingeleitet. Zu den wichtigsten Annotations gehören jene für die Beschreibung der Parameter (\texttt{@param}) und Rückgabewerte (\texttt{@return}) sowie Beispiele zur Ausführung der Funktion (\texttt{@examples}). Weiters wird über die \texttt{@export} Annotation geregelt, welche Funktionen nach Auslieferung des Pakets von außen aufrufbar sind.
 \\
 \\
 % devtools
@@ -41,19 +41,7 @@ Die \texttt{.C}-Schnittstelle ist die einfachste Variante C-Code auszuführen, j
 Bei der \texttt{.Call}-Schnittstelle handelt es sich um eine Erweiterung der \texttt{.C}-Schnittstelle. Die Implementierung ist komplexer, dafür sind R-Datentypen verfügbar und es gibt die Möglichkeit eines Rückgabewerts mittels \texttt{return} Statement. \cite{wickham2015r}
 \\
 \\
-Sowohl bei der \texttt{.C}-Schnittstelle als auch bei der \texttt{.Call}-Schnittstelle muss der C-Code vor dem Aufruf per Hand kompiliert und in der R Session geladen werden. Das \texttt{Rcpp}-Paket ermöglicht die Verwendung von C++-Code ohne diesen Aufwand. Im C++-Code stehen R-Datentypen wie Vektoren, Matrizen oder Listen ohne komplizierte Syntax zur Verfügung. Die Funktionsaufrufe sehen, im Gegensatz zu den C-Schnittstellen, wie normale R-Funktionsaufrufe aus und machen dadurch den Code erheblich lesbarer. Weiters stehen Vektorfunktionen zur Verfügung, d.h. eine auf einen Vektor angewandte Funktion wird auf jedes Vektorelement ausgeführt und erspart somit beispielsweise eine Schleife. Bei der Entwicklung eines eigenen Pakets ist es bei der Verwendung des \texttt{Rcpp}-Pakets zusammen mit RStudio sehr einfach C++-Code zu integrieren. Durch all diese Vorteile ist das \texttt{Rcpp}-Paket die zu wählende Schnittstelle. Während der Paketerzeugung kompiliert RStudio automatisch alle C++-Dateien und erstellt automatisch Wrapper-Funktionen, die den Zugriff auf die Funktionen erleichtern.
-\\
-\\
-Die C++-Datei muss mit folgenden Zeilen starten:
-\begin{lstlisting}[language=C++, numbers=none, basicstyle=\ttfamily]
-#include <Rcpp.h>
-using namespace Rcpp;
-\end{lstlisting}
-Darüber hinaus muss jede Funktion, die in R verfügbar sein soll muss folgenden Präfix erhalten:
-\begin{lstlisting}[language=C++, numbers=none, basicstyle=\ttfamily]
-// [[Rcpp::export]]
-\end{lstlisting}
-Die genaue Verwendung des \texttt{Rcpp}-Pakets ist in \cite{wickham2015advanced} beschrieben.
+Sowohl bei der \texttt{.C}-Schnittstelle als auch bei der \texttt{.Call}-Schnittstelle muss der C-Code vor dem Aufruf per Hand kompiliert und in der R Session geladen werden. Das \texttt{Rcpp}-Paket ermöglicht die Verwendung von C++-Code ohne diesen Aufwand. Im C++-Code stehen R-Datentypen wie Vektoren, Matrizen oder Listen ohne komplizierte Syntax zur Verfügung. Die Funktionsaufrufe sehen, im Gegensatz zu den C-Schnittstellen, wie normale R-Funktionsaufrufe aus und machen dadurch den Code erheblich lesbarer. Weiters stehen Vektorfunktionen zur Verfügung, d.h. eine auf einen Vektor angewandte Funktion wird auf jedes Vektorelement ausgeführt und erspart somit beispielsweise eine Schleife. Bei der Entwicklung eines eigenen Pakets ist es bei der Verwendung des \texttt{Rcpp}-Pakets zusammen mit RStudio sehr einfach C++-Code zu integrieren. Durch all diese Vorteile ist das \texttt{Rcpp}-Paket die zu wählende Schnittstelle. Die genaue Verwendung des \texttt{Rcpp}-Pakets ist in \cite{wickham2015advanced} beschrieben.
 \section{RMarkdown, \LaTeX, Ti\textit{k}Z}
 \label{kapitel:rmarkdown}
 \begin{figure}[t]

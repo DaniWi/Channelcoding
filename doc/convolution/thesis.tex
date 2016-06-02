@@ -68,7 +68,7 @@
 
 % Zusammenfassung
 \begin{abstract}
-
+\input{kapitel/abstract}
 \end{abstract}
 
 \tableofcontents
@@ -111,19 +111,22 @@
 
 \cleardoublepage%
 
-\listofabbreviations
-\clearpage
+%\listofabbreviations
+%\clearpage
 
 \listoffigures
 \clearpage
 
-\printlist[Funktionen]{lot}{}{\renewcommand\addvspace[1]{}\chapter*{Funktionsverzeichnis}}
-\clearpage
-
-%\listoftables
+%\printlist[tables]{lot}{}{\renewcommand\addvspace[1]{}\chapter*{Tabellenverzeichnis}}
 %\clearpage
 
 \lstlistoflistings
+\clearpage
+
+\listofalgorithms
+\clearpage
+
+\printlist[Funktionen]{lot}{}{\renewcommand\addvspace[1]{}\chapter*{Funktionsverzeichnis}}
 \clearpage
 
 \defbibheading{myheading}[Literatur]{\chapter*{#1}}
