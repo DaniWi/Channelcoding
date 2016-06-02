@@ -9,7 +9,7 @@ Die erzeugten PDF-Dokumente werden im Installationsordner des Paketes abgelegt, 
 Die Dokumente werden aus reinem \LaTeX -Code erzeugt, dieser ist ebenfalls in dem oben erwähnten Ordner zu finden. Dieser Code kann verwendet werden, um die Grafiken oder Tabellen im Visualisierungsbericht, selbst in einem Dokument nachzustellen.
 
 Zuerst wird in Kapitel~\ref{sec:visualization_punctuationPermutation} die Visualisierung von Permutations- und Punktierungsmatrix vorgestellt. Im Anschluss erfolgen in Kapitel~\ref{sec:visualization_encode} und \ref{sec:visualization_decode} die Erklärung der erzeugten Berichte von Kodierung und Dekodierung. Am Schluss werden noch alle Darstellungen der Simulationen in Kapitel~\ref{sec:visualization_simulation} an einem Beispiel gezeigt. 
-\section{Permutationsmatrix und Punktierungsmatrix}
+\section{Permutationsvektor und Punktierungsmatrix}
 \label{sec:visualization_punctuationPermutation}
 Bei der Erzeugung der beiden Matrizen können diese im RStudio dargestellt werden. Das ist vor allem nützlich bei der Permutationsmatrix, da dort erkennbar ist, wie die Matrix von der Initialisierungsmatrix entsteht und daraus der Permutationsvektor abgeleitet wird. 
 
@@ -54,21 +54,21 @@ Zur Verwendung einer Punktierung beim Turbo-Kode-Verfahren benötigt es eine Pun
 \FloatBarrier
 \section{Kodierung}
 \label{sec:visualization_encode}
-Als erstes werden immer Informationen zum verwendeten Kodierer dargestellt. Diese Darstellung wird allerdings bereits bei der Bachelorarbeit von Martin Nocker über Faltungskodes erklärt und deshalb hier nicht näher angeführt. \cite{nocker}
+Als erstes werden immer Informationen zum verwendeten Kodierer dargestellt. Diese Darstellung wird allerdings bereits bei der Bachelorarbeit von Martin Nocker~\cite[45]{nocker} über Faltungskodes erklärt und deshalb hier nicht näher angeführt.
 
 \begin{figure}[th]
 \centering
 	\begin{subfigure}{0.45\textwidth}
 	\centering
 	\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured1} }
-	\caption{Folie mit Turbo-Kodierer Informationen}
+	\caption{Folie der Turbo-Kodierer Informationen}
 	\label{pic:TurboCoderInformation}
 	\end{subfigure}
 	\qquad
 	\begin{subfigure}{0.45\textwidth}
 	\centering
 	\fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured2} }
-	\caption{Folie mit Terminierungsdarstellung bei der Kodierung}
+	\caption{Folie mit Terminierungsdarstellung}
 	\label{pic:TerminationEncode}
 	\end{subfigure} 
 \caption{Folien mit allgemeinen Informationen vor der Kodierung}
@@ -89,7 +89,7 @@ In Abbildung~\ref{pic:TerminationEncode} sieht man die Darstellung der Terminier
 \begin{figure}[th]
 \centering
 \fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured4} }
-\caption{Folie mit Ergebnis des Multiplexers}
+\caption{Folie mit dem Ergebnis des Multiplexers}
 \label{pic:TurboEncodeMultiplexer}
 \end{figure}  
 
@@ -98,7 +98,7 @@ Auf der nächsten Folie, die in Abbildung~\ref{pic:TurboEncode} dargestellt ist,
 \begin{figure}[th]
 \centering
 \fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/TurboEncodePunctured5} }
-\caption{Folie mit Darstellung der Punktierung}
+\caption{Folie mit der Darstellung der Punktierung}
 \label{pic:TurboEncodePuncturing}
 \end{figure}  
 
@@ -163,7 +163,7 @@ Nachdem alle Iterationen abgeschlossen sind, wird das Ausgangssignal des zweiten
 \label{sec:visualization_simulation}
 Auch bei den Simulationen stehen Visualisierungsberichte zur Verfügung, die das Resultat der Simulation sehr einfach und verständlich darstellen. Dabei werden am Anfang immer Informationen zum Kodierer gezeigt, die wir jedoch schon aus Kapitel~\ref{sec:visualization_encode} kennen und deswegen nicht mehr erklärt werden. Danach folgen Informationen zu den Simulationsparametern und am Ende noch eine Grafik mit den Ergebnissen.
 
-In Kapitel~\ref{sec:visualization_simulations_turbo} wird zuerst eine reine Turbo-Kode Simulation gezeigt. Einen Vergleich aller 3 Kanalkodierungsmöglichkeiten wird in Kapitel~\ref{sec:visualization_simulations_channelcoding} vorgestellt.
+In Kapitel~\ref{sec:visualization_simulations_turbo} wird zuerst eine reine Turbo-Kode-Simulation gezeigt. Einen Vergleich aller 3 Kanalkodierungsmöglichkeiten wird in Kapitel~\ref{sec:visualization_simulations_channelcoding} vorgestellt.
 
 \FloatBarrier
 \subsection{Turbo-Kode}
@@ -185,7 +185,7 @@ Zuerst wird eine Zusammenfassung aller wichtigen Parameter der Simulation gezeig
 	\caption{Folie mit der Simulationsgrafik}
 	\label{pic:TurboSimulationPlot}
 	\end{subfigure}
-\caption{Folien der Turbo-Kode Simulation}
+\caption{Folien der Turbo-Kode-Simulation}
 \end{figure}
 
 In Abbildung~\ref{pic:TurboSimulationParameter} sind die Nachrichtenlänge mit der getestet wurde und die Anzahl der Iterationen pro Signal/Rausch-Verhältnis zu sehen. Darunter sind noch die Ober- und Untergrenzen des Signal/Rausch-Verhältnisses dargestellt und die Schrittweite mit denen simuliert wurde.
@@ -209,7 +209,7 @@ In der Abbildung~\ref{pic:ChannelcodingSimulation} werden alle drei Ergebnisse d
 \begin{figure}[th]
 \centering
 \fbox{ \includegraphics[width=\ScaleIfNeeded]{pictures/ChannelcodingSimulation2} }
-\caption{Folie zur Darstellung der statistische Werte}
+\caption{Folie zur Darstellung der statistischen Werte}
 \label{pic:ChannelcodingSimulationStatistic}
 \end{figure}
 

@@ -425,10 +425,10 @@
 	breaklines=true,
 	breakatwhitespace=true,
 	keywordstyle=\color{black},
-	identifierstyle=\bfseries\color{blue},
-	commentstyle=\color{red},
+	identifierstyle=\bfseries\color{black},
+	commentstyle=\color{blue},
 	prebreak=\raisebox{0ex}[0ex][0ex]{\color{gray}\ensuremath{\searrow}},
-	stringstyle=\bfseries\color{blue},
+	stringstyle=\bfseries\color{black},
 	basicstyle=\ttfamily\bfseries\color{black}\footnotesize,
 }
 \lstdefinestyle{txt}{

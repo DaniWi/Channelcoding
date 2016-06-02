@@ -1,19 +1,19 @@
 @book{huffman2010fundamentals,
   title = {Fundamentals of Error-Correcting Codes},
-  author = {Huffman, W Cary and Pless, Vera},
+  author = {Huffman, William C. and Pless, Vera},
   isbn = {9780521131704},
-  url = {https://books.google.at/books?id=LTy-QgAACAAJ},
-  urldate = {2016-05-29},
+  url = {http://www.cambridge.org/us/academic/subjects/engineering/communications-and-signal-processing/fundamentals-error-correcting-codes?format=PB},
+  urldate = {2016-06-02},
   year = {2010},
   publisher = {Cambridge University Press}
 }
 
 @book{morelos2006art,
   title = {The Art of Error Correcting Coding},
-  author = {Morelos-Zaragoza, Robert H},
+  author = {Morelos-Zaragoza, Robert H.},
   isbn = {9780470035696},
   url = {http://www.the-art-of-ecc.com/},
-  urldate = {2016-05-29},
+  urldate = {2016-06-02},
   year = {2006},
   publisher = {John Wiley \& Sons}
 }
@@ -21,9 +21,9 @@
 @book{wickham2015r,
   title = {R Packages},
   author = {Wickham, Hadley},
-  isbn = {9781491910542},
-  url = {https://books.google.at/books?id=eqOxBwAAQBAJ},
-  urldate = {2016-05-29},
+  isbn = {9781491910597},
+  url = {http://r-pkgs.had.co.nz/},
+  urldate = {2016-06-02},
   year = {2015},
   publisher = {O'Reilly Media}
 }
@@ -32,9 +32,8 @@
   title = {Advanced R},
   author = {Wickham, Hadley},
   isbn = {9781498759809},
-  series = {Chapman \& Hall/CRC The R Series},
-  url = {https://books.google.at/books?id=FfsYCwAAQBAJ},
-  urldate = {2016-05-29},
+  url = {http://adv-r.had.co.nz/},
+  urldate = {2016-06-02},
   year = {2015},
   publisher = {CRC Press}
 }
@@ -43,14 +42,24 @@
   title = {Informations- und Kodierungstheorie},
   author = {Sch{\"o}nfeld, Dagmar and Klimant, Herbert and Piotraschke, Rudi},
   isbn = {9783834882189},
-  url = {https://books.google.at/books?id=PDkpBAAAQBAJ},
-  urldate = {2016-05-29},
+  url = {http://www.springer.com/us/book/9783834806475},
+  urldate = {2016-06-02},
   year = {2012},
   publisher = {Vieweg+Teubner Verlag}
 }
 
+@Book{ggplot2,
+  title = {ggplot2: Elegant Graphics for Data Analysis},
+  author = {Wickham, Hadley},
+  isbn = {9780387981406},
+  url = {http://ggplot2.org},
+  urldate = {2016-06-02},
+  year = {2010},
+  publisher = {Springer-Verlag New York}
+}
+
 @article{berrou1996near,
-  title = {Near optimum error correcting coding and decoding: Turbo-codes},
+  title = {A Near Optimum Error Correcting Coding and Decoding: Turbo-codes},
   author = {Berrou, Claude and Glavieux, Alain},
   journal = {Communications, IEEE Transactions on},
   volume = {44},
@@ -60,28 +69,9 @@
   publisher = {IEEE}
 }
 
-@inproceedings{collins2000iterative,
-  title = {Iterative decoding of non-systematic turbo-codes},
-  author = {Collins, Oliver M and Takeshita, OY and Costello Jr, DJ},
-  booktitle = {Information Theory, 2000. Proceedings. IEEE International Symposium on},
-  pages = {172},
-  year = {2000},
-  organization = {IEEE}
-}
-
-@book{teetor2011r,
-  title = {R Cookbook},
-  author = {Teetor, Paul},
-  isbn = {9781449307264},
-  url = {https://books.google.at/books?id=KIHuSXyhawEC},
-  urldate = {2016-05-29},
-  year = {2011},
-  publisher = {O'Reilly Media}
-}
-
 @article{chambers2014object,
   title = {Object-oriented programming, functional programming and R},
-  author = {Chambers, John M and others},
+  author = {Chambers, John M. and others},
   journal = {Statistical Science},
   volume = {29},
   number = {2},
@@ -93,20 +83,51 @@
 @Manual{rmanual,
   title = {R: A Language and Environment for Statistical Computing},
   author = {{R Core Team}},
-  organization = {R Foundation for Statistical Computing},
-  address = {Vienna, Austria},
-  year = {2016},
   url = {https://www.R-project.org},
-  urldate = {2016-05-29}
+  urldate = {2016-06-02},
+  year = {2016}
 }
 
 @Manual{rmarkdown,
   title = {rmarkdown: Dynamic Documents for R},
-  author = {JJ Allaire and Joe Cheng and Yihui Xie and Jonathan McPherson and Winston Chang and Jeff Allen and Hadley Wickham and Aron Atkins and Rob Hyndman},
-  year = {2016},
-  note = {R package version 0.9.5},
+  author = {Allaire, Joseph. J. and Cheng, Joe and Xie, Yihui and McPherson, Jonathan and Chang, Winston and Allen, Jeff and Wickham, Hadley and Atkins, Aron  and Hyndman, Rob},
   url = {http://rmarkdown.rstudio.com/},
-  urldate = {2016-05-29}
+  urldate = {2016-06-02},
+  year = {2016}
+}
+
+@Manual{devtools,
+  title = {devtools: Tools to Make Developing R Packages Easier},
+  author = {Wickham, Hadley and Chang, Winston},
+  url = {https://CRAN.R-project.org/package=devtools},
+  urldate = {2016-06-02},
+  year = {2016}
+}
+  
+@Manual{roxygen,
+  title = {roxygen2: In-Source Documentation for R},
+  author = {Wickham, Hadley and Danenberg, Peter and Eugster, Manuel},
+  url = {https://CRAN.R-project.org/package=roxygen2},
+  urldate = {2016-06-02},
+  year = {2015}
+}
+
+@online{AWGN,
+  title = {How to generate AWGN noise in Matlab/Octave(without using
+			in-built awgn function)
+			},
+  author = {Viswanathan, Mathuranathan},
+  url = {http://www.gaussianwaves.com/gaussianwaves/wp-content/uploads/2015/06/How_to_generate_AWGN_noise.pdf?02772a},
+  urldate = {2016-06-02},
+  year = {2015}
+}
+
+@online{SOVA,
+  title = {Turbo code > example for MAP and SOVA decoding algorithm},
+  author = {Dusan, Orlovic},
+  url = {https://sites.google.com/site/duleorlovic/solutions/turbo-code-example-for-map-and-sova-decoding-algorithm},
+  urldate = {2016-06-02},
+  year = {2009}
 }
 
 @MastersThesis{nocker,
@@ -117,76 +138,13 @@
   type = {Bachelorarbeit}
 }
 
-@inproceedings{hagenauer1989viterbi,
-  title = {A Viterbi algorithm with soft-decision outputs and its applications},
-  author = {Hagenauer, Joachim and Hoeher, Peter},
-  booktitle = {Global Telecommunications Conference and Exhibition'Communications Technology for the 1990s and Beyond'(GLOBECOM), 1989. IEEE},
-  pages = {1680--1686},
-  year = {1989},
-  organization = {IEEE}
-}
-
-@manual{Rintroduction,
-  author = {W. N. Venables, D. M. Smith and the R Core Team},
-  title = {An Introduction to R},
-  year = {2015},
-  url = {https://cran.r-project.org/doc/manuals/R-intro.pdf},
-  urldate = {2016-05-29}
-}
-
-@manual{Rextension,
-  author = {R Core Team},
-  title = {Writing R Extensions},
-  year = {2015},
-  url = {https://cran.r-project.org/doc/manuals/r-release/R-exts.pdf},
-  urldate = {2016-05-29}
-}
-
-@Manual{devtools,
-  title = {devtools: Tools to Make Developing R Packages Easier},
-  author = {Wickham, Hadley and Chang, Winston},
+@MastersThesis{wimmer,
+  author = {Wimmer, Benedikt},
+  title = {R-Paket für Kanalkodierung mit Blockkodes},
+  school = {Universität Innsbruck},
   year = {2016},
-  note = {R package version 1.11.0},
-  url = {https://CRAN.R-project.org/package=devtools},
-  urldate = {2016-05-29}
+  type = {Bachelorarbeit}
 }
-  
-@Manual{roxygen,
-  title = {roxygen2: In-Source Documentation for R},
-  author = {Wickham, Hadley and Danenberg, Peter and Eugster, Manuel},
-  year = {2015},
-  note = {R package version 5.0.1},
-  url = {https://CRAN.R-project.org/package=roxygen2},
-  urldate = {2016-05-29}
-}
-
-@online{AWGN,
-  author = {Viswanathan, Mathuranathan},
-  title = {How to generate AWGN noise in Matlab/Octave(without using
-			in-built awgn function)
-			},
-  year = {2015},
-  url = {http://www.gaussianwaves.com/gaussianwaves/wp-content/uploads/2015/06/				How_to_generate_AWGN_noise.pdf?02772a},
-  urldate = {2016-05-29}
-}
-
-@online{SOVA,
-	author = {Dusan, Orlovic},
-	title = {Turbo code > example for MAP and SOVA decoding algorithm},
-	year = {2009},
-	url = {https://sites.google.com/site/duleorlovic/solutions/turbo-code-example-for-map-and-sova-decoding-algorithm},
-	urldate = {2016-06-01},
-}
-
-@Book{ggplot2,
-  author = {Wickham, Hadley},
-  title = {ggplot2: Elegant Graphics for Data Analysis},
-  publisher = {Springer-Verlag New York},
-  year = {2009},
-  isbn = {978-0-387-98140-6},
-  url = {http://ggplot2.org},
-  urldate = {2016-06-01},
-  }
 
 
 

@@ -1,6 +1,6 @@
 Um dem Benutzer den Einstieg zur Verwendung des Paketes zu erleichtern, sind in den folgenden Kapiteln Beispiele und genaue Erklärungen zu allen wichtigen Funktionen. Dabei werden in Kapitel~\ref{sec:example_createHelpers} alle wichtigen Variablen erstellt, die dann in den Kapiteln~\ref{sec:example_withoutPunctuation} und \ref{sec:example_withPunctuation} beim Kodieren und Dekodieren verwendet werden. Zum Schluss werden in Kapitel~\ref{sec:example_simulations} die verschiedenen Möglichkeiten der Ausführung von Simulationen erläutert.
 
-\section{Erzeugung von Kodierer, Permutation und Punktierungsmatrix}
+\section{Erzeugung von Kodierer, Permutation- und Punktierungsmatrix}
 \label{sec:example_createHelpers}
 Zuerst werden Hilfsvariablen erzeugt, die für die folgende Kodierungs- und Dekodierungsverfahren benötigt werden. Diese Variablen müssen nicht unbedingt mitgegebenen werden, denn dann werden die Standard-Werte verwendet. Das bedeutet, dass falls keine Punktierungsmatrix übergeben wird, der Standard-Wert \texttt{NULL} ist und darum nicht punktiert wird. Ebenfalls wird nicht permutiert, wenn kein Permutationsvektor als Argument übergeben wird. Es wird zwar ein Permutationsvektor benötigt, damit die Interleaver richtig arbeiten können, jedoch wird ein Vektor vom Typ \texttt{PRIMITIVE} verwendet, dieser allerdings ändert die Reihenfolge der Bits nicht (root=0). Beim Kodierer verhält es sich ähnlich, jedoch wird hier ein vordefinierter Standard-Faltungskodierer verwendet (\texttt{ConvGenerateRscEncoder(2,2,c(5,7))}), dieser wird in allen Turbo-Kode-Funktionen benützt, falls kein eigener Kodierer übergeben wird.
 
@@ -12,7 +12,7 @@ coder <- ConvGenerateEncoder(2, 2, c(4,5))
 punctuation.matrix <- TurboGetPunctuationMatrix(c(1,1,0))
 \end{lstlisting}
 
-Wie im Listing~\ref{lst:createHelpersCoderPunctuation} zu sehen ist, wird als allererstes eine zu kodierende Nachricht erzeugt. Danach kann eine Punktierungsmatrix, mithilfe der oben dargestellt Funktion erstellt werden. Anschließend wird ein nicht rekursiver Faltungskodierer, mit der Funktion vom Faltungskode-Teil des Paketes \cite{nocker}, erzeugt. Dabei wurde ein Kodierer mit zwei Registern und zwei Ausgängen gewählt. Wichtig ist, dass der erste Ausgang vom Eingang durchgeschalten wird damit es ein systematischer Kodierer ist. Das wird erreicht, indem das erste Generatorpolynom mit $2^M = 2^2 = 4$ deklariert wird. Zum Schluss wird noch eine Punktierungsmatrix erstellt, die aus nur einer Spalte besteht und jedes dritte Bit aus dem Vektor entfernt. Bei einer 1 wird das Bit behalten, bei einer 0 verworfen.
+Wie im Listing~\ref{lst:createHelpersCoderPunctuation} zu sehen ist, wird als allererstes eine zu kodierende Nachricht erzeugt. Danach kann eine Punktierungsmatrix, mithilfe der oben dargestellt Funktion erstellt werden. Anschließend wird ein nicht rekursiver Faltungskodierer, mit der Funktion vom Faltungskode-Teil des Paketes~\cite[S. 55 f.]{nocker}, erzeugt. Dabei wurde ein Kodierer mit zwei Registern und zwei Ausgängen gewählt. Wichtig ist, dass der erste Ausgang vom Eingang durchgeschalten wird damit es ein systematischer Kodierer ist. Das wird erreicht, indem das erste Generatorpolynom mit $2^M = 2^2 = 4$ deklariert wird. Zum Schluss wird noch eine Punktierungsmatrix erstellt, die aus nur einer Spalte besteht und jedes dritte Bit aus dem Vektor entfernt. Bei einer 1 wird das Bit behalten, bei einer 0 verworfen.
 
 \begin{lstlisting}[caption=Erzeugung von verschiedenen Permutationsvektoren, label={lst:createHelpersPermutation}, float=!th]
 permutation.vector.random <- TurboGetPermutation(length(input), coder, "RANDOM")
@@ -42,8 +42,7 @@ round(encoded.noisy, 2)
 [1] -2.41 -2.36 -0.26  1.06  1.37  0.22  1.13  0.93  0.33 -1.15 -1.18  0.59
 [13]  1.32 -0.31 -1.37 -0.01 -1.42 -1.62  2.18  2.29  0.93
 
-decoded <- TurboDecode(encoded.noisy, permutation.vector.random, iterations = 5, coder, parity.index = 2)
-decoded
+TurboDecode(encoded.noisy, permutation.vector.random, iterations = 5, coder, parity.index = 2)
 $output.soft
 [1]  -1.394185  1.394185  2.775904 -1.394185  2.775904
 
@@ -70,8 +69,7 @@ $original
 $punctured
 [1] -1 -1  1  1 -1  1 -1 -1  1 -1  1 -1  1  1
 
-decoded.punctured <- TurboDecode(encoded.punctured$punctured, permutation.vector.random, iterations = 5, coder, parity.index = 2, punctuation.matrix)
-decoded.punctured
+TurboDecode(encoded.punctured$punctured, permutation.vector.random, iterations = 5, coder, parity.index = 2, punctuation.matrix)
 $output.soft
 [1] -6  6 -6 -6  6
 
@@ -148,7 +146,7 @@ PlotSimulationData(df1, df2)
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\ScaleIfNeeded]{pictures/PlotSimulations}
-\caption{Vergleich zweier Simulationen}
+\caption{Darstellung von zwei Simulationsergebnisse}
 \label{pic:plotSimulations}
 \end{figure}
 

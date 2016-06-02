@@ -1,8 +1,8 @@
-Bei den Implementierungen der Funktionen wird am Anfang immer überprüft, ob die Parameter richtig gesetzt wurden und alle mitgegebene Daten korrekt sind. Diese Überprüfungen werden bei der Erklärung nicht näher ausgeführt, nur wenn sie speziell für diese Funktion von Bedeutung sind. 
+Bei den Implementierungen der Funktionen wird am Anfang immer überprüft, ob die Parameter richtig gesetzt wurden und alle mitgegebene Daten korrekt sind. Diese Überprüfungen werden bei der Erklärung nur dann ausgeführt, wenn sie speziell für diese Funktion von Bedeutung sind. 
 
 Wenn nicht alle Parameter verwendet wurden, werden immer bestimmte Standartwerte gesetzt. Diese können in Kapitel~\ref{cha:interface} nachgelesen werden, die Erzeugung dieser wird hier jedoch nicht vorgestellt.
 
-Sämtliche Hilfsfunktionen oder selbsterklärende Implementationen können im Code nachgelesen werden. Zur Erstellung aller Grafiken wird das Pakete \emph{ggplot2} verwendet. Die genauen Erklärungen zu diesen Funktionen findet sich in der Hilfe des Paketes \cite{ggplot2}.
+Sämtliche Hilfsfunktionen oder selbsterklärende Implementationen können im Code nachgelesen werden. Zur Erstellung aller Grafiken wird das Pakete \emph{ggplot2} verwendet. Die genauen Erklärungen zu diesen Funktionen findet sich im Buch zum Pakete~\cite{ggplot2}.
 
 Dieses Kapitel gliedert sich in folgende Unterkapitel, dazu wird zuerst in Kapitel~\ref{sec:implementation_package} alle grundlegende Informationen zur Erstellung eines Paketes geliefert. Danach erfolgt die genaue Erklärung der Implementierung von der Erzeugung des Permutationsvektor in Kapitel~\ref{sec:implementation_permutation} und der Punktierungsmatrix in Kapitel~\ref{sec:implementation_puncturing}. Im Anschluss folgt die Kodierung~\ref{sec:implementation_encode} und Dekodierung~\ref{sec:implementation_decode}, um danach noch das Erzeugen des Rauschens in Kapitel~\ref{sec:implementation_applyNoise} zu erläutern. Zum Abschluss wird noch die Implementierung der Simulationen in Kapitel~\ref{sec:implementation_simulation} vorgestellt, als letztes erfolgt noch ein kleiner Einblick in die Erzeugung der Visualisierungen~\ref{sec:implementation_visualization}.
 
@@ -17,15 +17,15 @@ install.package()
 install_deps(dependencies = TRUE)
 \end{lstlisting}
 
-Sollte C/C++-Code verwendet werden, muss natürlicherweise ein Compiler und weitere Tools (in Windows RTools) am Entwicklungsrechner installiert sein. Genaue Informationen finden sich im Buch von Hadley Wickham \cite[18 ff.]{wickham2015r}.
+Sollte C/C++-Code verwendet werden, muss natürlicherweise ein Compiler und weitere Tools (in Windows RTools) am Entwicklungsrechner installiert sein. Genaue Informationen finden sich im Buch von Hadley Wickham~\cite[S.~18~ff.]{wickham2015r}.
 
-Ein Paket wird mittels dem Wizard von RStudio (\emph{File$\rightarrow$New Project$\rightarrow$New Directory$\rightarrow$R Package}) erstellt. Dabei wird dann ein Ordner für das Paket erstellt, das eine DESCRIPTION- und eine NAMESPACE-Datei beinhaltet. Zusätzlich wird noch ein R-Ordner erstellt, der sämtliche R-Skripte (Funktionen) enthalten wird. Sollte C/C++-Code verwendet werden, muss dieser in den src-Ordner abgelegt werden. Alle Dateien im inst-Ordner werden automatisch bei der Installation kopiert, sind also vom R-Code aus erreichbar \cite[196 ff.]{wickham2015r}. Noch dazu sind viele weitere Ordner in der Paketstruktur möglich, die allerdings nicht gebraucht wurden. \cite[28 ff.]{wickham2015r}
+Ein Paket wird mittels dem Wizard von RStudio (\emph{File$\rightarrow$New Project$\rightarrow$New Directory$\rightarrow$R Package}) erstellt. Dabei wird dann ein Ordner für das Paket erstellt, das eine DESCRIPTION- und eine NAMESPACE-Datei beinhaltet. Zusätzlich wird noch ein R-Ordner erstellt, der sämtliche R-Skripte (Funktionen) enthalten wird. Sollte C/C++-Code verwendet werden, muss dieser in den src-Ordner abgelegt werden. Alle Dateien im inst-Ordner werden automatisch bei der Installation kopiert, sind also vom R-Code aus erreichbar \cite[S.~196~ff.]{wickham2015r}. Noch dazu sind viele weitere Ordner in der Paketstruktur möglich, die allerdings nicht gebraucht wurden.~\cite[S.~28~ff.]{wickham2015r}
 
-In der DESCRIPTION-Datei werden alle wichtigen Informationen für das Paket gespeichert. Das sind Entwicklerdaten, eine Kurzbeschreibung, Lizenzierung und Versionierung. Dort können auch benötigte Pakete angegeben werden, die bei der Installation vom CRAN-Server automatisch installiert werden. Bei einer lokalen Installation müssen diese Pakete selbständig nachinstalliert werden. Dies lässt sich einfach mit dem zweiten Befehl des Listings~\ref{lst:install} erledigen. Diese Funktion ist im Paket \emph{devtools} enthalten. \cite[67-82]{wickham2015r}
+In der DESCRIPTION-Datei werden alle wichtigen Informationen für das Paket gespeichert. Das sind Entwicklerdaten, eine Kurzbeschreibung, Lizenzierung und Versionierung. Dort können auch benötigte Pakete angegeben werden, die bei der Installation vom CRAN-Server automatisch installiert werden. Bei einer lokalen Installation müssen diese Pakete selbständig nachinstalliert werden. Dies lässt sich einfach mit dem zweiten Befehl des Listings~\ref{lst:install} erledigen. Diese Funktion ist im Paket \emph{devtools} enthalten.~\cite[67-82]{wickham2015r}
 
-Der Code wird mittels \emph{roxygen}-Kommentare dokumentiert. Dabei werden Kommentare in den Code eingefügt, die beim Erstellen des Paketes automatisch in eine Paket-Dokumentation umgewandelt werden. Die wichtigsten Annotationen wurden bereits in Kapitel~\ref{sec:R} vorgestellt. \cite[83-110]{wickham2015r}
+Der Code wird mittels \emph{roxygen}-Kommentare dokumentiert. Dabei werden Kommentare in den Code eingefügt, die beim Erstellen des Paketes automatisch in eine Paket-Dokumentation umgewandelt werden. Die wichtigsten Annotationen wurden bereits in Kapitel~\ref{sec:R} vorgestellt.~\cite[83-110]{wickham2015r}
 
-Die NAMESPACE-Datei verwaltet das Exportieren und Importieren von Funktionen in den Paketnamensraum. Diese Datei muss nicht verändert werden, da beim Erstellen des Paketes diese Datei automatisch erstellt wird. Dabei werden die \texttt{@export}-Statements ausgewertet und diese Funktionen nach außen hin zugänglich gemacht. Bei der Verwendung vom \emph{Rcpp}-Paket und C++-Code müssen die 2 Zeilen vom Listing~\ref{lst:rcppNamespace}, in ein R-Skript geschrieben werden. \cite[144-160]{wickham2015r}
+Die NAMESPACE-Datei verwaltet das Exportieren und Importieren von Funktionen in den Paketnamensraum. Diese Datei muss nicht verändert werden, da beim Erstellen des Paketes diese Datei automatisch erstellt wird. Dabei werden die \texttt{@export}-Statements ausgewertet und diese Funktionen nach außen hin zugänglich gemacht. Bei der Verwendung vom \emph{Rcpp}-Paket und C++-Code müssen die 2 Zeilen vom Listing~\ref{lst:rcppNamespace}, in ein R-Skript geschrieben werden.~\cite[144-160]{wickham2015r}
 
 \begin{lstlisting}[caption=Nötige \emph{roxygen}-Kommentare bei der Verwendung von C++-Code, label={lst:rcppNamespace}, float=!th]
 #' @useDynLib channelcoding
@@ -38,7 +38,7 @@ Danach ist alles bereit, um das Paket zu erstellen, dabei wird einfach im R-Stud
 
 \section{Erzeugung des Permutationsvektors}
 \label{sec:implementation_permutation}
-Die Interleaver beim Kodieren und Dekodieren benötigen einen Permutationsvektor, der die Vertauschungsreihenfolge der Nachricht beinhaltet. Diese Reihenfolge kann ganz unterschiedlich bestimmt werden. Um die Erzeugung dieses Vektors zu erleichtern, wurde eine Hilfsfunktion geschaffen, die dem Benutzer viele verschiedene Permutationstypen anbietet. Diese wurden aus dem Buch von Morelos-Zaragoza \cite{morelos2006art} entnommen und nachimplementiert. Die Länge des Permutationsvektors muss immer der Länge der Nachricht, plus der Anzahl der Registern des Kodierers entsprechen. Bei vielen Typen wird eine Matrix zur Erzeugung verwendet, deswegen müssen die Argumente \texttt{cols} und \texttt{rows}, die in einer Liste eingebettet sind, genau der Länge des Permutationsvektors entsprechen.
+Die Interleaver beim Kodieren und Dekodieren benötigen einen Permutationsvektor, der die Vertauschungsreihenfolge der Nachricht beinhaltet. Diese Reihenfolge kann ganz unterschiedlich bestimmt werden. Um die Erzeugung dieses Vektors zu erleichtern, wurde eine Hilfsfunktion geschaffen, die dem Benutzer viele verschiedene Permutationstypen anbietet. Diese wurden aus dem Buch von Morelos-Zaragoza~\cite{morelos2006art} entnommen und nachimplementiert. Die Länge des Permutationsvektors muss immer der Länge der Nachricht, plus der Anzahl der Registern des Kodierers entsprechen. Bei vielen Typen wird eine Matrix zur Erzeugung verwendet, deswegen müssen die Argumente \texttt{cols} und \texttt{rows}, die in einer Liste eingebettet sind, genau der Länge des Permutationsvektors entsprechen.
 
 \begin{lstlisting}[caption=Implementierung von \texttt{TurboGetPermutation}, label={lst:implementation_TurboGetPermutation}, float=!th]
 RANDOM = {
@@ -115,7 +115,7 @@ In Listing~\ref{lst:implementation_TurboGetPunctuationMatrix} sieht man zuerst d
 \FloatBarrier
 \section{Kodierung}
 \label{sec:implementation_encode}
-Die Kodierung erfolgt laut der in den Grundlagen, in Kapitel \ref{sec:turboCodes}, besprochenen Schaltung. Dabei werden die Kodierungsfunktionen von der Faltungskodierung von Martin Nocker \cite{nocker} verwendet.
+Die Kodierung erfolgt laut der in den Grundlagen, in Kapitel \ref{sec:turboCodes}, besprochenen Schaltung. Dabei werden die Kodierungsfunktionen von der Faltungskodierung von Martin Nocker~\cite[S.~26~f.]{nocker} verwendet.
 
 \begin{lstlisting}[caption=Implementierung von \texttt{TurboEncode}, label={lst:implementation_TurboEncode}, float=!th]
 parity.1 <- ConvEncode(message, coder.info, TRUE)
@@ -152,7 +152,7 @@ Der Rückgabewert der Funktion ist die kodierte Nachricht, oder bei verwendeter 
 \FloatBarrier
 \section{Dekodierung}
 \label{sec:implementation_decode}
-Bei der Dekodierung wird der Soft-Viterbi Algorithmus verwendet, um die Nachricht mit der kleinsten Abweichung zu suchen. Dieser Algorithmus ist sehr aufwändig, deswegen wurde dieser in C++ implementiert, da dort die vielen Schleifen schneller abgearbeitet werden, als im R-Code. Als Anhaltspunkt wurde eine Referenzimplementierung von Dusan Orlovic \cite{SOVA} verwendet.
+Bei der Dekodierung wird der Soft-Viterbi Algorithmus verwendet, um die Nachricht mit der kleinsten Abweichung zu suchen. Dieser Algorithmus ist sehr aufwändig, deswegen wurde dieser in C++ implementiert, da dort die vielen Schleifen schneller abgearbeitet werden, als im R-Code. Als Anhaltspunkt wurde eine Referenzimplementierung von Dusan Orlovic~\cite{SOVA} verwendet.
 
 \begin{lstlisting}[caption=Implementierung von \texttt{TurboDecode}, label={lst:implementation_TurboDecode}, float=!th]
 if (!is.null(punctuation.matrix)) {
@@ -203,7 +203,7 @@ Nun ist die C++-Dekodierungsfunktion in Listing~\ref{lst:implementation_cFunctio
 
 Nachdem alle Iterationen erledigt sind, wird die Endberechnung durchgeführt, die in Kapitel~\ref{sec:parallelConvCodes} erklärt wurde. Danach werden noch die Hard-Werte, also die eigentlich dekodierte Nachricht gebildet. Dazu werden einfach die Soft-Werte ausgewertet und die Bits im Vektor \texttt{hard\_output} gesetzt.
 
-Die genaue Implementierung des Viterbi-Algorithmus (\texttt{c\_sova}) wird in der Bachelorarbeit von den Faltungskodes \cite{nocker} erläutert, da dies ein Teil der Faltungskodierung ist. Die Theorie zum implementierten Algorithmus ist auch im Buch von Schönefeld \cite[222-233]{schoenfeld2012informations} erklärt.
+Die genaue Implementierung des Viterbi-Algorithmus (\texttt{c\_sova}) wird in der Bachelorarbeit von den Faltungskodes~\cite[S.~27~ff.]{nocker} erläutert, da dies ein Teil der Faltungskodierung ist. Die Theorie zum implementierten Algorithmus ist auch im Buch von Schönefeld~\cite[222-233]{schoenfeld2012informations} erklärt.
 
 \FloatBarrier
 \section{Rauschen erzeugen}
@@ -226,7 +226,7 @@ Zur Berechnung des Rauschens ist die Leistung pro Bit erforderlich, das wird in 
 \label{sec:implementation_simulation}
 Bei einer Simulation wird ein Kodierungsverfahren mehrmals mit einer festgelegten Nachrichtenlänge für verschiedene Signal/Rausch-Verhältnis getestet, um am Ende die Anzahl der Fehler pro Bit zu errechnen. Sämtliche Parameter der Simulation können mittels den Parametern beeinflusst werden.
 
-Die Implementierung der Turbo-Kode Simulation wird zuerst in Kapitel~\ref{sec:implementation_turbo} erläutert. Danach wird diese Funktion bei der Simulation aller Kanalkodierungen in Kapitel~\ref{sec:implementation_channelcoding} verwendet.
+Die Implementierung der Turbo-Kode-Simulation wird zuerst in Kapitel~\ref{sec:implementation_turbo} erläutert. Danach wird diese Funktion bei der Simulation aller Kanalkodierungen in Kapitel~\ref{sec:implementation_channelcoding} verwendet.
 
 \subsection{Turbo-Kode}
 \label{sec:implementation_turbo}

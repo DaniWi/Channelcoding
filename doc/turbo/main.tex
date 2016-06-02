@@ -8,27 +8,26 @@
 % [twoside] - double sided
 % [cutmargins] - text body fills complete page
 
-% Extension to BibLaTex (useful for cites in footnotes)
-%\usepackage[backend=bibtex, style=numeric-comp]{biblatex}
 \bibliography{references}
 
 % additional packages
-\usepackage{color, colortbl} % colors (interface table)	
+\usepackage{color, colortbl} 
 \usepackage{longtable}
+\usepackage{placeins}
+\usepackage{caption}
 
 \newtheorem{t_def}{Definition}[chapter]
 \newtheorem{e_exa}{Beispiel}[chapter]
 
-\usepackage{placeins}
-
 % change name of caption by longtables
-\usepackage{caption}
 \captionsetup[longtable]{name=Funktion}
 
-%set listing language to R
+% set listing language to R
 \lstset{language=R, prebreak={}}
 
+\captionsetup{width=0.8\textwidth}
 
+% makro for resizing pictures
 \makeatletter
 \def\ScaleIfNeeded{%
 \ifdim\Gin@nat@width>\linewidth
@@ -84,4 +83,5 @@
 \defbibheading{myheading}[Literatur]{\chapter*{#1}}
 \pagestyle{plain}
 \printbibliography[heading=myheading]
+
 \end{document}
