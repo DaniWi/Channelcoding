@@ -1,5 +1,5 @@
 % grundlagen.tex
-In diesem Kapitel werden die theoretischen Grundlagen eingeführt. In Kapitel~\ref{kapitel:grundlagen_kanalkodierung} werden Prinzipien und Eigenschaften der Kanalkodierung beschrieben. Kapitel~\ref{kapitel:grundlagen_faltungskodierung} geht auf Faltungskodes ein, eine Art der Kanalkodierung auf die sich diese Arbeit konzentriert. Der Inhalt dieser Kapitel orientiert sich an \cite{huffman2010fundamentals}, sowie \cite{morelos2006art} und~\cite{schonfeld2012informations}.
+In Kapitel~\ref{kapitel:grundlagen_kanalkodierung} werden Prinzipien und Eigenschaften der Kanalkodierung beschrieben. Kapitel~\ref{kapitel:grundlagen_faltungskodierung} geht auf Faltungskodes ein, eine Art der Kanalkodierung auf die sich diese Arbeit konzentriert. Der Inhalt dieser Kapitel orientiert sich an \cite{huffman2010fundamentals}, sowie \cite{morelos2006art} und~\cite{schonfeld2012informations}.
 \section{Kanalkodierung}
 \label{kapitel:grundlagen_kanalkodierung}
 \begin{figure}[t]
@@ -10,9 +10,9 @@ In diesem Kapitel werden die theoretischen Grundlagen eingeführt. In Kapitel~\r
 \caption{Kommunikationskanal}
 \label{abb:kommunikationskanal}
 \end{figure}
-Kanalkodierung kann als Zuordnung bzw. Abbildung von Quellzeichen zu Kanalzeichen angesehen werden. Quellzeichen sind Zeichen, die eine Informationsquelle emittiert. Kanalzeichen sind Zeichen, die über einen Kommunikationskanal übertragen werden. Der Kanal enthält ein Rauschen, d.h. Informationen die von der Quelle emittiert werden, können verändert beim Empfänger ankommen. Daher wird der Kanal auch als \emph{verrauschter} Kanal bezeichnet. Würde eine Information unkodiert über den verrauschten Kanal übertragen werden, könnte die verfälschte Nachricht nicht wiederhergestellt werden. Daher fügt ein Kanalkodierer den Quellzeichen Redundanz hinzu, sodass empfängerseitig verfälschte Zeichen erkannt und korrigiert werden können.
+Kanalkodierung kann als Zuordnung bzw. Abbildung von Quellzeichen zu Kanalzeichen angesehen werden. Quellzeichen sind Zeichen, die eine Informationsquelle emittiert. Kanalzeichen sind Zeichen, die über einen Kommunikationskanal übertragen werden. Der Kanal enthält ein Rauschen, d.h. Informationen die von der Quelle emittiert werden, können verändert beim Empfänger ankommen. Daher wird der Kanal als \emph{verrauschter} Kanal bezeichnet. Würde eine Information unkodiert über den verrauschten Kanal übertragen werden, könnte die verfälschte Nachricht nicht wiederhergestellt werden. Daher fügt ein Kanalkodierer den Quellzeichen Redundanz hinzu, sodass empfängerseitig verfälschte Zeichen erkannt und korrigiert werden können.
 
-Abbildung~\ref{abb:kommunikationskanal} zeigt einen Kommunikationskanal inklusive Kanalkodierung. Eine Nachricht $\mathbf{u}=\left( u_{1},u_{2},\dots ,u_{k}\right)$ wird in ein Kodewort $\mathbf{v}=\left( v_{1},v_{2},\dots ,v_{n}\right)$, welches Redundanz enthält, kodiert. Vor der Übertragung über den Kanal werden die Bits folgendermaßen auf die Signalpegel +1 bzw. -1 abgebildet:
+Abbildung~\ref{abb:kommunikationskanal} zeigt einen Kommunikationskanal. Eine Nachricht $\mathbf{u}=\left( u_{1},u_{2},\dots ,u_{k}\right)$ wird in ein Kodewort $\mathbf{v}=\left( v_{1},v_{2},\dots ,v_{n}\right)$, welches Redundanz enthält, kodiert. Vor der Übertragung über den Kanal werden die Bits folgendermaßen auf die Signalpegel +1 bzw. -1 abgebildet:
 \begin{equation}
 \text{Signal(Bit)} =
 \begin{cases}
@@ -39,7 +39,7 @@ Die Koderate $R$ eines Kodes beschreibt das Verhältnis der Länge zwischen dem 
 R=\frac{k}{n}<1
 \end{equation}
 Wobei $k$ bzw. $n$ den Längen des Quellworts bzw. Kodeworts entsprechen. Somit beschreibt die Koderate das Verhältnis zwischen Information und Redundanz im übertragenen Kodewort. Bei hoher Redundanz ergibt sich eine niedrige Koderate. Die Übertragung ein und derselben Information bei gleicher Übertragungsgeschwindigkeit dauert bei Kodes mit niedriger Koderate länger, als bei Kodes mit höherer Koderate.
-
+\pagebreak
 \subsection{Hamming-Distanz}
 \label{kapitel:grundlagen_hamming_distanz}
 Die Hamming-Distanz $d$ (auch $d_{H}$) zweier Kodewörter $\mathbf{a}=\left( a_{1},a_{2},\dots ,a_{n}\right)$ und $\mathbf{b}=\left( b_{1},b_{2},\dots ,b_{n}\right)$ entspricht der Anzahl an Stellen, in denen sich die beiden Kodewörter unterscheiden:
@@ -175,7 +175,7 @@ Gegeben sei der Faltungskodierer aus Beispiel~\ref{bsp:B1} und ein empfangenes K
 
 \subsubsection{soft decision}
 \label{kapitel:grundlagen_soft_decision}
-Vor der Übertragung eines Kodeworts werden die Kodebits 0 bzw. 1 nach Gleichung~\eqref{eq:bit_zu_signal_abbildung} auf die Signalzustände +1 bzw. -1 abgebildet. Bei der hard decision Dekodierung muss vor der Dekodierung das Signal nach Gleichung~\eqref{eq:signal_zu_bit_abbildung} wieder zu einem Bitvektor zurück umgewandelt. Die soft decision Dekodierung lässt diese Rücktransformation aus und verwendet die exakten Signalpegel. Dadurch erzielt die soft decision Dekodierung eine noch bessere Fehlerkorrektur. Die Metrik für eine Kante, die einen Zustand $s$ zum Zeitpunkt $t$ mit einem Zustand $s'$ zum Zeitpunkt $t+1$ verbindet, entspricht dem Skalarprodukt der Signalzustände der Bewertung der Kante zwischen $s$ und $s'$ und dem zum Zeitpunkt $t$ empfangenen Teil des Signals. Der Viterbi-Algorithmus funktioniert analog zur soft decision Dekodierung, jedoch wird der Pfad mit der maximalen Metrik gesucht. Treffen zwei Pfade aufeinander, wird der Pfad mit der kleineren Metrik verworfen. Das Backtracking beginnt hier bei der größten Metrik. Als Ergebnis resultiert die Nachricht, dessen Signal das größte Skalarprodukt mit dem empfangenen Signal hat.
+Vor der Übertragung eines Kodeworts werden die Kodebits 0 bzw. 1 nach Gleichung~\eqref{eq:bit_zu_signal_abbildung} auf die Signalzustände +1 bzw. -1 abgebildet. Bei der hard decision Dekodierung muss vor der Dekodierung das Signal nach Gleichung~\eqref{eq:signal_zu_bit_abbildung} wieder zu einem Bitvektor zurück umgewandelt werden. Die soft decision Dekodierung lässt diese Rücktransformation aus und verwendet die exakten Signalpegel. Dadurch erzielt die soft decision Dekodierung eine noch bessere Fehlerkorrektur. Die Metrik für eine Kante, die einen Zustand $s$ zum Zeitpunkt $t$ mit einem Zustand $s'$ zum Zeitpunkt $t+1$ verbindet, entspricht dem Skalarprodukt der Signalzustände der Bewertung der Kante zwischen $s$ und $s'$ und dem zum Zeitpunkt $t$ empfangenen Teil des Signals. Der Viterbi-Algorithmus funktioniert analog zur soft decision Dekodierung, jedoch wird der Pfad mit der maximalen Metrik gesucht. Treffen zwei Pfade aufeinander, wird der Pfad mit der kleineren Metrik verworfen. Das Backtracking beginnt hier bei der größten Metrik. Als Ergebnis resultiert die Nachricht, dessen Signal das größte Skalarprodukt mit dem empfangenen Signal hat.
 \\
 \\
 Die Nachricht wird mittels \emph{Soft-Werten} und \emph{Hard-Werten} angegeben. Die Soft-Werte geben neben der dekodierten Nachricht die Zuverlässigkeitswerte für die Bits an, d.h. mit welcher Wahrscheinlichkeit das Bit mit dem tatsächlich gesendeten Bit der Quellnachricht übereinstimmt. Positive Soft-Werte werden auf eine 0, negative auf eine 1 abgebildet. Der Betrag des Soft-Werts gibt die Zuverlässigkeit an, wobei gilt, je höher der Betrag, desto zuverlässiger das dekodierte Bit. Die Hard-Werte entsprechen der Abbildung der Soft-Werte auf die Bit-Werte 0 bzw. 1. Der Viterbi-Algorithmus mit Soft-Werten wird auch SOVA (Soft Output Viterbi Algorithm) genannt. Die Berechnung der Soft-Werte ist in \cite[S.~228~ff.]{schonfeld2012informations} beschrieben.
@@ -268,8 +268,8 @@ Die Generatormatrix eines RSC-Kodierers mit einem Eingang wird folgendermaßen a
 G=\left( 1, \frac{g_{1}}{g_{0}},\dots , \frac{g_{N-1}}{g_{0}} \right)
 \end{equation}
 Zumeist befindet sich an erster Stelle eine 1, welche den systematischen Ausgang notiert. Das Polynom $g_{0}$ definiert die Rückkopplung des Kodierers. Die Polynome $g_{1}$ bis $g_{N-1}$ stellen die Polynome der nichtsystematischen Ausgänge dar~\cite[S.~92~f.]{morelos2006art}.
-\\
-Zur Definition eines RSC-Kodierers im späteren Programm müssen die oktalen Generatorpolynome der nichtsystematischen Ausgänge sowie der Rekursion angegeben werden. Das Polynom des systematischen Ausgangs muss nicht angegeben werden. Abbildung \ref{abb:rsc_kodierer} zeigt einen rekursiv systematischen Faltungskodierer für die Generatormatrix $G=\left( 1,\frac{5_{8}}{7_{8}}\right)$.
+
+Zur Definition eines RSC-Kodierers im praktischen Teil der Arbeit müssen die oktalen Generatorpolynome der nichtsystematischen Ausgänge sowie der Rekursion angegeben werden. Das Polynom des systematischen Ausgangs muss nicht angegeben werden. Abbildung \ref{abb:rsc_kodierer} zeigt einen rekursiv systematischen Faltungskodierer für die Generatormatrix $G=\left( 1,\frac{5_{8}}{7_{8}}\right)$.
 
 \subsection{Terminierung}
 \label{kapitel:grundlageen_terminierung}

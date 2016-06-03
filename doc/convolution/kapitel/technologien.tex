@@ -1,10 +1,10 @@
 % technologien.tex
-Dieses Kapitel setzt sich folgendermaßen zusammen: Kapitel~\ref{kapitel:R} behandelt die Programmiersprache R und die verwendete Entwicklungsumgebung RStudio. In Kapitel~\ref{kapitel:rcpp} werden die Möglichkeiten der Einbindung von C/C++-Code, vor allem mithilfe des Pakets \texttt{Rcpp}, beschrieben. Schließlich wird in Kapitel~\ref{kapitel:rmarkdown} auf die Erstellung dynamischer Dokumente und Visualisierungen mittels \texttt{RMarkdown}, \LaTeX\ und Ti\textit{k}Z eingegangen.
+Kapitel~\ref{kapitel:R} behandelt die Programmiersprache R und die verwendete Entwicklungsumgebung RStudio. In Kapitel~\ref{kapitel:rcpp} werden die Möglichkeiten der Einbindung von C/C++-Code, vor allem mithilfe des Pakets \texttt{Rcpp}, beschrieben. Schließlich wird in Kapitel~\ref{kapitel:rmarkdown} auf die Erstellung dynamischer Dokumente und Visualisierungen mittels \texttt{RMarkdown}, \LaTeX\ und Ti\textit{k}Z eingegangen.
 \section{R, RStudio, Pakete}
 \label{kapitel:R}
 \begin{figure}[t]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{abbildungen/rstudio}
+\includegraphics[width=0.9\textwidth]{abbildungen/rstudio}
 \caption{RStudio Standardansicht}
 \label{abb:rstudio}
 \end{figure}
@@ -14,16 +14,11 @@ R ist eine, im Jahre 1992 entwickelte, schwach und dynamisch typisierte Programm
 Der Funktionsumfang der Sprache kann durch sogenannte Pakete erweitert werden. Bei der Installation von R sind die wichtigsten Pakete inkludiert. Über Repositories wie CRAN\footnote{The Comprehensive R Archive Network: \url{https://cran.r-project.org/}} oder GitHub sind über 8000 zusätzliche Pakete (Stand: Mai 2016) für die verschiedensten Anwendungsbereiche verfügbar. Diese Vielfalt an Paketen ist ein Grund für den Erfolg von R~\cite[S.~18]{wickham2015r}.
 \\
 Pakete werden laufend aktualisiert und verbessert. Selbst entwickelte Pakete können via CRAN für andere Entwickler veröffentlicht werden, müssen jedoch strenge Auflagen zur Aufrechterhaltung der Konsistenz bei Inhalt, Form und Dokumentation der Pakete einhalten~\cite{wickham2015r}.  
-\\
-\\
-% Roxygen
+
 Ein wichtiges Paket, welches im Rahmen dieser Arbeit verwendet wurde, ist \texttt{roxygen2}. Mithilfe dieses Pakets wird, ähnlich zur JavaDoc für Java, durch spezielle Kommentare und Annotations überhalb der Paketfunktionen automatisch die Paketdokumentation erstellt. Die \texttt{roxygen}-Kommentare der Paketfunktionen, die für wartbaren Code ohnehin unabdingbar sind, sind für den Entwickler erheblich angenehmer, als die Paketdokumentation von Hand zu schreiben. Diese werden durch das Kommentarsymbol \mbox{\texttt{\#'}} am Zeilenbeginn eingeleitet. Zu den wichtigsten Annotations gehören jene für die Beschreibung der Parameter (\texttt{@param}) und Rückgabewerte (\texttt{@return}) sowie Beispiele zur Ausführung der Funktion (\texttt{@examples}). Weiters wird über die \texttt{@export} Annotation geregelt, welche Funktionen nach Auslieferung des Pakets von außen aufrufbar sind.~\cite{roxygen}
-\\
-\\
-% devtools
+
 Ein weiteres hilfreiches Paket ist das \texttt{devtools}-Paket. Dieses Paket stellt Funktionen für die Erstellung (Build) von Paketen zur Verfügung und beschleunigt so den Build-Workflow für den Entwickler.~\cite{devtools}
-\\
-\\
+
 % RStudio
 RStudio ist eine freie open-source Entwicklungsumgebung für R. RStudio verfügt über alle notwendigen Funktionalitäten für die Softwareentwicklung mit R und bietet darüber hinaus Funktionen für eine vereinfachte Entwicklung von R-Paketen an. Abbildung~\ref{abb:rstudio} zeigt die Version 0.99.893. 
 \section{C++, Rcpp}
@@ -31,32 +26,27 @@ RStudio ist eine freie open-source Entwicklungsumgebung für R. RStudio verfügt
 Vorteile von R, wie die einfache Analyse von Datenmengen, kommen mit einem Nachteil: R ist keine schnelle Sprache. Typische Flaschenhälse sind Schleifen und rekursive Funktionen. Die Performance kann in solchen Fällen durch Auslagern von Funktionen und Algorithmen in C oder C++ erheblich verbessert werden, da der Code in diesen Sprachen kompiliert und somit optimiert werden kann, anstatt nur interpretiert zu werden.\\
 R bietet drei Möglichkeiten C/C++-Code aufzurufen:
 \begin{itemize}
+	\itemsep-.2em % spacing between items
 	\item \texttt{.C}-Schnittstelle
 	\item \texttt{.Call}-Schnittstelle
 	\item \texttt{Rcpp}-Paket
 \end{itemize}
 Die \texttt{.C}-Schnittstelle ist die einfachste Variante C-Code auszuführen, jedoch auch jene mit den größten Einschränkungen. Im C-Code sind keinerlei R-Datentypen oder R-Funktionen bekannt. Alle Argumente sowie der Rückgabewert müssen als Zeiger in der Parameterliste übergeben werden und deren Speicher muss vor dem Aufruf reserviert werden.
-\\
-\\
+
 Bei der \texttt{.Call}-Schnittstelle handelt es sich um eine Erweiterung der \texttt{.C}-Schnittstelle. Die Implementierung ist komplexer, dafür sind R-Datentypen verfügbar und es gibt, mithilfe des \texttt{return} Statements, die Möglichkeit eines Rückgabewerts.
-\\
-\\
+
 Sowohl bei der \texttt{.C}-Schnittstelle als auch bei der \texttt{.Call}-Schnittstelle muss der C-Code vor dem Aufruf per Hand kompiliert und in der R Session geladen werden. Das \texttt{Rcpp}-Paket ermöglicht die Verwendung von C++-Code ohne diesen Aufwand. Im C++-Code stehen R-Datentypen wie Vektoren, Matrizen oder Listen ohne komplizierte Syntax zur Verfügung. Die Funktionsaufrufe sehen, im Gegensatz zu den C-Schnittstellen, wie normale R-Funktionsaufrufe aus und machen dadurch den Code erheblich lesbarer. Weiters stehen Vektorfunktionen zur Verfügung, d.h. eine auf einen Vektor angewandte Funktion wird auf jedes Vektorelement ausgeführt und erspart somit beispielsweise eine Schleife. Bei der Entwicklung eines eigenen Pakets ist es bei der Verwendung des \texttt{Rcpp}-Pakets zusammen mit RStudio sehr einfach C++-Code zu integrieren. Durch all diese Vorteile ist das \texttt{Rcpp}-Paket die zu wählende Schnittstelle. Die genaue Verwendung des \texttt{Rcpp}-Pakets ist in \cite[S.~395~ff.]{wickham2015advanced} beschrieben.
-\section{RMarkdown, \LaTeX, Ti\textit{k}Z}
-\label{kapitel:rmarkdown}
 \begin{figure}[t]
 \centering
-\includegraphics[width=\ScaleIfNeeded]{abbildungen/rmarkdown}
+\includegraphics[width=0.9\textwidth]{abbildungen/rmarkdown}
 \caption[RMarkdown Überblick]{RMarkdown Überblick, Quelle:~\cite{rmarkdown}}
 \label{abb:rmarkdown}
 \end{figure}
+\section{RMarkdown, \LaTeX, Ti\textit{k}Z}
+\label{kapitel:rmarkdown}
 % R Markdown
 Zur Erstellung von dynamischen Dokumenten wird das Paket \texttt{RMarkdown} verwendet. Durch die Kombination der Syntax von Markdown, R, und \LaTeX\ ergibt sich ein flexibles und einfaches Werkzeug. Die unterstützen Ausgabeformate beinhalten u.a. HTML, PDF, MS Word und Beamer (Präsentationen).
-\\
-\\
-% R Markdown Workflow
+
 Abbildung~\ref{abb:rmarkdown} zeigt den Workflow für die Generierung eines dynamischen Dokuments mittels \texttt{RMarkdown}. Der Markdown-, R- und \LaTeX -Code wird zusammen mit dem gewünschten Ausgabeformat, wobei mehrere Angaben möglich sind, in die \texttt{RMarkdown}-Datei (Dateiendung .rmd) geschrieben. Die RMD-Datei wird dem \texttt{knitr}-Paket übergeben, welches den R-Code ausführt und eine neue Markdown-Datei (Dateiendung .md) erstellt, die den R-Code und dessen Ergebnisse beinhaltet. Die erzeugte Markdown-Datei wird von \texttt{pandoc} weiterverarbeitet, das für die Erstellung des endgültigen Dokuments im gewünschten Format zuständig ist. Bei der Verwendung von RStudio ist \texttt{pandoc} automatisch verfügbar. Den eben beschriebenen Ablauf kapselt das \texttt{RMarkdown}-Paket in einem einzigen \texttt{render}-Funktionsaufruf.
-\\
-\\
-% LaTeX, TikZ
+
 Für die Erzeugung dynamischer Grafiken wird das \LaTeX -Sprachpaket Ti\textit{k}Z verwendet. Mithilfe des Dokumenttyps Beamer in \LaTeX\ lassen sich Präsentationen erstellen. Die Grafiken und Inhalte können dadurch dynamisch ein- oder ausgeblendet, sowie farblich hervorgehoben werden. Dies ist insofern wertvoll, da Informationen, die Schritt für Schritt vervollständigt werden, es dem Benutzer leichter machen den Ablauf nachzuvollziehen. Damit Benutzer des R-Pakets dieser Arbeit die Prinzipien von Faltungskodes besser verstehen können, werden die Visualisierungen der Kodierung und Dekodierung sukzessive eingeblendet.

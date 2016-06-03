@@ -103,7 +103,9 @@ for (int state = 0; state < NUM_STATES; state++) {
 \end{lstlisting}
 \section{Kodierung}
 \label{kapitel:implementierung_kodierung}
-Bei Faltungskodes stellt die Kodierung den einfacheren Teil dar. Es muss lediglich jedes Bit der zu kodierenden Nachricht zusammen mit dem aktuellen Zustand, der nach jedem Bit mithilfe der Zustandsübergangsmatrix aktualisiert wird, auf die Ausgabematrix angewendet werden. Die Terminierung funktioniert analog, einzig das zu kodierende Bit muss ermittelt werden. Für RSC-Kodierer wird das Terminierungsbit anhand des Terminierungsvektors ermittelt, andernfalls ist das Terminierungsbit immer 0. Abgeschlossen wird die Kodierung mit dem Abbilden der Kodebits 0 bzw. 1 auf die Signalwerte +1 bzw. -1 nach Gleichung~\eqref{eq:bit_zu_signal_abbildung}. Algorithmus~\ref{algorithmus:kodierung} zeigt den Kodierungsalgorithmus.
+Bei Faltungskodes stellt die Kodierung den einfacheren Teil dar. Es muss lediglich jedes Bit der zu kodierenden Nachricht zusammen mit dem aktuellen Zustand, der nach jedem Bit mithilfe der Zustandsübergangsmatrix aktualisiert wird, auf die Ausgabematrix angewendet werden. Die Terminierung funktioniert analog, einzig das zu kodierende Bit muss ermittelt werden. Für RSC-Kodierer wird das Terminierungsbit anhand des Terminierungsvektors ermittelt, andernfalls ist das Terminierungsbit immer 0.
+
+Abgeschlossen wird die Kodierung mit dem Abbilden der Kodebits 0 bzw. 1 auf die Signalwerte +1 bzw. -1 nach Gleichung~\eqref{eq:bit_zu_signal_abbildung}. Algorithmus~\ref{algorithmus:kodierung} zeigt den Kodierungsalgorithmus.
 \begin{algorithm}[H]
 \renewcommand{\algorithmicforall}{\textbf{for each}}
 \caption{Pseudocode der Faltungskodierung}
