@@ -5,7 +5,7 @@
 \\
 \texttt{TurboSimulation(coder, permutation.type, permutation.args, decode.iterations, msg.length, min.db, max.db, db.interval, iterations.per.db, punctuation.matrix, visualize)}\\
 \\
-Automatische Simulation eines Kodierungs- und Dekodierungsverfahrens von Turbo-Kodes. Nach dem Kodieren wird der resultierende Kode verrauscht und im Anschluss dekodiert. Für das jeweilige Signal/Rausch-Verhältnis wird dieses Verfahren mehrmals (\texttt{iterations.per.db}) wiederholt und am Ende ein Durchschnitt der Bitfehlerrate berechnet.\\
+Automatische Simulation eines Kodierungs- und Dekodierungsverfahrens von Turbo-Kodes. Nach dem Kodieren wird der resultierende Kode verrauscht und im Anschluss dekodiert. Für das jeweilige Signal/Rausch-Verhältnis wird dieses Verfahren (\texttt{iterations.per.db}) mehrmals wiederholt und am Ende ein Durchschnitt der Bitfehlerrate berechnet.\\
 \\
 \textbf{Argumente:}\\
 \texttt{coder} - Kodierer der für Kodierung und Dekodierung verwendet wird. Standard: \texttt{ConvGenerateRscEncoder(2,2,c(5,7))}\\
