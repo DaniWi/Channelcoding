@@ -1,14 +1,14 @@
 % fazit.tex
-Diese Arbeit beinhaltet die Implementierung von Faltungskodes, einem Verfahren zur Kanalkodierung, innerhalb eines R-Pakets. Außerdem stehen Funktionen für Blockkodes und Turbo-Kodes zur Verfügung, welche aus anderen Bachelorarbeiten resultieren. Dadurch ergibt sich ein kompaktes und vielseitig verwendbares R-Paket für die Kanalkodierung. Das entwickelte R-Paket besitzt einen beachtlichen Funktionsumfang, u.a. stehen Funktionen zur Kodierung, Dekodierung und Simulation verschiedener Kanalkodierungen zur Verfügung.
+Diese Arbeit beinhaltet die Implementierung von Faltungskodes, einem Verfahren zur Kanalkodierung, innerhalb eines R-Pakets. Außerdem stehen Funktionen für Blockkodes und Turbo-Kodes zur Verfügung, welche aus anderen Bachelorarbeiten stammen. Dadurch ergibt sich ein kompaktes und vielseitig verwendbares R-Paket für die Kanalkodierung. Das entwickelte R-Paket besitzt einen beachtlichen Funktionsumfang, u.a. stehen Funktionen zur Kodierung, Dekodierung und Simulation verschiedener Kanalkodierungen zur Verfügung.
 \\
 \\
-In erster Linie wurde das Paket zu Lehrzwecken für zukünftige Studierende entwickelt. Diese sollen durch die Verwendung des Pakets die Prinzipien der Faltungskodierung bzw. Kanalkodierung verstehen können. Dabei helfen dynamisch generierte Visualisierungen, die die Kodierung, Dekodierung und Simulation veranschaulichen.
+In erster Linie wurde das Paket zu Lehrzwecken für zukünftige Studierende entwickelt. Diese sollen durch die Verwendung des Pakets die Prinzipien der Faltungskodierung bzw. Kanalkodierung verstehen können. Dabei helfen dynamisch generierte Visualisierungen, welche die Kodierung, Dekodierung und Simulation veranschaulichen.
 \\
 \\
 Erweiterungspotenzial besteht vor allem im Bereich der Visualisierung:
 \begin{itemize}
-\item Schaltbild des Faltungskodierers\\Darstellungen der Zustandsdiagramme von Kodierern sind nur bei einer Schieberegisterlänge von maximal drei möglich. Durch die Darstellung mittels des Kodierer-Schaltbilds könnten auch Kodierer mit längeren Schieberegistern dargestellt werden, ohne unübersichtlich zu werden.
+\item Schaltbild des Faltungskodierers\\Die Darstellung der Zustandsdiagramme der Kodierer ist nur bei einer Schieberegisterlänge von maximal drei möglich. Durch die Darstellung mittels des Kodierer-Schaltbilds könnten auch Kodierer mit längeren Schieberegistern dargestellt werden, ohne unübersichtlich zu werden.
 \item Berechnung der Metriken der Dekodierung\\Eine Darstellung der Herleitung bzw. Erklärung zur Berechnung der Metriken gäbe den Werten, aus der Perspektive des Benutzers, mehr Bedeutung.
 \item Berechnung der Soft-Werte der soft decision Dekodierung\\Eine Darstellung, wie sich die Soft-Werte der soft decision Dekodierung errechnen, würde dem Benutzer helfen die resultierenden Soft-Werte interpretieren zu können.
 \end{itemize}
-Der Funktionsumfang des Pakets könnte weiters durch die Implementierung des BCJR-Algorithmus erweitert werden. Mit dem BCJR-Algorithmus existiert eine etwas komplexere Alternative zum Viterbi-Algorithmus zur Dekodierung von Faltungskodes. Anstelle der Suche nach dem wahrscheinlichsten Pfad im Trellis wird ein Pfad gesucht, sodass die Fehlerwahrscheinlichkeit der einzelnen Bits minimal ist \cite[S. 233 ff.]{schonfeld2012informations}.
+Der Funktionsumfang des Pakets könnte weiters durch die Implementierung des BCJR-Algorithmus erweitert werden. Mit dem BCJR-Algorithmus existiert eine etwas komplexere Alternative zum Viterbi-Algorithmus zur Dekodierung von Faltungskodes. Anstelle der Suche nach dem wahrscheinlichsten Pfad im Trellis wird ein Pfad gesucht, sodass die Fehlerwahrscheinlichkeit der einzelnen Bits minimal ist \cite[S.~233~ff.]{schonfeld2012informations}.

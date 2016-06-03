@@ -1,9 +1,9 @@
 % beispiele.tex
-In diesem Kapitel werden Beispiele zur Verwendung der R-Paket Funktionen der Faltungskodierung veranschaulicht und erklärt. Kapitel~\ref{kapitel:beispiele_kodierer} führt Variablen ein, die über die weiteren Beispiele hinweg verwendet werden. Die Kapitel~\ref{kapitel:beispiele_kodieren_ohneP} bzw. \ref{kapitel:beispiele_kodieren_mitP} beinhalten die Kodierung und Dekodierung ohne bzw. mit Punktierung. Schließlich werden in Kapitel~\ref{kapitel:beispiele_simulation} Beispiele für die Ausführung von Simulationen vorgestellt. 
+In diesem Kapitel werden Beispiele zur Verwendung der R-Paket-Funktionen der Faltungskodierung veranschaulicht und erklärt. Kapitel~\ref{kapitel:beispiele_kodierer} führt Variablen ein, die über die weiteren Beispiele hinweg verwendet werden. Die Kapitel~\ref{kapitel:beispiele_kodieren_ohneP} bzw. \ref{kapitel:beispiele_kodieren_mitP} beinhalten die Kodierung und Dekodierung ohne bzw. mit Punktierung. Schließlich werden in Kapitel~\ref{kapitel:beispiele_simulation} Beispiele für die Ausführung von Simulationen vorgestellt. 
 
 \section{Erzeugen von Kodierer und Punktierungsmatrix}
 \label{kapitel:beispiele_kodierer}
-Vor den Beispielen der Kodierung und Dekodierung werden Hilfsvariablen definiert, die für die folgenden Beispiele verwendet werden. Variablen wie der Faltungskodierer oder die Punktierungsmatrix müssen jedoch nicht unbedingt bei der Kodierung oder Dekodierung mitgegeben werden. Fehlt bei den Parametern der Kodierer, wird der Standard-Faltungskodierer aus Beispiel~\ref{bsp:B1} verwendet. Gibt man keine Punktierungsmatrix mit, so wird das Signal auch nicht punktiert. Die meisten weiteren Parameter (Terminierung, Visualisierung etc.) besitzen auch Standardwerte, die verwendet werden, falls vom Benutzer keine Werte bestimmt werden.
+Vor den Beispielen der Kodierung und Dekodierung erfolgen Definitionen von Hilfsvariablen, die für die folgenden Beispiele verwendet werden. Variablen wie der Faltungskodierer oder die Punktierungsmatrix müssen jedoch nicht unbedingt bei der Kodierung oder Dekodierung mit übergeben werden. Fehlt bei den Parametern der Kodierer, wird der Standard-Faltungskodierer aus Beispiel~\ref{bsp:B1} verwendet. Gibt man keine Punktierungsmatrix mit, so wird das Signal auch nicht punktiert. Die meisten weiteren Parameter (Terminierung, Visualisierung etc.) besitzen auch Standardwerte, die verwendet werden, falls der Benutzer keine Werte bestimmt.
 \begin{lstlisting}[caption=Erzeugung von Kodierer und Punktierungsmatrix, label={listing:kodierer_erzeugen}, float=!th]
 input <- c(1,0,1,1,0)
  
@@ -15,7 +15,7 @@ p.matrix
 [1,]    1    1    0
 [2,]    0    1    1
 \end{lstlisting}
-Listing~\ref{listing:kodierer_erzeugen} zeigt die Erzeugung der Variablen für die weitern Beispiele. Zunächst wird eine Quellnachricht \texttt{input} erzeugt, gefolgt von der Definition des NASA-Standardkodierers~\cite[S. 90]{morelos2006art}. Zuletzt wird eine Punktierungsmatrix aus dem mitgegebenen Punktierungsvektor und dem verwendeten Kodierer generiert. Der Kodierer ist notwendig, da die Anzahl der Zeilen der Punktierungsmatrix gleich der Anzahl der Kodiererausgänge $N$ ist (siehe Kapitel~\ref{kapitel:grundlagen_punktierung}).
+Listing~\ref{listing:kodierer_erzeugen} zeigt die Erzeugung der Variablen für die weiteren Beispiele. Zunächst wird eine Quellnachricht \texttt{input} erzeugt, gefolgt von der Definition des NASA-Standardkodierers~\cite[S.~90]{morelos2006art}. Zuletzt wird eine Punktierungsmatrix aus dem mitgegebenen Punktierungsvektor und dem verwendeten Kodierer generiert. Der Kodierer ist notwendig, da die Anzahl der Zeilen der Punktierungsmatrix gleich der Anzahl der Kodiererausgänge $N$ ist (siehe Kapitel~\ref{kapitel:grundlagen_punktierung}).
 
 \section{Kodieren und Dekodieren ohne Punktierung}
 \label{kapitel:beispiele_kodieren_ohneP}
@@ -41,7 +41,7 @@ decoded.hard <- ConvDecodeHard(encoded.noisy, nasa.encoder)
 decoded.hard
 [1] 1 0 1 1 0
 \end{lstlisting}
-Listing~\ref{listing:kodierung_u_dekodierung_ohneP} beinhaltet den Code zur Kodierung und Dekodierung ohne Punktierung. Für die Kodierung der Nachricht wird diese einfach zusammen mit dem Kodierer der Kodierungsfunktion \texttt{ConvEncode} übergeben. Als Resultat erhält man das Kodewort mit den Signalpegeln +1 bzw. -1. Anschließend wird dieses mit der \texttt{ApplyNoise}-Funktion und einem Signal-Rausch-Verhältnis von 0,2dB verrauscht und der \texttt{encoded.noisy} Variable zugewiesen. Die Ausgabe dient dem Vergleich des unverfälschten und des verrauschten Kodeworts. Die Werte werden aus Platzgründen auf zwei Nachkommastellen gerundet. Schließlich erfolgt die soft decision und die hard decision Dekodierung. Der Rückgabewert der soft decision Dekodierung ist eine Liste welche sowohl die Soft-Werte als auch die Hard-Werte beinhaltet. Die hard decision Dekodierung gibt nur einen Vektor mit den dekodierten Bits 0 bzw. 1 zurück. Das Beispiel zeigt die Fähigkeit der Faltungskodierung, stark verrauschte Signale korrekt dekodieren zu können.
+Listing~\ref{listing:kodierung_u_dekodierung_ohneP} beinhaltet den Code zur Kodierung und Dekodierung ohne Punktierung. Für die Kodierung der Nachricht wird diese einfach zusammen mit dem Kodierer der Kodierungsfunktion \texttt{ConvEncode} übergeben. Als Resultat erhält man das Kodewort mit den Signalpegeln +1 bzw. -1. Anschließend wird dieses mit der \texttt{ApplyNoise}-Funktion und einem Signal-Rausch-Verhältnis von 0,2dB verrauscht und der \texttt{encoded.noisy} Variable zugewiesen. Die Ausgabe dient dem Vergleich des unverfälschten Kodeworts mit dem verrauschten Kodewort. Die Werte werden aus Platzgründen auf zwei Nachkommastellen gerundet. Schließlich erfolgt die soft decision und die hard decision Dekodierung. Der Rückgabewert der soft decision Dekodierung ist eine Liste, welche sowohl die Soft-Werte als auch die Hard-Werte beinhaltet. Die hard decision Dekodierung gibt nur einen Vektor mit den dekodierten Bits 0 bzw. 1 zurück. Das Beispiel zeigt die Fähigkeit der Faltungskodierung, stark verrauschte Signale korrekt dekodieren zu können.
 
 \section{Kodieren und Dekodieren mit Punktierung}
 \label{kapitel:beispiele_kodieren_mitP}
@@ -67,7 +67,7 @@ decoded.hard <- ConvDecodeHard(encoded.punctured$punctured, nasa.encoder, punctu
 decoded.hard
 [1] 1 0 1 1 0
 \end{lstlisting}
-Die Kodierung und Dekodierung mit Punktierung ist in Listing~\ref{listing:kodierung_u_dekodierung_mitP} zu sehen. Die Punktierung erfolgt durch das Mitgeben der Punktierungsmatrix bei der Kodierung. Das Ergebnis der Kodierung ist eine Liste mit dem originalen (nicht punktierten) Signal und dem punktierten Signal. Bei der weiteren Verwendung der Variable ist zu beachten, dass nicht die gesamte Liste zu verwenden ist, sondern nur das originale oder punktierte Listenelement. Dies ist beim Aufruf der Dekodierung zu sehen. Die Dekodierung benötigt auch die Punktierungsmatrix für das Auffüllen der punktierten Stellen im Kodewort. Als Ergebnis erhält man, wie bei der Dekodierung ohne Punktierung, eine Liste der Soft-Werte und Hard-Werte bei der soft decision Dekodierung bzw. einen Vektor der dekodierten Nachricht bei der hard decision Dekodierung.
+Die Kodierung und Dekodierung mit Punktierung ist in Listing~\ref{listing:kodierung_u_dekodierung_mitP} einsehbar. Die Punktierung erfolgt durch das Mitgeben der Punktierungsmatrix bei der Kodierung. Das Ergebnis der Kodierung ist eine Liste mit dem originalen (nicht punktierten) Signal und dem punktierten Signal. Bei der weiteren Verwendung der Variable ist zu beachten, dass nicht die gesamte Liste zu verwenden ist, sondern nur das originale oder punktierte Listenelement. Dies ist beim Aufruf der Dekodierung zu sehen. Die Dekodierung benötigt auch die Punktierungsmatrix für das Auffüllen der punktierten Stellen im Kodewort. Als Ergebnis erhält man, wie bei der Dekodierung ohne Punktierung, eine Liste der Soft-Werte und Hard-Werte bei der soft decision Dekodierung bzw. einen Vektor der dekodierten Nachricht bei der hard decision Dekodierung.
 
 \section{Simulation}
 \label{kapitel:beispiele_simulation}
@@ -75,7 +75,7 @@ Die folgenden Kapitel demonstrieren die verschiedenen Möglichkeiten Simulatione
 
 \subsection{Faltungskodierung}
 \label{kapitel:beispiele_simulation_faltungskodierung}
-Das folgende Beispiel zeigt die Ausführung einer Simulation der Faltungskodierung. Die Parameter der Funktion wie der verwendete Kodierer, die Nachrichtenlänge, die zu testenden Signal-Rausch-Verhältnisse, die Anzahl an Wiederholungen je Signal-Rausch-Verhältnis sowie die Punktierungsmatrix können bestimmt werden, sind jedoch auch mit Standardwerten hinterlegt.
+Das folgende Beispiel zeigt die Ausführung einer Simulation der Faltungskodierung. Die Parameter der Funktion, wie der verwendete Kodierer, die Nachrichtenlänge, die zu testenden Signal-Rausch-Verhältnisse, die Anzahl an Wiederholungen je Signal-Rausch-Verhältnis, sowie die Punktierungsmatrix können bestimmt werden, sind jedoch auch mit Standardwerten hinterlegt.
 \begin{lstlisting}[caption=Simulation der Faltungskodierung, label={listing:ConvSimulation}, float=!th]
 > df1 <- ConvSimulation(nasa.encoder, msg.length = 2000, min.db = 0.01, max.db = 0.1, db.interval = 0.01, iterations.per.db = 100)
 
@@ -115,7 +115,7 @@ ChannelcodingSimulation(msg.length = 2000, min.db = 0.01, max.db = 0.1, db.inter
 
 \subsection{Vergleich von Simulationen}
 \label{kapitel:beispiele_simulation_vergleich}
-Das folgende Beispiel zeigt die Ausführung der \texttt{PlotSimulationData}-Funktion. Mithilfe dieser Funktion lassen sich die mit den Simulationsfunktionen erzeugten Dataframes in einem Plot darstellen, was den Vergleich erheblich vereinfacht. In Listing~\ref{listing:PlotSimulationData} wird zunächst ein zweites Dataframe erstellt, welches mit dem in Listing~\ref{listing:ConvSimulation} erstellten Dataframe visualisiert werden soll. Als Vergleich wird ein katastrophaler Faltungskodierer (siehe Kapitel~\ref{kapitel:grundlagen_katastrophale_kodierer}) erzeugt, mit dem die Simulation zur Erzeugung von \texttt{df2} ausgeführt wird. Abbildung~\ref{abb:PlotSimulationData} zeigt den erzeugten Plot.
+Im folgenden Beispiel wird die \texttt{PlotSimulationData}\-Funktion präsentiert. Mithilfe dieser Funktion lassen sich, die mit den Simulationsfunktionen erzeugten Dataframes, in einem Plot darstellen, was den Vergleich erheblich vereinfacht. In Listing~\ref{listing:PlotSimulationData} wird zunächst ein zweites Dataframe erstellt, welches mit dem in Listing~\ref{listing:ConvSimulation} erstellten Dataframe visualisiert werden soll. Als Vergleich wird ein katastrophaler Faltungskodierer (siehe Kapitel~\ref{kapitel:grundlagen_katastrophale_kodierer}) erzeugt, mit dem die Simulation zur Erzeugung von \texttt{df2} ausgeführt wird. Abbildung~\ref{abb:PlotSimulationData} zeigt den erzeugten Plot.
 \begin{lstlisting}[caption=Vergleich mehrerer Simulationsdaten, label={listing:PlotSimulationData}, float=!th]
 catastrophic.encoder <- ConvGenerateEncoder(2,2,c(6,5))
 df2 <- ConvSimulation(catastrophic.encoder, msg.length = 2000, min.db = 0.01, max.db = 0.1, db.interval = 0.01, iterations.per.db = 100)
