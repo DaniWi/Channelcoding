@@ -5,23 +5,23 @@
 \\
 \texttt{TurboSimulation(coder, permutation.type, permutation.args, decode.iterations, msg.length, min.db, max.db, db.interval, iterations.per.db, punctuation.matrix, visualize)}\\
 \\
-Automatische Simulation eines Kodierungs- und Dekodierungsverfahrens von Turbo-Kodes. Nach dem Kodieren wird der resultierende Kode verrauscht und im Anschluss dekodiert. Für das jeweilige Signal/Rausch-Verhältnis wird dieses Verfahren mehrmals (\texttt{iterations.per.db}) wiederholt und am Ende ein Durchschnitt der Bitfehlerrate berechnet.\\
+Automatische Simulation eines Kodierungs- und Dekodierungsverfahrens von Turbo-Kodes. Nach dem Kodieren wird der resultierende Kode verrauscht und im Anschluss dekodiert. Für das jeweilige Signal/Rausch-Verhältnis wird dieses Verfahren (\texttt{iterations.per.db}) mehrmals wiederholt und am Ende ein Durchschnitt der Bitfehlerrate berechnet.\\
 \\
 \textbf{Argumente:}\\
-\texttt{coder} - Kodierer der für Kodierung und Dekodierung verwendet wird. Kann mittels den Funktionen \texttt{ConvGenerateEncoder, ConvGenerateRscEncoder} erzeugt werden. Standard: \texttt{ConvGenerateRscEncoder(2,2,c(5,7))}\\
+\texttt{coder} - Kodierer der für Kodierung und Dekodierung verwendet wird. Standard: \texttt{ConvGenerateRscEncoder(2,2,c(5,7))}\\
 \texttt{permutation.type} - Typ des Permutationsvektors. Standard: \texttt{PRIMITIVE}\\
 \texttt{permutation.args} - Argumente für die Erzeugung des Permutationsvektors. Standard: \texttt{list(root=0)}\\
-\texttt{decode.iterations} - Anzahl von Iterationen bei der Dekodierung. Standard: 5\\
+\texttt{decode.iterations} - Anzahl der Dekodierungsiterationen. Standard: 5\\
 \texttt{msg.length} - Länge der Nachricht. Standard: 100\\
 \texttt{min.db} - Untergrenze des Signal/Rausch-Verhältnisses. Standard: 0.1\\
 \texttt{max.db} - Obergrenze des Signal/Rausch-Verhältnisses. Standard: 2.0\\
 \texttt{db.interval} - Schrittweite pro Erhöhung des Signal/Rausch-Verhältnisses. Standard: 0.1\\
-\texttt{iterations.per.db} - Iterationen pro Signal/Rausch-Verhältnis zur Durchschnittsbildung. Standard: 100\\
+\texttt{iterations.per.db} - Iterationen pro Signal/Rausch-Verhältnis. Standard: 100\\
 \texttt{punctuation.matrix} - Verwendete Punktierungsmatrix. Standard: wird nicht punktiert\\
 \texttt{visualize} - Wenn \texttt{TRUE} wird PDF-Bericht erstellt. Standard: \texttt{FALSE}\\
 \\
 \textbf{Rückgabewert:}\\
-Dataframe das für jedes Signal/Rausch-Verhältnis eine Bitfehlerrate beinhaltet.\\
+Dataframe das die Bitfehlerrate je Signal/Rausch-Verhältnis beinhaltet.\\
 \\
 \hline
 \caption[TurboSimulation]{TurboSimulation - Funktionserklärung}

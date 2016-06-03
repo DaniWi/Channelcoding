@@ -17,7 +17,7 @@
 \contentsline {table}{\numberline {5.5}{\ignorespaces TurboGetPunctuationMatrix}}{38}{table.5.5}
 \contentsline {table}{\numberline {5.6}{\ignorespaces TurboOpenPDF}}{39}{table.5.6}
 \contentsline {table}{\numberline {5.7}{\ignorespaces ApplyNoise}}{40}{table.5.7}
-\contentsline {table}{\numberline {5.8}{\ignorespaces ChannelcodingSimulation}}{40}{table.5.8}
+\contentsline {table}{\numberline {5.8}{\ignorespaces ChannelcodingSimulation}}{41}{table.5.8}
 \contentsline {table}{\numberline {5.9}{\ignorespaces PlotSimulationData}}{41}{table.5.9}
 \ttl@stoptoc {Funktionen@1}
 \addvspace {10\p@ }
