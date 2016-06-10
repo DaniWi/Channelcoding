@@ -12,7 +12,7 @@ coder <- ConvGenerateEncoder(2, 2, c(4,5))
 punctuation.matrix <- TurboGetPunctuationMatrix(c(1,1,0))
 \end{lstlisting}
 
-Wie im Listing~\ref{lst:createHelpersCoderPunctuation} zu sehen ist, wird als allererstes eine zu kodierende Nachricht erzeugt. Danach kann eine Punktierungsmatrix, mithilfe der oben dargestellten Funktion, erstellt werden. Anschließend wird ein nicht rekursiver Faltungskodierer, mit der Funktion vom Faltungskode-Teil des Paketes~\cite[S. 55 f.]{nocker}, erzeugt. Dabei wurde ein Kodierer mit zwei Registern und zwei Ausgängen gewählt. Wichtig ist, dass der erste Ausgang vom Eingang durchgeschalten wird, damit es ein systematischer Kodierer ist. Das wird erreicht, indem das erste Generatorpolynom mit $2^M = 2^2 = 4$ deklariert wird. Zum Schluss wird noch eine Punktierungsmatrix erstellt, die aus nur einer Spalte besteht und jedes dritte Bit aus dem Vektor entfernt. Bei einer 1 wird das Bit behalten, bei einer 0 verworfen.
+Wie im Listing~\ref{lst:createHelpersCoderPunctuation} zu sehen ist, wird als allererstes eine zu kodierende Nachricht erzeugt. Danach kann eine Punktierungsmatrix, mithilfe der oben dargestellten Funktion, erstellt werden. Anschließend wird ein nicht rekursiver Faltungskodierer, mit der Funktion vom Faltungskode-Teil des Paketes~\cite[S. 53 f.]{nocker}, erzeugt. Dabei wurde ein Kodierer mit zwei Registern und zwei Ausgängen gewählt. Wichtig ist, dass der erste Ausgang vom Eingang durchgeschalten wird, damit es ein systematischer Kodierer ist. Das wird erreicht, indem das erste Generatorpolynom mit $2^M = 2^2 = 4$ deklariert wird. Zum Schluss wird noch eine Punktierungsmatrix erstellt, die aus nur einer Spalte besteht und jedes dritte Bit aus dem Vektor entfernt. Bei einer 1 wird das Bit behalten, bei einer 0 verworfen.
 
 \begin{lstlisting}[caption=Erzeugung von verschiedenen Permutationsvektoren, label={lst:createHelpersPermutation}, float=!th]
 permutation.vector.random <- TurboGetPermutation(length(input), coder, "RANDOM")
@@ -113,7 +113,7 @@ df1
 10 0.10 0.10720
 \end{lstlisting}
 
-In Listing~\ref{lst:turboCodeSimulation} wurde eine Nachrichtenlänge von 1000 Bits gewählt, die zwischen 0.01-0.1dB bei drei Dekodierungsiterationen getestet werden. Nach 50 Durchläufen wird der Mittelwert gebildet und in das zurückgegebene Dataframe geschrieben. Dieses kann entweder im Visualisierungsbericht (\texttt{visualize=TRUE}), oder mit der im Kapitel~\ref{sec:example_simulations_plot} dargestellten Funktion, visualisiert werden.
+In Listing~\ref{lst:turboCodeSimulation} wurde eine Nachrichtenlänge von 1000 Bits gewählt, die zwischen 0.01-0.1dB bei drei Dekodierungsiterationen getestet werden. Nach 50 Durchläufen wird der Mittelwert gebildet und in das zurückgegebene Dataframe geschrieben. Dieses kann entweder im Visualisierungsbericht (\texttt{visualize=TRUE}), oder mit der in Kapitel~\ref{sec:example_simulations_plot} dargestellten Funktion, visualisiert werden.
 
 \FloatBarrier
 \subsection{Kanalkodierung}

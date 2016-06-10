@@ -113,7 +113,7 @@ In Listing~\ref{lst:implementation_TurboGetPunctuationMatrix} sieht man zuerst d
 \FloatBarrier
 \section{Kodierung}
 \label{sec:implementation_encode}
-Die Kodierung erfolgt laut der in den Grundlagen, in Kapitel \ref{sec:turboCodes}, besprochenen Schaltung. Dabei werden die Kodierungsfunktionen von der Faltungskodierung von Martin Nocker~\cite[S.~26~f.]{nocker} verwendet.
+Die Kodierung erfolgt laut der in den Grundlagen, in Kapitel \ref{sec:turboCodes}, besprochenen Schaltung. Dabei werden die Kodierungsfunktionen von der Faltungskodierung von Martin Nocker~\cite[S.~25~f.]{nocker} verwendet.
 
 \begin{lstlisting}[caption=Implementierung von \texttt{TurboEncode}, label={lst:implementation_TurboEncode}, float=!th]
 parity.1 <- ConvEncode(message, coder.info, TRUE)
@@ -193,7 +193,7 @@ Nun ist die C++-Dekodierungsfunktion in Listing~\ref{lst:implementation_cFunctio
 
 Nachdem alle Iterationen erledigt sind, wird die Endberechnung, die in Kapitel~\ref{sec:parallelConvCodes} erklärt wurde, durchgeführt. Danach werden noch die Hard-Werte, also die eigentlich dekodierte Nachricht, gebildet. Dazu werden einfach die Soft-Werte ausgewertet und die Bits im Vektor \texttt{hard\_output} gesetzt.
 
-Die genaue Implementierung des Viterbi-Algorithmus (\texttt{c\_sova}) wird in der Bachelorarbeit der Faltungskodes~\cite[S.~27~ff.]{nocker} erläutert, da dies ein Teil der Faltungskodierung ist. Die Theorie zum implementierten Algorithmus ist auch im Buch von Schönefeld~\cite[222-233]{schoenfeld2012informations} erklärt.
+Die genaue Implementierung des Viterbi-Algorithmus (\texttt{c\_sova}) wird in der Bachelorarbeit der Faltungskodes~\cite[S.~26~ff.]{nocker} erläutert, da dies ein Teil der Faltungskodierung ist. Die Theorie zum implementierten Algorithmus ist auch im Buch von Schönefeld~\cite[222-233]{schoenfeld2012informations} erklärt.
 
 \FloatBarrier
 \section{Rauschen erzeugen}
