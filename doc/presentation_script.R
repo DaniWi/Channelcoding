@@ -29,10 +29,10 @@ turbo.coded <- TurboEncode(message, permutation.vector = perm.vector, coder.info
 # decode
 block.decoded <- BlockDecode(block.coded, block.encoder = block.coder)
 
-conv.decoded <- ConvDecodeSoft(conv.coded, conv.encoder = conv.coder)
+conv.decoded <- ConvDecodeSoft(conv.coded, conv.encoder = conv.coder)$output.hard
 
 turbo.decoded <- TurboDecode(turbo.coded, permutation.vector = perm.vector,
-                             iterations = 3, coder.info = conv.coder)
+                             iterations = 3, coder.info = conv.coder)$output.hard
 
 # message = decoded ???
 message
@@ -70,10 +70,10 @@ turbo.messy
 # decode noisy code
 block.decoded <- BlockDecode(block.noisy, block.encoder = block.coder)
 
-conv.decoded <- ConvDecodeSoft(conv.noisy, conv.encoder = conv.coder)
+conv.decoded <- ConvDecodeSoft(conv.noisy, conv.encoder = conv.coder)$output.hard
 
 turbo.decoded <- TurboDecode(turbo.noisy, permutation.vector = perm.vector,
-                             iterations = 3, coder.info = conv.coder)
+                             iterations = 3, coder.info = conv.coder)$output.hard
 
 # message = decoded ???
 message
