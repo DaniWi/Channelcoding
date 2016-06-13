@@ -1,4 +1,4 @@
-block.coder <- BlockGenerateEncoderHamming(code.length = 5, data.length = 11)
+block.coder <- BlockGenerateEncoderBCH(code.length = 15, code.t = 3)
 
 # Faltungskodierer
 #
@@ -84,6 +84,12 @@ message = c(1, 0, 1, 0, 1)
 
 block.coded <- BlockEncode(message, block.encoder = block.coder, visualize = TRUE)
 block.decoded <- BlockDecode(block.coded, block.encoder = block.coder, visualize = TRUE)
+
+# Evt. 2. Visualisierung, da man hier sieht was passiert wenn die Nachricht zu lang für einen Block ist 
+# und die Hamming Visualisierung sich von der BCH Visualisierung unterscheidet
+#block.coder <- BlockGenerateEncoderHamming(code.length = 7, data.length = 4)
+#block.coded <- BlockEncode(message, block.encoder = block.coder, visualize = TRUE)
+#block.decoded <- BlockDecode(block.coded, block.encoder = block.coder, visualize = TRUE)
 
 conv.coded <- ConvEncode(message, conv.encoder = conv.coder)
 conv.decoded <- ConvDecodeSoft(conv.coded, conv.encoder = conv.coder, visualize = TRUE)
