@@ -40,6 +40,10 @@ block.decoded
 conv.decoded
 turbo.decoded
 
+sum(abs(message - block.decoded))
+sum(abs(message - conv.decoded))
+sum(abs(turbo.decoded - turbo.decoded))
+
 # code with noise
 block.noisy <- ApplyNoise(block.coded, SNR.db = 1, binary = TRUE)
 block.messy <- ApplyNoise(block.coded, SNR.db = 0.1, binary = TRUE)
@@ -77,6 +81,10 @@ block.decoded
 conv.decoded
 turbo.decoded
 
+sum(abs(message - block.decoded))
+sum(abs(message - conv.decoded))
+sum(abs(turbo.decoded - turbo.decoded))
+
 
 ##### visualizations #####
 
@@ -85,14 +93,14 @@ message = c(1, 0, 1, 0, 1)
 block.coded <- BlockEncode(message, block.encoder = block.coder, visualize = TRUE)
 block.decoded <- BlockDecode(block.coded, block.encoder = block.coder, visualize = TRUE)
 
-# Evt. 2. Visualisierung, da man hier sieht was passiert wenn die Nachricht zu lang für einen Block ist 
+# Evt. 2. Visualisierung, da man hier sieht was passiert wenn die Nachricht zu lang für einen Block ist
 # und die Hamming Visualisierung sich von der BCH Visualisierung unterscheidet
 #block.coder <- BlockGenerateEncoderHamming(code.length = 7, data.length = 4)
 #block.coded <- BlockEncode(message, block.encoder = block.coder, visualize = TRUE)
 #block.decoded <- BlockDecode(block.coded, block.encoder = block.coder, visualize = TRUE)
 
-conv.coded <- ConvEncode(message, conv.encoder = conv.coder)
-conv.decoded <- ConvDecodeSoft(conv.coded, conv.encoder = conv.coder, visualize = TRUE)
+conv.coded <- ConvEncode(message, conv.encoder = conv.coder, visualize = TRUE)
+#conv.decoded <- ConvDecodeSoft(conv.coded, conv.encoder = conv.coder, visualize = TRUE)
 
 turbo.coded <- TurboEncode(message, permutation.vector = perm.vector,
                            coder.info = conv.coder, visualize = TRUE)
@@ -101,6 +109,6 @@ turbo.decoded <- TurboDecode(turbo.coded, permutation.vector = perm.vector,
 
 ##### simulation #####
 
-df <- ChannelcodingSimulation()
+df <- ChannelcodingSimulation(visualize = TRUE)
 
 df
