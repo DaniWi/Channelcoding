@@ -12,7 +12,8 @@ block.coder <- BlockGenerateEncoderBCH(code.length = 15, code.t = 3)
 #
 conv.coder <- ConvGenerateEncoder(N = 2, M = 2, generators = c(7,5))
 
-message <- sample(x = c(1,0), size = 100, replace = TRUE)
+message <- rep(c(1,0,1,1,1,0,0,0,1,0,1,1,0,1,1,1,0,1,1,0,0,0,1,0,0), times = 4)
+message
 
 perm.vector = TurboGetPermutation(message.length = length(message),
                                   coder.info = conv.coder,
@@ -35,14 +36,9 @@ turbo.decoded <- TurboDecode(turbo.coded, permutation.vector = perm.vector,
                              iterations = 3, coder.info = conv.coder)$output.hard
 
 # message = decoded ???
-message
-block.decoded
-conv.decoded
-turbo.decoded
-
-sum(abs(message - block.decoded))
-sum(abs(message - conv.decoded))
-sum(abs(turbo.decoded - turbo.decoded))
+message - block.decoded
+message - conv.decoded
+message - turbo.decoded
 
 # code with noise
 block.noisy <- ApplyNoise(block.coded, SNR.db = 1, binary = TRUE)
@@ -55,36 +51,39 @@ turbo.noisy <- ApplyNoise(turbo.coded, SNR.db = 1)
 turbo.messy <- ApplyNoise(turbo.coded, SNR.db = 0.1)
 
 # show coded != noisy
-block.coded
-block.noisy
-block.messy
+block.coded - block.noisy
+block.coded - block.messy
 
 conv.coded
-conv.noisy
-conv.messy
+round(conv.noisy, digits = 2)
+round(conv.messy, digits = 2)
 
 turbo.coded
-turbo.noisy
-turbo.messy
+round(turbo.noisy, digits = 2)
+round(turbo.messy, digits = 2)
 
 # decode noisy code
-block.decoded <- BlockDecode(block.noisy, block.encoder = block.coder)
+# noisy & messy!!!
+block.noisy.decoded <- BlockDecode(block.noisy, block.encoder = block.coder)
+block.messy.decoded <- BlockDecode(block.messy, block.encoder = block.coder)
 
-conv.decoded <- ConvDecodeSoft(conv.noisy, conv.encoder = conv.coder)$output.hard
+conv.noisy.decoded <- ConvDecodeSoft(conv.noisy, conv.encoder = conv.coder)$output.hard
+conv.messy.decoded <- ConvDecodeSoft(conv.messy, conv.encoder = conv.coder)$output.hard
 
-turbo.decoded <- TurboDecode(turbo.noisy, permutation.vector = perm.vector,
+turbo.noisy.decoded <- TurboDecode(turbo.noisy, permutation.vector = perm.vector,
+                             iterations = 3, coder.info = conv.coder)$output.hard
+turbo.noisy.decoded <- TurboDecode(turbo.messy, permutation.vector = perm.vector,
                              iterations = 3, coder.info = conv.coder)$output.hard
 
 # message = decoded ???
-message
-block.decoded
-conv.decoded
-turbo.decoded
+message - block.noisy.decoded
+message - block.messy.decoded
 
-sum(abs(message - block.decoded))
-sum(abs(message - conv.decoded))
-sum(abs(turbo.decoded - turbo.decoded))
+message - conv.noisy.decoded
+message - conv.messy.decoded
 
+message - turbo.noisy.decoded
+message - turbo.messy.decoded
 
 ##### visualizations #####
 
@@ -93,22 +92,15 @@ message = c(1, 0, 1, 0, 1)
 block.coded <- BlockEncode(message, block.encoder = block.coder, visualize = TRUE)
 block.decoded <- BlockDecode(block.coded, block.encoder = block.coder, visualize = TRUE)
 
-# Evt. 2. Visualisierung, da man hier sieht was passiert wenn die Nachricht zu lang für einen Block ist
-# und die Hamming Visualisierung sich von der BCH Visualisierung unterscheidet
-#block.coder <- BlockGenerateEncoderHamming(code.length = 7, data.length = 4)
-#block.coded <- BlockEncode(message, block.encoder = block.coder, visualize = TRUE)
-#block.decoded <- BlockDecode(block.coded, block.encoder = block.coder, visualize = TRUE)
-
 conv.coded <- ConvEncode(message, conv.encoder = conv.coder, visualize = TRUE)
-#conv.decoded <- ConvDecodeSoft(conv.coded, conv.encoder = conv.coder, visualize = TRUE)
+# conv.decoded <- ConvDecodeSoft(conv.coded, conv.encoder = conv.coder)
 
 turbo.coded <- TurboEncode(message, permutation.vector = perm.vector,
-                           coder.info = conv.coder, visualize = TRUE)
+                           coder.info = conv.coder)
 turbo.decoded <- TurboDecode(turbo.coded, permutation.vector = perm.vector,
                              iterations = 3, coder.info = conv.coder, visualize = TRUE)
 
 ##### simulation #####
 
 df <- ChannelcodingSimulation(visualize = TRUE)
-
 df
